@@ -84,10 +84,15 @@ public class AuthenticationService {
         }
     }
 
+    private Role setUserRole(String role) {
+
+        return Role.valueOf(role) == Role.USER ? Role.USER : Role.REVIEWER;
+    }
+
     public RegisterResponse register(RegisterRequest request) {
         validateRegistration(request);
 
-        Role role = Role.USER;
+        Role role = setUserRole(request.getRole());
 
         if (this.userRepository.countUsers() == 0) {
             role = Role.ADMIN;
