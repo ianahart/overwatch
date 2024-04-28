@@ -19,4 +19,12 @@ public class ProfileService {
         return this.profileRepository.findById(profileId).orElseThrow(() -> new NotFoundException(
                 String.format("A profile with the id %d was not found", profileId)));
     }
+
+    public Profile createProfile() {
+        Profile profile = new Profile();
+
+        this.profileRepository.save(profile);
+
+        return profile;
+    }
 }

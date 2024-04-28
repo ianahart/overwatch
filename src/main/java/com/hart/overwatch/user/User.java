@@ -236,10 +236,14 @@ public class User implements UserDetails {
         this.createdAt = createdAt;
     }
 
+    public Setting getSetting() {
+        return setting;
+    }
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
+
 
 
     public void setUpdatedAt(Timestamp updatedAt) {
