@@ -2,7 +2,21 @@
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
-    extend: {},
+    extend: {
+      animation: {
+        slidemenu: 'slidemenu 0.35s ease-in-out',
+      },
+      keyframes: {
+        slidemenu: {
+          '0%': { transform: 'translateY(20px)', opacity: 0 },
+          '100%': { transform: 'translateY(0px)', opacity: 1 },
+        },
+      },
+      fontFamily: {
+        display: ['Anton'],
+        body: ['Nunito'],
+      },
+    },
   },
   plugins: [],
 };
