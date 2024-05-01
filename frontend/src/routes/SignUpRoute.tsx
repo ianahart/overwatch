@@ -1,5 +1,7 @@
+import SignUp from '../components/SignUp';
+
 const SignUpRoute = () => {
-  return <h1>Sign Up Route</h1>;
+  return <SignUp />;
 };
 
 export default SignUpRoute;
