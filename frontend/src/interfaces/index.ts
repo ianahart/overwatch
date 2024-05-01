@@ -1,12 +1,18 @@
 import { Role } from '../enums';
 
+export interface IFormField<T> {
+  [key: string]: string | T;
+  name: string;
+  value: T;
+  error: string;
+  type: string;
+}
+
 export interface ISignUpForm {
-  form: {
-    firstName: { name: string; value: string; error: string; type: string };
-    lastName: { name: string; value: string; error: string; type: string };
-    email: { name: string; value: string; error: string; type: string };
-    password: { name: string; value: string; error: string; type: string };
-    confirmPassword: { name: string; value: string; error: string; type: string };
-    role: { name: string; value: Role; error: string; type: string };
-  };
+  firstName: IFormField<string>;
+  lastName: IFormField<string>;
+  email: IFormField<string>;
+  password: IFormField<string>;
+  confirmPassword: IFormField<string>;
+  role: IFormField<Role>;
 }

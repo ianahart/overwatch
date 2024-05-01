@@ -1,18 +1,55 @@
+import { useDispatch, useSelector } from 'react-redux';
 import RoleQuestionField from './RoleQuestionField';
+import { TRootState } from '../../state/store';
+import FormInputField from '../Form/FormInputField';
+import { AiOutlineUser } from 'react-icons/ai';
+import { updateField } from '../../state/signup/signUpSlice';
 
 const Form = () => {
+  const form = useSelector((store: TRootState) => store.signup);
+  const dispatch = useDispatch();
+
+  const handleUpdateField = (name: string, value: string, attribute: string) => {
+    console.log(name, value, attribute);
+    dispatch(updateField({ name, value, attribute }));
+  };
+
   return (
     <div className="bg-slate-900 lg:w-3/6 rounded-r p-4">
-      <form className="border">
+      <form className="border max-w-xl mx-auto">
         <header className="text-center">
           <h1 className="text-2xl font-display text-green-400">Sign up for OverWatch</h1>
           <p>Create a free account or log in</p>
         </header>
         <section className="flex flex-col justify-center min-h-40">
           <RoleQuestionField />
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input type="email" name="email" id="email" />
+          <div className="my-4">
+            <FormInputField
+              handleUpdateField={handleUpdateField}
+              name={form.firstName.name}
+              value={form.firstName.value}
+              error={form.firstName.error}
+              type={form.firstName.type}
+              label="First Name"
+              id="firstName"
+              errorField="First name"
+              placeholder="Enter your first name"
+              icon={<AiOutlineUser />}
+            />
+          </div>
+          <div className="my-4">
+            <FormInputField
+              handleUpdateField={handleUpdateField}
+              name={form.lastName.name}
+              value={form.lastName.value}
+              error={form.lastName.error}
+              type={form.lastName.type}
+              label="Last Name"
+              id="lastName"
+              errorField="Last name"
+              placeholder="Enter your last name"
+              icon={<AiOutlineUser />}
+            />
           </div>
         </section>
       </form>

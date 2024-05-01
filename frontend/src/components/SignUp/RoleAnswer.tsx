@@ -10,7 +10,7 @@ export interface IRoleAnswerProps {
 }
 
 const RoleAnswer = ({ answer, role }: IRoleAnswerProps) => {
-  const { role: roleState } = useSelector((store: TRootState) => store.signup.form);
+  const { role: roleState } = useSelector((store: TRootState) => store.signup);
   const dispatch = useDispatch();
   return (
     <div>
