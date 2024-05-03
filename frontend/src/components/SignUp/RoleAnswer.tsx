@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { Role } from '../../enums';
-import { updateRole } from '../../state/signup/signUpSlice';
+import { updateRole } from '../../state/store';
 import { TRootState } from '../../state/store';
 import { AiOutlineCheck } from 'react-icons/ai';
 

@@ -23,4 +23,4 @@ const navbarSlice = createSlice({
 
 export const { openMobile, closeMobile } = navbarSlice.actions;
 
-export default navbarSlice.reducer;
+export const navbarReducer = navbarSlice.reducer;

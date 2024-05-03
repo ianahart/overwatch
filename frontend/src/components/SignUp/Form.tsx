@@ -3,7 +3,7 @@ import RoleQuestionField from './RoleQuestionField';
 import { TRootState } from '../../state/store';
 import FormInputField from '../Form/FormInputField';
 import { AiOutlineUser } from 'react-icons/ai';
-import { updateField } from '../../state/signup/signUpSlice';
+import { updateField } from '../../state/store';
 
 const Form = () => {
   const form = useSelector((store: TRootState) => store.signup);

@@ -32,4 +32,4 @@ const signUpSlice = createSlice({
 
 export const { updateRole, updateField } = signUpSlice.actions;
 
-export default signUpSlice.reducer;
+export const signUpReducer = signUpSlice.reducer;
