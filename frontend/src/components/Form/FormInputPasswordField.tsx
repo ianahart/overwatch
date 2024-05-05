@@ -1,4 +1,5 @@
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import PasswordStrengthMeter from './PasswordStrengthMeter';
 
 export interface IFormInputPasswordFieldProps {
   handleUpdateField: (name: string, value: string, attribute: string) => void;
@@ -39,12 +40,8 @@ const FormInputPasswordField = ({
   const handleOnBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
     let validationError = '';
-
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/;
     if (value.length < min || value.length > max) {
       validationError = `${errorField} must be between ${min} and ${max} characters`;
-    } else if (!new RegExp(passwordRegex).test(value)) {
-      validationError = `Password must include at least 1 uppercase, 1 lowercase, 1 digit, and 1 special character`;
     }
     handleUpdateField(name, validationError, 'error');
   };
@@ -84,6 +81,7 @@ const FormInputPasswordField = ({
           </div>
         )}
       </div>
+      {name === 'password' && visibility && value.length > 0 && <PasswordStrengthMeter password={value} />}
       {error.length > 0 && <p className="text-red-400 mt-1 text-sm">{error}</p>}
     </div>
   );
