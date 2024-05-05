@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { baseURL } from '../../util';
-import { ISignUpForm, ISignUpResponse } from '../../interfaces';
+import { ISignInForm, ISignInResponse, ISignUpForm, ISignUpResponse } from '../../interfaces';
 
 const authsApi = createApi({
   reducerPath: 'auths',
@@ -9,6 +9,18 @@ const authsApi = createApi({
   }),
   endpoints(builder) {
     return {
+      signIn: builder.mutation<ISignInResponse, ISignInForm>({
+        query: (form) => {
+          return {
+            url: '/auth/login',
+            body: {
+              email: form.email.value,
+              password: form.password.value,
+            },
+            method: 'POST',
+          };
+        },
+      }),
       signUp: builder.mutation<ISignUpResponse, ISignUpForm>({
         query: (form) => {
           return {
@@ -29,5 +41,5 @@ const authsApi = createApi({
   },
 });
 
-export const { useSignUpMutation } = authsApi;
+export const { useSignUpMutation, useSignInMutation } = authsApi;
 export { authsApi };
