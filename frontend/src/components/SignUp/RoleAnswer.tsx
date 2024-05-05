@@ -27,7 +27,13 @@ const RoleAnswer = ({ answer, role }: IRoleAnswerProps) => {
                 <AiOutlineCheck />
               </div>
             )}
-            <p>{answer}</p>
+            <p
+              className={`hover:opacity-80 rounded border ${
+                roleState.value === role ? 'border-transparent' : 'border-slate-700'
+              } p-2`}
+            >
+              {answer}
+            </p>
           </div>
         </div>
       )}
