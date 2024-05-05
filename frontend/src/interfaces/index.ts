@@ -17,6 +17,11 @@ export interface ISignUpForm {
   role: IFormField<Role>;
 }
 
+export interface ISignInForm {
+  email: IFormField<string>;
+  password: IFormField<string>;
+}
+
 export interface ISignUpResponse {
   message: string;
 }

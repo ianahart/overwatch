@@ -20,7 +20,7 @@ const signUpSlice = createSlice({
     updateRole: (state, action: PayloadAction<Role>) => {
       state.role.value = action.payload;
     },
-    updateField: <T extends string>(
+    updateSignUpField: <T extends string>(
       state: Draft<ISignUpFormState>,
       action: PayloadAction<{ name: string; value: T; attribute: keyof IFormField<T> }>
     ) => {
@@ -33,6 +33,6 @@ const signUpSlice = createSlice({
   },
 });
 
-export const { updateRole, updateField, clearSignUpForm } = signUpSlice.actions;
+export const { updateRole, updateSignUpField, clearSignUpForm } = signUpSlice.actions;
 
 export const signUpReducer = signUpSlice.reducer;

@@ -1,5 +1,7 @@
+import SignIn from '../components/SignIn';
+
 const SignInRoute = () => {
-  return <h1>Sign In Route</h1>;
+  return <SignIn />;
 };
 
 export default SignInRoute;

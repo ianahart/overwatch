@@ -6,7 +6,7 @@ import { AiOutlineLock, AiOutlineUser } from 'react-icons/ai';
 import RoleQuestionField from './RoleQuestionField';
 import { TRootState } from '../../state/store';
 import FormInputField from '../Form/FormInputField';
-import { updateField } from '../../state/store';
+import { updateSignUpField } from '../../state/store';
 import FormInputPasswordField from '../Form/FormInputPasswordField';
 import { ISignUpForm } from '../../interfaces';
 import { useSignUpMutation } from '../../state/store';
@@ -28,7 +28,7 @@ const Form = () => {
   }, [results.isSuccess]);
 
   const handleUpdateField = (name: string, value: string, attribute: string) => {
-    dispatch(updateField({ name, value, attribute }));
+    dispatch(updateSignUpField({ name, value, attribute }));
   };
 
   const clearErrors = (form: ISignUpForm) => {
