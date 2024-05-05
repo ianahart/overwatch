@@ -27,9 +27,12 @@ const signUpSlice = createSlice({
       const { name, value, attribute } = action.payload;
       state[name as keyof ISignUpForm][attribute as keyof IFormField<T>] = value;
     },
+    clearSignUpForm: () => {
+      return initialState;
+    },
   },
 });
 
-export const { updateRole, updateField } = signUpSlice.actions;
+export const { updateRole, updateField, clearSignUpForm } = signUpSlice.actions;
 
 export const signUpReducer = signUpSlice.reducer;

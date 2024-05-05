@@ -1,16 +1,31 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { FaRegEnvelope } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { AiOutlineLock, AiOutlineUser } from 'react-icons/ai';
 import RoleQuestionField from './RoleQuestionField';
 import { TRootState } from '../../state/store';
 import FormInputField from '../Form/FormInputField';
-import { AiOutlineLock, AiOutlineUser } from 'react-icons/ai';
 import { updateField } from '../../state/store';
-import { FaRegEnvelope } from 'react-icons/fa';
 import FormInputPasswordField from '../Form/FormInputPasswordField';
 import { ISignUpForm } from '../../interfaces';
+import { useSignUpMutation } from '../../state/store';
+import { clearSignUpForm } from '../../state/slices/signupSlice';
+import Spinner from '../Shared/Spinner';
 
 const Form = () => {
+  const [signUp, results] = useSignUpMutation();
+  const [error, setError] = useState('');
   const form = useSelector((store: TRootState) => store.signup);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (results.isSuccess) {
+      dispatch(clearSignUpForm());
+      navigate('/signin');
+    }
+  }, [results.isSuccess]);
 
   const handleUpdateField = (name: string, value: string, attribute: string) => {
     dispatch(updateField({ name, value, attribute }));
@@ -33,13 +48,30 @@ const Form = () => {
     return isValidated;
   };
 
+  const applyServerErrors = <T extends object>(data: T) => {
+    for (const [key, val] of Object.entries(data)) {
+      if (key === 'message') {
+        setError(val);
+        return;
+      }
+      handleUpdateField(key, val, 'error');
+    }
+  };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     clearErrors(form);
+    setError('');
     if (!validateForm(form)) {
       return;
     }
-    console.log('submit form', form);
+    signUp(form)
+      .unwrap()
+      .catch((err) => {
+        if (err.status === 400) {
+          applyServerErrors(err.data);
+        }
+      });
   };
 
   return (
@@ -49,6 +81,11 @@ const Form = () => {
           <h1 className="text-2xl font-display text-green-400">Sign up for OverWatch</h1>
           <p>Create a free account or log in</p>
         </header>
+        {error.length > 0 && (
+          <div className="flex justify-center">
+            <p className="text-red-400">{error}</p>
+          </div>
+        )}
         <section className="flex flex-col justify-center min-h-40">
           <div className="my-4 bg-slate-800 rounded p-2">
             <RoleQuestionField />
@@ -129,11 +166,17 @@ const Form = () => {
             />
           </div>
         </section>
-        <div className="flex justify-center w-full my-2">
-          <button className="btn w-full" type="submit">
-            Sign up
-          </button>
-        </div>
+        {results.isLoading ? (
+          <div className="my-2">
+            <Spinner message="Creating account..." />
+          </div>
+        ) : (
+          <div className="flex justify-center w-full my-2">
+            <button className="btn w-full" type="submit">
+              Sign up
+            </button>
+          </div>
+        )}
       </form>
     </div>
   );

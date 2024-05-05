@@ -16,3 +16,7 @@ export interface ISignUpForm {
   confirmPassword: IFormField<string>;
   role: IFormField<Role>;
 }
+
+export interface ISignUpResponse {
+  message: string;
+}
