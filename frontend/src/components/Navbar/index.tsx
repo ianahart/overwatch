@@ -1,14 +1,27 @@
-import NavbarLink from './NavbarLink';
+import { AiOutlineClose } from 'react-icons/ai';
 import { RxHamburgerMenu } from 'react-icons/rx';
 import { nanoid } from 'nanoid';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { TRootState } from '../../state/store';
+import { TRootState, clearUser, useSignOutMutation } from '../../state/store';
+import NavbarLink from './NavbarLink';
 import { openMobile, closeMobile } from '../../state/store';
-import { AiOutlineClose } from 'react-icons/ai';
 
 const Navbar = () => {
-  const { isMobileOpen } = useSelector((store: TRootState) => store.navbar);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [signOut] = useSignOutMutation();
+  const { isMobileOpen } = useSelector((store: TRootState) => store.navbar);
+  const { user, token, refreshToken } = useSelector((store: TRootState) => store.user);
+
+  const handleClick = () => {
+    signOut({ token, refreshToken })
+      .unwrap()
+      .then(() => {
+        dispatch(clearUser());
+        navigate('/signin');
+      });
+  };
 
   const links = [
     { path: 'about', title: 'About', showLoggedIn: true },
@@ -36,15 +49,20 @@ const Navbar = () => {
             <AiOutlineClose />
           </div>
           <div
-            className={`md:bg-inherit md:relative md:block md:p-0 p-2 shadow bg-gray-900 rounded absolute md:top-0 top-16 md:min-h-full min-h-[calc(100vh-10vh)] md:w-full w-60 animate-slidemenu ${
+            className={`md:bg-inherit md:relative md:block md:p-0 p-2 z-10 shadow-md bg-gray-900 rounded absolute md:top-0 top-16 md:min-h-full min-h-[calc(100vh-10vh)] md:w-full w-60 animate-slidemenu ${
               isMobileOpen ? 'block' : 'hidden'
             }`}
           >
             {/*USER INFO HERE WHEN LOGGED IN*/}
             <ul className="md:flex md:flex-row flex-col">
               {links.map(({ path, title, showLoggedIn }) => {
-                return <NavbarLink key={nanoid()} path={path} title={title} showLoggedIn={showLoggedIn} />;
+                return <NavbarLink key={nanoid()} path={path} user={user} title={title} showLoggedIn={showLoggedIn} />;
               })}
+              {user.loggedIn && (
+                <li>
+                  <button onClick={handleClick}>Logout</button>
+                </li>
+              )}
             </ul>
           </div>
         </div>

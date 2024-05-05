@@ -2,9 +2,8 @@ import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/dist/query';
 import { navbarReducer, openMobile, closeMobile } from './slices/navbarSlice';
 import { signUpReducer, updateSignUpField, updateRole, clearSignUpForm } from './slices/signupSlice';
-import { updateSignInField, clearSignInForm } from './slices/signinSlice';
+import { updateSignInField, clearSignInForm, signInReducer } from './slices/signinSlice';
 import { authsApi } from './apis/authsApi';
-import { signInReducer } from './slices/signinSlice';
 import { userReducer, updateUser, updateTokens, clearUser, updateUserAndTokens } from './slices/userSlice';
 import { usersApi } from './apis/usersApi';
 
@@ -40,5 +39,5 @@ export {
   clearSignUpForm,
   updateUserAndTokens,
 };
-export { useSignUpMutation, useSignInMutation } from './apis/authsApi';
+export { useSignUpMutation, useSignInMutation, useSignOutMutation } from './apis/authsApi';
 export { useSyncUserQuery } from './apis/usersApi';
