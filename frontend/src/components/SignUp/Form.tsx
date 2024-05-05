@@ -6,6 +6,7 @@ import { AiOutlineLock, AiOutlineUser } from 'react-icons/ai';
 import { updateField } from '../../state/store';
 import { FaRegEnvelope } from 'react-icons/fa';
 import FormInputPasswordField from '../Form/FormInputPasswordField';
+import { ISignUpForm } from '../../interfaces';
 
 const Form = () => {
   const form = useSelector((store: TRootState) => store.signup);
@@ -15,15 +16,41 @@ const Form = () => {
     dispatch(updateField({ name, value, attribute }));
   };
 
+  const clearErrors = (form: ISignUpForm) => {
+    for (const [key, _] of Object.entries(form)) {
+      handleUpdateField(key, '', 'error');
+    }
+  };
+
+  const validateForm = (form: ISignUpForm) => {
+    let isValidated = true;
+    for (const key of Object.keys(form)) {
+      if (!form[key as keyof ISignUpForm].value) {
+        handleUpdateField(key, 'Field must not be empty', 'error');
+        isValidated = false;
+      }
+    }
+    return isValidated;
+  };
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    clearErrors(form);
+    if (!validateForm(form)) {
+      return;
+    }
+    console.log('submit form', form);
+  };
+
   return (
     <div className="bg-slate-900 lg:w-3/6 rounded-r p-4">
-      <form className="max-w-xl mx-auto">
+      <form onSubmit={handleSubmit} className="max-w-xl mx-auto">
         <header className="text-center">
           <h1 className="text-2xl font-display text-green-400">Sign up for OverWatch</h1>
           <p>Create a free account or log in</p>
         </header>
         <section className="flex flex-col justify-center min-h-40">
-          <div className="my-4">
+          <div className="my-4 bg-slate-800 rounded p-2">
             <RoleQuestionField />
           </div>
           <div className="my-4">
@@ -102,6 +129,11 @@ const Form = () => {
             />
           </div>
         </section>
+        <div className="flex justify-center w-full my-2">
+          <button className="btn w-full" type="submit">
+            Sign up
+          </button>
+        </div>
       </form>
     </div>
   );
