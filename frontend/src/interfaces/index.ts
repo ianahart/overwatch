@@ -1,5 +1,25 @@
 import { Role } from '../enums';
 
+export interface ITokens {
+  token: string;
+  refreshToken: string;
+}
+
+export interface IUser {
+  abbreviation: string;
+  avatarUrl: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
+  id: number;
+  loggedIn: boolean;
+  profileId: number;
+  role: string;
+  settingId: number;
+  slug: string;
+}
+
 export interface IFormField<T> {
   [key: string]: string | T;
   name: string;
@@ -24,4 +44,10 @@ export interface ISignInForm {
 
 export interface ISignUpResponse {
   message: string;
+}
+
+export interface ISignInResponse {
+  token: string;
+  refreshToken: string;
+  user: IUser;
 }

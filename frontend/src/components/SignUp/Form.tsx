@@ -4,13 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { AiOutlineLock, AiOutlineUser } from 'react-icons/ai';
 import RoleQuestionField from './RoleQuestionField';
-import { TRootState } from '../../state/store';
+import { TRootState, updateSignUpField, useSignUpMutation, clearSignUpForm } from '../../state/store';
 import FormInputField from '../Form/FormInputField';
-import { updateSignUpField } from '../../state/store';
 import FormInputPasswordField from '../Form/FormInputPasswordField';
 import { ISignUpForm } from '../../interfaces';
-import { useSignUpMutation } from '../../state/store';
-import { clearSignUpForm } from '../../state/slices/signupSlice';
 import Spinner from '../Shared/Spinner';
 
 const Form = () => {
