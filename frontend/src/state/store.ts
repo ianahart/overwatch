@@ -6,6 +6,7 @@ import { updateSignInField, clearSignInForm } from './slices/signinSlice';
 import { authsApi } from './apis/authsApi';
 import { signInReducer } from './slices/signinSlice';
 import { userReducer, updateUser, updateTokens, clearUser, updateUserAndTokens } from './slices/userSlice';
+import { usersApi } from './apis/usersApi';
 
 export const store = configureStore({
   reducer: {
@@ -14,9 +15,10 @@ export const store = configureStore({
     signin: signInReducer,
     user: userReducer,
     [authsApi.reducerPath]: authsApi.reducer,
+    [usersApi.reducerPath]: usersApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
-    return getDefaultMiddleware().concat(authsApi.middleware);
+    return getDefaultMiddleware().concat(authsApi.middleware).concat(usersApi.middleware);
   },
 });
 
@@ -39,3 +41,4 @@ export {
   updateUserAndTokens,
 };
 export { useSignUpMutation, useSignInMutation } from './apis/authsApi';
+export { useSyncUserQuery } from './apis/usersApi';
