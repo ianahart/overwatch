@@ -6,7 +6,7 @@ import FormInputField from '../Form/FormInputField';
 import FormInputPasswordField from '../Form/FormInputPasswordField';
 import { ISignInForm } from '../../interfaces';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import {
   TRootState,
   updateSignInField,
@@ -70,7 +70,7 @@ const Form = () => {
   };
 
   return (
-    <div className="bg-slate-900 lg:w-3/6 rounded-r p-4 flex-col flex items-center justify-center">
+    <div className="bg-slate-900 lg:w-3/6 md:w-3/4 md:mx-auto min-h-96 rounded-r p-4 flex-col flex items-center justify-center">
       <form onSubmit={handleSubmit} className="max-w-xl mx-auto">
         <header className="text-center">
           <h1 className="text-2xl font-display text-green-400">Sign in to OverWatch</h1>
@@ -111,6 +111,12 @@ const Form = () => {
             visibility={false}
             icon={<AiOutlineLock />}
           />
+        </div>
+        <div className="flex justify-center items-center my-4">
+          <p className="mr-1 text-sm">Don't have an account? Sign up</p>
+          <NavLink className="text-green-400 font-bold" to="/signup">
+            here
+          </NavLink>
         </div>
         {results.isLoading ? (
           <div className="my-2">

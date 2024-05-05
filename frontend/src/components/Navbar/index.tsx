@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { TRootState, clearUser, useSignOutMutation } from '../../state/store';
 import NavbarLink from './NavbarLink';
 import { openMobile, closeMobile } from '../../state/store';
+import UserInfo from './UserInfo';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ const Navbar = () => {
       .unwrap()
       .then(() => {
         dispatch(clearUser());
+        dispatch(closeMobile());
         navigate('/signin');
       });
   };
@@ -53,13 +55,13 @@ const Navbar = () => {
               isMobileOpen ? 'block' : 'hidden'
             }`}
           >
-            {/*USER INFO HERE WHEN LOGGED IN*/}
+            {isMobileOpen && user.loggedIn && <UserInfo user={user} />}
             <ul className="md:flex md:flex-row flex-col">
               {links.map(({ path, title, showLoggedIn }) => {
                 return <NavbarLink key={nanoid()} path={path} user={user} title={title} showLoggedIn={showLoggedIn} />;
               })}
               {user.loggedIn && (
-                <li>
+                <li className="p-2">
                   <button onClick={handleClick}>Logout</button>
                 </li>
               )}

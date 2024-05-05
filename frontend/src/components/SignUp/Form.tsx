@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { FaRegEnvelope } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { AiOutlineLock, AiOutlineUser } from 'react-icons/ai';
 import RoleQuestionField from './RoleQuestionField';
@@ -72,7 +72,7 @@ const Form = () => {
   };
 
   return (
-    <div className="bg-slate-900 lg:w-3/6 rounded-r p-4">
+    <div className="bg-slate-900 lg:w-3/6 md:mx-auto  md:w-3/4 sm:w-full rounded-r p-4">
       <form onSubmit={handleSubmit} className="max-w-xl mx-auto">
         <header className="text-center">
           <h1 className="text-2xl font-display text-green-400">Sign up for OverWatch</h1>
@@ -163,6 +163,12 @@ const Form = () => {
             />
           </div>
         </section>
+        <div className="flex justify-center items-center my-4">
+          <p className="mr-1 text-sm">Already have an account? Sign in</p>
+          <NavLink className="text-green-400 font-bold" to="/signup">
+            here
+          </NavLink>
+        </div>
         {results.isLoading ? (
           <div className="my-2">
             <Spinner message="Creating account..." />
