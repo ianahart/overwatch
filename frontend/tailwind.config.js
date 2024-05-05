@@ -5,6 +5,7 @@ export default {
     extend: {
       animation: {
         slidemenu: 'slidemenu 0.35s ease-in-out',
+        'bounce-short': 'bounce 1s ease-in-out 2',
       },
       keyframes: {
         slidemenu: {

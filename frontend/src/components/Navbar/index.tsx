@@ -3,7 +3,7 @@ import { RxHamburgerMenu } from 'react-icons/rx';
 import { nanoid } from 'nanoid';
 import { useDispatch, useSelector } from 'react-redux';
 import { TRootState } from '../../state/store';
-import { openMobile, closeMobile } from '../../state/navbar/navbarSlice';
+import { openMobile, closeMobile } from '../../state/store';
 import { AiOutlineClose } from 'react-icons/ai';
 
 const Navbar = () => {

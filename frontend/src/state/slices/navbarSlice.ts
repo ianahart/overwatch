@@ -1,4 +1,4 @@
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 interface INavbarState {
   isMobileOpen: boolean;
@@ -23,4 +23,4 @@ const navbarSlice = createSlice({
 
 export const { openMobile, closeMobile } = navbarSlice.actions;
 
-export default navbarSlice.reducer;
+export const navbarReducer = navbarSlice.reducer;
