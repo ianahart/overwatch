@@ -114,7 +114,7 @@ const Form = () => {
         </div>
         {results.isLoading ? (
           <div className="my-2">
-            <Spinner message="Creating account..." />
+            <Spinner message="Signing in..." />
           </div>
         ) : (
           <div className="flex justify-center w-full my-2">

@@ -1,16 +1,22 @@
 import { NavLink } from 'react-router-dom';
+import { IUser } from '../../interfaces';
 
 interface INavbarLinkProps {
+  user: IUser;
   path: string;
   title: string;
   showLoggedIn: boolean;
 }
 
-const NavbarLink = ({ path, title, showLoggedIn }: INavbarLinkProps) => {
+const NavbarLink = ({ user, path, title, showLoggedIn }: INavbarLinkProps) => {
   return (
-    <li className="md:mx-2 md:p-0 p-2 hover:bg-gray-800 transition ease-in-out rounded">
-      <NavLink to={path}>{title}</NavLink>
-    </li>
+    <>
+      {(showLoggedIn || !user.loggedIn) && (
+        <li className="md:mx-2 md:p-0 p-2 hover:bg-gray-800 transition ease-in-out rounded">
+          <NavLink to={path}>{title}</NavLink>
+        </li>
+      )}
+    </>
   );
 };
 

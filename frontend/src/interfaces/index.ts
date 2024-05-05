@@ -42,8 +42,17 @@ export interface ISignInForm {
   password: IFormField<string>;
 }
 
+export interface ISignOut {
+  refreshToken: string;
+  token: string;
+}
+
 export interface ISignUpResponse {
   message: string;
+}
+
+export interface ISignOutResponse {
+  messagE: string;
 }
 
 export interface ISignInResponse {
@@ -52,4 +61,4 @@ export interface ISignInResponse {
   user: IUser;
 }
 
-export interface ISyncUserResponse extends IUser;
+export interface ISyncUserResponse extends IUser {}
