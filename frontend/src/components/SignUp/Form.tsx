@@ -2,9 +2,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import RoleQuestionField from './RoleQuestionField';
 import { TRootState } from '../../state/store';
 import FormInputField from '../Form/FormInputField';
-import { AiOutlineUser } from 'react-icons/ai';
+import { AiOutlineLock, AiOutlineUser } from 'react-icons/ai';
 import { updateField } from '../../state/store';
 import { FaRegEnvelope } from 'react-icons/fa';
+import FormInputPasswordField from '../Form/FormInputPasswordField';
 
 const Form = () => {
   const form = useSelector((store: TRootState) => store.signup);
@@ -22,7 +23,9 @@ const Form = () => {
           <p>Create a free account or log in</p>
         </header>
         <section className="flex flex-col justify-center min-h-40">
-          <RoleQuestionField />
+          <div className="my-4">
+            <RoleQuestionField />
+          </div>
           <div className="my-4">
             <FormInputField
               handleUpdateField={handleUpdateField}
@@ -63,6 +66,39 @@ const Form = () => {
               errorField="Email"
               placeholder="Enter your email"
               icon={<FaRegEnvelope />}
+            />
+          </div>
+          <div className="my-4">
+            <FormInputPasswordField
+              handleUpdateField={handleUpdateField}
+              name={form.password.name}
+              value={form.password.value}
+              error={form.password.error}
+              type={form.password.type}
+              label="Password"
+              id="password"
+              errorField="Password"
+              placeholder="Create password"
+              visibility={true}
+              min={5}
+              max={50}
+              icon={<AiOutlineLock />}
+            />
+          </div>
+          <div className="my-4">
+            <FormInputPasswordField
+              handleUpdateField={handleUpdateField}
+              name={form.confirmPassword.name}
+              value={form.confirmPassword.value}
+              error={form.confirmPassword.error}
+              type={form.confirmPassword.type}
+              label="Confirm Password"
+              id="confirmPassword"
+              errorField="Confirm password"
+              placeholder="Confirm your password"
+              min={5}
+              max={50}
+              icon={<AiOutlineLock />}
             />
           </div>
         </section>
