@@ -51,3 +51,5 @@ export interface ISignInResponse {
   refreshToken: string;
   user: IUser;
 }
+
+export interface ISyncUserResponse extends IUser;

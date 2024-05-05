@@ -119,7 +119,7 @@ const Form = () => {
         ) : (
           <div className="flex justify-center w-full my-2">
             <button className="btn w-full" type="submit">
-              Sign up
+              Sign in
             </button>
           </div>
         )}

@@ -43,6 +43,7 @@ const userSlice = createSlice({
       action: PayloadAction<{ user: IUser; tokens: { token: string; refreshToken: string } }>
     ) => {
       const { token, refreshToken } = action.payload.tokens;
+      localStorage.setItem('tokens', JSON.stringify({ token, refreshToken }));
       state.user = action.payload.user;
       state.token = token;
       state.refreshToken = refreshToken;

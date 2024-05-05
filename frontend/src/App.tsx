@@ -5,6 +5,10 @@ import ExploreRoute from './routes/ExploreRoute';
 import CommunityRoute from './routes/CommunityRoute';
 import SignInRoute from './routes/SignInRoute';
 import SignUpRoute from './routes/SignUpRoute';
+import {  updateUserAndTokens, useSyncUserQuery } from './state/store';
+import { retrieveTokens } from './util';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -19,6 +23,16 @@ const router = createBrowserRouter(
 );
 
 const App = () => {
+  const dispatch = useDispatch();
+  const token = retrieveTokens()?.token;
+  const { data } = token ? useSyncUserQuery(token) : { data: null };
+
+  useEffect(() => {
+    if (data) {
+      dispatch(updateUserAndTokens({ user: data, tokens: retrieveTokens() }));
+    }
+  }, [data, dispatch]);
+
   return <RouterProvider router={router}></RouterProvider>;
 };
 
