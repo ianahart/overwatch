@@ -1,16 +1,16 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { ISyncUserResponse } from '../../interfaces';
+import { IHeartBeatResponse } from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
-const usersApi = createApi({
-  reducerPath: 'users',
+const heartbeatApi = createApi({
+  reducerPath: 'heartbeat',
   baseQuery: baseQueryWithReauth,
   endpoints(builder) {
     return {
-      syncUser: builder.query<ISyncUserResponse, string>({
+      fetchHeartBeat: builder.query<IHeartBeatResponse, string>({
         query: (token) => {
           return {
-            url: '/users/sync',
+            url: '/heartbeat',
             method: 'GET',
             headers: {
               Authorization: `Bearer ${token}`,
@@ -22,5 +22,5 @@ const usersApi = createApi({
   },
 });
 
-export const { useSyncUserQuery } = usersApi;
-export { usersApi };
+export const { useLazyFetchHeartBeatQuery, useFetchHeartBeatQuery } = heartbeatApi;
+export { heartbeatApi };

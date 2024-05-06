@@ -144,7 +144,6 @@ public class AuthenticationService {
                 .orElseThrow(() -> new NotFoundException("User not found by email."));
 
         String jwtToken = this.jwtService.generateToken(user, DEFAULT_TTL);
-
         this.tokenService.revokeAllUserTokens(user);
         UserDto userDto = this.updateAuthUser(user, jwtToken);
         RefreshToken refreshToken = this.refreshTokenService.generateRefreshToken(user.getId());
