@@ -6,6 +6,7 @@ import { updateSignInField, clearSignInForm, signInReducer } from './slices/sign
 import { authsApi } from './apis/authsApi';
 import { userReducer, updateUser, updateTokens, clearUser, updateUserAndTokens } from './slices/userSlice';
 import { usersApi } from './apis/usersApi';
+import { heartbeatApi } from './apis/heartbeatApi';
 
 export const store = configureStore({
   reducer: {
@@ -15,9 +16,13 @@ export const store = configureStore({
     user: userReducer,
     [authsApi.reducerPath]: authsApi.reducer,
     [usersApi.reducerPath]: usersApi.reducer,
+    [heartbeatApi.reducerPath]: heartbeatApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
-    return getDefaultMiddleware().concat(authsApi.middleware).concat(usersApi.middleware);
+    return getDefaultMiddleware()
+      .concat(authsApi.middleware)
+      .concat(usersApi.middleware)
+      .concat(heartbeatApi.middleware);
   },
 });
 
@@ -41,3 +46,5 @@ export {
 };
 export { useSignUpMutation, useSignInMutation, useSignOutMutation } from './apis/authsApi';
 export { useSyncUserQuery } from './apis/usersApi';
+export { useFetchHeartBeatQuery, useLazyFetchHeartBeatQuery } from './apis/heartbeatApi';
+export { authsApi, heartbeatApi };

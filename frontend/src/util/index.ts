@@ -8,3 +8,7 @@ export const retrieveTokens = () => {
   }
   return tokens;
 };
+
+export const authHeaders = () => {
+  return { Authorization: `Bearer ${retrieveTokens().token}` };
+};

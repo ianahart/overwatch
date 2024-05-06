@@ -61,4 +61,13 @@ export interface ISignInResponse {
   user: IUser;
 }
 
+export interface IRefreshTokenResponse {
+  token: string;
+  refreshToken: string;
+}
+
+export interface IHeartBeatResponse {
+  message: string;
+}
+
 export interface ISyncUserResponse extends IUser {}
