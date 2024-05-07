@@ -8,7 +8,7 @@ import SignUpRoute from './routes/SignUpRoute';
 import { updateUserAndTokens, useSyncUserQuery } from './state/store';
 import { retrieveTokens } from './util';
 import { useDispatch } from 'react-redux';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -24,16 +24,14 @@ const router = createBrowserRouter(
 
 const App = () => {
   const dispatch = useDispatch();
-  const shouldRun = useRef(true);
   const token = retrieveTokens()?.token;
   const { data } = token ? useSyncUserQuery(token) : { data: null };
 
   useEffect(() => {
-    if (data && shouldRun) {
-      shouldRun.current = false;
+    if (data) {
       dispatch(updateUserAndTokens({ user: data, tokens: retrieveTokens() }));
     }
-  }, [, data, dispatch]);
+  }, [data, dispatch, token]);
 
   return <RouterProvider router={router}></RouterProvider>;
 };

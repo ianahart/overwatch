@@ -17,6 +17,8 @@ const heartbeatApi = createApi({
             },
           };
         },
+        //@ts-ignore
+        invalidatesTags: ['HeartBeat'],
       }),
     };
   },

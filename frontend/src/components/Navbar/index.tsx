@@ -61,7 +61,7 @@ const Navbar = () => {
                 return <NavbarLink key={nanoid()} path={path} user={user} title={title} showLoggedIn={showLoggedIn} />;
               })}
               {user.loggedIn && (
-                <li className="p-2 lg:p-0">
+                <li className="md:p-0 p-2">
                   <button onClick={handleClick}>Logout</button>
                 </li>
               )}
