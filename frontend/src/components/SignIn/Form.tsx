@@ -70,7 +70,7 @@ const Form = () => {
   };
 
   return (
-    <div className="bg-slate-900 lg:w-3/6 md:w-3/4 md:mx-auto min-h-96 rounded-r p-4 flex-col flex items-center justify-center">
+    <div className="bg-stone-950 lg:w-3/6 md:w-3/4 md:mx-auto min-h-96 rounded-r p-4 flex-col flex items-center justify-center">
       <form onSubmit={handleSubmit} className="max-w-xl mx-auto">
         <header className="text-center">
           <h1 className="text-2xl font-display text-green-400">Sign in to OverWatch</h1>

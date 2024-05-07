@@ -72,7 +72,7 @@ const Form = () => {
   };
 
   return (
-    <div className="bg-slate-900 lg:w-3/6 md:mx-auto  md:w-3/4 sm:w-full rounded-r p-4">
+    <div className="bg-stone-950 lg:w-3/6 md:mx-auto  md:w-3/4 sm:w-full rounded-r p-4">
       <form onSubmit={handleSubmit} className="max-w-xl mx-auto">
         <header className="text-center">
           <h1 className="text-2xl font-display text-green-400">Sign up for OverWatch</h1>
@@ -84,7 +84,7 @@ const Form = () => {
           </div>
         )}
         <section className="flex flex-col justify-center min-h-40">
-          <div className="my-4 bg-slate-800 rounded p-2">
+          <div className="my-4 rounded p-2">
             <RoleQuestionField />
           </div>
           <div className="my-4">
