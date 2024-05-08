@@ -112,12 +112,19 @@ const Form = () => {
             icon={<AiOutlineLock />}
           />
         </div>
-        <div className="flex justify-center items-center my-4">
-          <p className="mr-1 text-sm">Don't have an account? Sign up</p>
-          <NavLink className="text-green-400 font-bold" to="/signup">
-            here
-          </NavLink>
-        </div>
+        <>
+          <div className="flex justify-center items-center my-4">
+            <p className="mr-1 text-sm">Don't have an account? Sign up</p>
+            <NavLink className="text-green-400 font-bold" to="/signup">
+              here
+            </NavLink>
+          </div>
+          <div className="flex justify-end mb-4">
+            <NavLink className="text-green-400 font-bold" to="/forgot-password">
+              Forgot password?
+            </NavLink>
+          </div>
+        </>
         {results.isLoading ? (
           <div className="my-2">
             <Spinner message="Signing in..." />

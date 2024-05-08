@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.hart.overwatch.passwordreset.PasswordReset;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.refreshtoken.RefreshToken;
 import com.hart.overwatch.setting.Setting;
@@ -88,6 +89,11 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<Token> tokens;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<PasswordReset> passwordResets;
+
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "setting_id", referencedColumnName = "id")
     private Setting setting;
@@ -146,6 +152,13 @@ public class User implements UserDetails {
         return refreshTokens;
     }
 
+    public List<PasswordReset> getPasswordResets() {
+        return passwordResets;
+    }
+
+    public List<Token> getTokens() {
+        return tokens;
+    }
 
 
     public Profile getProfile() {
@@ -197,6 +210,10 @@ public class User implements UserDetails {
 
     public void setProfile(Profile profile) {
         this.profile = profile;
+    }
+
+    public void setPasswordResets(List<PasswordReset> passwordResets) {
+        this.passwordResets = passwordResets;
     }
 
 
