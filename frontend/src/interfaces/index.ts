@@ -42,17 +42,17 @@ export interface ISignInForm {
   password: IFormField<string>;
 }
 
+export interface IForgotPasswordForm {
+  email: IFormField<string>;
+}
+
 export interface ISignOut {
   refreshToken: string;
   token: string;
 }
 
-export interface ISignUpResponse {
+export interface IBaseResponse {
   message: string;
-}
-
-export interface ISignOutResponse {
-  messagE: string;
 }
 
 export interface ISignInResponse {
@@ -66,8 +66,12 @@ export interface IRefreshTokenResponse {
   refreshToken: string;
 }
 
-export interface IHeartBeatResponse {
-  message: string;
-}
+export interface IHeartBeatResponse extends IBaseResponse {}
+
+export interface IForgotPasswordResponse extends IBaseResponse {}
+
+export interface ISignUpResponse extends IBaseResponse {}
+
+export interface ISignOutResponse extends IBaseResponse {}
 
 export interface ISyncUserResponse extends IUser {}

@@ -9,6 +9,8 @@ import { updateUserAndTokens, useSyncUserQuery } from './state/store';
 import { retrieveTokens } from './util';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
+import ForgotPasswordRoute from './routes/ForgotPasswordRoute';
+import RequireGuest from './components/Guard/RequireGuest';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -16,8 +18,30 @@ const router = createBrowserRouter(
       <Route path="about" element={<AboutRoute />} />
       <Route path="explore" element={<ExploreRoute />} />
       <Route path="community" element={<CommunityRoute />} />
-      <Route path="signin" element={<SignInRoute />} />
-      <Route path="signup" element={<SignUpRoute />} />
+      <Route
+        path="signin"
+        element={
+          <RequireGuest>
+            <SignInRoute />
+          </RequireGuest>
+        }
+      />
+      <Route
+        path="signup"
+        element={
+          <RequireGuest>
+            <SignUpRoute />
+          </RequireGuest>
+        }
+      />
+      <Route
+        path="forgot-password"
+        element={
+          <RequireGuest>
+            <ForgotPasswordRoute />
+          </RequireGuest>
+        }
+      />
     </Route>
   )
 );

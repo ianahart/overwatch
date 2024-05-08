@@ -7,6 +7,8 @@ import {
   ISignOutResponse,
   ISignUpForm,
   ISignUpResponse,
+  IForgotPasswordForm,
+  IForgotPasswordResponse,
 } from '../../interfaces';
 
 const authsApi = createApi({
@@ -16,6 +18,17 @@ const authsApi = createApi({
   }),
   endpoints(builder) {
     return {
+      forgotPassword: builder.mutation<IForgotPasswordResponse, IForgotPasswordForm>({
+        query: (form) => {
+          return {
+            url: '/auth/forgot-password',
+            body: {
+              email: form.email.value,
+            },
+            method: 'POST',
+          };
+        },
+      }),
       signOut: builder.mutation<ISignOutResponse, ISignOut>({
         query: (tokens) => {
           return {
@@ -62,5 +75,5 @@ const authsApi = createApi({
   },
 });
 
-export const { useSignUpMutation, useSignInMutation, useSignOutMutation } = authsApi;
+export const { useSignUpMutation, useSignInMutation, useSignOutMutation, useForgotPasswordMutation } = authsApi;
 export { authsApi };
