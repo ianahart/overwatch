@@ -11,6 +11,7 @@ import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import ForgotPasswordRoute from './routes/ForgotPasswordRoute';
 import RequireGuest from './components/Guard/RequireGuest';
+import ResetPasswordRoute from './routes/ResetPasswordRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -39,6 +40,14 @@ const router = createBrowserRouter(
         element={
           <RequireGuest>
             <ForgotPasswordRoute />
+          </RequireGuest>
+        }
+      />
+      <Route
+        path="reset-password"
+        element={
+          <RequireGuest>
+            <ResetPasswordRoute />
           </RequireGuest>
         }
       />
