@@ -12,6 +12,18 @@ import { useEffect } from 'react';
 import ForgotPasswordRoute from './routes/ForgotPasswordRoute';
 import RequireGuest from './components/Guard/RequireGuest';
 import ResetPasswordRoute from './routes/ResetPasswordRoute';
+import RequireAuth from './components/Guard/RequireAuth';
+import SettingsRoute from './routes/SettingsRoute';
+import BillingRoute from './routes/Settings/BillingRoute';
+import ConnectsRoute from './routes/Settings/ConnectsRoute';
+import ContactInfoRoute from './routes/Settings/ContactInfoRoute';
+import ProfileRoute from './routes/Settings/ProfileRoute';
+import EditProfileRoute from './routes/Settings/EditProfileRoute';
+import ProfileSettingsRoute from './routes/Settings/ProfileSettingsRoute';
+import GetPaidRoute from './routes/Settings/GetPaidRoute';
+import TeamsRoute from './routes/Settings/TeamsRoute';
+import SecurityRoute from './routes/Settings/SecurityRoute';
+import NotificationSettingsRoute from './routes/Settings/NotificationSettingsRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -51,6 +63,95 @@ const router = createBrowserRouter(
           </RequireGuest>
         }
       />
+      <Route
+        path="settings/:slug"
+        element={
+          <RequireAuth>
+            <SettingsRoute />
+          </RequireAuth>
+        }
+      >
+        <Route
+          path="billing"
+          element={
+            <RequireAuth>
+              <BillingRoute />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="connects"
+          element={
+            <RequireAuth>
+              <ConnectsRoute />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="contact-info"
+          element={
+            <RequireAuth>
+              <ContactInfoRoute />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="profile"
+          element={
+            <RequireAuth>
+              <ProfileRoute />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="profile/edit"
+          element={
+            <RequireAuth>
+              <EditProfileRoute />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="profile/settings"
+          element={
+            <RequireAuth>
+              <ProfileSettingsRoute />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="pay"
+          element={
+            <RequireAuth>
+              <GetPaidRoute />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="teams"
+          element={
+            <RequireAuth>
+              <TeamsRoute />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="security"
+          element={
+            <RequireAuth>
+              <SecurityRoute />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="notifications/settings"
+          element={
+            <RequireAuth>
+              <NotificationSettingsRoute />
+            </RequireAuth>
+          }
+        />
+      </Route>
     </Route>
   )
 );

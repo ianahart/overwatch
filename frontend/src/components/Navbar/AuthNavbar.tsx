@@ -7,6 +7,7 @@ import { TRootState, clearUser, useSignOutMutation } from '../../state/store';
 import { openMobile, closeMobile } from '../../state/store';
 import UserInfo from './UserInfo';
 import { AiOutlineClose, AiOutlineLogout } from 'react-icons/ai';
+import { nanoid } from 'nanoid';
 
 const AuthNavbar = () => {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ const AuthNavbar = () => {
   const links = [
     { path: 'explore', title: 'Explore', icon: <IoTelescopeOutline /> },
     { path: 'community', title: 'Community', icon: <IoPeopleOutline /> },
-    { path: `settings/${user.slug}`, title: 'Settings', icon: <IoSettingsOutline /> },
+    { path: `settings/${user.slug}/profile`, title: 'Settings', icon: <IoSettingsOutline /> },
   ];
 
   return (
@@ -52,7 +53,14 @@ const AuthNavbar = () => {
             <ul>
               {links.map((link) => {
                 return (
-                  <li className="flex items-center my-4">
+                  <li
+                    key={nanoid()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      dispatch(closeMobile());
+                    }}
+                    className="flex items-center my-4"
+                  >
                     {link.icon}
                     <Link className="ml-2" to={link.path}>
                       {link.title}
