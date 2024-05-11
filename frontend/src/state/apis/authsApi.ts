@@ -9,6 +9,8 @@ import {
   ISignUpResponse,
   IForgotPasswordForm,
   IForgotPasswordResponse,
+  IResetPasswordResponse,
+  IResetPasswordBody,
 } from '../../interfaces';
 
 const authsApi = createApi({
@@ -18,6 +20,20 @@ const authsApi = createApi({
   }),
   endpoints(builder) {
     return {
+      resetPassword: builder.mutation<IResetPasswordResponse, IResetPasswordBody>({
+        query: (form) => {
+          return {
+            url: '/auth/reset-password',
+            body: {
+              token: form.token,
+              passCode: form.passCode,
+              password: form.password,
+              confirmPassword: form.confirmPassword,
+            },
+            method: 'POST',
+          };
+        },
+      }),
       forgotPassword: builder.mutation<IForgotPasswordResponse, IForgotPasswordForm>({
         query: (form) => {
           return {
@@ -75,5 +91,11 @@ const authsApi = createApi({
   },
 });
 
-export const { useSignUpMutation, useSignInMutation, useSignOutMutation, useForgotPasswordMutation } = authsApi;
+export const {
+  useSignUpMutation,
+  useSignInMutation,
+  useSignOutMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
+} = authsApi;
 export { authsApi };

@@ -44,7 +44,13 @@ export {
   clearSignUpForm,
   updateUserAndTokens,
 };
-export { useSignUpMutation, useSignInMutation, useSignOutMutation, useForgotPasswordMutation } from './apis/authsApi';
+export {
+  useSignUpMutation,
+  useSignInMutation,
+  useSignOutMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
+} from './apis/authsApi';
 export { useSyncUserQuery } from './apis/usersApi';
 export { useFetchHeartBeatQuery, useLazyFetchHeartBeatQuery } from './apis/heartbeatApi';
 export { authsApi, heartbeatApi };

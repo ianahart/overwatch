@@ -46,6 +46,11 @@ export interface IForgotPasswordForm {
   email: IFormField<string>;
 }
 
+export interface IResetPasswordForm {
+  password: IFormField<string>;
+  confirmPassword: IFormField<string>;
+}
+
 export interface ISignOut {
   refreshToken: string;
   token: string;
@@ -66,9 +71,18 @@ export interface IRefreshTokenResponse {
   refreshToken: string;
 }
 
+export interface IResetPasswordBody {
+  token: string;
+  passCode: string;
+  password: string;
+  confirmPassword: string;
+}
+
 export interface IHeartBeatResponse extends IBaseResponse {}
 
 export interface IForgotPasswordResponse extends IBaseResponse {}
+
+export interface IResetPasswordResponse extends IBaseResponse {}
 
 export interface ISignUpResponse extends IBaseResponse {}
 
