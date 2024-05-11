@@ -3,11 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { IoTelescopeOutline, IoSettingsOutline, IoPeopleOutline } from 'react-icons/io5';
 
 import Avatar from '../Shared/Avatar';
-import NavbarLink from './NavbarLink';
 import { TRootState, clearUser, useSignOutMutation } from '../../state/store';
 import { openMobile, closeMobile } from '../../state/store';
 import UserInfo from './UserInfo';
-import { AiOutlineClose } from 'react-icons/ai';
+import { AiOutlineClose, AiOutlineLogout } from 'react-icons/ai';
 
 const AuthNavbar = () => {
   const navigate = useNavigate();
@@ -61,6 +60,12 @@ const AuthNavbar = () => {
                   </li>
                 );
               })}
+              <li className="flex items-center my-4">
+                <AiOutlineLogout />
+                <button className="ml-2" onClick={handleClick}>
+                  Logout
+                </button>
+              </li>
             </ul>
           </div>
         )}
