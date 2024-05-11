@@ -11,6 +11,7 @@ import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.passwordreset.request.ForgotPasswordRequest;
+import com.hart.overwatch.passwordreset.request.PasswordResetRequest;
 import com.hart.overwatch.passwordreset.response.ForgotPasswordResponse;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserRepository;
@@ -134,5 +135,41 @@ public class PasswordResetService {
 
     }
 
+    private boolean checkIfTokenExpired(String token) {
+        return this.jwtService.tokenElapsedDay(token);
+    }
+
+    public void deletePasswordResetsById(Long id) {
+        this.passwordResetRepository.deleteUserPasswordResetsById(id);
+    }
+
+    private boolean passwordResetExists(Long userId, String token) {
+        return this.passwordResetRepository.findPasswordResetByUserIdAndToken(userId, token);
+    }
+
+    public void resetPassword(PasswordResetRequest request) {
+        Claims claims = extractUserIdFromToken(request.getToken());
+
+        User user = this.userService.getUserByEmail(claims.getSubject());
+
+        if (checkIfTokenExpired(request.getToken())
+                && passwordResetExists(user.getId(), request.getToken())) {
+            throw new BadRequestException(
+                    "Token has expired. Please try resetting your password again");
+        }
+
+        if (!MyUtil.validatePassword(request.getPassword())) {
+            throw new BadRequestException(
+                    "Password must include 1 uppercase, 1 lowercase, 1 digit and 1 special char");
+        }
+
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
+            throw new BadRequestException("Passwords do not match");
+        }
+
+        user.setPassword(this.passwordEncoder.encode(request.getPassword()));
+
+        deletePasswordResetsById(user.getId());
+    }
 }
 

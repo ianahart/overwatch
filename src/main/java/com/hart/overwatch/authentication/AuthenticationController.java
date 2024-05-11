@@ -9,7 +9,9 @@ import com.hart.overwatch.authentication.response.RegisterResponse;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.passwordreset.PasswordResetService;
 import com.hart.overwatch.passwordreset.request.ForgotPasswordRequest;
+import com.hart.overwatch.passwordreset.request.PasswordResetRequest;
 import com.hart.overwatch.passwordreset.response.ForgotPasswordResponse;
+import com.hart.overwatch.passwordreset.response.PasswordResetResponse;
 import com.hart.overwatch.refreshtoken.RefreshToken;
 import com.hart.overwatch.refreshtoken.RefreshTokenService;
 import com.hart.overwatch.refreshtoken.request.RefreshTokenRequest;
@@ -90,6 +92,14 @@ public class AuthenticationController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(this.passwordResetService.sendForgotPasswordEmail(request));
 
+    }
+
+    @PostMapping(path = "/reset-password")
+    public ResponseEntity<PasswordResetResponse> resetPassword(
+            @RequestBody PasswordResetRequest request) {
+        this.passwordResetService.resetPassword(request);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new PasswordResetResponse("success"));
     }
 
 

@@ -1,8 +1,10 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import FormOTPInputField from '../Form/FormOTPInputField';
 import FormInputPasswordField from '../Form/FormInputPasswordField';
 import { AiOutlineLock } from 'react-icons/ai';
 import { IResetPasswordForm } from '../../interfaces';
+import { useResetPasswordMutation } from '../../state/store';
 
 const formState = {
   password: { name: 'password', error: '', value: '', type: 'password' },
@@ -11,9 +13,18 @@ const formState = {
 
 const Form = () => {
   const OTP_INPUTS = 5;
+  const [searchParams, _] = useSearchParams();
+  const navigate = useNavigate();
+  const [resetPassword, results] = useResetPasswordMutation();
   const [resetPasswordForm, setResetPasswordForm] = useState(formState);
   const [passCode, setPassCode] = useState<string[]>([]);
   const [passCodeError, setPassCodeError] = useState('');
+
+  useEffect(() => {
+    if (results.isSuccess) {
+      navigate('/signin');
+    }
+  }, [results.isSuccess, navigate]);
 
   const handleUpdateField = useCallback(
     (name: string, value: string, attribute: string) => {
@@ -54,7 +65,12 @@ const Form = () => {
       return;
     }
 
-    console.log('form submitted');
+    resetPassword({
+      token: searchParams.get('token') as string,
+      passCode: passCode.join(','),
+      password: resetPasswordForm.password.value,
+      confirmPassword: resetPasswordForm.confirmPassword.value,
+    });
   };
 
   return (
