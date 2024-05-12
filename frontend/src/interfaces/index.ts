@@ -51,6 +51,11 @@ export interface IResetPasswordForm {
   confirmPassword: IFormField<string>;
 }
 
+export interface IChangePasswordForm {
+  password: IFormField<string>;
+  curPassword: IFormField<string>;
+}
+
 export interface ISignOut {
   refreshToken: string;
   token: string;
@@ -78,6 +83,12 @@ export interface IResetPasswordBody {
   confirmPassword: string;
 }
 
+export interface IUpdateUserPasswordRequest {
+  form: IChangePasswordForm;
+  userId: number;
+  token: string;
+}
+
 export interface IHeartBeatResponse extends IBaseResponse {}
 
 export interface IForgotPasswordResponse extends IBaseResponse {}
@@ -87,5 +98,7 @@ export interface IResetPasswordResponse extends IBaseResponse {}
 export interface ISignUpResponse extends IBaseResponse {}
 
 export interface ISignOutResponse extends IBaseResponse {}
+
+export interface IUpdateUserPasswordResponse extends IBaseResponse {}
 
 export interface ISyncUserResponse extends IUser {}

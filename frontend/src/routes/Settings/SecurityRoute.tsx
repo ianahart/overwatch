@@ -1,5 +1,7 @@
+import Security from '../../components/Settings/Security';
+
 const SecurityRoute = () => {
-  return <div>Password & Security Route</div>;
+  return <Security />;
 };
 
 export default SecurityRoute;

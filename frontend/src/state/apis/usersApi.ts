@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { ISyncUserResponse } from '../../interfaces';
+import { ISyncUserResponse, IUpdateUserPasswordResponse, IUpdateUserPasswordRequest } from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
 const usersApi = createApi({
@@ -7,6 +7,21 @@ const usersApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints(builder) {
     return {
+      updateUserPassword: builder.mutation<IUpdateUserPasswordResponse, IUpdateUserPasswordRequest>({
+        query: (payload) => {
+          return {
+            url: `/users/${payload.userId}/password`,
+            method: 'PATCH',
+            headers: {
+              Authorization: `Bearer ${payload.token}`,
+            },
+            body: {
+              currentPassword: payload.form.curPassword.value,
+              newPassword: payload.form.password.value,
+            },
+          };
+        },
+      }),
       syncUser: builder.query<ISyncUserResponse, string>({
         query: (token) => {
           return {
@@ -22,5 +37,5 @@ const usersApi = createApi({
   },
 });
 
-export const { useSyncUserQuery } = usersApi;
+export const { useSyncUserQuery, useUpdateUserPasswordMutation } = usersApi;
 export { usersApi };

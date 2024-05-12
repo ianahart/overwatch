@@ -17,7 +17,6 @@ const PasswordStrengthMeter = ({ password }: IPasswordStrengthMeterProps) => {
   };
 
   const activateMeter = () => {
-    console.log('run');
     const score = getPasswordStrength(password);
     let opts = { color: '', text: '' };
 
