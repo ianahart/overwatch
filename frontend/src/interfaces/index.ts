@@ -5,6 +5,13 @@ export interface ITokens {
   refreshToken: string;
 }
 
+export interface ISetting {
+  id: number;
+  userId: number;
+  mfaEnabled: boolean;
+  createdAt: string;
+}
+
 export interface IUser {
   abbreviation: string;
   avatarUrl: string;
@@ -87,6 +94,31 @@ export interface IUpdateUserPasswordRequest {
   form: IChangePasswordForm;
   userId: number;
   token: string;
+}
+
+export interface IUpdateSettingsMFARequest {
+  mfaEnabled: boolean;
+  token: string;
+  settingId: number;
+}
+
+export interface IUpdateSettingsMFAResponse extends IBaseResponse {
+  mfaEnabled: boolean;
+}
+
+export interface IFetchSettingsRequest {
+  token: string;
+  settingId: number;
+}
+
+export interface IFetchSettingsResponse {
+  message: string;
+  data: {
+    id: number;
+    userId: number;
+    createdAt: Date;
+    mfaEnabled: boolean;
+  };
 }
 
 export interface IHeartBeatResponse extends IBaseResponse {}

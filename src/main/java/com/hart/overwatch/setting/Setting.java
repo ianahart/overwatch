@@ -36,6 +36,9 @@ public class Setting {
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
+    @Column(name = "mfa_enabled")
+    private Boolean mfaEnabled;
+
     @JsonIgnore
     @OneToOne(mappedBy = "setting")
     private User user;
@@ -44,15 +47,21 @@ public class Setting {
 
     }
 
-    public Setting(Long id, Timestamp createdAt, Timestamp updatedAt) {
+    public Setting(Long id, Timestamp createdAt, Timestamp updatedAt, Boolean mfaEnabled) {
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.mfaEnabled = mfaEnabled;
     }
 
     public Long getId() {
         return id;
     }
+
+    public Boolean getMfaEnabled() {
+        return mfaEnabled;
+    }
+
 
     public Timestamp getCreatedAt() {
         return createdAt;
@@ -69,6 +78,10 @@ public class Setting {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setMfaEnabled(Boolean mfaEnabled) {
+        this.mfaEnabled = mfaEnabled;
     }
 
     public void setUser(User user) {

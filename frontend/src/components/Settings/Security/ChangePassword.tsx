@@ -86,7 +86,7 @@ const ChangePassword = () => {
   return (
     <div className="mt-8">
       <div className="flex justify-between">
-        <p className="font-bold">Password</p>
+        <p className="font-bold text-gray-400">Password</p>
         <p className="md:block hidden">
           <span onClick={toggleForm} className="text-green-400 font-bold cursor-pointer">
             Change password.
