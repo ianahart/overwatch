@@ -4,11 +4,14 @@ import java.security.Key;
 import java.util.Optional;
 
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.advice.ForbiddenException;
+import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.token.TokenService;
 import com.hart.overwatch.user.dto.UserDto;
-
+import com.hart.overwatch.util.MyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -83,6 +86,55 @@ public class UserService {
 
     }
 
+
+    private boolean verifyPassword(String currentPassword, String hashedPassword,
+            String newPassword) {
+
+        try {
+            if (currentPassword == null || hashedPassword == null || newPassword == null) {
+                return false;
+            }
+
+            if (this.passwordEncoder.matches(newPassword, hashedPassword)) {
+                return false;
+            }
+            return this.passwordEncoder.matches(currentPassword, hashedPassword);
+
+        } catch (IllegalArgumentException ex) {
+            return false;
+        }
+
+    }
+
+    public void updateUserPassword(String currentPassword, String newPassword, Long userId) {
+        try {
+
+            User user = getCurrentlyLoggedInUser();
+
+            if (user.getId() != userId) {
+                throw new ForbiddenException("Cannot update another user's password");
+            }
+
+            if (!verifyPassword(currentPassword, user.getPassword(), newPassword)) {
+                throw new ForbiddenException(
+                        "Your current password is invalid or is the same as your old one");
+            }
+
+            if (!MyUtil.validatePassword(newPassword)) {
+                throw new BadRequestException(
+                        "Password must include 1 uppercase 1 lowercase 1 digit and 1 special character");
+            }
+
+            user.setPassword(this.passwordEncoder.encode(newPassword));
+
+            this.userRepository.save(user);
+
+
+        } catch (DataAccessException ex) {
+            ex.printStackTrace();
+        }
+        System.out.println(currentPassword);
+    }
 
 
 }

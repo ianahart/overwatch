@@ -51,6 +51,6 @@ export {
   useForgotPasswordMutation,
   useResetPasswordMutation,
 } from './apis/authsApi';
-export { useSyncUserQuery } from './apis/usersApi';
+export { useSyncUserQuery, useUpdateUserPasswordMutation } from './apis/usersApi';
 export { useFetchHeartBeatQuery, useLazyFetchHeartBeatQuery } from './apis/heartbeatApi';
 export { authsApi, heartbeatApi };
