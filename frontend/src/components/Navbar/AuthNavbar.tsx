@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { IoTelescopeOutline, IoSettingsOutline, IoPeopleOutline } from 'react-icons/io5';
 
 import Avatar from '../Shared/Avatar';
-import { TRootState, clearUser, useSignOutMutation } from '../../state/store';
+import { TRootState, clearSetting, clearUser, useSignOutMutation } from '../../state/store';
 import { openMobile, closeMobile } from '../../state/store';
 import UserInfo from './UserInfo';
 import { AiOutlineClose, AiOutlineLogout } from 'react-icons/ai';
@@ -22,6 +22,7 @@ const AuthNavbar = () => {
       .then(() => {
         dispatch(clearUser());
         dispatch(closeMobile());
+        dispatch(clearSetting());
         navigate('/signin');
       });
   };
