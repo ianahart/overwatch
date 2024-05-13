@@ -5,6 +5,13 @@ export interface ITokens {
   refreshToken: string;
 }
 
+export interface IPhone {
+  id: number;
+  isVerified: boolean;
+  createdAt: string;
+  phoneNumber: string;
+}
+
 export interface ISetting {
   id: number;
   userId: number;
@@ -120,6 +127,30 @@ export interface IFetchSettingsResponse {
     mfaEnabled: boolean;
   };
 }
+
+export interface ICreatePhoneRequest {
+  token: string;
+  phoneNumber: string;
+  userId: number;
+}
+
+export interface IGetPhoneResponse {
+  message: string;
+  data: IPhone;
+}
+export interface IGetPhoneRequest {
+  token: string;
+  userId: number;
+}
+
+export interface IDeletePhoneRequest {
+  token: string;
+  phoneId: number;
+}
+
+export interface IDeletePhoneResponse extends IBaseResponse {}
+
+export interface ICreatePhoneResponse extends IBaseResponse {}
 
 export interface IHeartBeatResponse extends IBaseResponse {}
 

@@ -21,9 +21,12 @@ const settingSlice = createSlice({
     updateSetting: (state, action: PayloadAction<ISetting>) => {
       state.setting = action.payload;
     },
+    clearSetting: () => {
+      return initialState;
+    },
   },
 });
 
-export const { updateSetting } = settingSlice.actions;
+export const { updateSetting, clearSetting } = settingSlice.actions;
 
 export const settingReducer = settingSlice.reducer;
