@@ -63,7 +63,7 @@ export {
   useFetchOTPQuery,
   useVerifyOTPMutation,
 } from './apis/authsApi';
-export { useSyncUserQuery, useUpdateUserPasswordMutation } from './apis/usersApi';
+export { useSyncUserQuery, useUpdateUserPasswordMutation, useDeleteUserMutation } from './apis/usersApi';
 export { useFetchHeartBeatQuery, useLazyFetchHeartBeatQuery } from './apis/heartbeatApi';
 export { useUpdateSettingsMFAMutation, useFetchSettingsQuery } from './apis/settingsApi';
 export { useCreatePhoneMutation, useFetchPhoneQuery, useDeletePhoneMutation } from './apis/phonesApi';

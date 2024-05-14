@@ -168,8 +168,24 @@ public class AuthenticationService {
     }
 
 
-    private boolean is2FAEnabled(User user) {
-        return user.getSetting().getMfaEnabled();
+    private Boolean is2FAEnabled(User user) {
+        Boolean isEnabled = user.getSetting().getMfaEnabled();
+
+        if (isEnabled != null) {
+            if (isEnabled) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+
+    }
+
+
+    private Boolean userHasPhone(User user) {
+        return user.getPhones().getFirst().getPhoneNumber() != null;
     }
 
     public LoginResponse login(LoginRequest request) {
@@ -185,7 +201,7 @@ public class AuthenticationService {
         User user = this.userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException("User not found by email."));
 
-        if (is2FAEnabled(user)) {
+        if (is2FAEnabled(user) && userHasPhone(user)) {
             return new LoginResponse(user.getId());
         }
 

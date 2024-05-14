@@ -25,8 +25,10 @@ const PhoneNumber = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      setPhone(data.data);
-      setPhoneNumber(data.data.phoneNumber);
+      if (data.data !== null) {
+        setPhone(data.data);
+        setPhoneNumber(data.data?.phoneNumber);
+      }
     }
   }, [data, isSuccess]);
 
