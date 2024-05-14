@@ -1,11 +1,13 @@
 package com.hart.overwatch.authentication;
 
 import com.hart.overwatch.advice.BadRequestException;
+import com.hart.overwatch.authentication.dto.AuthDto;
 import com.hart.overwatch.authentication.request.LoginRequest;
 import com.hart.overwatch.authentication.request.RegisterRequest;
 import com.hart.overwatch.authentication.response.LoginResponse;
 import com.hart.overwatch.authentication.response.RegisterResponse;
 import com.hart.overwatch.config.JwtService;
+import com.hart.overwatch.phone.PhoneService;
 import com.hart.overwatch.profile.ProfileService;
 import com.hart.overwatch.refreshtoken.RefreshToken;
 import com.hart.overwatch.refreshtoken.RefreshTokenService;
@@ -49,13 +51,14 @@ public class AuthenticationService {
     private final TokenService tokenService;
     private final UserService userService;
     private final SettingService settingService;
+    private final PhoneService phoneService;
 
     @Autowired
     public AuthenticationService(PasswordEncoder passwordEncoder, ProfileService profileService,
             UserRepository userRepository, AuthenticationManager authenticationManager,
             JwtService jwtService, TokenRepository tokenRepository,
             RefreshTokenService refreshTokenService, TokenService tokenService,
-            UserService userService, SettingService settingService) {
+            UserService userService, SettingService settingService, PhoneService phoneService) {
         this.passwordEncoder = passwordEncoder;
         this.profileService = profileService;
         this.userRepository = userRepository;
@@ -66,6 +69,29 @@ public class AuthenticationService {
         this.tokenService = tokenService;
         this.userService = userService;
         this.settingService = settingService;
+        this.phoneService = phoneService;
+    }
+
+
+    public LoginResponse verifyOTP(Long userId, String otpCode) throws Exception {
+        try {
+            User user = this.userService.getUserById(userId);
+            boolean isVerified = this.phoneService.verifyUserOTP(user, otpCode);
+            AuthDto authenticationItems = postAuthenticationSteps(user);
+
+            return new LoginResponse(authenticationItems.getUser(),
+                    authenticationItems.getJwtToken(),
+                    authenticationItems.getRefreshToken().getRefreshToken());
+
+
+        } catch (Exception ex) {
+            return new LoginResponse();
+        }
+    }
+
+
+    public String generateOTP(Long userId) {
+        return this.phoneService.generateUserOTP(userId);
     }
 
     private void validateRegistration(RegisterRequest request) {
@@ -130,6 +156,22 @@ public class AuthenticationService {
 
     }
 
+
+    private AuthDto postAuthenticationSteps(User user) {
+        String jwtToken = this.jwtService.generateToken(user, DEFAULT_TTL);
+        this.tokenService.revokeAllUserTokens(user);
+        UserDto userDto = this.updateAuthUser(user, jwtToken);
+        RefreshToken refreshToken = this.refreshTokenService.generateRefreshToken(user.getId());
+
+        return new AuthDto(userDto, jwtToken, refreshToken);
+
+    }
+
+
+    private boolean is2FAEnabled(User user) {
+        return user.getSetting().getMfaEnabled();
+    }
+
     public LoginResponse login(LoginRequest request) {
 
         try {
@@ -143,12 +185,15 @@ public class AuthenticationService {
         User user = this.userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException("User not found by email."));
 
-        String jwtToken = this.jwtService.generateToken(user, DEFAULT_TTL);
-        this.tokenService.revokeAllUserTokens(user);
-        UserDto userDto = this.updateAuthUser(user, jwtToken);
-        RefreshToken refreshToken = this.refreshTokenService.generateRefreshToken(user.getId());
+        if (is2FAEnabled(user)) {
+            return new LoginResponse(user.getId());
+        }
 
-        return new LoginResponse(userDto, jwtToken, refreshToken.getRefreshToken());
+
+        AuthDto authenticationItems = postAuthenticationSteps(user);
+
+        return new LoginResponse(authenticationItems.getUser(), authenticationItems.getJwtToken(),
+                authenticationItems.getRefreshToken().getRefreshToken());
     }
 
 }

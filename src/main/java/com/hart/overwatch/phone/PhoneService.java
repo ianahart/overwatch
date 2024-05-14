@@ -1,5 +1,11 @@
 package com.hart.overwatch.phone;
 
+
+import com.twilio.Twilio;
+import com.twilio.rest.verify.v2.service.Verification;
+import com.twilio.rest.verify.v2.service.VerificationCheck;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -14,6 +20,15 @@ import com.hart.overwatch.advice.ForbiddenException;
 @Service
 public class PhoneService {
 
+    @Value("${TWILIO_ACCOUNT_SID}")
+    private String TWILIO_ACCOUNT_SID;
+
+    @Value("${TWILIO_AUTH_TOKEN}")
+    private String TWILIO_AUTH_TOKEN;
+
+    @Value("${TWILIO_VERIFICATION_SID}")
+    private String TWILIO_VERIFICATION_SID;
+
     private final PhoneRepository phoneRepository;
 
     private final UserService userService;
@@ -22,6 +37,41 @@ public class PhoneService {
     public PhoneService(PhoneRepository phoneRepository, UserService userService) {
         this.phoneRepository = phoneRepository;
         this.userService = userService;
+    }
+
+
+    public boolean verifyUserOTP(User user, String otpCode) throws Exception {
+        Twilio.init(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
+
+        try {
+            System.out.println(otpCode);
+
+            String phoneNumber = user.getPhones().getFirst().getPhoneNumber();
+
+
+            VerificationCheck verificationCheck = VerificationCheck.creator(TWILIO_VERIFICATION_SID)
+                    .setTo("+1" + phoneNumber).setCode(otpCode).create();
+
+            return verificationCheck.getStatus().equals("approved") ? true : false;
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+
+    }
+
+    public String generateUserOTP(Long userId) {
+        User user = this.userService.getUserById(userId);
+        String phoneNumber = user.getPhones().getFirst().getPhoneNumber();
+
+        Twilio.init(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
+
+        Verification verification =
+                Verification.creator(TWILIO_VERIFICATION_SID, "+1" + phoneNumber, "sms").create();
+
+        System.out.println(verification);
+        return null;
     }
 
 

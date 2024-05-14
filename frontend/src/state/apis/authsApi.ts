@@ -11,6 +11,8 @@ import {
   IForgotPasswordResponse,
   IResetPasswordResponse,
   IResetPasswordBody,
+  IVerifyOTPRequest,
+  IVerifyOTPResponse,
 } from '../../interfaces';
 
 const authsApi = createApi({
@@ -20,6 +22,27 @@ const authsApi = createApi({
   }),
   endpoints(builder) {
     return {
+      verifyOTP: builder.mutation<IVerifyOTPResponse, IVerifyOTPRequest>({
+        query: ({ userId, otpCode }) => {
+          return {
+            url: '/auth/verify-otp',
+            body: { userId, otpCode },
+            method: 'POST',
+          };
+        },
+      }),
+      fetchOTP: builder.query({
+        query: (userId) => {
+          if (!userId) return '';
+          return {
+            url: '/auth/generate-otp',
+            params: {
+              userId,
+            },
+            method: 'GET',
+          };
+        },
+      }),
       resetPassword: builder.mutation<IResetPasswordResponse, IResetPasswordBody>({
         query: (form) => {
           return {
@@ -97,5 +120,7 @@ export const {
   useSignOutMutation,
   useForgotPasswordMutation,
   useResetPasswordMutation,
+  useFetchOTPQuery,
+  useVerifyOTPMutation,
 } = authsApi;
 export { authsApi };

@@ -83,6 +83,7 @@ export interface ISignInResponse {
   token: string;
   refreshToken: string;
   user: IUser;
+  userId?: number;
 }
 
 export interface IRefreshTokenResponse {
@@ -147,6 +148,13 @@ export interface IDeletePhoneRequest {
   token: string;
   phoneId: number;
 }
+
+export interface IVerifyOTPRequest {
+  userId: number;
+  otpCode: string;
+}
+
+export interface IVerifyOTPResponse extends ISignInResponse {}
 
 export interface IDeletePhoneResponse extends IBaseResponse {}
 
