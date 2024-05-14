@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import com.hart.overwatch.authentication.request.LoginRequest;
 import com.hart.overwatch.authentication.request.RegisterRequest;
+import com.hart.overwatch.authentication.request.VerifyOTPRequest;
+import com.hart.overwatch.authentication.response.GetOtpResponse;
 import com.hart.overwatch.authentication.response.LoginResponse;
 import com.hart.overwatch.authentication.response.RegisterResponse;
 import com.hart.overwatch.config.JwtService;
@@ -24,9 +26,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
@@ -102,6 +106,21 @@ public class AuthenticationController {
         return ResponseEntity.status(HttpStatus.OK).body(new PasswordResetResponse("success"));
     }
 
+    @GetMapping(path = "/generate-otp")
+    public ResponseEntity<GetOtpResponse> getOtp(@RequestParam("userId") Long userId) {
+        return ResponseEntity.status(HttpStatus.OK)
+
+                .body(new GetOtpResponse("success",
+
+                        this.authenticationService.generateOTP(userId)));
+    }
+
+    @PostMapping(path = "/verify-otp")
+    public ResponseEntity<LoginResponse> verifyOtp(@RequestBody VerifyOTPRequest request)
+            throws Exception {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                this.authenticationService.verifyOTP(request.getUserId(), request.getOtpCode()));
+    }
 
 }
 

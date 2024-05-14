@@ -24,7 +24,6 @@ const Form = () => {
   useEffect(() => {
     if (results.isSuccess) {
       dispatch(clearSignInForm());
-      navigate('/');
     }
   }, [results.isSuccess]);
 
@@ -49,6 +48,10 @@ const Form = () => {
     return isValidated;
   };
 
+  const isSuccessButEmpty = (token: string, refreshToken: string) => {
+    return token === null && refreshToken === null;
+  };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError('');
@@ -60,9 +63,14 @@ const Form = () => {
 
     signIn(form)
       .unwrap()
-      .then(({ user, token, refreshToken }) => {
-        const tokens = { token, refreshToken };
-        dispatch(updateUserAndTokens({ user, tokens }));
+      .then(({ user, token, refreshToken, userId }) => {
+        if (isSuccessButEmpty(token, refreshToken)) {
+          navigate('/auth/otp', { state: { userId } });
+        } else {
+          const tokens = { token, refreshToken };
+          dispatch(updateUserAndTokens({ user, tokens }));
+          navigate('/');
+        }
       })
       .catch(({ data }) => {
         setError(data.message);

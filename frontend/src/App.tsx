@@ -24,6 +24,7 @@ import GetPaidRoute from './routes/Settings/GetPaidRoute';
 import TeamsRoute from './routes/Settings/TeamsRoute';
 import SecurityRoute from './routes/Settings/SecurityRoute';
 import NotificationSettingsRoute from './routes/Settings/NotificationSettingsRoute';
+import OTPRoute from './routes/OTPRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -55,6 +56,7 @@ const router = createBrowserRouter(
           </RequireGuest>
         }
       />
+      <Route path="auth/otp" element={<OTPRoute />} />
       <Route
         path="reset-password"
         element={

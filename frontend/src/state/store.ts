@@ -60,6 +60,8 @@ export {
   useSignOutMutation,
   useForgotPasswordMutation,
   useResetPasswordMutation,
+  useFetchOTPQuery,
+  useVerifyOTPMutation,
 } from './apis/authsApi';
 export { useSyncUserQuery, useUpdateUserPasswordMutation } from './apis/usersApi';
 export { useFetchHeartBeatQuery, useLazyFetchHeartBeatQuery } from './apis/heartbeatApi';
