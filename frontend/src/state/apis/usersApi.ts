@@ -1,5 +1,11 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { ISyncUserResponse, IUpdateUserPasswordResponse, IUpdateUserPasswordRequest } from '../../interfaces';
+import {
+  ISyncUserResponse,
+  IUpdateUserPasswordResponse,
+  IUpdateUserPasswordRequest,
+  IDeleteUserRequest,
+  IDeleteUserResponse,
+} from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
 const usersApi = createApi({
@@ -7,6 +13,20 @@ const usersApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints(builder) {
     return {
+      deleteUser: builder.mutation<IDeleteUserResponse, IDeleteUserRequest>({
+        query: ({ userId, token, password }) => {
+          return {
+            url: `/users/${userId}/delete`,
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: {
+              password,
+            },
+          };
+        },
+      }),
       updateUserPassword: builder.mutation<IUpdateUserPasswordResponse, IUpdateUserPasswordRequest>({
         query: (payload) => {
           return {
@@ -37,5 +57,5 @@ const usersApi = createApi({
   },
 });
 
-export const { useSyncUserQuery, useUpdateUserPasswordMutation } = usersApi;
+export const { useSyncUserQuery, useUpdateUserPasswordMutation, useDeleteUserMutation } = usersApi;
 export { usersApi };

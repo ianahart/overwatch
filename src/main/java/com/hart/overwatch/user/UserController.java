@@ -6,12 +6,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.user.dto.UserDto;
+import com.hart.overwatch.user.request.DeleteUserRequest;
 import com.hart.overwatch.user.request.UpdateUserPasswordRequest;
+import com.hart.overwatch.user.response.DeleteUserResponse;
 import com.hart.overwatch.user.response.UpdateUserPasswordResponse;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -41,11 +44,21 @@ public class UserController {
     }
 
     @PatchMapping(path = "/{userId}/password")
-    public ResponseEntity<UpdateUserPasswordResponse> updateUserPassword(@PathVariable("userId") Long userId, @RequestBody UpdateUserPasswordRequest request) {
-        this.userService.updateUserPassword(request.getCurrentPassword(), request.getNewPassword(), userId);
+    public ResponseEntity<UpdateUserPasswordResponse> updateUserPassword(
+            @PathVariable("userId") Long userId, @RequestBody UpdateUserPasswordRequest request) {
+        this.userService.updateUserPassword(request.getCurrentPassword(), request.getNewPassword(),
+                userId);
 
         return ResponseEntity.status(HttpStatus.OK).body(new UpdateUserPasswordResponse("success"));
     }
+
+    @PostMapping(path = "/{userId}/delete")
+    public ResponseEntity<DeleteUserResponse> deleteUser(@PathVariable("userId") Long usersId,
+            @RequestBody DeleteUserRequest request) {
+        this.userService.deleteUser(usersId, request.getPassword());
+        return ResponseEntity.status(HttpStatus.OK).body(new DeleteUserResponse("success"));
+    }
+
 }
 
 

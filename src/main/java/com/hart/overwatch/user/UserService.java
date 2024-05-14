@@ -136,6 +136,25 @@ public class UserService {
         System.out.println(currentPassword);
     }
 
+    public void deleteUser(Long userId, String password) {
+        try {
+
+            User user = this.getCurrentlyLoggedInUser();
+
+            if (user.getId() != userId) {
+                throw new ForbiddenException("Cannot delete another user");
+            }
+
+            if (!this.passwordEncoder.matches(password, user.getPassword())) {
+                throw new ForbiddenException("Password is not a match");
+            }
+
+            this.userRepository.delete(user);
+        } catch (ForbiddenException ex) {
+            throw new ForbiddenException(ex.getMessage());
+        }
+        System.out.println(password);
+    }
 
 }
 

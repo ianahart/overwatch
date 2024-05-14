@@ -56,6 +56,11 @@ export interface ISignInForm {
   password: IFormField<string>;
 }
 
+export interface IDeleteAccountForm {
+  email: IFormField<string>;
+  password: IFormField<string>;
+}
+
 export interface IForgotPasswordForm {
   email: IFormField<string>;
 }
@@ -153,6 +158,14 @@ export interface IVerifyOTPRequest {
   userId: number;
   otpCode: string;
 }
+
+export interface IDeleteUserRequest {
+  userId: number;
+  password: string;
+  token: string;
+}
+
+export interface IDeleteUserResponse extends IBaseResponse {}
 
 export interface IVerifyOTPResponse extends ISignInResponse {}
 
