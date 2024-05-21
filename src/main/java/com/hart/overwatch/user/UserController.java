@@ -14,9 +14,12 @@ import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.user.dto.UserDto;
 import com.hart.overwatch.user.request.DeleteUserRequest;
 import com.hart.overwatch.user.request.UpdateUserPasswordRequest;
+import com.hart.overwatch.user.request.UpdateUserRequest;
 import com.hart.overwatch.user.response.DeleteUserResponse;
 import com.hart.overwatch.user.response.UpdateUserPasswordResponse;
+import com.hart.overwatch.user.response.UpdateUserResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/api/v1/users")
@@ -59,6 +62,12 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(new DeleteUserResponse("success"));
     }
 
+    @PatchMapping(path = "/{userId}")
+    public ResponseEntity<UpdateUserResponse> updateUser(
+            @Valid @RequestBody UpdateUserRequest request, @PathVariable("userId") Long userId) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new UpdateUserResponse("success", this.userService.updateUser(request, userId)));
+    }
 }
 
 

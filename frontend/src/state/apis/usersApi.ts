@@ -5,6 +5,8 @@ import {
   IUpdateUserPasswordRequest,
   IDeleteUserRequest,
   IDeleteUserResponse,
+  IUpdateUserResponse,
+  IUpdateUserRequest,
 } from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
@@ -23,6 +25,22 @@ const usersApi = createApi({
             },
             body: {
               password,
+            },
+          };
+        },
+      }),
+      updateUser: builder.mutation<IUpdateUserResponse, IUpdateUserRequest>({
+        query: ({ form, token, userId }) => {
+          return {
+            url: `/users/${userId}`,
+            method: 'PATCH',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: {
+              firstName: form.firstName.value,
+              lastName: form.lastName.value,
+              email: form.email.value,
             },
           };
         },
@@ -57,5 +75,6 @@ const usersApi = createApi({
   },
 });
 
-export const { useSyncUserQuery, useUpdateUserPasswordMutation, useDeleteUserMutation } = usersApi;
+export const { useSyncUserQuery, useUpdateUserPasswordMutation, useDeleteUserMutation, useUpdateUserMutation } =
+  usersApi;
 export { usersApi };

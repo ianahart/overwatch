@@ -42,6 +42,12 @@ export interface IFormField<T> {
   type: string;
 }
 
+export interface IAccountForm {
+  firstName: IFormField<string>;
+  lastName: IFormField<string>;
+  email: IFormField<string>;
+}
+
 export interface ISignUpForm {
   firstName: IFormField<string>;
   lastName: IFormField<string>;
@@ -107,6 +113,22 @@ export interface IUpdateUserPasswordRequest {
   form: IChangePasswordForm;
   userId: number;
   token: string;
+}
+
+export interface IUpdateUserRequest {
+  form: IAccountForm;
+  userId: number;
+  token: string;
+}
+
+export interface IUpdateUserResponse {
+  message: string;
+  data: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    abbreviation: string;
+  };
 }
 
 export interface IUpdateSettingsMFARequest {

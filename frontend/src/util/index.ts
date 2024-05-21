@@ -12,3 +12,13 @@ export const retrieveTokens = () => {
 export const authHeaders = () => {
   return { Authorization: `Bearer ${retrieveTokens().token}` };
 };
+
+export const maskEmail = (email: string) => {
+  let mask = '';
+  const symIndex = email.split('').findIndex((v) => v === '@');
+
+  email.split('').forEach((letter, index) => {
+    mask += index === 0 || index > symIndex ? letter : '*';
+  });
+  return mask;
+};

@@ -7,8 +7,12 @@ import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.token.TokenService;
+import com.hart.overwatch.user.dto.UpdateUserDto;
 import com.hart.overwatch.user.dto.UserDto;
+import com.hart.overwatch.user.request.UpdateUserRequest;
 import com.hart.overwatch.util.MyUtil;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
@@ -21,6 +25,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.validation.ConstraintViolationException;
 
 @Service
 public class UserService {
@@ -156,5 +161,31 @@ public class UserService {
         System.out.println(password);
     }
 
+    public UpdateUserDto updateUser(UpdateUserRequest request, Long userId) {
+        try {
+            User user = getCurrentlyLoggedInUser();
+
+            if (user.getId() != userId) {
+                throw new ForbiddenException("Cannot update another user's information");
+            }
+
+
+
+            user.setFirstName(
+                    Jsoup.clean(MyUtil.capitalize(request.getFirstName()), Safelist.none()));
+            user.setLastName(Jsoup.clean(MyUtil.capitalize(request.getLastName()), Safelist.none()));
+            user.setEmail(Jsoup.clean(request.getEmail(), Safelist.none()));
+
+            this.userRepository.save(user);
+
+            return new UpdateUserDto(user.getFirstName(), user.getLastName(), user.getEmail(),
+                    user.getAbbreviation());
+
+
+        } catch (ConstraintViolationException ex) {
+            return null;
+
+        }
+    }
 }
 
