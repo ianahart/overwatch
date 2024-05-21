@@ -1,5 +1,7 @@
+import ContactInfo from '../../components/Settings/ContactInfo';
+
 const ContactInfoRoute = () => {
-  return <div>Contact Info Route</div>;
+  return <ContactInfo />;
 };
 
 export default ContactInfoRoute;
