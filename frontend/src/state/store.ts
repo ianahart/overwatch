@@ -10,6 +10,7 @@ import { settingsApi } from './apis/settingsApi';
 import { usersApi } from './apis/usersApi';
 import { heartbeatApi } from './apis/heartbeatApi';
 import { phonesApi } from './apis/phonesApi';
+import { locationsApi } from './apis/locationsApi';
 
 export const store = configureStore({
   reducer: {
@@ -23,6 +24,7 @@ export const store = configureStore({
     [heartbeatApi.reducerPath]: heartbeatApi.reducer,
     [settingsApi.reducerPath]: settingsApi.reducer,
     [phonesApi.reducerPath]: phonesApi.reducer,
+    [locationsApi.reducerPath]: locationsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware()
@@ -30,7 +32,8 @@ export const store = configureStore({
       .concat(usersApi.middleware)
       .concat(heartbeatApi.middleware)
       .concat(settingsApi.middleware)
-      .concat(phonesApi.middleware);
+      .concat(phonesApi.middleware)
+      .concat(locationsApi.middleware);
   },
 });
 
@@ -72,4 +75,5 @@ export {
 export { useFetchHeartBeatQuery, useLazyFetchHeartBeatQuery } from './apis/heartbeatApi';
 export { useUpdateSettingsMFAMutation, useFetchSettingsQuery } from './apis/settingsApi';
 export { useCreatePhoneMutation, useFetchPhoneQuery, useDeletePhoneMutation } from './apis/phonesApi';
-export { authsApi, heartbeatApi, settingsApi, phonesApi };
+export { useLazyFetchLocationsQuery } from './apis/locationsApi';
+export { authsApi, heartbeatApi, settingsApi, phonesApi, locationsApi };
