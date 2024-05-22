@@ -48,6 +48,16 @@ export interface IAccountForm {
   email: IFormField<string>;
 }
 
+export interface ILocationForm {
+  address: IFormField<string>;
+  addressTwo: IFormField<string>;
+  city: IFormField<string>;
+  country: IFormField<string>;
+  phoneNumber: IFormField<string>;
+  state: IFormField<string>;
+  zipCode: IFormField<string>;
+}
+
 export interface ISignUpForm {
   firstName: IFormField<string>;
   lastName: IFormField<string>;

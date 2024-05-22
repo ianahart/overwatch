@@ -4,9 +4,10 @@ package com.hart.overwatch.user;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.hart.overwatch.location.Location;
 import com.hart.overwatch.passwordreset.PasswordReset;
 import com.hart.overwatch.phone.Phone;
 import com.hart.overwatch.profile.Profile;
@@ -108,6 +109,11 @@ public class User implements UserDetails {
     @JoinColumn(name = "profile_id", referencedColumnName = "id")
     private Profile profile;
 
+    @JsonIgnore
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Location location;
+
+
 
     public User() {
 
@@ -148,6 +154,9 @@ public class User implements UserDetails {
         return (firstName + lastName).toLowerCase();
     }
 
+    public Location getLocation() {
+        return location;
+    }
 
     public Long getId() {
         return id;
@@ -211,6 +220,9 @@ public class User implements UserDetails {
         this.id = id;
     }
 
+    public void setLocation(Location location) {
+        this.location = location;
+    }
 
 
     public void setRole(Role role) {
