@@ -19,6 +19,18 @@ export interface ISetting {
   createdAt: string;
 }
 
+export interface ILocationAddressResult {
+  formatted: string;
+  place_id: string;
+  city: string;
+  country: string;
+  county: string;
+  state: string;
+  street: string;
+  housenumber: string;
+  zipCode: string;
+}
+
 export interface IUser {
   abbreviation: string;
   avatarUrl: string;
@@ -149,6 +161,16 @@ export interface IUpdateSettingsMFARequest {
 
 export interface IUpdateSettingsMFAResponse extends IBaseResponse {
   mfaEnabled: boolean;
+}
+
+export interface IFetchLocationsResponse {
+  message: string;
+  data: string;
+}
+
+export interface IFetchLocationsRequest {
+  token: string;
+  text: string;
 }
 
 export interface IFetchSettingsRequest {

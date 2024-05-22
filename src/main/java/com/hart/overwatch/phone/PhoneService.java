@@ -4,7 +4,7 @@ package com.hart.overwatch.phone;
 import com.twilio.Twilio;
 import com.twilio.rest.verify.v2.service.Verification;
 import com.twilio.rest.verify.v2.service.VerificationCheck;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -34,6 +34,7 @@ public class PhoneService {
     private final UserService userService;
 
 
+    @Autowired
     public PhoneService(PhoneRepository phoneRepository, UserService userService) {
         this.phoneRepository = phoneRepository;
         this.userService = userService;

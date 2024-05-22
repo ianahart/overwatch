@@ -1,5 +1,6 @@
 package com.hart.overwatch.setting;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.advice.NotFoundException;
@@ -15,6 +16,7 @@ public class SettingService {
     private final SettingRepository settingRepository;
     private final UserService userService;
 
+    @Autowired
     public SettingService(SettingRepository settingRepository, UserService userService) {
         this.settingRepository = settingRepository;
         this.userService = userService;

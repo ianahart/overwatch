@@ -1,12 +1,16 @@
 import { AiOutlineHome } from 'react-icons/ai';
 import { FaRegBuilding } from 'react-icons/fa';
 import { CiMapPin } from 'react-icons/ci';
+import { debounce } from 'lodash';
+import { useCallback, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
-import { ILocationForm } from '../../../interfaces';
+import { ILocationAddressResult, ILocationForm } from '../../../interfaces';
 import FormInputField from '../../Form/FormInputField';
 import FormSelect from '../../Form/FormSelect';
 import { countries } from '../../../data';
 import LocationPhoneInput from './LocationPhoneInput';
+import { TRootState, useLazyFetchLocationsQuery } from '../../../state/store';
 
 export interface ILocationFormProps {
   form: ILocationForm;
@@ -15,8 +19,63 @@ export interface ILocationFormProps {
 }
 
 const LocationForm = ({ form, handleUpdateField, closeForm }: ILocationFormProps) => {
+  const [fullAddress, setFullAddress] = useState('');
+  const { token } = useSelector((store: TRootState) => store.user);
+  const [fetchLocationsTrigger, { data }] = useLazyFetchLocationsQuery();
+  const [addressResults, setAddressResults] = useState<ILocationAddressResult[]>([]);
+  const [isDropdownOpen, setIsDropDownOpen] = useState(false);
+
   const updateField = (name: string, value: string) => {
     handleUpdateField(name, value, 'value');
+  };
+
+  const saveLocationAddressResults = (data: any) => {
+    setAddressResults([]);
+    for (const { properties } of data) {
+      const { formatted, place_id, city, country, county, state, street, housenumber, postcode } = properties;
+      const newAddress = { formatted, place_id, city, country, county, state, street, housenumber, zipCode: postcode };
+      setAddressResults((prevState) => [...prevState, newAddress]);
+    }
+    setIsDropDownOpen(true);
+  };
+
+  useEffect(() => {
+    if (data !== undefined && data.data !== null) {
+      saveLocationAddressResults(JSON.parse(data?.data));
+    }
+  }, [data]);
+
+  const debouncedHandleChange = useCallback(
+    debounce((nextValue) => {
+      fetchLocationsTrigger({ token, text: nextValue });
+    }, 300),
+    []
+  );
+
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const nextValue = e.target.value;
+    setFullAddress(nextValue);
+    debouncedHandleChange(nextValue);
+  };
+
+  const handleOnKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace' && fullAddress.length <= 0) {
+      setIsDropDownOpen(false);
+    }
+  };
+
+  const populateForm = (data: ILocationAddressResult) => {
+    for (const [key, val] of Object.entries(data)) {
+      console.log(key, val);
+      if (key === 'housenumber') {
+        handleUpdateField('address', `${val} ${data.street}`, 'value');
+      } else {
+        handleUpdateField(key, val, 'value');
+      }
+    }
+
+    setIsDropDownOpen(false);
+    setFullAddress('');
   };
 
   return (
@@ -28,6 +87,32 @@ const LocationForm = ({ form, handleUpdateField, closeForm }: ILocationFormProps
         <p className="text-gray-400 font-bold px-4">
           We take privacy seriously. Only your city, state, and country will be shared with clients.
         </p>
+        <div className="my-4 px-4 relative">
+          <input
+            onKeyDown={handleOnKeydown}
+            value={fullAddress}
+            onChange={handleOnChange}
+            className="h-9 rounded bg-transparent border border-gray-800 w-full placeholder:pl-2 pl-2 shadow"
+            placeholder="Start typing your address"
+          />
+          {isDropdownOpen && (
+            <div className="absolute top-10 w-full bg-stone-950 left-0 z-10 px-4">
+              <ul>
+                {addressResults.map((result) => {
+                  return (
+                    <li
+                      onClick={() => populateForm(result)}
+                      className="my-2 cursor-pointer hover:bg-stone-900"
+                      key={result.place_id}
+                    >
+                      {result.formatted}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
+        </div>
       </div>
       <div className="my-4 lg:flex lg:items-center">
         <div className="lg:w-[55%] lg:my-4 my-4 px-4">
