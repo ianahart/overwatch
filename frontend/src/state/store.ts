@@ -75,5 +75,9 @@ export {
 export { useFetchHeartBeatQuery, useLazyFetchHeartBeatQuery } from './apis/heartbeatApi';
 export { useUpdateSettingsMFAMutation, useFetchSettingsQuery } from './apis/settingsApi';
 export { useCreatePhoneMutation, useFetchPhoneQuery, useDeletePhoneMutation } from './apis/phonesApi';
-export { useLazyFetchLocationsQuery } from './apis/locationsApi';
+export {
+  useLazyFetchLocationsQuery,
+  useCreateLocationMutation,
+  useFetchSingleLocationQuery,
+} from './apis/locationsApi';
 export { authsApi, heartbeatApi, settingsApi, phonesApi, locationsApi };

@@ -31,6 +31,16 @@ export interface ILocationAddressResult {
   zipCode: string;
 }
 
+export interface ILocation {
+  address: string;
+  addressTwo: string;
+  city: string;
+  country: string;
+  state: string;
+  zipCode: string;
+  phoneNumber: string;
+}
+
 export interface IUser {
   abbreviation: string;
   avatarUrl: string;
@@ -117,6 +127,26 @@ export interface ISignInResponse {
   refreshToken: string;
   user: IUser;
   userId?: number;
+}
+
+export interface IFetchSingleLocationResponse {
+  message: string;
+  data: ILocation;
+}
+
+export interface IFetchSingleLocationRequest {
+  userId: number;
+  token: string;
+}
+
+export interface ICreateLocationResponse {
+  message: string;
+}
+
+export interface ICreateLocationRequest {
+  token: string;
+  userId: number;
+  form: ILocationForm;
 }
 
 export interface IRefreshTokenResponse {
