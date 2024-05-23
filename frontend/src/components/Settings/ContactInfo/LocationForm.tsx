@@ -13,12 +13,14 @@ import LocationPhoneInput from './LocationPhoneInput';
 import { TRootState, useLazyFetchLocationsQuery } from '../../../state/store';
 
 export interface ILocationFormProps {
+  error: string;
   form: ILocationForm;
   handleUpdateField: (name: string, value: string, attribute: string) => void;
   closeForm: () => void;
+  handleOnSubmit: () => void;
 }
 
-const LocationForm = ({ form, handleUpdateField, closeForm }: ILocationFormProps) => {
+const LocationForm = ({ error, form, handleUpdateField, closeForm, handleOnSubmit }: ILocationFormProps) => {
   const [fullAddress, setFullAddress] = useState('');
   const { token } = useSelector((store: TRootState) => store.user);
   const [fetchLocationsTrigger, { data }] = useLazyFetchLocationsQuery();
@@ -66,10 +68,9 @@ const LocationForm = ({ form, handleUpdateField, closeForm }: ILocationFormProps
 
   const populateForm = (data: ILocationAddressResult) => {
     for (const [key, val] of Object.entries(data)) {
-      console.log(key, val);
       if (key === 'housenumber') {
         handleUpdateField('address', `${val} ${data.street}`, 'value');
-      } else {
+      } else if (Object.keys(form).includes(key)) {
         handleUpdateField(key, val, 'value');
       }
     }
@@ -78,8 +79,18 @@ const LocationForm = ({ form, handleUpdateField, closeForm }: ILocationFormProps
     setFullAddress('');
   };
 
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    handleOnSubmit();
+  };
+
   return (
-    <form>
+    <form onSubmit={onSubmit}>
+      {error.length > 0 && (
+        <div className="my-4 flex justify-center">
+          <p className="text-red-400 text-sm">{error}</p>
+        </div>
+      )}
       <div className="my-4">
         <FormSelect updateField={updateField} country={form.country.value} data={countries} />
       </div>
