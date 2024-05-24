@@ -64,6 +64,13 @@ export interface IFormField<T> {
   type: string;
 }
 
+export interface IBasicInfoForm {
+  fullName: IFormField<string>;
+  userName: IFormField<string>;
+  email: IFormField<string>;
+  contactNumber: IFormField<string>;
+}
+
 export interface IAccountForm {
   firstName: IFormField<string>;
   lastName: IFormField<string>;

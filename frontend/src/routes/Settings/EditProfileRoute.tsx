@@ -1,5 +1,7 @@
+import EditProfile from '../../components/Settings/EditProfile';
+
 const EditProfileRoute = () => {
-  return <div>Edit profile route</div>;
+  return <EditProfile />;
 };
 
 export default EditProfileRoute;
