@@ -200,7 +200,7 @@ const LocationForm = ({ error, form, handleUpdateField, closeForm, handleOnSubmi
         />
       </div>
       <div className="my-4">
-        <LocationPhoneInput value={form.phoneNumber.value} updateField={updateField} />
+        <LocationPhoneInput name={form.phoneNumber.name} value={form.phoneNumber.value} updateField={updateField} />
       </div>
       <div className="flex items-center my-4">
         <button className="btn mx-4">Update</button>

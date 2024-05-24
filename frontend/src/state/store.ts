@@ -5,6 +5,7 @@ import { signUpReducer, updateSignUpField, updateRole, clearSignUpForm } from '.
 import { updateSignInField, clearSignInForm, signInReducer } from './slices/signinSlice';
 import { userReducer, updateUser, updateTokens, clearUser, updateUserAndTokens } from './slices/userSlice';
 import { settingReducer, updateSetting, clearSetting } from './slices/settingSlice';
+import { updateBasicInfoFormField, clearBasicInfoForm, basicInfoFormReducer } from './slices/basicInfoFormSlice';
 import { authsApi } from './apis/authsApi';
 import { settingsApi } from './apis/settingsApi';
 import { usersApi } from './apis/usersApi';
@@ -14,6 +15,7 @@ import { locationsApi } from './apis/locationsApi';
 
 export const store = configureStore({
   reducer: {
+    basicInfo: basicInfoFormReducer,
     setting: settingReducer,
     navbar: navbarReducer,
     signup: signUpReducer,
@@ -56,6 +58,8 @@ export {
   updateUserAndTokens,
   updateSetting,
   clearSetting,
+  clearBasicInfoForm,
+  updateBasicInfoFormField,
 };
 export {
   useSignUpMutation,
