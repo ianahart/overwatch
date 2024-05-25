@@ -64,6 +64,12 @@ export interface IFormField<T> {
   type: string;
 }
 
+export interface IProfileSetupForm {
+  avatar: IFormField<File | null | string>;
+  tagLine: IFormField<string>;
+  bio: IFormField<string>;
+}
+
 export interface IBasicInfoForm {
   fullName: IFormField<string>;
   userName: IFormField<string>;
@@ -255,6 +261,28 @@ export interface IDeleteUserRequest {
   password: string;
   token: string;
 }
+
+export interface ICreateAvatarResponse {
+  message: string;
+  data: {
+    avatarUrl: string;
+  };
+}
+
+export interface ICreateAvatarRequest {
+  token: string;
+  profileId: number;
+  formData: FormData;
+}
+
+export interface IRemoveAvatarRequest {
+  token: string;
+  profileId: number;
+  avatarUrl: null;
+  avatarFilename: null;
+}
+
+export interface IRemoveAvatarResponse extends IBaseResponse {}
 
 export interface IDeleteUserResponse extends IBaseResponse {}
 

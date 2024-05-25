@@ -1,5 +1,6 @@
 import { Draft, PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { IBasicInfoForm, IFormField } from '../../interfaces';
+import { clearUser } from '../store';
 
 interface IBasicInfoFormState extends IBasicInfoForm {}
 
@@ -25,6 +26,11 @@ const basicInfoFormSlice = createSlice({
     clearBasicInfoForm: () => {
       return initialState;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(clearUser, () => {
+      return initialState;
+    });
   },
 });
 

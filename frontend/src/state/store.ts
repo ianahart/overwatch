@@ -6,15 +6,18 @@ import { updateSignInField, clearSignInForm, signInReducer } from './slices/sign
 import { userReducer, updateUser, updateTokens, clearUser, updateUserAndTokens } from './slices/userSlice';
 import { settingReducer, updateSetting, clearSetting } from './slices/settingSlice';
 import { updateBasicInfoFormField, clearBasicInfoForm, basicInfoFormReducer } from './slices/basicInfoFormSlice';
+import { clearProfileSetupForm, updateAvatar, profileSetupFormReducer } from './slices/profileSetupFormSlice';
 import { authsApi } from './apis/authsApi';
 import { settingsApi } from './apis/settingsApi';
 import { usersApi } from './apis/usersApi';
 import { heartbeatApi } from './apis/heartbeatApi';
 import { phonesApi } from './apis/phonesApi';
 import { locationsApi } from './apis/locationsApi';
+import { profilesApi } from './apis/profilesApi';
 
 export const store = configureStore({
   reducer: {
+    profileSetup: profileSetupFormReducer,
     basicInfo: basicInfoFormReducer,
     setting: settingReducer,
     navbar: navbarReducer,
@@ -27,15 +30,22 @@ export const store = configureStore({
     [settingsApi.reducerPath]: settingsApi.reducer,
     [phonesApi.reducerPath]: phonesApi.reducer,
     [locationsApi.reducerPath]: locationsApi.reducer,
+    [profilesApi.reducerPath]: profilesApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
-    return getDefaultMiddleware()
+    return getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ['profileSetup/updateAvatar'],
+        ignoredPaths: ['profileSetup.avatar.value'],
+      },
+    })
       .concat(authsApi.middleware)
       .concat(usersApi.middleware)
       .concat(heartbeatApi.middleware)
       .concat(settingsApi.middleware)
       .concat(phonesApi.middleware)
-      .concat(locationsApi.middleware);
+      .concat(locationsApi.middleware)
+      .concat(profilesApi.middleware);
   },
 });
 
@@ -60,6 +70,8 @@ export {
   clearSetting,
   clearBasicInfoForm,
   updateBasicInfoFormField,
+  updateAvatar,
+  clearProfileSetupForm,
 };
 export {
   useSignUpMutation,
@@ -76,6 +88,7 @@ export {
   useUpdateUserPasswordMutation,
   useDeleteUserMutation,
 } from './apis/usersApi';
+export { useCreateAvatarMutation, useRemoveAvatarMutation } from './apis/profilesApi';
 export { useFetchHeartBeatQuery, useLazyFetchHeartBeatQuery } from './apis/heartbeatApi';
 export { useUpdateSettingsMFAMutation, useFetchSettingsQuery } from './apis/settingsApi';
 export { useCreatePhoneMutation, useFetchPhoneQuery, useDeletePhoneMutation } from './apis/phonesApi';
@@ -84,4 +97,4 @@ export {
   useCreateLocationMutation,
   useFetchSingleLocationQuery,
 } from './apis/locationsApi';
-export { authsApi, heartbeatApi, settingsApi, phonesApi, locationsApi };
+export { authsApi, heartbeatApi, settingsApi, phonesApi, locationsApi, profilesApi };

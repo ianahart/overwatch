@@ -1,5 +1,13 @@
+import Header from '../Header';
+import AvatarUpload from './AvatarUpload';
+
 const ProfileSetup = () => {
-  return <div>Profile Setup</div>;
+  return (
+    <>
+      <Header heading="Profile Setup" />
+      <AvatarUpload />
+    </>
+  );
 };
 
 export default ProfileSetup;
