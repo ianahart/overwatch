@@ -19,6 +19,17 @@ export interface ISetting {
   createdAt: string;
 }
 
+export interface ISkillsFormField {
+  name: string;
+  id: string;
+}
+
+export interface ILanguage extends ISkillsFormField {}
+
+export interface IProgrammingLanguage extends ISkillsFormField {}
+
+export interface IQualification extends ISkillsFormField {}
+
 export interface ILocationAddressResult {
   formatted: string;
   place_id: string;
