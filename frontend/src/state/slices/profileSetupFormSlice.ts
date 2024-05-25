@@ -1,5 +1,5 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { IProfileSetupForm } from '../../interfaces';
+import { Draft, PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { IFormField, IProfileSetupForm } from '../../interfaces';
 import { clearUser } from '../store';
 
 interface IProfileSetupFormState extends IProfileSetupForm {}
@@ -14,6 +14,14 @@ const profileSetupFormSlice = createSlice({
   name: 'profileSetup',
   initialState,
   reducers: {
+    updateProfileSetupFormField: <T extends string>(
+      state: Draft<IProfileSetupFormState>,
+      action: PayloadAction<{ name: string; value: T; attribute: keyof IFormField<T> }>
+    ) => {
+      const { name, value, attribute } = action.payload;
+      state[name as keyof IProfileSetupForm][attribute as keyof IFormField<T>] = value;
+    },
+
     updateAvatar: (state, action: PayloadAction<File | null | string>) => {
       state.avatar.value = action.payload;
     },
@@ -28,6 +36,6 @@ const profileSetupFormSlice = createSlice({
   },
 });
 
-export const { clearProfileSetupForm, updateAvatar } = profileSetupFormSlice.actions;
+export const { clearProfileSetupForm, updateAvatar, updateProfileSetupFormField } = profileSetupFormSlice.actions;
 
 export const profileSetupFormReducer = profileSetupFormSlice.reducer;

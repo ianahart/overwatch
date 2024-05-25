@@ -6,7 +6,12 @@ import { updateSignInField, clearSignInForm, signInReducer } from './slices/sign
 import { userReducer, updateUser, updateTokens, clearUser, updateUserAndTokens } from './slices/userSlice';
 import { settingReducer, updateSetting, clearSetting } from './slices/settingSlice';
 import { updateBasicInfoFormField, clearBasicInfoForm, basicInfoFormReducer } from './slices/basicInfoFormSlice';
-import { clearProfileSetupForm, updateAvatar, profileSetupFormReducer } from './slices/profileSetupFormSlice';
+import {
+  updateProfileSetupFormField,
+  clearProfileSetupForm,
+  updateAvatar,
+  profileSetupFormReducer,
+} from './slices/profileSetupFormSlice';
 import { authsApi } from './apis/authsApi';
 import { settingsApi } from './apis/settingsApi';
 import { usersApi } from './apis/usersApi';
@@ -72,6 +77,7 @@ export {
   updateBasicInfoFormField,
   updateAvatar,
   clearProfileSetupForm,
+  updateProfileSetupFormField,
 };
 export {
   useSignUpMutation,
