@@ -6,6 +6,7 @@ import { updateSignInField, clearSignInForm, signInReducer } from './slices/sign
 import { userReducer, updateUser, updateTokens, clearUser, updateUserAndTokens } from './slices/userSlice';
 import { settingReducer, updateSetting, clearSetting } from './slices/settingSlice';
 import { updateBasicInfoFormField, clearBasicInfoForm, basicInfoFormReducer } from './slices/basicInfoFormSlice';
+import { removeFromList, clearSkills, skillsFormReducer, addToList } from './slices/skillsFormSlice';
 import {
   updateProfileSetupFormField,
   clearProfileSetupForm,
@@ -22,6 +23,7 @@ import { profilesApi } from './apis/profilesApi';
 
 export const store = configureStore({
   reducer: {
+    skills: skillsFormReducer,
     profileSetup: profileSetupFormReducer,
     basicInfo: basicInfoFormReducer,
     setting: settingReducer,
@@ -78,6 +80,9 @@ export {
   updateAvatar,
   clearProfileSetupForm,
   updateProfileSetupFormField,
+  clearSkills,
+  addToList,
+  removeFromList,
 };
 export {
   useSignUpMutation,

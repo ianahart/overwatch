@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import BasicInfo from './BasicInfo';
 import ProfileSetup from './ProfileSetup';
+import Skills from './Skills';
 
 const EditProfileForm = () => {
   const [formStep, setFormStep] = useState(0);
@@ -11,6 +12,8 @@ const EditProfileForm = () => {
         return <BasicInfo />;
       case 1:
         return <ProfileSetup />;
+      case 2:
+        return <Skills />;
       default:
         return <BasicInfo />;
     }
