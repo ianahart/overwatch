@@ -1,9 +1,10 @@
 package com.hart.overwatch.profile;
 
 import java.sql.Timestamp;
-
+import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hart.overwatch.user.User;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -16,6 +17,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+
+import org.hibernate.annotations.Type;
+
+
 
 @Entity
 @Table(name = "profile")
@@ -41,6 +46,10 @@ public class Profile {
 
     @Column(name = "avatar_url", length = 400)
     private String avatarUrl;
+
+    @Type(JsonType.class)
+    @Column(name = "work_exp", columnDefinition = "jsonb")
+    private Map<String, String> workExp;
 
 
     @JsonIgnore

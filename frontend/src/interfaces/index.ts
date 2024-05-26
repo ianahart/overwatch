@@ -1,5 +1,11 @@
 import { Role } from '../enums';
 
+export interface IWorkExperience {
+  id: string;
+  title: string;
+  desc: string;
+}
+
 export interface ITokens {
   token: string;
   refreshToken: string;
