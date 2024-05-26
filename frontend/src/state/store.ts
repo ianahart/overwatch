@@ -8,6 +8,15 @@ import { settingReducer, updateSetting, clearSetting } from './slices/settingSli
 import { updateBasicInfoFormField, clearBasicInfoForm, basicInfoFormReducer } from './slices/basicInfoFormSlice';
 import { removeFromList, clearSkills, skillsFormReducer, addToList } from './slices/skillsFormSlice';
 import {
+  removePackageDesc,
+  removePackageItem,
+  updatePackageItem,
+  addPackageItem,
+  updatePackageDesc,
+  clearPackageForm,
+  packageFormReducer,
+} from './slices/packageFormSlice';
+import {
   removeWorkExpFromList,
   addWorkExpToList,
   clearWorkExpForm,
@@ -29,6 +38,7 @@ import { profilesApi } from './apis/profilesApi';
 
 export const store = configureStore({
   reducer: {
+    package: packageFormReducer,
     workExp: workExpFormReducer,
     skills: skillsFormReducer,
     profileSetup: profileSetupFormReducer,
@@ -93,6 +103,12 @@ export {
   clearWorkExpForm,
   addWorkExpToList,
   removeWorkExpFromList,
+  clearPackageForm,
+  updatePackageDesc,
+  addPackageItem,
+  updatePackageItem,
+  removePackageItem,
+  removePackageDesc,
 };
 export {
   useSignUpMutation,

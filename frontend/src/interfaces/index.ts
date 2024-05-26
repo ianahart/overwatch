@@ -1,5 +1,17 @@
 import { Role } from '../enums';
 
+export interface IPackageItem {
+  [key: string]: string | number;
+  id: string;
+  name: string;
+  isEditing: number;
+}
+
+export interface IPackage {
+  description: string;
+  items: IPackageItem[];
+}
+
 export interface IWorkExperience {
   id: string;
   title: string;
