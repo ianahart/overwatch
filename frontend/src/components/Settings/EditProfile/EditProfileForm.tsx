@@ -3,6 +3,7 @@ import BasicInfo from './BasicInfo';
 import ProfileSetup from './ProfileSetup';
 import Skills from './Skills';
 import WorkExperience from './WorkExperience';
+import Packages from './Packages';
 
 const EditProfileForm = () => {
   const [formStep, setFormStep] = useState(0);
@@ -17,6 +18,8 @@ const EditProfileForm = () => {
         return <Skills />;
       case 3:
         return <WorkExperience />;
+      case 4:
+        return <Packages />;
       default:
         return <BasicInfo />;
     }
