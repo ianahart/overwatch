@@ -18,7 +18,7 @@ const basicInfoFormSlice = createSlice({
     updateBasicInfo: (state, action: PayloadAction<IBasicInfoResponse>) => {
       const { payload } = action;
       for (let prop in payload) {
-        state[prop as keyof IBasicInfoFormState].value = payload[prop as keyof IBasicInfoResponse];
+        state[prop as keyof IBasicInfoFormState].value = payload[prop as keyof IBasicInfoResponse] ?? '';
       }
     },
 

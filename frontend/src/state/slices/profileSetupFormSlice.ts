@@ -17,7 +17,7 @@ const profileSetupFormSlice = createSlice({
     updateProfileSetup: (state, action: PayloadAction<IProfileSetupResponse>) => {
       const { payload } = action;
       for (let prop in payload) {
-        state[prop as keyof IProfileSetupFormState].value = payload[prop as keyof IProfileSetupResponse];
+        state[prop as keyof IProfileSetupFormState].value = payload[prop as keyof IProfileSetupResponse] ?? '';
       }
     },
     updateProfileSetupFormField: <T extends string>(

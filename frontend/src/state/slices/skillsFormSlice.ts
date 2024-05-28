@@ -20,9 +20,9 @@ const skillsFormSlice = createSlice({
   reducers: {
     updateSkills: (state, action: PayloadAction<ISkillsResponse>) => {
       const { languages, programmingLanguages, qualifications } = action.payload;
-      state.languages = languages;
-      state.programmingLanguages = programmingLanguages;
-      state.qualifications = qualifications;
+      state.languages = languages || [];
+      state.programmingLanguages = programmingLanguages || [];
+      state.qualifications = qualifications || [];
     },
 
     addToList: (state, action: PayloadAction<{ listName: string; value: string }>) => {

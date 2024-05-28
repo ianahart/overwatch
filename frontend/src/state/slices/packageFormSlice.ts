@@ -29,9 +29,9 @@ const packageFormSlice = createSlice({
   reducers: {
     updatePackages: (state, action: PayloadAction<IPckgResponse>) => {
       const { basic, standard, pro } = action.payload;
-      state.basic = basic;
-      state.standard = standard;
-      state.pro = pro;
+      state.basic = basic || { description: '', items: [] };
+      state.standard = standard || { description: '', items: [] };
+      state.pro = pro || { description: '', items: [] };
     },
     addPackageItem: (state, action: PayloadAction<{ name: string; value: string }>) => {
       const { name, value } = action.payload;

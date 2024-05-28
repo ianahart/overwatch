@@ -32,8 +32,8 @@ const additionalInfoFormSlice = createSlice({
   reducers: {
     updateAdditionalInfo: (state, action: PayloadAction<IAdditionalInfoResponse>) => {
       const { moreInfo, availability } = action.payload;
-      state.moreInfo = moreInfo;
-      state.availability = availability;
+      state.moreInfo = moreInfo || '';
+      state.availability = availability || initialState.availability;
     },
     addTimeSlot: (state, action: PayloadAction<ITime>) => {
       const { day, startTime, endTime } = action.payload;

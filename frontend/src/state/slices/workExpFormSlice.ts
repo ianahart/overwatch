@@ -15,7 +15,7 @@ const workExpFormSlice = createSlice({
   initialState,
   reducers: {
     updateWorkExp: (state, action: PayloadAction<IWorkExpResponse>) => {
-      state.workExps = action.payload.workExps;
+      state.workExps = action.payload.workExps || [];
     },
     addWorkExpToList: (state, action: PayloadAction<{ title: string; desc: string }>) => {
       const { title, desc } = action.payload;
