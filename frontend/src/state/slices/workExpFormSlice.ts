@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice, nanoid } from '@reduxjs/toolkit';
 import { clearUser } from '../store';
-import { IWorkExperience } from '../../interfaces';
+import { IWorkExpResponse, IWorkExperience } from '../../interfaces';
 
 interface IWorkExperienceState {
   workExps: IWorkExperience[];
@@ -14,6 +14,9 @@ const workExpFormSlice = createSlice({
   name: 'workExp',
   initialState,
   reducers: {
+    updateWorkExp: (state, action: PayloadAction<IWorkExpResponse>) => {
+      state.workExps = action.payload.workExps || [];
+    },
     addWorkExpToList: (state, action: PayloadAction<{ title: string; desc: string }>) => {
       const { title, desc } = action.payload;
       state.workExps.push({ id: nanoid(), title, desc });
@@ -34,6 +37,6 @@ const workExpFormSlice = createSlice({
   },
 });
 
-export const { clearWorkExpForm, addWorkExpToList, removeWorkExpFromList } = workExpFormSlice.actions;
+export const { updateWorkExp, clearWorkExpForm, addWorkExpToList, removeWorkExpFromList } = workExpFormSlice.actions;
 
 export const workExpFormReducer = workExpFormSlice.reducer;

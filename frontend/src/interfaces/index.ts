@@ -1,5 +1,16 @@
 import { Role } from '../enums';
 
+export interface ITimeSlot {
+  startTime: string;
+  endTime: string;
+  id: string;
+}
+
+export interface IDayAvailability {
+  day: string;
+  slots: ITimeSlot[];
+}
+
 export interface IPackageItem {
   [key: string]: string | number;
   id: string;
@@ -310,6 +321,65 @@ export interface IRemoveAvatarRequest {
   avatarUrl: null;
   avatarFilename: null;
 }
+
+export interface IUpdateProfileRequest<T> {
+  token: string;
+  profileId: number;
+  formData: T;
+}
+
+export interface IFetchProfileRequest {
+  token: string;
+  profileId: number;
+}
+
+export interface IBasicInfoResponse {
+  fullName: string;
+  userName: string;
+  email: string;
+  contactNumber: string;
+}
+
+export interface IAdditionalInfoResponse {
+  availability: IDayAvailability[];
+  moreInfo: string;
+}
+
+export interface IPckgResponse {
+  basic: IPackage;
+  standard: IPackage;
+  pro: IPackage;
+}
+
+export interface IProfileSetupResponse {
+  avatar: string;
+  tagLine: string;
+  bio: string;
+}
+
+export interface ISkillsResponse {
+  languages: ISkillsFormField[];
+  programmingLanguages: ISkillsFormField[];
+  qualifications: ISkillsFormField[];
+}
+
+export interface IWorkExpResponse {
+  workExps: IWorkExperience[];
+}
+
+export interface IFetchProfileResponse {
+  message: string;
+  data: {
+    basicInfo: IBasicInfoResponse;
+    additionalInfo: IAdditionalInfoResponse;
+    pckg: IPckgResponse;
+    profileSetup: IProfileSetupResponse;
+    skills: ISkillsResponse;
+    workExp: IWorkExpResponse;
+  };
+}
+
+export interface IUpdateProfileResponse extends IBaseResponse {}
 
 export interface IRemoveAvatarResponse extends IBaseResponse {}
 

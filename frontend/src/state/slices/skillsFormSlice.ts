@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice, nanoid } from '@reduxjs/toolkit';
-import { ILanguage, IProgrammingLanguage, IQualification } from '../../interfaces';
+import { ILanguage, IProgrammingLanguage, IQualification, ISkillsResponse } from '../../interfaces';
 import { clearUser } from '../store';
 
 interface ISkillsState {
@@ -18,6 +18,13 @@ const skillsFormSlice = createSlice({
   name: 'skills',
   initialState,
   reducers: {
+    updateSkills: (state, action: PayloadAction<ISkillsResponse>) => {
+      const { languages, programmingLanguages, qualifications } = action.payload;
+      state.languages = languages || [];
+      state.programmingLanguages = programmingLanguages || [];
+      state.qualifications = qualifications || [];
+    },
+
     addToList: (state, action: PayloadAction<{ listName: string; value: string }>) => {
       const { listName, value } = action.payload;
       const bubble = { id: nanoid(), name: value };
@@ -66,6 +73,6 @@ const skillsFormSlice = createSlice({
   },
 });
 
-export const { clearSkills, addToList, removeFromList } = skillsFormSlice.actions;
+export const { updateSkills, clearSkills, addToList, removeFromList } = skillsFormSlice.actions;
 
 export const skillsFormReducer = skillsFormSlice.reducer;

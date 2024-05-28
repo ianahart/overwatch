@@ -1,5 +1,5 @@
 import { Draft, PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { IBasicInfoForm, IFormField } from '../../interfaces';
+import { IBasicInfoForm, IBasicInfoResponse, IFormField } from '../../interfaces';
 import { clearUser } from '../store';
 
 interface IBasicInfoFormState extends IBasicInfoForm {}
@@ -15,6 +15,13 @@ const basicInfoFormSlice = createSlice({
   name: 'basicInfo',
   initialState,
   reducers: {
+    updateBasicInfo: (state, action: PayloadAction<IBasicInfoResponse>) => {
+      const { payload } = action;
+      for (let prop in payload) {
+        state[prop as keyof IBasicInfoFormState].value = payload[prop as keyof IBasicInfoResponse] ?? '';
+      }
+    },
+
     updateBasicInfoFormField: <T extends string>(
       state: Draft<IBasicInfoFormState>,
       action: PayloadAction<{ name: string; value: T; attribute: keyof IFormField<T> }>
@@ -34,6 +41,6 @@ const basicInfoFormSlice = createSlice({
   },
 });
 
-export const { clearBasicInfoForm, updateBasicInfoFormField } = basicInfoFormSlice.actions;
+export const { updateBasicInfo, clearBasicInfoForm, updateBasicInfoFormField } = basicInfoFormSlice.actions;
 
 export const basicInfoFormReducer = basicInfoFormSlice.reducer;
