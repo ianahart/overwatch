@@ -30,8 +30,14 @@ const EditProfileForm = () => {
   const skills = useSelector((store: TRootState) => store.skills);
   const workExp = useSelector((store: TRootState) => store.workExp);
   const pckg = useSelector((store: TRootState) => store.package);
-
   const [formStep, setFormStep] = useState(0);
+
+  const canShowNextButton = useMemo(() => {
+    return (
+      (formStep < 5 && user.user.role.toLowerCase() === 'reviewer') ||
+      (formStep < 1 && user.user.role.toLowerCase() === 'user')
+    );
+  }, [formStep, user.user.role]);
 
   const queryParameters = useMemo(
     () => ({ token: user.token, profileId: user.user.profileId }),
@@ -52,22 +58,37 @@ const EditProfileForm = () => {
   }, [data]);
 
   const renderFormStep = () => {
-    switch (formStep) {
-      case 0:
-        return <BasicInfo />;
-      case 1:
-        return <ProfileSetup />;
-      case 2:
-        return <Skills />;
-      case 3:
-        return <WorkExperience />;
-      case 4:
-        return <Packages />;
-      case 5:
-        return <AdditionalInfo />;
-      default:
-        return <BasicInfo />;
+    if (user.user.role.toLowerCase() === 'user') {
+      switch (formStep) {
+        case 0:
+          return <BasicInfo />;
+        case 1:
+          return <ProfileSetup />;
+        default:
+          return <div>You do not have permission to view this content.</div>;
+      }
     }
+
+    if (user.user.role.toLowerCase() === 'reviewer') {
+      switch (formStep) {
+        case 0:
+          return <BasicInfo />;
+        case 1:
+          return <ProfileSetup />;
+        case 2:
+          return <Skills />;
+        case 3:
+          return <WorkExperience />;
+        case 4:
+          return <Packages />;
+        case 5:
+          return <AdditionalInfo />;
+        default:
+          return <BasicInfo />;
+      }
+    }
+
+    return <div>You do not have permission to view this content.</div>;
   };
 
   const packageFormData = () => {
@@ -116,7 +137,7 @@ const EditProfileForm = () => {
               Back
             </button>
           )}
-          {formStep < 5 && (
+          {canShowNextButton && (
             <button
               onClick={() => setFormStep((prevState) => prevState + 1)}
               type="button"
@@ -125,7 +146,7 @@ const EditProfileForm = () => {
               Next
             </button>
           )}
-          {formStep === 5 && (
+          {(formStep === 5 || (formStep === 1 && user.user.role.toLowerCase() === 'user')) && (
             <button type="submit" className="btn mx-4 min-w-24">
               Update
             </button>
