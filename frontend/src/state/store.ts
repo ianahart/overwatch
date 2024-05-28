@@ -5,9 +5,23 @@ import { signUpReducer, updateSignUpField, updateRole, clearSignUpForm } from '.
 import { updateSignInField, clearSignInForm, signInReducer } from './slices/signinSlice';
 import { userReducer, updateUser, updateTokens, clearUser, updateUserAndTokens } from './slices/userSlice';
 import { settingReducer, updateSetting, clearSetting } from './slices/settingSlice';
-import { updateBasicInfoFormField, clearBasicInfoForm, basicInfoFormReducer } from './slices/basicInfoFormSlice';
-import { removeFromList, clearSkills, skillsFormReducer, addToList } from './slices/skillsFormSlice';
 import {
+  updateBasicInfo,
+  updateBasicInfoFormField,
+  clearBasicInfoForm,
+  basicInfoFormReducer,
+} from './slices/basicInfoFormSlice';
+import { updateSkills, removeFromList, clearSkills, skillsFormReducer, addToList } from './slices/skillsFormSlice';
+import {
+  updateAdditionalInfo,
+  updateMoreInfo,
+  addTimeSlot,
+  removeTimeSlot,
+  clearAdditionalInfoForm,
+  additionalInfoFormReducer,
+} from './slices/additionalInfoFormSlice';
+import {
+  updatePackages,
   removePackageDesc,
   removePackageItem,
   updatePackageItem,
@@ -17,12 +31,14 @@ import {
   packageFormReducer,
 } from './slices/packageFormSlice';
 import {
+  updateWorkExp,
   removeWorkExpFromList,
   addWorkExpToList,
   clearWorkExpForm,
   workExpFormReducer,
 } from './slices/workExpFormSlice';
 import {
+  updateProfileSetup,
   updateProfileSetupFormField,
   clearProfileSetupForm,
   updateAvatar,
@@ -38,6 +54,7 @@ import { profilesApi } from './apis/profilesApi';
 
 export const store = configureStore({
   reducer: {
+    additionalInfo: additionalInfoFormReducer,
     package: packageFormReducer,
     workExp: workExpFormReducer,
     skills: skillsFormReducer,
@@ -109,6 +126,16 @@ export {
   updatePackageItem,
   removePackageItem,
   removePackageDesc,
+  clearAdditionalInfoForm,
+  addTimeSlot,
+  removeTimeSlot,
+  updateMoreInfo,
+  updateBasicInfo,
+  updateProfileSetup,
+  updateSkills,
+  updateWorkExp,
+  updatePackages,
+  updateAdditionalInfo,
 };
 export {
   useSignUpMutation,
@@ -125,7 +152,12 @@ export {
   useUpdateUserPasswordMutation,
   useDeleteUserMutation,
 } from './apis/usersApi';
-export { useCreateAvatarMutation, useRemoveAvatarMutation } from './apis/profilesApi';
+export {
+  useFetchProfileQuery,
+  useUpdateProfileMutation,
+  useCreateAvatarMutation,
+  useRemoveAvatarMutation,
+} from './apis/profilesApi';
 export { useFetchHeartBeatQuery, useLazyFetchHeartBeatQuery } from './apis/heartbeatApi';
 export { useUpdateSettingsMFAMutation, useFetchSettingsQuery } from './apis/settingsApi';
 export { useCreatePhoneMutation, useFetchPhoneQuery, useDeletePhoneMutation } from './apis/phonesApi';

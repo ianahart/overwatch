@@ -3,14 +3,18 @@ package com.hart.overwatch.profile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.hart.overwatch.profile.request.RemoveAvatarRequest;
+import com.hart.overwatch.profile.request.UpdateProfileRequest;
 import com.hart.overwatch.profile.request.UploadAvatarRequest;
+import com.hart.overwatch.profile.response.GetProfileResponse;
 import com.hart.overwatch.profile.response.RemoveAvatarResponse;
+import com.hart.overwatch.profile.response.UpdateProfileResponse;
 import com.hart.overwatch.profile.response.UploadAvatarResponse;
 
 @RestController
@@ -37,6 +41,22 @@ public class ProfileController {
             @PathVariable("profileId") Long profileId, UploadAvatarRequest request) {
         return ResponseEntity.status(HttpStatus.OK).body(new UploadAvatarResponse("success",
                 this.profileService.uploadAvatar(request, profileId)));
+    }
+
+    @PatchMapping(path = "/{profileId}")
+    public ResponseEntity<UpdateProfileResponse> updateProfile(
+            @PathVariable("profileId") Long profileId, @RequestBody UpdateProfileRequest request) {
+
+        this.profileService.updateProfile(profileId, request);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new UpdateProfileResponse("success"));
+    }
+
+    @GetMapping(path = "/{profileId}")
+    public ResponseEntity<GetProfileResponse> getProfile(
+            @PathVariable("profileId") Long profileId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new GetProfileResponse("success", this.profileService.getProfile(profileId)));
     }
 
 }

@@ -120,6 +120,7 @@ const Package = ({ data, name, title }: IPackageProps) => {
                     </div>
                     <div>
                       <button
+                        type="button"
                         onClick={() =>
                           handleUpdatePackageItemEditing({ id, name: value, isEditing: isEditing ? 0 : 1 })
                         }
@@ -129,6 +130,7 @@ const Package = ({ data, name, title }: IPackageProps) => {
                       </button>
 
                       <button
+                        type="button"
                         onClick={() => handleRemovePackageItem(id)}
                         className="outline-btn border border-gray-800 !text-gray-400 mx-2"
                       >

@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { clearUser } from '../store';
-import { IPackage } from '../../interfaces';
+import { IPackage, IPckgResponse } from '../../interfaces';
 import { nanoid } from 'nanoid';
 
 interface IItem {
@@ -27,6 +27,12 @@ const packageFormSlice = createSlice({
   name: 'package',
   initialState,
   reducers: {
+    updatePackages: (state, action: PayloadAction<IPckgResponse>) => {
+      const { basic, standard, pro } = action.payload;
+      state.basic = basic;
+      state.standard = standard;
+      state.pro = pro;
+    },
     addPackageItem: (state, action: PayloadAction<{ name: string; value: string }>) => {
       const { name, value } = action.payload;
       switch (name) {
@@ -88,6 +94,7 @@ const packageFormSlice = createSlice({
 });
 
 export const {
+  updatePackages,
   removePackageDesc,
   removePackageItem,
   addPackageItem,
