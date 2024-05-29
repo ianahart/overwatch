@@ -19,6 +19,7 @@ export interface IPackageItem {
 }
 
 export interface IPackage {
+  price: string;
   description: string;
   items: IPackageItem[];
 }

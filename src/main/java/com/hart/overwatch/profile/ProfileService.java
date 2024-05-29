@@ -117,7 +117,8 @@ public class ProfileService {
                         Jsoup.clean(v.getName(), Safelist.none()), v.getIsEditing())))
                 .collect(Collectors.toList());
 
-        return new FullPackageDto(Jsoup.clean(pckg.getDescription(), Safelist.none()), items);
+        return new FullPackageDto(Jsoup.clean(pckg.getPrice(), Safelist.none()),
+                Jsoup.clean(pckg.getDescription(), Safelist.none()), items);
     }
 
     private List<ItemDto> cleanSkills(List<ItemDto> skills) {

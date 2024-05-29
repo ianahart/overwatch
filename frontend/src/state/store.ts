@@ -21,6 +21,7 @@ import {
   additionalInfoFormReducer,
 } from './slices/additionalInfoFormSlice';
 import {
+  updatePackagePrice,
   updatePackages,
   removePackageDesc,
   removePackageItem,
@@ -136,6 +137,7 @@ export {
   updateWorkExp,
   updatePackages,
   updateAdditionalInfo,
+  updatePackagePrice,
 };
 export {
   useSignUpMutation,

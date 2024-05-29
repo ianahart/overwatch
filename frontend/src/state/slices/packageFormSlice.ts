@@ -18,9 +18,9 @@ interface IPackageFormState {
 }
 
 const initialState: IPackageFormState = {
-  basic: { description: '', items: [] },
-  standard: { description: '', items: [] },
-  pro: { description: '', items: [] },
+  basic: { price: '', description: '', items: [] },
+  standard: { price: '', description: '', items: [] },
+  pro: { price: '', description: '', items: [] },
 };
 
 const packageFormSlice = createSlice({
@@ -29,9 +29,9 @@ const packageFormSlice = createSlice({
   reducers: {
     updatePackages: (state, action: PayloadAction<IPckgResponse>) => {
       const { basic, standard, pro } = action.payload;
-      state.basic = basic || { description: '', items: [] };
-      state.standard = standard || { description: '', items: [] };
-      state.pro = pro || { description: '', items: [] };
+      state.basic = { ...basic, price: basic.price || '' } || { price: '', description: '', items: [] };
+      state.standard = { ...standard, price: standard.price || '' } || { price: '', description: '', items: [] };
+      state.pro = { ...pro, price: pro.price || '' } || { price: '', description: '', items: [] };
     },
     addPackageItem: (state, action: PayloadAction<{ name: string; value: string }>) => {
       const { name, value } = action.payload;
@@ -49,6 +49,23 @@ const packageFormSlice = createSlice({
           break;
       }
     },
+    updatePackagePrice: (state, action: PayloadAction<{ name: string; value: string }>) => {
+      const { name, value } = action.payload;
+      switch (name) {
+        case 'basic':
+          state.basic.price = value;
+          break;
+        case 'standard':
+          state.standard.price = value;
+          break;
+        case 'pro':
+          state.pro.price = value;
+          break;
+        default:
+          break;
+      }
+    },
+
     updatePackageDesc: (state, action: PayloadAction<{ name: string; value: string }>) => {
       const { name, value } = action.payload;
       switch (name) {
@@ -101,6 +118,7 @@ export const {
   clearPackageForm,
   updatePackageDesc,
   updatePackageItem,
+  updatePackagePrice,
 } = packageFormSlice.actions;
 
 export const packageFormReducer = packageFormSlice.reducer;

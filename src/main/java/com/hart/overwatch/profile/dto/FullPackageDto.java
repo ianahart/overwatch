@@ -4,6 +4,8 @@ import java.util.List;
 
 public class FullPackageDto {
 
+    private String price;
+
     private String description;
 
     private List<PackageDto> items;
@@ -13,9 +15,14 @@ public class FullPackageDto {
 
     }
 
-    public FullPackageDto(String description, List<PackageDto> items) {
+    public FullPackageDto(String price, String description, List<PackageDto> items) {
+        this.price = price;
         this.description = description;
         this.items = items;
+    }
+
+    public String getPrice() {
+        return price;
     }
 
     public List<PackageDto> getItems() {
@@ -28,6 +35,10 @@ public class FullPackageDto {
 
     public void setItems(List<PackageDto> items) {
         this.items = items;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
     }
 
     public void setDescription(String description) {

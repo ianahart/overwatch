@@ -8,6 +8,7 @@ import {
   updatePackageItem,
   updatePackageDesc,
   addPackageItem,
+  updatePackagePrice,
 } from '../../../state/store';
 
 export interface IPackageProps {
@@ -23,6 +24,11 @@ const Package = ({ data, name, title }: IPackageProps) => {
   const handleOnDescChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
     dispatch(updatePackageDesc({ name, value }));
+  };
+
+  const handleOnPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    dispatch(updatePackagePrice({ name, value }));
   };
 
   const handleOnItemChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,16 +66,30 @@ const Package = ({ data, name, title }: IPackageProps) => {
   return (
     <div className="my-8">
       <h3 className="text-xl my-2 text-gray-400">{title}</h3>
-      <label className="pb-1 block" htmlFor={name}>
-        Description
-      </label>
-      <input
-        value={data.description}
-        onChange={handleOnDescChange}
-        id={name}
-        name={name}
-        className="h-9 rounded bg-transparent border border-gray-800 w-full placeholder:text-gray-500 placeholder:pl-2 pl-2 shadow"
-      />
+      <div className="my-4">
+        <label className="pb-1 block" htmlFor={name}>
+          Description
+        </label>
+        <input
+          value={data.description}
+          onChange={handleOnDescChange}
+          id={name}
+          name={name}
+          className="h-9 rounded bg-transparent border border-gray-800 w-full placeholder:text-gray-500 placeholder:pl-2 pl-2 shadow"
+        />
+      </div>
+      <div className="my-4">
+        <label className="pb-1 block" htmlFor={`${name}price`}>
+          Price
+        </label>
+        <input
+          value={data.price}
+          onChange={handleOnPriceChange}
+          id={`${name}price`}
+          name={`${name}price`}
+          className="h-9 rounded bg-transparent border border-gray-800 md:w-[40%] w-full placeholder:text-gray-500 placeholder:pl-2 pl-2 shadow"
+        />
+      </div>
       <div className="my-4 flex items-center">
         <div className="flex flex-col md:w-[50%] w-full">
           <label>Included services</label>
@@ -98,6 +118,9 @@ const Package = ({ data, name, title }: IPackageProps) => {
             >
               Remove
             </button>
+          </div>
+          <div className="my-2">
+            <p className="text-xl">{data.price}</p>
           </div>
           <ul>
             {data.items.map(({ id, name: value, isEditing }) => {
