@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import BasicInfo from './BasicInfo';
 import ProfileSetup from './ProfileSetup';
 import Skills from './Skills';
@@ -112,6 +114,20 @@ const EditProfileForm = () => {
     return formData;
   };
 
+  const initiateToast = () => {
+    toast.success('Your profile was successfully updated!', {
+      position: 'bottom-center',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'dark',
+      onClose: () => navigate(`/settings/${user.user.slug}/profile`),
+    });
+  };
+
   const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = packageFormData();
@@ -119,7 +135,7 @@ const EditProfileForm = () => {
     updateProfile({ profileId: user.user.profileId, token: user.token, formData })
       .unwrap()
       .then(() => {
-        navigate(`/settings/${user.user.slug}/profile`);
+        initiateToast();
       });
   };
 
@@ -152,6 +168,7 @@ const EditProfileForm = () => {
             </button>
           )}
         </div>
+        <ToastContainer />
       </form>
     </section>
   );
