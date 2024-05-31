@@ -1,5 +1,7 @@
+import Billing from '../../components/Settings/Billing';
+
 const BillingRoute = () => {
-  return <div>Billing & Payments Route</div>;
+  return <Billing />;
 };
 
 export default BillingRoute;

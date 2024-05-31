@@ -116,6 +116,11 @@
             <artifactId>hypersistence-utils-hibernate-62</artifactId>
             <version>3.7.5</version>
         </dependency>
+        <dependency>
+            <groupId>com.stripe</groupId>
+            <artifactId>stripe-java</artifactId>
+            <version>25.8.0</version>
+        </dependency>
     </dependencies>
 
     <build>
