@@ -40,11 +40,11 @@ const FormSelect = ({ data, country, updateField }: IFormSelectProps) => {
   };
 
   return (
-    <div className="max-w-[60%] px-4">
+    <div className="max-w-[60%]">
       <p>Country</p>
       <div
         onClick={() => setIsDropdownOpen(true)}
-        className="border rounded border-slate-800 flex items-center p-1 relative min-h-9 cursor-pointer"
+        className="border rounded border-slate-800 flex items-center relative min-h-9 cursor-pointer"
       >
         <p className="m-0">{country}</p>
         <BsChevronDown className="absolute z-10 text-gray-400 right-2 top-2" />

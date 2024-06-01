@@ -1,5 +1,16 @@
 import { Role } from '../enums';
 
+export interface ISavePaymentForm {
+  firstName: { name: string; value: string; error: string; type: string };
+  lastName: { name: string; value: string; error: string; type: string };
+  country: { name: string; value: string; error: string; type: string };
+  city: { name: string; value: string; error: string; type: string };
+  line1: { name: string; value: string; error: string; type: string };
+  line2: { name: string; value: string; error: string; type: string };
+  state: { name: string; value: string; error: string; type: string };
+  postalCode: { name: string; value: string; error: string; type: string };
+}
+
 export interface ITimeSlot {
   startTime: string;
   endTime: string;
@@ -379,6 +390,28 @@ export interface IFetchProfileResponse {
     workExp: IWorkExpResponse;
   };
 }
+
+export interface IPaymentMethod {
+  id: string;
+  city: string;
+  country: string;
+  line1: string;
+  line2: string;
+  postalCode: string;
+  name: string;
+  displayBrand: string;
+  type: string;
+  expMonth: number;
+  expYear: number;
+}
+
+export interface ICreatePaymentMethodRequest {
+  token: string;
+  userId: number;
+  body: IPaymentMethod;
+}
+
+export interface ICreatePaymentMethodResponse extends IBaseResponse {}
 
 export interface IUpdateProfileResponse extends IBaseResponse {}
 

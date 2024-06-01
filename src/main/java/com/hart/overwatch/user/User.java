@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.hart.overwatch.location.Location;
 import com.hart.overwatch.passwordreset.PasswordReset;
+import com.hart.overwatch.paymentmethod.UserPaymentMethod;
 import com.hart.overwatch.phone.Phone;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.refreshtoken.RefreshToken;
@@ -99,6 +100,10 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<Phone> phones;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<UserPaymentMethod> userPaymentMethods;
+
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "setting_id", referencedColumnName = "id")
@@ -152,6 +157,10 @@ public class User implements UserDetails {
 
     public String getSlug() {
         return (firstName + lastName).toLowerCase();
+    }
+
+    public List<UserPaymentMethod> getUserPaymentMethods() {
+        return userPaymentMethods;
     }
 
     public Location getLocation() {
@@ -235,6 +244,10 @@ public class User implements UserDetails {
 
     public void setPasswordResets(List<PasswordReset> passwordResets) {
         this.passwordResets = passwordResets;
+    }
+
+    public void setUserPaymentMethods(List<UserPaymentMethod> userPaymentMethods) {
+        this.userPaymentMethods = userPaymentMethods;
     }
 
     public void setPhones(List<Phone> phones) {
