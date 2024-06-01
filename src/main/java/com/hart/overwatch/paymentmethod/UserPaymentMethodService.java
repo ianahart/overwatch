@@ -1,11 +1,13 @@
 package com.hart.overwatch.paymentmethod;
 
+import java.util.List;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Account;
 import com.stripe.model.Customer;
 import com.stripe.model.PaymentMethod;
 import com.stripe.param.CustomerCreateParams;
 import com.stripe.param.PaymentMethodAttachParams;
+import com.stripe.param.PaymentMethodListParams;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.advice.BadRequestException;
+import com.hart.overwatch.paymentmethod.dto.UserPaymentMethodDto;
 import com.hart.overwatch.paymentmethod.request.CreateUserPaymentMethodRequest;
 
 @Service
@@ -39,7 +42,7 @@ public class UserPaymentMethodService {
 
     private boolean checkIfAlreadyACustomer(Long userId) {
         try {
-            return this.userPaymentMethodRepository.getUserPaymentMethodByUserId(userId);
+            return this.userPaymentMethodRepository.getBooleanUserPaymentMethodByUserId(userId);
 
         } catch (DataAccessException ex) {
             return true;
@@ -85,5 +88,47 @@ public class UserPaymentMethodService {
             ex.printStackTrace();
             throw ex;
         }
+    }
+
+
+    private UserPaymentMethod getUserPaymentMethodByUserId(Long userId) {
+        try {
+            return this.userPaymentMethodRepository.getUserPaymentMethodByUserId(userId);
+
+        } catch (DataAccessException ex) {
+            return null;
+
+        }
+    }
+
+    public UserPaymentMethodDto getUserPaymentMethods(Long userId) throws StripeException {
+        try {
+            UserPaymentMethod userPaymentMethod = getUserPaymentMethodByUserId(userId);
+
+            if (userPaymentMethod == null) {
+                throw new NotFoundException("A user payment method does not exist for this user");
+            }
+
+
+            PaymentMethodListParams params = PaymentMethodListParams.builder()
+                    .setCustomer(userPaymentMethod.getStripeCustomerId())
+                    .setType(PaymentMethodListParams.Type.CARD).build();
+
+            PaymentMethod stripePaymentMethod = PaymentMethod.list(params).getData().getFirst();
+
+            return new UserPaymentMethodDto(userPaymentMethod.getId(),
+                    stripePaymentMethod.getCard().getLast4(),
+                    stripePaymentMethod.getCard().getBrand(),
+                    stripePaymentMethod.getCard().getExpMonth(),
+                    stripePaymentMethod.getCard().getExpYear(), userPaymentMethod.getName());
+
+
+        } catch (StripeException ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
+
+
+
     }
 }

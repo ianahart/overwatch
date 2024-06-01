@@ -1,5 +1,10 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { ICreatePaymentMethodRequest, ICreatePaymentMethodResponse } from '../../interfaces';
+import {
+  ICreatePaymentMethodRequest,
+  ICreatePaymentMethodResponse,
+  IGetPaymentMethodRequest,
+  IGetPaymentMethodResponse,
+} from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
 const paymentMethodsApi = createApi({
@@ -7,6 +12,22 @@ const paymentMethodsApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints(builder) {
     return {
+      fetchPaymentMethod: builder.query<IGetPaymentMethodResponse, IGetPaymentMethodRequest>({
+        query: ({ token, userId }) => {
+          if (userId === null || userId === 0) {
+            return '';
+          }
+          return {
+            url: `/users/${userId}/payment-methods`,
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+        // @ts-ignore
+        providesTags: ['PaymentMethods'],
+      }),
       createPaymentMethod: builder.mutation<ICreatePaymentMethodResponse, ICreatePaymentMethodRequest>({
         query: ({ body, token, userId }) => {
           return {
@@ -18,10 +39,12 @@ const paymentMethodsApi = createApi({
             },
           };
         },
+        // @ts-ignore
+        invalidatesTags: ['PaymentMethods'],
       }),
     };
   },
 });
 
-export const { useCreatePaymentMethodMutation } = paymentMethodsApi;
+export const { useCreatePaymentMethodMutation, useFetchPaymentMethodQuery } = paymentMethodsApi;
 export { paymentMethodsApi };

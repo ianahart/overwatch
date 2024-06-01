@@ -8,6 +8,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserPaymentMethodRepository extends JpaRepository<UserPaymentMethod, Long> {
 
+    @Query(value = """
+            SELECT upm FROM UserPaymentMethod upm
+            INNER JOIN upm.user u
+            WHERE u.id = :userId
+            """)
+    UserPaymentMethod getUserPaymentMethodByUserId(@Param("userId") Long userId);
 
 
     @Query(value = """
@@ -16,6 +22,6 @@ public interface UserPaymentMethodRepository extends JpaRepository<UserPaymentMe
             WHERE u.id = :userId
             )
             """)
-    boolean getUserPaymentMethodByUserId(@Param("userId") Long userId);
+    boolean getBooleanUserPaymentMethodByUserId(@Param("userId") Long userId);
 
 }

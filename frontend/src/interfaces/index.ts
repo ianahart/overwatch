@@ -411,6 +411,23 @@ export interface ICreatePaymentMethodRequest {
   body: IPaymentMethod;
 }
 
+export interface IGetPaymentMethodRequest {
+  token: string;
+  userId: number;
+}
+
+export interface IGetPaymentMethodResponse {
+  message: string;
+  data: {
+    id: number;
+    last4: string;
+    displayBrand: string;
+    expMonth: number;
+    expYear: number;
+    name: string;
+  };
+}
+
 export interface ICreatePaymentMethodResponse extends IBaseResponse {}
 
 export interface IUpdateProfileResponse extends IBaseResponse {}
