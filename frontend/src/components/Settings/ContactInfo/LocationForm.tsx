@@ -91,7 +91,7 @@ const LocationForm = ({ error, form, handleUpdateField, closeForm, handleOnSubmi
           <p className="text-red-400 text-sm">{error}</p>
         </div>
       )}
-      <div className="my-4">
+      <div className="my-4 px-4">
         <FormSelect updateField={updateField} country={form.country.value} data={countries} />
       </div>
       <div className="my-12">

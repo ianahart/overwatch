@@ -10,7 +10,6 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_API_KEY);
 
 const Billing = () => {
   const [hasBillingMethod, setHasBillingMethod] = useState(false);
-  const [clientSecret, setClientSecret] = useState('');
   const [view, setView] = useState('main');
 
   const handleSetView = (newView: string) => {

@@ -52,6 +52,7 @@ import { heartbeatApi } from './apis/heartbeatApi';
 import { phonesApi } from './apis/phonesApi';
 import { locationsApi } from './apis/locationsApi';
 import { profilesApi } from './apis/profilesApi';
+import { paymentMethodsApi } from './apis/paymentMethodsApi';
 
 export const store = configureStore({
   reducer: {
@@ -73,6 +74,7 @@ export const store = configureStore({
     [phonesApi.reducerPath]: phonesApi.reducer,
     [locationsApi.reducerPath]: locationsApi.reducer,
     [profilesApi.reducerPath]: profilesApi.reducer,
+    [paymentMethodsApi.reducerPath]: paymentMethodsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -87,7 +89,8 @@ export const store = configureStore({
       .concat(settingsApi.middleware)
       .concat(phonesApi.middleware)
       .concat(locationsApi.middleware)
-      .concat(profilesApi.middleware);
+      .concat(profilesApi.middleware)
+      .concat(paymentMethodsApi.middleware);
   },
 });
 
@@ -160,6 +163,7 @@ export {
   useCreateAvatarMutation,
   useRemoveAvatarMutation,
 } from './apis/profilesApi';
+export { useCreatePaymentMethodMutation } from './apis/paymentMethodsApi';
 export { useFetchHeartBeatQuery, useLazyFetchHeartBeatQuery } from './apis/heartbeatApi';
 export { useUpdateSettingsMFAMutation, useFetchSettingsQuery } from './apis/settingsApi';
 export { useCreatePhoneMutation, useFetchPhoneQuery, useDeletePhoneMutation } from './apis/phonesApi';
@@ -168,4 +172,4 @@ export {
   useCreateLocationMutation,
   useFetchSingleLocationQuery,
 } from './apis/locationsApi';
-export { authsApi, heartbeatApi, settingsApi, phonesApi, locationsApi, profilesApi };
+export { authsApi, heartbeatApi, settingsApi, phonesApi, locationsApi, profilesApi, paymentMethodsApi };
