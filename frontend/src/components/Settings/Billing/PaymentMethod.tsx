@@ -4,12 +4,18 @@ import { SiAmericanexpress } from 'react-icons/si';
 import { FaCcDiscover } from 'react-icons/fa';
 import { CiCreditCard1 } from 'react-icons/ci';
 import { BsTrash } from 'react-icons/bs';
+import { useSelector } from 'react-redux';
+import { TRootState, useDeletePaymentMethodMutation } from '../../../state/store';
 
 export interface IPaymentMethodProps {
   data: { id: number; last4: string; displayBrand: string; expYear: number; expMonth: number; name: string };
+  handleSetHasBillingMethod: (hasBillingMethod: boolean) => void;
 }
 
-const PaymentMethod = ({ data }: IPaymentMethodProps) => {
+const PaymentMethod = ({ data, handleSetHasBillingMethod }: IPaymentMethodProps) => {
+  const { token } = useSelector((store: TRootState) => store.user);
+  const [deletePaymentMethod] = useDeletePaymentMethodMutation();
+
   const renderCard = () => {
     if (data.displayBrand.includes('visa')) {
       return <FaCcVisa className="text-gray-400 text-xl" />;
@@ -22,6 +28,12 @@ const PaymentMethod = ({ data }: IPaymentMethodProps) => {
     } else {
       return <CiCreditCard1 className="text-gray-400 text-xl" />;
     }
+  };
+
+  const handleOnDeleteCustomer = () => {
+    deletePaymentMethod({ token, id: data.id })
+      .unwrap()
+      .then(() => handleSetHasBillingMethod(false));
   };
 
   return (
@@ -40,7 +52,7 @@ const PaymentMethod = ({ data }: IPaymentMethodProps) => {
             Expiration date: {data.expMonth}/{data.expYear}
           </p>
         </div>
-        <div>
+        <div className="cursor-pointer" onClick={handleOnDeleteCustomer}>
           <BsTrash />
         </div>
       </div>

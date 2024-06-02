@@ -32,6 +32,10 @@ const Billing = () => {
     setView(newView);
   };
 
+  const handleSetHasBillingMethod = (hasBillingMethod: boolean) => {
+    setHasBillingMethod(hasBillingMethod);
+  };
+
   useEffect(() => {
     if (data) {
       setPaymentMethod(data.data);
@@ -50,7 +54,9 @@ const Billing = () => {
             <BillingForm handleSetView={handleSetView} />
           </Elements>
         )}
-        {hasBillingMethod && paymentMethod.id !== 0 && <PaymentMethod data={paymentMethod} />}
+        {hasBillingMethod && paymentMethod.id !== 0 && (
+          <PaymentMethod handleSetHasBillingMethod={handleSetHasBillingMethod} data={paymentMethod} />
+        )}
       </div>
     </div>
   );

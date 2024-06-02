@@ -428,6 +428,13 @@ export interface IGetPaymentMethodResponse {
   };
 }
 
+export interface IDeletePaymentMethodRequest {
+  token: string;
+  id: number;
+}
+
+export interface IDeletePaymentMethodResponse extends IBaseResponse {}
+
 export interface ICreatePaymentMethodResponse extends IBaseResponse {}
 
 export interface IUpdateProfileResponse extends IBaseResponse {}

@@ -163,7 +163,11 @@ export {
   useCreateAvatarMutation,
   useRemoveAvatarMutation,
 } from './apis/profilesApi';
-export { useFetchPaymentMethodQuery, useCreatePaymentMethodMutation } from './apis/paymentMethodsApi';
+export {
+  useFetchPaymentMethodQuery,
+  useCreatePaymentMethodMutation,
+  useDeletePaymentMethodMutation,
+} from './apis/paymentMethodsApi';
 export { useFetchHeartBeatQuery, useLazyFetchHeartBeatQuery } from './apis/heartbeatApi';
 export { useUpdateSettingsMFAMutation, useFetchSettingsQuery } from './apis/settingsApi';
 export { useCreatePhoneMutation, useFetchPhoneQuery, useDeletePhoneMutation } from './apis/phonesApi';

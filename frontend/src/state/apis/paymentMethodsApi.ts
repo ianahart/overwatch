@@ -2,6 +2,8 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import {
   ICreatePaymentMethodRequest,
   ICreatePaymentMethodResponse,
+  IDeletePaymentMethodRequest,
+  IDeletePaymentMethodResponse,
   IGetPaymentMethodRequest,
   IGetPaymentMethodResponse,
 } from '../../interfaces';
@@ -12,6 +14,17 @@ const paymentMethodsApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints(builder) {
     return {
+      deletePaymentMethod: builder.mutation<IDeletePaymentMethodResponse, IDeletePaymentMethodRequest>({
+        query: ({ token, id }) => {
+          return {
+            url: `/payment-methods/${id}`,
+            method: 'DELETE',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+      }),
       fetchPaymentMethod: builder.query<IGetPaymentMethodResponse, IGetPaymentMethodRequest>({
         query: ({ token, userId }) => {
           if (userId === null || userId === 0) {
@@ -46,5 +59,6 @@ const paymentMethodsApi = createApi({
   },
 });
 
-export const { useCreatePaymentMethodMutation, useFetchPaymentMethodQuery } = paymentMethodsApi;
+export const { useDeletePaymentMethodMutation, useCreatePaymentMethodMutation, useFetchPaymentMethodQuery } =
+  paymentMethodsApi;
 export { paymentMethodsApi };

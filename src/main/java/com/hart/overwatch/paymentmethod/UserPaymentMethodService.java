@@ -1,8 +1,6 @@
 package com.hart.overwatch.paymentmethod;
 
-import java.util.List;
 import com.stripe.exception.StripeException;
-import com.stripe.model.Account;
 import com.stripe.model.Customer;
 import com.stripe.model.PaymentMethod;
 import com.stripe.param.CustomerCreateParams;
@@ -127,8 +125,22 @@ public class UserPaymentMethodService {
             ex.printStackTrace();
             throw ex;
         }
+    }
+
+    public void deleteUserPaymentMethod(Long id) throws StripeException {
+        try {
+
+            UserPaymentMethod userPaymentMethod = getUserPaymentMethodById(id);
+
+            Customer customer = Customer.retrieve(userPaymentMethod.getStripeCustomerId());
+            customer.delete();
+
+            this.userPaymentMethodRepository.delete(userPaymentMethod);
 
 
-
+        } catch (StripeException ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
     }
 }
