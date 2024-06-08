@@ -180,6 +180,7 @@ export {
   useFetchSingleLocationQuery,
 } from './apis/locationsApi';
 export {
+  useDeleteTestimonialMutation,
   useFetchTestimonialsQuery,
   useLazyFetchTestimonialsQuery,
   useCreateTestimonialMutation,
