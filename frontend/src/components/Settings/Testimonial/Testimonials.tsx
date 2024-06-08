@@ -4,13 +4,19 @@ import { useSelector } from 'react-redux';
 
 import { paginationState } from '../../../data';
 import { IPaginationState, ITestimonial } from '../../../interfaces';
-import { TRootState, useFetchTestimonialsQuery, useLazyFetchTestimonialsQuery } from '../../../state/store';
+import {
+  TRootState,
+  useDeleteTestimonialMutation,
+  useFetchTestimonialsQuery,
+  useLazyFetchTestimonialsQuery,
+} from '../../../state/store';
 import Spinner from '../../Shared/Spinner';
 
 const Testimonials = () => {
   const { user, token } = useSelector((store: TRootState) => store.user);
   const [pag, setPag] = useState<IPaginationState>(paginationState);
   const [testimonials, setTestimonials] = useState<ITestimonial[]>([]);
+  const [deleteTestimonial] = useDeleteTestimonialMutation();
   const [fetchTestimonials] = useLazyFetchTestimonialsQuery();
   const { data, isLoading } = useFetchTestimonialsQuery({
     userId: user.id,
@@ -60,6 +66,14 @@ const Testimonials = () => {
     }
   };
 
+  const handleOnDelete = async (id: number) => {
+    try {
+      await deleteTestimonial({ token, id });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div className="my-4">
       <div className="flex justify-center">{isLoading && <Spinner message="Loading testimonials..." />}</div>
@@ -71,6 +85,14 @@ const Testimonials = () => {
               <p className="text-sm italic">{dayjs(testimonial.createdAt).format('MM/DD/YYYY')}</p>
             </div>
             <p>{testimonial.text}</p>
+            <div className="my-4 flex justify-end">
+              <button
+                onClick={() => handleOnDelete(testimonial.id)}
+                className="outline-btn border !text-gray-400 border-gray-800 rounded"
+              >
+                Delete
+              </button>
+            </div>
           </div>
         );
       })}

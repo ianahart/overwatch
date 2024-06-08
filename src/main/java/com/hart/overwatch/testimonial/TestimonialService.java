@@ -12,6 +12,7 @@ import jakarta.validation.ConstraintViolationException;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -91,5 +92,20 @@ public class TestimonialService {
 
     }
 
+    public void deleteTestimonial(Long id) {
+        try {
+            Testimonial testimonial = getTestimonialById(id);
+            User user = this.userService.getCurrentlyLoggedInUser();
+
+            if (testimonial.getUser().getId() != user.getId()) {
+                throw new BadRequestException("Cannot delete another user's testimonial");
+            }
+
+            this.testimonialRepository.delete(testimonial);
+
+        } catch (DataAccessException ex) {
+            throw ex;
+        }
+    }
 
 }

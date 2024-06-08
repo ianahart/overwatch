@@ -480,6 +480,13 @@ export interface IFetchTestimonialsResponse {
   };
 }
 
+export interface IDeleteTestimonialRequest {
+  id: number;
+  token: string;
+}
+
+export interface IDeleteTestimonialResponse extends IBaseResponse {}
+
 export interface ICreateTestimonialResponse extends IBaseResponse {}
 
 export interface IDeletePaymentMethodResponse extends IBaseResponse {}
