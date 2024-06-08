@@ -1,5 +1,21 @@
 import { Role } from '../enums';
 
+export interface ITestimonial {
+  id: number;
+  userId: number;
+  name: string;
+  text: string;
+  createdAt: string;
+}
+
+export interface IPaginationState {
+  page: number;
+  pageSize: number;
+  totalElements: number;
+  direction: string;
+  totalPages: number;
+}
+
 export interface ISavePaymentForm {
   firstName: { name: string; value: string; error: string; type: string };
   lastName: { name: string; value: string; error: string; type: string };
@@ -442,6 +458,26 @@ export interface ICreateTestimonialRequest {
   token: string;
   userId: number;
   form: ITestimonialForm;
+}
+
+export interface IFetchTestimonialsRequest {
+  userId: number;
+  token: string;
+  page: number;
+  pageSize: number;
+  direction: string;
+}
+
+export interface IFetchTestimonialsResponse {
+  message: string;
+  data: {
+    items: ITestimonial[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
 }
 
 export interface ICreateTestimonialResponse extends IBaseResponse {}

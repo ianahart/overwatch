@@ -1,5 +1,10 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { ICreateTestimonialRequest, ICreateTestimonialResponse } from '../../interfaces';
+import {
+  ICreateTestimonialRequest,
+  ICreateTestimonialResponse,
+  IFetchTestimonialsRequest,
+  IFetchTestimonialsResponse,
+} from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
 const testimonialsApi = createApi({
@@ -7,6 +12,23 @@ const testimonialsApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints(builder) {
     return {
+      fetchTestimonials: builder.query<IFetchTestimonialsResponse, IFetchTestimonialsRequest>({
+        query: ({ userId, token, page, pageSize, direction }) => {
+          if (userId === 0 || userId === null) {
+            return '';
+          }
+          return {
+            url: `/testimonials?userId=${userId}&page=${page}&pageSize=${pageSize}&direction=${direction}`,
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+        //@ts-ignore
+        providesTags: ['Testimonials'],
+      }),
+
       createTestimonial: builder.mutation<ICreateTestimonialResponse, ICreateTestimonialRequest>({
         query: ({ userId, token, form }) => {
           return {
@@ -29,5 +51,6 @@ const testimonialsApi = createApi({
   },
 });
 
-export const { useCreateTestimonialMutation } = testimonialsApi;
+export const { useCreateTestimonialMutation, useFetchTestimonialsQuery, useLazyFetchTestimonialsQuery } =
+  testimonialsApi;
 export { testimonialsApi };

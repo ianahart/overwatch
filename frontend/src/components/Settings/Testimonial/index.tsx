@@ -9,6 +9,7 @@ import FormInputField from '../../Form/FormInputField';
 import FormTextareaField from '../../Form/FormTextareaField';
 import { TRootState, useCreateTestimonialMutation } from '../../../state/store';
 import Spinner from '../../Shared/Spinner';
+import Testimonials from './Testimonials';
 
 const formState = {
   name: { name: 'name', value: '', error: '', type: 'text', max: 100 },
@@ -141,6 +142,10 @@ const Testimonial = () => {
           </div>
           <ToastContainer />
         </form>
+      </div>
+      <div className="my-8">
+        <h3 className="text-xl text-gray-400">Your Testimonials</h3>
+        <Testimonials />
       </div>
     </div>
   );
