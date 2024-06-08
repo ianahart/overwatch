@@ -179,7 +179,11 @@ export {
   useCreateLocationMutation,
   useFetchSingleLocationQuery,
 } from './apis/locationsApi';
-export { useCreateTestimonialMutation } from './apis/testimonialsApi';
+export {
+  useFetchTestimonialsQuery,
+  useLazyFetchTestimonialsQuery,
+  useCreateTestimonialMutation,
+} from './apis/testimonialsApi';
 export {
   testimonialsApi,
   authsApi,

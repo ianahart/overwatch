@@ -1,3 +1,11 @@
+export const paginationState = {
+  page: 0,
+  pageSize: 3,
+  totalPages: 0,
+  direction: 'next',
+  totalElements: 0,
+};
+
 export const savePaymentFormState = {
   firstName: { name: 'firstName', value: '', error: '', type: 'text' },
   lastName: { name: 'lastName', value: '', error: '', type: 'text' },
