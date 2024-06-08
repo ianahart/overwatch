@@ -16,7 +16,7 @@ const Navigation = () => {
           { path: `/settings/${user.slug}/profile`, name: 'My Profile' },
           { path: `/settings/${user.slug}/profile/edit`, name: 'Edit Profile' },
           { path: `/settings/${user.slug}/profile/settings`, name: 'Profile Settings' },
-          { path: `/settings/${user.slug}/testimonials/`, name: 'Add Testimonial' },
+          { path: `/settings/${user.slug}/testimonials/`, name: 'Testimonials' },
           { path: `/settings/${user.slug}/pay`, name: 'Get Paid' },
           { path: `/settings/${user.slug}/teams`, name: 'My Teams' },
           { path: `/settings/${user.slug}/security`, name: 'Password & Security' },

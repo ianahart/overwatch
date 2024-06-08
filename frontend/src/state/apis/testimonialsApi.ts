@@ -22,6 +22,8 @@ const testimonialsApi = createApi({
             },
           };
         },
+        // @ts-ignore
+        invalidatesTags: ['Testimonials'],
       }),
     };
   },

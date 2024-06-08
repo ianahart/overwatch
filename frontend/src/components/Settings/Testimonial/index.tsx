@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { AiOutlineUser } from 'react-icons/ai';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Header from '../Header';
 import { ITestimonialForm } from '../../../interfaces';
 import FormInputField from '../../Form/FormInputField';
@@ -17,6 +19,7 @@ const Testimonial = () => {
   const { user, token } = useSelector((store: TRootState) => store.user);
   const [createTestimonial, { isLoading }] = useCreateTestimonialMutation();
   const [form, setForm] = useState<ITestimonialForm>(formState);
+  const [error, setError] = useState('');
 
   const handleUpdateField = (name: string, value: string | number, attribute: string) => {
     setForm((prevState) => ({
@@ -46,8 +49,32 @@ const Testimonial = () => {
     return !errors;
   };
 
+  const initiateToast = () => {
+    toast.success('Your testimonial was successfully added!', {
+      position: 'bottom-center',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'dark',
+    });
+  };
+
+  const applyServerErrors = <T extends object>(data: T) => {
+    for (const [key, val] of Object.entries(data)) {
+      if (key === 'message') {
+        setError(val);
+        return;
+      }
+      handleUpdateField(key, val, 'error');
+    }
+  };
+
   const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError('');
     clearErrors(form);
     if (!validateForm(form)) {
       return;
@@ -56,17 +83,26 @@ const Testimonial = () => {
       .unwrap()
       .then((res) => {
         console.log(res);
+        setForm(formState);
+        initiateToast();
       })
       .catch((err) => {
         console.log(err);
+        if (err.status === 400) {
+          applyServerErrors(err.data);
+        }
       });
   };
 
   return (
     <div className="p-4">
-      <Header heading="Add Testimonials" />
+      <Header heading="Testimonials" />
       <div className="my-4 rounded-lg border 1px solid border-gray-800 min-h-[200px] p-4">
         <form onSubmit={handleOnSubmit}>
+          <div>
+            <h2 className="text-gray-400 text-xl">Add Testimonial</h2>
+            {error.length > 0 && <p className="text-sm text-red-300">{error}</p>}
+          </div>
           <div className="my-4">
             <FormInputField
               handleUpdateField={handleUpdateField}
@@ -103,6 +139,7 @@ const Testimonial = () => {
               </button>
             )}
           </div>
+          <ToastContainer />
         </form>
       </div>
     </div>
