@@ -438,6 +438,14 @@ export interface IDeletePaymentMethodRequest {
   id: number;
 }
 
+export interface ICreateTestimonialRequest {
+  token: string;
+  userId: number;
+  form: ITestimonialForm;
+}
+
+export interface ICreateTestimonialResponse extends IBaseResponse {}
+
 export interface IDeletePaymentMethodResponse extends IBaseResponse {}
 
 export interface ICreatePaymentMethodResponse extends IBaseResponse {}
