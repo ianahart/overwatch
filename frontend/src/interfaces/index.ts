@@ -122,6 +122,11 @@ export interface IProfileSetupForm {
   bio: IFormField<string>;
 }
 
+export interface ITestimonialForm {
+  name: { name: string; value: string; error: string; type: string; max: number };
+  text: { name: string; value: string; error: string; type: string; max: number };
+}
+
 export interface IBasicInfoForm {
   fullName: IFormField<string>;
   userName: IFormField<string>;
@@ -432,6 +437,14 @@ export interface IDeletePaymentMethodRequest {
   token: string;
   id: number;
 }
+
+export interface ICreateTestimonialRequest {
+  token: string;
+  userId: number;
+  form: ITestimonialForm;
+}
+
+export interface ICreateTestimonialResponse extends IBaseResponse {}
 
 export interface IDeletePaymentMethodResponse extends IBaseResponse {}
 

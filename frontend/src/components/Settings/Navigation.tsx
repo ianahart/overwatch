@@ -8,17 +8,29 @@ const Navigation = () => {
 
   const billingLinks = [{ path: `/settings/${user.slug}/billing`, name: 'Billing & Payments' }];
 
-  const userLinks = [
-    { path: `/settings/${user.slug}/connects`, name: 'Connects' },
-    { path: `/settings/${user.slug}/contact-info`, name: 'Contact Info' },
-    { path: `/settings/${user.slug}/profile`, name: 'My Profile' },
-    { path: `/settings/${user.slug}/profile/edit`, name: 'Edit Profile' },
-    { path: `/settings/${user.slug}/profile/settings`, name: 'Profile Settings' },
-    { path: `/settings/${user.slug}/pay`, name: 'Get Paid' },
-    { path: `/settings/${user.slug}/teams`, name: 'My Teams' },
-    { path: `/settings/${user.slug}/security`, name: 'Password & Security' },
-    { path: `/settings/${user.slug}/notifications/settings`, name: 'Notification Settings' },
-  ];
+  const userLinks =
+    user.role === 'REVIEWER'
+      ? [
+          { path: `/settings/${user.slug}/connects`, name: 'Connects' },
+          { path: `/settings/${user.slug}/contact-info`, name: 'Contact Info' },
+          { path: `/settings/${user.slug}/profile`, name: 'My Profile' },
+          { path: `/settings/${user.slug}/profile/edit`, name: 'Edit Profile' },
+          { path: `/settings/${user.slug}/profile/settings`, name: 'Profile Settings' },
+          { path: `/settings/${user.slug}/testimonials/`, name: 'Testimonials' },
+          { path: `/settings/${user.slug}/pay`, name: 'Get Paid' },
+          { path: `/settings/${user.slug}/teams`, name: 'My Teams' },
+          { path: `/settings/${user.slug}/security`, name: 'Password & Security' },
+          { path: `/settings/${user.slug}/notifications/settings`, name: 'Notification Settings' },
+        ]
+      : [
+          { path: `/settings/${user.slug}/connects`, name: 'Connects' },
+          { path: `/settings/${user.slug}/contact-info`, name: 'Contact Info' },
+          { path: `/settings/${user.slug}/profile`, name: 'My Profile' },
+          { path: `/settings/${user.slug}/profile/edit`, name: 'Edit Profile' },
+          { path: `/settings/${user.slug}/profile/settings`, name: 'Profile Settings' },
+          { path: `/settings/${user.slug}/security`, name: 'Password & Security' },
+          { path: `/settings/${user.slug}/notifications/settings`, name: 'Notification Settings' },
+        ];
 
   return (
     <div className="min-h-full min-w-[250px] p-4">

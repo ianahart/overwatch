@@ -14,6 +14,7 @@ import com.hart.overwatch.phone.Phone;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.refreshtoken.RefreshToken;
 import com.hart.overwatch.setting.Setting;
+import com.hart.overwatch.testimonial.Testimonial;
 import com.hart.overwatch.token.Token;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -104,6 +105,10 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<UserPaymentMethod> userPaymentMethods;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Testimonial> testimonials;
+
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "setting_id", referencedColumnName = "id")
@@ -171,6 +176,10 @@ public class User implements UserDetails {
         return id;
     }
 
+    public List<Testimonial> getTestimonials() {
+        return testimonials;
+    }
+
     public List<RefreshToken> getRefreshTokens() {
         return refreshTokens;
     }
@@ -231,6 +240,11 @@ public class User implements UserDetails {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+
+    public void setTestimonials(List<Testimonial> testimonials) {
+        this.testimonials = testimonials;
     }
 
 

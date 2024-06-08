@@ -53,6 +53,7 @@ import { phonesApi } from './apis/phonesApi';
 import { locationsApi } from './apis/locationsApi';
 import { profilesApi } from './apis/profilesApi';
 import { paymentMethodsApi } from './apis/paymentMethodsApi';
+import { testimonialsApi } from './apis/testimonialsApi';
 
 export const store = configureStore({
   reducer: {
@@ -75,6 +76,7 @@ export const store = configureStore({
     [locationsApi.reducerPath]: locationsApi.reducer,
     [profilesApi.reducerPath]: profilesApi.reducer,
     [paymentMethodsApi.reducerPath]: paymentMethodsApi.reducer,
+    [testimonialsApi.reducerPath]: testimonialsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -90,7 +92,8 @@ export const store = configureStore({
       .concat(phonesApi.middleware)
       .concat(locationsApi.middleware)
       .concat(profilesApi.middleware)
-      .concat(paymentMethodsApi.middleware);
+      .concat(paymentMethodsApi.middleware)
+      .concat(testimonialsApi.middleware);
   },
 });
 
@@ -176,4 +179,14 @@ export {
   useCreateLocationMutation,
   useFetchSingleLocationQuery,
 } from './apis/locationsApi';
-export { authsApi, heartbeatApi, settingsApi, phonesApi, locationsApi, profilesApi, paymentMethodsApi };
+export { useCreateTestimonialMutation } from './apis/testimonialsApi';
+export {
+  testimonialsApi,
+  authsApi,
+  heartbeatApi,
+  settingsApi,
+  phonesApi,
+  locationsApi,
+  profilesApi,
+  paymentMethodsApi,
+};

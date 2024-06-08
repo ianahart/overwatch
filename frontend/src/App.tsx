@@ -23,6 +23,7 @@ import ProfileSettingsRoute from './routes/Settings/ProfileSettingsRoute';
 import GetPaidRoute from './routes/Settings/GetPaidRoute';
 import TeamsRoute from './routes/Settings/TeamsRoute';
 import SecurityRoute from './routes/Settings/SecurityRoute';
+import TestimonialRoute from './routes/Settings/TestimonialRoute';
 import NotificationSettingsRoute from './routes/Settings/NotificationSettingsRoute';
 import OTPRoute from './routes/OTPRoute';
 
@@ -150,6 +151,14 @@ const router = createBrowserRouter(
           element={
             <RequireAuth>
               <NotificationSettingsRoute />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="testimonials"
+          element={
+            <RequireAuth>
+              <TestimonialRoute />
             </RequireAuth>
           }
         />
