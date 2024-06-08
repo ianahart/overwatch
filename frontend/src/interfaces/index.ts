@@ -122,6 +122,11 @@ export interface IProfileSetupForm {
   bio: IFormField<string>;
 }
 
+export interface ITestimonialForm {
+  name: { name: string; value: string; error: string; type: string; max: number };
+  text: { name: string; value: string; error: string; type: string; max: number };
+}
+
 export interface IBasicInfoForm {
   fullName: IFormField<string>;
   userName: IFormField<string>;
