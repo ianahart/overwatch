@@ -400,6 +400,15 @@ export interface IWorkExpResponse {
   workExps: IWorkExperience[];
 }
 
+export interface IUserProfileResponse {
+  id: number;
+  userId: number;
+  role: string;
+  country: string;
+  abbreviation: string;
+  city: string;
+}
+
 export interface IFetchProfileResponse {
   message: string;
   data: {
@@ -410,6 +419,26 @@ export interface IFetchProfileResponse {
     skills: ISkillsResponse;
     workExp: IWorkExpResponse;
   };
+}
+
+export interface IFullProfile {
+  userProfile: IUserProfileResponse;
+  basicInfo: IBasicInfoResponse;
+  additionalInfo: IAdditionalInfoResponse;
+  pckg: IPckgResponse;
+  profileSetup: IProfileSetupResponse;
+  skills: ISkillsResponse;
+  workExp: IWorkExpResponse;
+}
+
+export interface IFetchFullProfileResponse {
+  message: string;
+  data: IFullProfile;
+}
+
+export interface IFetchFullProfileRequest {
+  profileId: number;
+  token: string;
 }
 
 export interface IPaymentMethod {

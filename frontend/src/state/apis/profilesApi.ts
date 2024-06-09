@@ -2,6 +2,8 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import {
   ICreateAvatarRequest,
   ICreateAvatarResponse,
+  IFetchFullProfileRequest,
+  IFetchFullProfileResponse,
   IFetchProfileRequest,
   IFetchProfileResponse,
   IRemoveAvatarRequest,
@@ -16,13 +18,27 @@ const profilesApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints(builder) {
     return {
-      fetchProfile: builder.query<IFetchProfileResponse, IFetchProfileRequest>({
+      fetchProfile: builder.query<IFetchFullProfileResponse, IFetchFullProfileRequest>({
         query: ({ token, profileId }) => {
           if (profileId === 0 || profileId === undefined) {
             return '';
           }
           return {
             url: `/profiles/${profileId}`,
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+      }),
+      fetchPopulateProfile: builder.query<IFetchProfileResponse, IFetchProfileRequest>({
+        query: ({ token, profileId }) => {
+          if (profileId === 0 || profileId === undefined) {
+            return '';
+          }
+          return {
+            url: `/profiles/${profileId}/populate`,
             method: 'GET',
             headers: {
               Authorization: `Bearer ${token}`,
@@ -74,6 +90,11 @@ const profilesApi = createApi({
   },
 });
 
-export const { useFetchProfileQuery, useUpdateProfileMutation, useCreateAvatarMutation, useRemoveAvatarMutation } =
-  profilesApi;
+export const {
+  useFetchProfileQuery,
+  useFetchPopulateProfileQuery,
+  useUpdateProfileMutation,
+  useCreateAvatarMutation,
+  useRemoveAvatarMutation,
+} = profilesApi;
 export { profilesApi };

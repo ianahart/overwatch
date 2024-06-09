@@ -1,3 +1,42 @@
+export const profileState = {
+  additionalInfo: {
+    availability: [],
+    moreInfo: '',
+  },
+  basicInfo: {
+    contactNumber: '',
+    email: '',
+    fullName: '',
+    userName: '',
+  },
+  pckg: {
+    basic: { price: '', description: '', items: [] },
+    pro: { price: '', description: '', items: [] },
+    standard: { price: '', description: '', items: [] },
+  },
+  profileSetup: {
+    avatar: '',
+    tagLine: '',
+    bio: '',
+  },
+  skills: {
+    languages: [],
+    programmingLanguages: [],
+    qualifications: [],
+  },
+  userProfile: {
+    id: 0,
+    userId: 0,
+    role: '',
+    country: '',
+    abbreviation: '',
+    city: '',
+  },
+  workExp: {
+    workExps: [],
+  },
+};
+
 export const paginationState = {
   page: 0,
   pageSize: 3,

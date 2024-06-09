@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hart.overwatch.profile.request.RemoveAvatarRequest;
 import com.hart.overwatch.profile.request.UpdateProfileRequest;
 import com.hart.overwatch.profile.request.UploadAvatarRequest;
+import com.hart.overwatch.profile.response.GetFullProfileResponse;
 import com.hart.overwatch.profile.response.GetProfileResponse;
 import com.hart.overwatch.profile.response.RemoveAvatarResponse;
 import com.hart.overwatch.profile.response.UpdateProfileResponse;
@@ -52,11 +53,17 @@ public class ProfileController {
         return ResponseEntity.status(HttpStatus.OK).body(new UpdateProfileResponse("success"));
     }
 
-    @GetMapping(path = "/{profileId}")
-    public ResponseEntity<GetProfileResponse> getProfile(
+    @GetMapping(path = "/{profileId}/populate")
+    public ResponseEntity<GetProfileResponse> populateProfile(
             @PathVariable("profileId") Long profileId) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(new GetProfileResponse("success", this.profileService.getProfile(profileId)));
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new GetProfileResponse("success", this.profileService.populateProfile(profileId)));
     }
 
+    @GetMapping(path = "/{profileId}")
+    public ResponseEntity<GetFullProfileResponse> getProfile(
+            @PathVariable("profileId") Long profileId) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new GetFullProfileResponse("success", this.profileService.getProfile(profileId)));
+    }
 }

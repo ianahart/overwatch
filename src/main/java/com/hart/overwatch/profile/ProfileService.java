@@ -14,12 +14,14 @@ import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.profile.dto.AdditionalInfoDto;
 import com.hart.overwatch.profile.dto.BasicInfoDto;
 import com.hart.overwatch.profile.dto.FullPackageDto;
+import com.hart.overwatch.profile.dto.FullProfileDto;
 import com.hart.overwatch.profile.dto.ItemDto;
 import com.hart.overwatch.profile.dto.PackageDto;
 import com.hart.overwatch.profile.dto.PackagesDto;
 import com.hart.overwatch.profile.dto.ProfileDto;
 import com.hart.overwatch.profile.dto.ProfileSetupDto;
 import com.hart.overwatch.profile.dto.SkillsDto;
+import com.hart.overwatch.profile.dto.UserProfileDto;
 import com.hart.overwatch.profile.dto.WorkExpDto;
 import com.hart.overwatch.profile.dto.WorkExpsDto;
 import com.hart.overwatch.profile.request.RemoveAvatarRequest;
@@ -149,7 +151,7 @@ public class ProfileService {
 
     }
 
-    public ProfileDto getProfile(Long profileId) {
+    public ProfileDto populateProfile(Long profileId) {
         Profile profile = getProfileById(profileId);
 
         BasicInfoDto basicInfo = new BasicInfoDto(profile.getFullName(), profile.getUserName(),
@@ -173,6 +175,43 @@ public class ProfileService {
                 new AdditionalInfoDto(profile.getAvailability(), profile.getMoreInfo());
 
         return new ProfileDto(basicInfo, profileSetup, skills, workExps, packages, additionalInfo);
+
+    }
+
+
+    public FullProfileDto getProfile(Long profileId) {
+        Profile profile = getProfileById(profileId);
+        String country = profile.getUser().getLocation() == null ? ""
+                : profile.getUser().getLocation().getCountry();
+        String city = profile.getUser().getLocation() == null ? ""
+                : profile.getUser().getLocation().getCity();
+
+        UserProfileDto userProfile = new UserProfileDto(profile.getId(), profile.getUser().getId(),
+
+                profile.getUser().getRole(), country, profile.getUser().getAbbreviation(), city);
+
+        BasicInfoDto basicInfo = new BasicInfoDto(profile.getFullName(), profile.getUserName(),
+                profile.getEmail(), profile.getContactNumber());
+
+        ProfileSetupDto profileSetup =
+                new ProfileSetupDto(profile.getAvatarUrl(), profile.getTagLine(), profile.getBio());
+
+        SkillsDto skills = new SkillsDto(profile.getLanguages(), profile.getProgrammingLanguages(),
+                profile.getQualifications());
+
+        PackagesDto packages =
+                new PackagesDto(profile.getBasic(), profile.getStandard(), profile.getPro());
+
+
+
+        WorkExpsDto workExps = new WorkExpsDto(profile.getWorkExp());
+
+
+        AdditionalInfoDto additionalInfo =
+                new AdditionalInfoDto(profile.getAvailability(), profile.getMoreInfo());
+
+        return new FullProfileDto(userProfile, basicInfo, profileSetup, skills, workExps, packages,
+                additionalInfo);
 
     }
 
