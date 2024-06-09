@@ -16,7 +16,7 @@ import {
   updateProfileSetup,
   updateSkills,
   updateWorkExp,
-  useFetchProfileQuery,
+  useFetchPopulateProfileQuery,
   useUpdateProfileMutation,
 } from '../../../state/store';
 import { useNavigate } from 'react-router-dom';
@@ -46,7 +46,7 @@ const EditProfileForm = () => {
     [user.token, user.user.profileId]
   );
 
-  const { data } = useFetchProfileQuery(queryParameters);
+  const { data } = useFetchPopulateProfileQuery(queryParameters);
 
   useEffect(() => {
     if (data) {

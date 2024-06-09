@@ -162,6 +162,7 @@ export {
 } from './apis/usersApi';
 export {
   useFetchProfileQuery,
+  useFetchPopulateProfileQuery,
   useUpdateProfileMutation,
   useCreateAvatarMutation,
   useRemoveAvatarMutation,

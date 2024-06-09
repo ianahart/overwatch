@@ -52,6 +52,23 @@ input.PhoneInputInput {
   height: 35px;
 }
 
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td,
+th {
+  border: 1px solid rgb(31 41 55);
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #0c0a09;
+}
+
 @layer base {
   html {
     font-family: 'Nunito', system-ui, sans-serif;
