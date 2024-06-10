@@ -29,9 +29,23 @@ const packageFormSlice = createSlice({
   reducers: {
     updatePackages: (state, action: PayloadAction<IPckgResponse>) => {
       const { basic, standard, pro } = action.payload;
-      state.basic = { ...basic, price: basic.price || '' } || { price: '', description: '', items: [] };
-      state.standard = { ...standard, price: standard.price || '' } || { price: '', description: '', items: [] };
-      state.pro = { ...pro, price: pro.price || '' } || { price: '', description: '', items: [] };
+      if (basic === null) {
+        state.basic = initialState.basic;
+      } else {
+        state.basic = { ...basic, price: basic.price || '' } || { price: '', description: '', items: [] };
+      }
+
+      if (standard === null) {
+        state.standard = initialState.standard;
+      } else {
+        state.standard = { ...standard, price: standard.price || '' } || { price: '', description: '', items: [] };
+      }
+
+      if (pro === null) {
+        state.pro = initialState.pro;
+      } else {
+        state.pro = { ...pro, price: pro.price || '' } || { price: '', description: '', items: [] };
+      }
     },
     addPackageItem: (state, action: PayloadAction<{ name: string; value: string }>) => {
       const { name, value } = action.payload;
