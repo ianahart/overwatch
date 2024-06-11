@@ -11,7 +11,6 @@ const GuestNavbar = () => {
   const { isMobileOpen } = useSelector((store: TRootState) => store.navbar);
   const links = [
     { path: 'about', title: 'About' },
-    { path: 'explore', title: 'Explore' },
     { path: 'community', title: 'Community' },
     { path: 'signin', title: 'Sign In' },
     { path: 'signup', title: 'Sign Up' },

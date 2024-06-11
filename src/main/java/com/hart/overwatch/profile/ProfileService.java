@@ -6,12 +6,17 @@ import java.util.stream.Collectors;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.amazon.AmazonService;
+import com.hart.overwatch.pagination.PaginationService;
+import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.profile.dto.AdditionalInfoDto;
+import com.hart.overwatch.profile.dto.AllProfileDto;
 import com.hart.overwatch.profile.dto.BasicInfoDto;
 import com.hart.overwatch.profile.dto.FullPackageDto;
 import com.hart.overwatch.profile.dto.FullProfileDto;
@@ -35,13 +40,15 @@ public class ProfileService {
     private final ProfileRepository profileRepository;
     private final UserService userService;
     private final AmazonService amazonService;
+    private final PaginationService paginationService;
 
     @Autowired
     public ProfileService(ProfileRepository profileRepository, UserService userService,
-            AmazonService amazonService) {
+            AmazonService amazonService, PaginationService paginationService) {
         this.profileRepository = profileRepository;
         this.userService = userService;
         this.amazonService = amazonService;
+        this.paginationService = paginationService;
     }
 
     public Profile getProfileById(Long profileId) {
@@ -144,6 +151,7 @@ public class ProfileService {
         profile.setBasic(cleanPckg(request.getBasic()));
         profile.setStandard(cleanPckg(request.getStandard()));
         profile.setPro(cleanPckg(request.getPro()));
+        System.out.println(request.getAvailability());
         profile.setAvailability(request.getAvailability());
         profile.setMoreInfo(request.getMoreInfo());
 
@@ -212,6 +220,22 @@ public class ProfileService {
 
         return new FullProfileDto(userProfile, basicInfo, profileSetup, skills, workExps, packages,
                 additionalInfo);
+
+    }
+
+    private Page<AllProfileDto> getMostRecent(Pageable pageable) {
+        return this.profileRepository.getMostRecent(pageable);
+    }
+
+    public PaginationDto<AllProfileDto> getAllProfiles(String filterType, int page, int pageSize,
+            String direction) {
+        Pageable pageable = this.paginationService.getPageable(page, pageSize, direction);
+        Page<AllProfileDto> result = null;
+        result = getMostRecent(pageable);
+
+
+        return new PaginationDto<AllProfileDto>(result.getContent(), result.getNumber(), pageSize,
+                result.getTotalPages(), direction, result.getTotalElements());
 
     }
 

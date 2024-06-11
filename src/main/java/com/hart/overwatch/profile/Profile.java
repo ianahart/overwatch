@@ -70,7 +70,7 @@ public class Profile {
     @Column(name = "bio", length = 400)
     private String bio;
 
-    @Column(name = "tag_line", length = 50)
+    @Column(name = "tag_line", length = 150)
     private String tagLine;
 
     @Type(JsonType.class)
