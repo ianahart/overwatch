@@ -2,6 +2,8 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import {
   ICreateAvatarRequest,
   ICreateAvatarResponse,
+  IFetchAllProfileRequest,
+  IFetchAllProfileResponse,
   IFetchFullProfileRequest,
   IFetchFullProfileResponse,
   IFetchProfileRequest,
@@ -18,6 +20,18 @@ const profilesApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints(builder) {
     return {
+      fetchAllProfile: builder.query<IFetchAllProfileResponse, IFetchAllProfileRequest>({
+        query: ({ token, page, pageSize, direction, filter }) => {
+          return {
+            url: `/profiles/all/${filter}?page=${page}&pageSize=${pageSize}&direction=${direction}`,
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+      }),
+
       fetchProfile: builder.query<IFetchFullProfileResponse, IFetchFullProfileRequest>({
         query: ({ token, profileId }) => {
           if (profileId === 0 || profileId === undefined) {
@@ -91,6 +105,8 @@ const profilesApi = createApi({
 });
 
 export const {
+  useFetchAllProfileQuery,
+  useLazyFetchAllProfileQuery,
   useFetchProfileQuery,
   useFetchPopulateProfileQuery,
   useUpdateProfileMutation,

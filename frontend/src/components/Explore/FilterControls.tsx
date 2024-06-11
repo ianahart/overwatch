@@ -1,8 +1,9 @@
 export interface IFilterControlsProps {
   handleSetFilter: (value: string, desc: string) => void;
+  fetchProfiles: (paginate: boolean, filterValue: string) => Promise<void>;
   filter: { value: string; desc: string };
 }
-const FilterControls = ({ handleSetFilter, filter }: IFilterControlsProps) => {
+const FilterControls = ({ handleSetFilter, fetchProfiles, filter }: IFilterControlsProps) => {
   const filters = [
     {
       id: 1,
@@ -20,6 +21,11 @@ const FilterControls = ({ handleSetFilter, filter }: IFilterControlsProps) => {
     },
   ];
 
+  const handleOnClick = async (value: string, desc: string) => {
+    handleSetFilter(value, desc);
+    await fetchProfiles(false, value);
+  };
+
   return (
     <ul className="flex items-center border-b border-gray-800 w-full">
       {filters.map(({ id, name, value, desc }) => {
@@ -27,7 +33,7 @@ const FilterControls = ({ handleSetFilter, filter }: IFilterControlsProps) => {
           <li
             className={`px-2 cursor-pointer ${filter.value === value ? 'active-link' : ''}`}
             key={id}
-            onClick={() => handleSetFilter(value, desc)}
+            onClick={() => handleOnClick(value, desc)}
           >
             {name}
           </li>

@@ -524,6 +524,19 @@ export interface IDeleteTestimonialRequest {
   token: string;
 }
 
+export interface IFetchAllProfileResponse {
+  message: string;
+  data: {};
+}
+
+export interface IFetchAllProfileRequest {
+  token: string;
+  page: number;
+  pageSize: number;
+  direction: string;
+  filter: string;
+}
+
 export interface IDeleteTestimonialResponse extends IBaseResponse {}
 
 export interface ICreateTestimonialResponse extends IBaseResponse {}

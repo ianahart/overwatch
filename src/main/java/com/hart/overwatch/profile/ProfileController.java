@@ -8,10 +8,12 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.hart.overwatch.profile.request.RemoveAvatarRequest;
 import com.hart.overwatch.profile.request.UpdateProfileRequest;
 import com.hart.overwatch.profile.request.UploadAvatarRequest;
+import com.hart.overwatch.profile.response.GetAllProfileResponse;
 import com.hart.overwatch.profile.response.GetFullProfileResponse;
 import com.hart.overwatch.profile.response.GetProfileResponse;
 import com.hart.overwatch.profile.response.RemoveAvatarResponse;
@@ -66,4 +68,17 @@ public class ProfileController {
         return ResponseEntity.status(HttpStatus.OK).body(
                 new GetFullProfileResponse("success", this.profileService.getProfile(profileId)));
     }
+
+
+
+    @GetMapping(path = "/all/{filterType}")
+    public ResponseEntity<GetAllProfileResponse> getAllProfiles(
+            @PathVariable("filterType") String filterType, @RequestParam("page") int page,
+            @RequestParam("pageSize") int pageSize, @RequestParam("direction") String direction) {
+        return ResponseEntity.status(HttpStatus.OK).body(new GetAllProfileResponse("success",
+                this.profileService.getAllProfiles(filterType, page, pageSize, direction)));
+
+    }
+
+
 }

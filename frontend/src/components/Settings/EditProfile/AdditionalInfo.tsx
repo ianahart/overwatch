@@ -8,7 +8,6 @@ dayjs.extend(timezone);
 
 import { TRootState, addTimeSlot, removeTimeSlot, updateMoreInfo } from '../../../state/store';
 import Header from '../Header';
-import FormTextareaField from '../../Form/FormTextareaField';
 
 interface IAddSlotFormProps {
   day: string;

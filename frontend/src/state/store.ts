@@ -161,6 +161,8 @@ export {
   useDeleteUserMutation,
 } from './apis/usersApi';
 export {
+  useFetchAllProfileQuery,
+  useLazyFetchAllProfileQuery,
   useFetchProfileQuery,
   useFetchPopulateProfileQuery,
   useUpdateProfileMutation,
