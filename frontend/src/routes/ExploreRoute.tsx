@@ -1,5 +1,7 @@
+import Explore from '../components/Explore';
+
 const ExploreRoute = () => {
-  return <h1>Explore Route</h1>;
+  return <Explore />;
 };
 
 export default ExploreRoute;

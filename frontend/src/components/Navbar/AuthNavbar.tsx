@@ -28,7 +28,7 @@ const AuthNavbar = () => {
   };
 
   const links = [
-    { path: 'explore', title: 'Explore', icon: <IoTelescopeOutline /> },
+    { path: 'explore/most-recent', title: 'Explore', icon: <IoTelescopeOutline /> },
     { path: 'community', title: 'Community', icon: <IoPeopleOutline /> },
     { path: `settings/${user.slug}/profile`, title: 'Settings', icon: <IoSettingsOutline /> },
   ];

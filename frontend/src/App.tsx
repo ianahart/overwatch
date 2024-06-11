@@ -31,7 +31,14 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootLayout />}>
       <Route path="about" element={<AboutRoute />} />
-      <Route path="explore" element={<ExploreRoute />} />
+      <Route
+        path="explore/:filter"
+        element={
+          <RequireAuth>
+            <ExploreRoute />
+          </RequireAuth>
+        }
+      />
       <Route path="community" element={<CommunityRoute />} />
       <Route
         path="signin"
