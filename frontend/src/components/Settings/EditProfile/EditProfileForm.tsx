@@ -20,6 +20,7 @@ import {
   useUpdateProfileMutation,
 } from '../../../state/store';
 import { useNavigate } from 'react-router-dom';
+import YourLanguages from './YourLangauges';
 
 const EditProfileForm = () => {
   const dispatch = useDispatch();
@@ -37,7 +38,7 @@ const EditProfileForm = () => {
   const canShowNextButton = useMemo(() => {
     return (
       (formStep < 5 && user.user.role.toLowerCase() === 'reviewer') ||
-      (formStep < 1 && user.user.role.toLowerCase() === 'user')
+      (formStep < 2 && user.user.role.toLowerCase() === 'user')
     );
   }, [formStep, user.user.role]);
 
@@ -66,6 +67,8 @@ const EditProfileForm = () => {
           return <BasicInfo />;
         case 1:
           return <ProfileSetup />;
+        case 2:
+          return <YourLanguages />;
         default:
           return <div>You do not have permission to view this content.</div>;
       }
@@ -139,9 +142,15 @@ const EditProfileForm = () => {
       });
   };
 
+  const handleOnKeyDown = (e: React.KeyboardEvent<HTMLFormElement | HTMLInputElement>) => {
+    if (e.key.toLowerCase() === 'enter') {
+      e.preventDefault();
+    }
+  };
+
   return (
     <section className="border rounded-lg p-4 max-w-[650px] border-slate-800 my-8">
-      <form onSubmit={handleOnSubmit}>
+      <form onSubmit={handleOnSubmit} onKeyDown={handleOnKeyDown}>
         {renderFormStep()}
         <div className="my-8 justify-center flex">
           {formStep > 0 && (
@@ -162,7 +171,7 @@ const EditProfileForm = () => {
               Next
             </button>
           )}
-          {(formStep === 5 || (formStep === 1 && user.user.role.toLowerCase() === 'user')) && (
+          {(formStep === 5 || (formStep === 2 && user.user.role.toLowerCase() === 'user')) && (
             <button type="submit" className="btn mx-4 min-w-24">
               Update
             </button>
