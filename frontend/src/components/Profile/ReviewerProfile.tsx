@@ -4,6 +4,7 @@ import BasicInfo from './BasicInfo';
 import ContactInfo from './ContactInfo';
 import Pckgs from './Pckgs';
 import Skills from './Skills';
+import Testimonials from './Testimonials';
 import TimeSlots from './TimeSlots';
 import WorkExp from './WorkExp';
 
@@ -46,6 +47,7 @@ const ReviewerProfile = ({ profile }: IReviewerProfileProps) => {
             bio={profile.profileSetup.bio}
             tagLine={profile.profileSetup.tagLine}
           />
+          <Testimonials userId={profile.userProfile.userId} />
         </div>
       </div>
     </>

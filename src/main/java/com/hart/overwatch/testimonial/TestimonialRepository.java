@@ -1,5 +1,7 @@
 package com.hart.overwatch.testimonial;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,6 +14,9 @@ import com.hart.overwatch.testimonial.dto.TestimonialDto;
 public interface TestimonialRepository extends JpaRepository<Testimonial, Long> {
 
 
+    List<Testimonial> findTop3ByUserIdOrderByCreatedAtDesc(Long userId);
+
+
     @Query(value = """
               SELECT EXISTS(SELECT 1 FROM Testimonial t
                INNER JOIN t.user u
@@ -21,6 +26,7 @@ public interface TestimonialRepository extends JpaRepository<Testimonial, Long> 
             """)
 
     boolean testimonialExists(@Param("name") String name, @Param("userId") Long userId);
+
 
 
     @Query(value = """
