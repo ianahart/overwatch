@@ -181,6 +181,7 @@ export {
   useFetchSingleLocationQuery,
 } from './apis/locationsApi';
 export {
+  useFetchTopTestimonialsQuery,
   useDeleteTestimonialMutation,
   useFetchTestimonialsQuery,
   useLazyFetchTestimonialsQuery,

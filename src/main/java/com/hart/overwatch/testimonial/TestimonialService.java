@@ -1,5 +1,6 @@
 package com.hart.overwatch.testimonial;
 
+import java.util.List;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
@@ -14,6 +15,7 @@ import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.advice.BadRequestException;
@@ -104,6 +106,18 @@ public class TestimonialService {
             this.testimonialRepository.delete(testimonial);
 
         } catch (DataAccessException ex) {
+            throw ex;
+        }
+    }
+
+    public List<TestimonialDto> getLatestTestimonials(Long userId) {
+        try {
+
+            Pageable pageable = PageRequest.of(0, 3);
+            return this.testimonialRepository.getTestimonials(pageable, userId).getContent();
+
+        } catch (DataAccessException ex) {
+            ex.printStackTrace();
             throw ex;
         }
     }

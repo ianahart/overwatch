@@ -6,6 +6,8 @@ import {
   IDeleteTestimonialResponse,
   IFetchTestimonialsRequest,
   IFetchTestimonialsResponse,
+  IFetchTopTestimonialsRequest,
+  IFetchTopTestimonialsResponse,
 } from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
@@ -15,6 +17,26 @@ const testimonialsApi = createApi({
   tagTypes: ['Testimonial'],
   endpoints(builder) {
     return {
+      fetchTopTestimonials: builder.query<IFetchTopTestimonialsResponse, IFetchTopTestimonialsRequest>({
+        query: ({ userId, token }) => {
+          if (userId === 0 || userId === null) {
+            return '';
+          }
+          return {
+            url: `/testimonials/latest?userId=${userId}`,
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+        //@ts-ignore
+        providesTags: (result, error, arg) =>
+          result
+            ? [...result.data.map(({ id }) => ({ type: 'Testimonial', id })), { type: 'Testimonial', id: 'LIST' }]
+            : [{ type: 'Testimonial', id: 'LIST' }],
+      }),
+
       fetchTestimonials: builder.query<IFetchTestimonialsResponse, IFetchTestimonialsRequest>({
         query: ({ userId, token, page, pageSize, direction }) => {
           if (userId === 0 || userId === null) {
@@ -71,6 +93,7 @@ const testimonialsApi = createApi({
   },
 });
 export const {
+  useFetchTopTestimonialsQuery,
   useDeleteTestimonialMutation,
   useCreateTestimonialMutation,
   useFetchTestimonialsQuery,

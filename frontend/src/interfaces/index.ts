@@ -509,6 +509,16 @@ export interface IFetchTestimonialsResponse {
   };
 }
 
+export interface IFetchTopTestimonialsRequest {
+  token: string;
+  userId: number;
+}
+
+export interface IFetchTopTestimonialsResponse {
+  message: string;
+  data: ITestimonial[];
+}
+
 export interface IDeleteTestimonialRequest {
   id: number;
   token: string;

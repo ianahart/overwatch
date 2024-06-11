@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hart.overwatch.testimonial.request.CreateTestimonialRequest;
 import com.hart.overwatch.testimonial.response.CreateTestimonialResponse;
 import com.hart.overwatch.testimonial.response.DeleteTestimonialResponse;
+import com.hart.overwatch.testimonial.response.GetLatestTestimonialsResponse;
 import com.hart.overwatch.testimonial.response.GetTestimonialsResponse;
 import jakarta.validation.Valid;
 
@@ -30,7 +31,8 @@ public class TestimonialController {
 
 
     @DeleteMapping(path = "/{testimonialId}")
-    public ResponseEntity<DeleteTestimonialResponse> deleteTestimonial(@PathVariable("testimonialId") Long testimonialId) {
+    public ResponseEntity<DeleteTestimonialResponse> deleteTestimonial(
+            @PathVariable("testimonialId") Long testimonialId) {
         this.testimonialService.deleteTestimonial(testimonialId);
 
         return ResponseEntity.status(HttpStatus.OK).body(new DeleteTestimonialResponse("success"));
@@ -52,5 +54,13 @@ public class TestimonialController {
             @RequestParam("pageSize") int pageSize, @RequestParam("direction") String direction) {
         return ResponseEntity.status(HttpStatus.OK).body(new GetTestimonialsResponse("success",
                 this.testimonialService.getTestimonials(userId, page, pageSize, direction)));
+    }
+
+
+    @GetMapping(path = "/latest")
+    public ResponseEntity<GetLatestTestimonialsResponse> getLatestTestimonials(
+            @RequestParam("userId") Long userId) {
+        return ResponseEntity.status(HttpStatus.OK).body(new GetLatestTestimonialsResponse(
+                "success", this.testimonialService.getLatestTestimonials(userId)));
     }
 }
