@@ -16,11 +16,11 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
 
     @Query(value = """
                 SELECT p.id AS id, u.id AS userId, p.full_name AS fullName, p.avatar_url AS avatarUrl,
-                       l.country AS country, p.availability AS availability, p.programming_languages AS programmingLanguages
+                       l.country AS country, p.created_at AS createdAt, p.availability AS availability, p.programming_languages AS programmingLanguages
                 FROM _user u
                 JOIN profile p ON u.profile_id = p.id
                 JOIN location l ON u.id = l.user_id
-                ORDER BY p.id DESC
+                WHERE u.role = 'REVIEWER'
             """,
             nativeQuery = true)
     Page<Map<String, Object>> getMostRecent(@Param("pageable") Pageable pageable);
@@ -28,11 +28,12 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
 
     @Query(value = """
                 SELECT p.id AS id, u.id AS userId, p.full_name AS fullName, p.avatar_url AS avatarUrl,
-                       l.country AS country, p.availability AS availability, p.programming_languages AS programmingLanguages
+                       l.country AS country, p.created_at AS createdAt, p.availability AS availability, p.programming_languages AS programmingLanguages
                 FROM _user u
                 JOIN profile p ON u.profile_id = p.id
                 JOIN location l ON u.id = l.user_id
-                WHERE LOWER(l.country) = :full OR LOWER(l.country) = :abbrev
+                WHERE (LOWER(l.country) = :full OR LOWER(l.country) = :abbrev)
+              AND u.role = 'REVIEWER'
             """,
             nativeQuery = true)
     Page<Map<String, Object>> getDomestic(@Param("pageable") Pageable pageable,

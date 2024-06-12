@@ -2,6 +2,7 @@ package com.hart.overwatch.pagination;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,4 +27,14 @@ public class PaginationService {
 
         return PageRequest.of(currentPage, pageSize);
     }
+
+
+    public Pageable getSortedPageable(int page, int pageSize, String direction, String order) {
+        int currentPage = paginate(page, direction);
+        Sort sortOrder = order.equals("desc") ? Sort.by("createdAt").descending()
+                : Sort.by("createdAt").ascending();
+
+        return PageRequest.of(currentPage, pageSize, sortOrder);
+    }
+
 }

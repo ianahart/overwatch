@@ -23,7 +23,7 @@ const Explore = () => {
   const fetchProfiles = async (paginate: boolean, filterValue: string) => {
     try {
       const pageNum = paginate ? pag.page : -1;
-      const params = { token, page: pageNum, direction: 'next', pageSize: 1, filter: filterValue };
+      const params = { token, page: pageNum, direction: 'next', pageSize: 5, filter: filterValue };
       const response = await fetchAllProfiles(params).unwrap();
       const { items, direction, page, pageSize, totalElements, totalPages } = response.data;
 
@@ -44,7 +44,7 @@ const Explore = () => {
 
   useEffect(() => {
     navigate(`/explore/${filter.value}`);
-        setProfiles([])
+    setProfiles([]);
   }, [filter.value]);
 
   useEffect(() => {

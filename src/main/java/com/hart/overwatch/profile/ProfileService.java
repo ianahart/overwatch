@@ -1,5 +1,6 @@
 package com.hart.overwatch.profile;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -251,6 +252,19 @@ public class ProfileService {
     }
 
 
+    private void attachProfileStatistics(AllProfileDto profile, Long userId,
+            List<FullAvailabilityDto> availability) {
+        Boolean weekendsAvailable = availability.stream()
+                .filter(obj -> obj.getDay().equalsIgnoreCase("saturday")
+                        || obj.getDay().equalsIgnoreCase("sunday"))
+                .flatMap(obj -> obj.getSlots().stream())
+                .anyMatch(innerObj -> innerObj.getEndTime() != null
+                        && innerObj.getStartTime() != null);
+        profile.setWeekendsAvailable(weekendsAvailable);
+
+        // add numOfReviews and reviewAvgRating
+    }
+
 
     private AllProfileDto mapToAllProfileDto(Map<String, Object> rawResult) {
         Long id = ((Number) rawResult.get("id")).longValue();
@@ -258,14 +272,16 @@ public class ProfileService {
         String fullName = (String) rawResult.get("fullName");
         String avatarUrl = (String) rawResult.get("avatarUrl");
         String country = (String) rawResult.get("country");
+        Timestamp createdAt = (Timestamp) rawResult.get("createdAt");
         String availabilityJson = (String) rawResult.get("availability");
         String programmingLanguagesJson = (String) rawResult.get("programmingLanguages");
         List<ItemDto> programmingLanguages = null;
         List<FullAvailabilityDto> availability = null;
         try {
             availability = objectMapper.readValue(availabilityJson,
-
                     new TypeReference<List<FullAvailabilityDto>>() {});
+
+
 
             programmingLanguages = objectMapper.readValue(programmingLanguagesJson,
                     new TypeReference<List<ItemDto>>() {});
@@ -273,13 +289,20 @@ public class ProfileService {
             System.out.println("Unable to parse json availibility and programming languages");
         }
 
-        return new AllProfileDto(id, userId, fullName, avatarUrl, country, availability,
-                programmingLanguages);
+
+        AllProfileDto allProfile = new AllProfileDto(id, userId, fullName, avatarUrl, country,
+                createdAt, availability, programmingLanguages);
+
+        attachProfileStatistics(allProfile, userId, availability);
+        return allProfile;
+
     }
 
     public PaginationDto<AllProfileDto> getAllProfiles(String filterType, int page, int pageSize,
             String direction) {
-        Pageable pageable = this.paginationService.getPageable(page, pageSize, direction);
+        Pageable pageable = filterType.equals("most-recent")
+                ? this.paginationService.getSortedPageable(page, pageSize, direction, "desc")
+                : this.paginationService.getPageable(page, pageSize, direction);
         Page<AllProfileDto> result = null;
         switch (filterType) {
             case "most-recent":
