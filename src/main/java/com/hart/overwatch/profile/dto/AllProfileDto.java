@@ -16,19 +16,21 @@ public class AllProfileDto {
 
     private List<FullAvailabilityDto> availability;
 
+    private List<ItemDto> programmingLanguages;
 
     public AllProfileDto() {
 
     }
 
     public AllProfileDto(Long id, Long userId, String fullName, String avatarUrl, String country,
-            List<FullAvailabilityDto> availability) {
+            List<FullAvailabilityDto> availability, List<ItemDto> programmingLanguages) {
         this.id = id;
         this.userId = userId;
         this.fullName = fullName;
         this.avatarUrl = avatarUrl;
         this.country = country;
         this.availability = availability;
+        this.programmingLanguages = programmingLanguages;
     }
 
     public Long getId() {
@@ -56,6 +58,10 @@ public class AllProfileDto {
         return availability;
     }
 
+    public List<ItemDto> getProgrammingLanguages() {
+        return programmingLanguages;
+    }
+
 
     public void setId(Long id) {
         this.id = id;
@@ -81,5 +87,8 @@ public class AllProfileDto {
         this.availability = availability;
     }
 
+    public void setProgrammingLanguages(List<ItemDto> programmingLanguages) {
+        this.programmingLanguages = programmingLanguages;
+    }
 
 }

@@ -2,11 +2,16 @@ package com.hart.overwatch.profile;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.advice.NotFoundException;
@@ -18,6 +23,7 @@ import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.profile.dto.AdditionalInfoDto;
 import com.hart.overwatch.profile.dto.AllProfileDto;
 import com.hart.overwatch.profile.dto.BasicInfoDto;
+import com.hart.overwatch.profile.dto.FullAvailabilityDto;
 import com.hart.overwatch.profile.dto.FullPackageDto;
 import com.hart.overwatch.profile.dto.FullProfileDto;
 import com.hart.overwatch.profile.dto.ItemDto;
@@ -41,14 +47,17 @@ public class ProfileService {
     private final UserService userService;
     private final AmazonService amazonService;
     private final PaginationService paginationService;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     public ProfileService(ProfileRepository profileRepository, UserService userService,
-            AmazonService amazonService, PaginationService paginationService) {
+            AmazonService amazonService, PaginationService paginationService,
+            ObjectMapper objectMapper) {
         this.profileRepository = profileRepository;
         this.userService = userService;
         this.amazonService = amazonService;
         this.paginationService = paginationService;
+        this.objectMapper = objectMapper;
     }
 
     public Profile getProfileById(Long profileId) {
@@ -224,14 +233,65 @@ public class ProfileService {
     }
 
     private Page<AllProfileDto> getMostRecent(Pageable pageable) {
-        return this.profileRepository.getMostRecent(pageable);
+        Page<Map<String, Object>> rawResults = profileRepository.getMostRecent(pageable);
+        List<AllProfileDto> profiles =
+                rawResults.stream().map(this::mapToAllProfileDto).collect(Collectors.toList());
+        return new PageImpl<>(profiles, pageable, rawResults.getTotalElements());
+    }
+
+
+    private Page<AllProfileDto> getDomestic(Pageable pageable) {
+        String full = "united states";
+        String abbrev = "us";
+        Page<Map<String, Object>> rawResults =
+                profileRepository.getDomestic(pageable, full, abbrev);
+        List<AllProfileDto> profiles =
+                rawResults.stream().map(this::mapToAllProfileDto).collect(Collectors.toList());
+        return new PageImpl<>(profiles, pageable, rawResults.getTotalElements());
+    }
+
+
+
+    private AllProfileDto mapToAllProfileDto(Map<String, Object> rawResult) {
+        Long id = ((Number) rawResult.get("id")).longValue();
+        Long userId = ((Number) rawResult.get("userId")).longValue();
+        String fullName = (String) rawResult.get("fullName");
+        String avatarUrl = (String) rawResult.get("avatarUrl");
+        String country = (String) rawResult.get("country");
+        String availabilityJson = (String) rawResult.get("availability");
+        String programmingLanguagesJson = (String) rawResult.get("programmingLanguages");
+        List<ItemDto> programmingLanguages = null;
+        List<FullAvailabilityDto> availability = null;
+        try {
+            availability = objectMapper.readValue(availabilityJson,
+
+                    new TypeReference<List<FullAvailabilityDto>>() {});
+
+            programmingLanguages = objectMapper.readValue(programmingLanguagesJson,
+                    new TypeReference<List<ItemDto>>() {});
+        } catch (Exception e) {
+            System.out.println("Unable to parse json availibility and programming languages");
+        }
+
+        return new AllProfileDto(id, userId, fullName, avatarUrl, country, availability,
+                programmingLanguages);
     }
 
     public PaginationDto<AllProfileDto> getAllProfiles(String filterType, int page, int pageSize,
             String direction) {
         Pageable pageable = this.paginationService.getPageable(page, pageSize, direction);
         Page<AllProfileDto> result = null;
-        result = getMostRecent(pageable);
+        switch (filterType) {
+            case "most-recent":
+                result = getMostRecent(pageable);
+                break;
+            case "domestic":
+                result = getDomestic(pageable);
+                break;
+            default:
+                result = getMostRecent(pageable);
+                break;
+        }
 
 
         return new PaginationDto<AllProfileDto>(result.getContent(), result.getNumber(), pageSize,

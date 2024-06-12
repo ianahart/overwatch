@@ -4,22 +4,16 @@ import { useNavigate, useParams } from 'react-router-dom';
 import FilterControls from './FilterControls';
 import { paginationState } from '../../data';
 import { TRootState, useLazyFetchAllProfileQuery } from '../../state/store';
+import { IMinProfile } from '../../interfaces';
 
 const initialDescriptionState = 'Browse Reviewers that have just signed up and our new to the platform.';
-
-//  const { data, isLoading } = useFetchTestimonialsQuery({
-//    userId: user.id,
-//    token,
-//    page: -1,
-//    pageSize: 2,
-//    direction: 'next',
-//  });
 
 const Explore = () => {
   const { token } = useSelector((store: TRootState) => store.user);
   const [fetchAllProfiles] = useLazyFetchAllProfileQuery();
   const params = useParams();
   const navigate = useNavigate();
+  const [profiles, setProfiles] = useState<IMinProfile[]>([]);
   const [pag, setPag] = useState(paginationState);
   const [filter, setFilter] = useState({
     value: params.filter as string,
@@ -31,6 +25,17 @@ const Explore = () => {
       const pageNum = paginate ? pag.page : -1;
       const params = { token, page: pageNum, direction: 'next', pageSize: 1, filter: filterValue };
       const response = await fetchAllProfiles(params).unwrap();
+      const { items, direction, page, pageSize, totalElements, totalPages } = response.data;
+
+      setPag((prevState) => ({
+        ...prevState,
+        direction,
+        page,
+        pageSize,
+        totalElements,
+        totalPages,
+      }));
+      setProfiles((prevState) => [...prevState, ...items]);
       console.log(response);
     } catch (err) {
       console.log(err);
@@ -39,6 +44,7 @@ const Explore = () => {
 
   useEffect(() => {
     navigate(`/explore/${filter.value}`);
+        setProfiles([])
   }, [filter.value]);
 
   useEffect(() => {
