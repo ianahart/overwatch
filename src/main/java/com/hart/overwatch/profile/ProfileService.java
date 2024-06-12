@@ -297,11 +297,17 @@ public class ProfileService {
         Timestamp createdAt = (Timestamp) rawResult.get("createdAt");
         String availabilityJson = (String) rawResult.get("availability");
         String programmingLanguagesJson = (String) rawResult.get("programmingLanguages");
-        System.out.println("Programming Languages JSON: " + programmingLanguagesJson);
+        String basicJson = (String) rawResult.get("basic");
 
         List<ItemDto> programmingLanguages = null;
         List<FullAvailabilityDto> availability = null;
+        FullPackageDto basic = null;
         try {
+
+            if (basicJson != null) {
+                basic = objectMapper.readValue(basicJson, new TypeReference<FullPackageDto>() {});
+            }
+
             if (availabilityJson != null) {
                 availability = objectMapper.readValue(availabilityJson,
                         new TypeReference<List<FullAvailabilityDto>>() {});
@@ -316,7 +322,7 @@ public class ProfileService {
         }
 
         AllProfileDto allProfile = new AllProfileDto(id, userId, fullName, avatarUrl, country,
-                createdAt, availability, programmingLanguages);
+                createdAt, availability, programmingLanguages, basic);
 
         if (availability != null) {
             attachProfileStatistics(allProfile, userId, availability);

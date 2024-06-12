@@ -206,7 +206,12 @@ export interface IMinProfile {
   fullName: string;
   id: number;
   programmingLanguages: IProgrammingLanguage[];
+  basic: IPackage;
   userId: number;
+  numOfReviews: number;
+  createdAt: string;
+  weekendsAvailable: boolean;
+  reviewAvgRating: number;
 }
 
 export interface ISignOut {

@@ -21,7 +21,8 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
                        l.country AS country,
                        p.created_at AS createdAt,
                        p.availability AS availability,
-                       p.programming_languages AS programmingLanguages
+                       p.programming_languages AS programmingLanguages,
+                       p.basic AS basic
                 FROM _user u
                 JOIN profile p ON u.profile_id = p.id
                 JOIN location l ON u.id = l.user_id
@@ -38,7 +39,9 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
 
     @Query(value = """
                 SELECT p.id AS id, u.id AS userId, p.full_name AS fullName, p.avatar_url AS avatarUrl,
-                       l.country AS country, p.created_at AS createdAt, p.availability AS availability, p.programming_languages AS programmingLanguages
+                       l.country AS country, p.created_at AS createdAt, p.availability AS availability, p.programming_languages AS programmingLanguages,
+                       p.basic AS basic
+
                 FROM _user u
                 JOIN profile p ON u.profile_id = p.id
                 JOIN location l ON u.id = l.user_id
@@ -50,7 +53,9 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
 
     @Query(value = """
                 SELECT p.id AS id, u.id AS userId, p.full_name AS fullName, p.avatar_url AS avatarUrl,
-                       l.country AS country, p.created_at AS createdAt, p.availability AS availability, p.programming_languages AS programmingLanguages
+                       l.country AS country, p.created_at AS createdAt, p.availability AS availability, p.programming_languages AS programmingLanguages,
+                       p.basic AS basic
+
                 FROM _user u
                 JOIN profile p ON u.profile_id = p.id
                 JOIN location l ON u.id = l.user_id
