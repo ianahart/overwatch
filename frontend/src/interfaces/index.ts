@@ -199,6 +199,16 @@ export interface IChangePasswordForm {
   curPassword: IFormField<string>;
 }
 
+export interface IMinProfile {
+  availability: IDayAvailability[];
+  avatarUrl: string;
+  country: string;
+  fullName: string;
+  id: number;
+  programmingLanguages: IProgrammingLanguage[];
+  userId: number;
+}
+
 export interface ISignOut {
   refreshToken: string;
   token: string;
@@ -526,7 +536,14 @@ export interface IDeleteTestimonialRequest {
 
 export interface IFetchAllProfileResponse {
   message: string;
-  data: {};
+  data: {
+    page: number;
+    pageSize: number;
+    totalElements: number;
+    direction: string;
+    totalPages: number;
+    items: IMinProfile[];
+  };
 }
 
 export interface IFetchAllProfileRequest {

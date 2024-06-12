@@ -1,5 +1,6 @@
 package com.hart.overwatch.profile.dto;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public class AllProfileDto {
@@ -14,25 +15,44 @@ public class AllProfileDto {
 
     private String country;
 
+    private Timestamp createdAt;
+
     private List<FullAvailabilityDto> availability;
 
+    private List<ItemDto> programmingLanguages;
+
+    // Not in constructor
+
+
+    private Boolean weekendsAvailable;
+
+    private Integer numOfReviews;
+
+    private Integer reviewAvgRating;
 
     public AllProfileDto() {
 
     }
 
     public AllProfileDto(Long id, Long userId, String fullName, String avatarUrl, String country,
-            List<FullAvailabilityDto> availability) {
+            Timestamp createdAt, List<FullAvailabilityDto> availability,
+            List<ItemDto> programmingLanguages) {
         this.id = id;
         this.userId = userId;
         this.fullName = fullName;
         this.avatarUrl = avatarUrl;
         this.country = country;
+        this.createdAt = createdAt;
         this.availability = availability;
+        this.programmingLanguages = programmingLanguages;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
     }
 
 
@@ -52,13 +72,42 @@ public class AllProfileDto {
         return avatarUrl;
     }
 
+    public Integer getNumOfReviews() {
+        return numOfReviews;
+    }
+
+    public Integer getReviewAvgRating() {
+        return reviewAvgRating;
+    }
+
+    public Boolean getWeekendsAvailable() {
+        return weekendsAvailable;
+    }
+
     public List<FullAvailabilityDto> getAvailability() {
         return availability;
+    }
+
+    public List<ItemDto> getProgrammingLanguages() {
+        return programmingLanguages;
     }
 
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+
+    public void setNumOfReviews(Integer numOfReviews) {
+        this.numOfReviews = numOfReviews;
+    }
+
+    public void setReviewAvgRating(Integer reviewAvgRating) {
+        this.reviewAvgRating = reviewAvgRating;
+    }
+
+    public void setWeekendsAvailable(Boolean weekendsAvailable) {
+        this.weekendsAvailable = weekendsAvailable;
     }
 
     public void setUserId(Long userId) {
@@ -81,5 +130,12 @@ public class AllProfileDto {
         this.availability = availability;
     }
 
+    public void setProgrammingLanguages(List<ItemDto> programmingLanguages) {
+        this.programmingLanguages = programmingLanguages;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
 
 }

@@ -1,12 +1,18 @@
 package com.hart.overwatch.profile;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.advice.NotFoundException;
@@ -18,6 +24,7 @@ import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.profile.dto.AdditionalInfoDto;
 import com.hart.overwatch.profile.dto.AllProfileDto;
 import com.hart.overwatch.profile.dto.BasicInfoDto;
+import com.hart.overwatch.profile.dto.FullAvailabilityDto;
 import com.hart.overwatch.profile.dto.FullPackageDto;
 import com.hart.overwatch.profile.dto.FullProfileDto;
 import com.hart.overwatch.profile.dto.ItemDto;
@@ -32,6 +39,7 @@ import com.hart.overwatch.profile.dto.WorkExpsDto;
 import com.hart.overwatch.profile.request.RemoveAvatarRequest;
 import com.hart.overwatch.profile.request.UpdateProfileRequest;
 import com.hart.overwatch.profile.request.UploadAvatarRequest;
+import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 
 @Service
@@ -41,14 +49,17 @@ public class ProfileService {
     private final UserService userService;
     private final AmazonService amazonService;
     private final PaginationService paginationService;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     public ProfileService(ProfileRepository profileRepository, UserService userService,
-            AmazonService amazonService, PaginationService paginationService) {
+            AmazonService amazonService, PaginationService paginationService,
+            ObjectMapper objectMapper) {
         this.profileRepository = profileRepository;
         this.userService = userService;
         this.amazonService = amazonService;
         this.paginationService = paginationService;
+        this.objectMapper = objectMapper;
     }
 
     public Profile getProfileById(Long profileId) {
@@ -224,14 +235,115 @@ public class ProfileService {
     }
 
     private Page<AllProfileDto> getMostRecent(Pageable pageable) {
-        return this.profileRepository.getMostRecent(pageable);
+        Page<Map<String, Object>> rawResults = profileRepository.getMostRecent(pageable);
+        List<AllProfileDto> profiles =
+                rawResults.stream().map(this::mapToAllProfileDto).collect(Collectors.toList());
+        return new PageImpl<>(profiles, pageable, rawResults.getTotalElements());
+    }
+
+
+    private List<String> getUserProgrammingLanguages() {
+        User currentUser = this.userService.getCurrentlyLoggedInUser();
+        if (currentUser.getProfile().getProgrammingLanguages() == null
+                || currentUser.getProfile().getProgrammingLanguages().size() == 0) {
+            throw new BadRequestException("User does not have any relavant programming languages");
+        }
+        return currentUser.getProfile().getProgrammingLanguages().stream()
+                .map(lang -> lang.getName()).collect(Collectors.toList());
+
+    }
+
+    private Page<AllProfileDto> getMostRelevant(Pageable pageable) {
+        Page<Map<String, Object>> rawResults =
+                profileRepository.getMostRelevant(pageable, getUserProgrammingLanguages());
+        System.out.println("Raw Results: " + rawResults.getContent());
+
+        List<AllProfileDto> profiles =
+                rawResults.stream().map(this::mapToAllProfileDto).collect(Collectors.toList());
+        return new PageImpl<>(profiles, pageable, rawResults.getTotalElements());
+    }
+
+
+    private Page<AllProfileDto> getDomestic(Pageable pageable) {
+        String full = "united states";
+        String abbrev = "us";
+        Page<Map<String, Object>> rawResults =
+                profileRepository.getDomestic(pageable, full, abbrev);
+        List<AllProfileDto> profiles =
+                rawResults.stream().map(this::mapToAllProfileDto).collect(Collectors.toList());
+        return new PageImpl<>(profiles, pageable, rawResults.getTotalElements());
+    }
+
+
+    private void attachProfileStatistics(AllProfileDto profile, Long userId,
+            List<FullAvailabilityDto> availability) {
+        Boolean weekendsAvailable = availability.stream()
+                .filter(obj -> obj.getDay().equalsIgnoreCase("saturday")
+                        || obj.getDay().equalsIgnoreCase("sunday"))
+                .flatMap(obj -> obj.getSlots().stream())
+                .anyMatch(innerObj -> innerObj.getEndTime() != null
+                        && innerObj.getStartTime() != null);
+        profile.setWeekendsAvailable(weekendsAvailable);
+
+        // add numOfReviews and reviewAvgRating
+    }
+
+    private AllProfileDto mapToAllProfileDto(Map<String, Object> rawResult) {
+        Long id = ((Number) rawResult.get("id")).longValue();
+        Long userId = ((Number) rawResult.get("userId")).longValue();
+        String fullName = (String) rawResult.get("fullName");
+        String avatarUrl = (String) rawResult.get("avatarUrl");
+        String country = (String) rawResult.get("country");
+        Timestamp createdAt = (Timestamp) rawResult.get("createdAt");
+        String availabilityJson = (String) rawResult.get("availability");
+        String programmingLanguagesJson = (String) rawResult.get("programmingLanguages");
+        System.out.println("Programming Languages JSON: " + programmingLanguagesJson);
+
+        List<ItemDto> programmingLanguages = null;
+        List<FullAvailabilityDto> availability = null;
+        try {
+            if (availabilityJson != null) {
+                availability = objectMapper.readValue(availabilityJson,
+                        new TypeReference<List<FullAvailabilityDto>>() {});
+            }
+            if (programmingLanguagesJson != null) {
+                programmingLanguages = objectMapper.readValue(programmingLanguagesJson,
+                        new TypeReference<List<ItemDto>>() {});
+            }
+        } catch (Exception e) {
+            System.out.println("Unable to parse JSON availability and programming languages: "
+                    + e.getMessage());
+        }
+
+        AllProfileDto allProfile = new AllProfileDto(id, userId, fullName, avatarUrl, country,
+                createdAt, availability, programmingLanguages);
+
+        if (availability != null) {
+            attachProfileStatistics(allProfile, userId, availability);
+        }
+        return allProfile;
     }
 
     public PaginationDto<AllProfileDto> getAllProfiles(String filterType, int page, int pageSize,
             String direction) {
-        Pageable pageable = this.paginationService.getPageable(page, pageSize, direction);
+        Pageable pageable = filterType.equals("most-recent")
+                ? this.paginationService.getSortedPageable(page, pageSize, direction, "desc")
+                : this.paginationService.getPageable(page, pageSize, direction);
         Page<AllProfileDto> result = null;
-        result = getMostRecent(pageable);
+        switch (filterType) {
+            case "most-recent":
+                result = getMostRecent(pageable);
+                break;
+            case "domestic":
+                result = getDomestic(pageable);
+                break;
+            case "most-relevant":
+                result = getMostRelevant(pageable);
+                break;
+            default:
+                result = getMostRecent(pageable);
+                break;
+        }
 
 
         return new PaginationDto<AllProfileDto>(result.getContent(), result.getNumber(), pageSize,
