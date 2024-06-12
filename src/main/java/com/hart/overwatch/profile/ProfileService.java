@@ -39,6 +39,7 @@ import com.hart.overwatch.profile.dto.WorkExpsDto;
 import com.hart.overwatch.profile.request.RemoveAvatarRequest;
 import com.hart.overwatch.profile.request.UpdateProfileRequest;
 import com.hart.overwatch.profile.request.UploadAvatarRequest;
+import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 
 @Service
@@ -241,6 +242,28 @@ public class ProfileService {
     }
 
 
+    private List<String> getUserProgrammingLanguages() {
+        User currentUser = this.userService.getCurrentlyLoggedInUser();
+        if (currentUser.getProfile().getProgrammingLanguages() == null
+                || currentUser.getProfile().getProgrammingLanguages().size() == 0) {
+            throw new BadRequestException("User does not have any relavant programming languages");
+        }
+        return currentUser.getProfile().getProgrammingLanguages().stream()
+                .map(lang -> lang.getName()).collect(Collectors.toList());
+
+    }
+
+    private Page<AllProfileDto> getMostRelevant(Pageable pageable) {
+        Page<Map<String, Object>> rawResults =
+                profileRepository.getMostRelevant(pageable, getUserProgrammingLanguages());
+        System.out.println("Raw Results: " + rawResults.getContent());
+
+        List<AllProfileDto> profiles =
+                rawResults.stream().map(this::mapToAllProfileDto).collect(Collectors.toList());
+        return new PageImpl<>(profiles, pageable, rawResults.getTotalElements());
+    }
+
+
     private Page<AllProfileDto> getDomestic(Pageable pageable) {
         String full = "united states";
         String abbrev = "us";
@@ -265,7 +288,6 @@ public class ProfileService {
         // add numOfReviews and reviewAvgRating
     }
 
-
     private AllProfileDto mapToAllProfileDto(Map<String, Object> rawResult) {
         Long id = ((Number) rawResult.get("id")).longValue();
         Long userId = ((Number) rawResult.get("userId")).longValue();
@@ -275,27 +297,31 @@ public class ProfileService {
         Timestamp createdAt = (Timestamp) rawResult.get("createdAt");
         String availabilityJson = (String) rawResult.get("availability");
         String programmingLanguagesJson = (String) rawResult.get("programmingLanguages");
+        System.out.println("Programming Languages JSON: " + programmingLanguagesJson);
+
         List<ItemDto> programmingLanguages = null;
         List<FullAvailabilityDto> availability = null;
         try {
-            availability = objectMapper.readValue(availabilityJson,
-                    new TypeReference<List<FullAvailabilityDto>>() {});
-
-
-
-            programmingLanguages = objectMapper.readValue(programmingLanguagesJson,
-                    new TypeReference<List<ItemDto>>() {});
+            if (availabilityJson != null) {
+                availability = objectMapper.readValue(availabilityJson,
+                        new TypeReference<List<FullAvailabilityDto>>() {});
+            }
+            if (programmingLanguagesJson != null) {
+                programmingLanguages = objectMapper.readValue(programmingLanguagesJson,
+                        new TypeReference<List<ItemDto>>() {});
+            }
         } catch (Exception e) {
-            System.out.println("Unable to parse json availibility and programming languages");
+            System.out.println("Unable to parse JSON availability and programming languages: "
+                    + e.getMessage());
         }
-
 
         AllProfileDto allProfile = new AllProfileDto(id, userId, fullName, avatarUrl, country,
                 createdAt, availability, programmingLanguages);
 
-        attachProfileStatistics(allProfile, userId, availability);
+        if (availability != null) {
+            attachProfileStatistics(allProfile, userId, availability);
+        }
         return allProfile;
-
     }
 
     public PaginationDto<AllProfileDto> getAllProfiles(String filterType, int page, int pageSize,
@@ -310,6 +336,9 @@ public class ProfileService {
                 break;
             case "domestic":
                 result = getDomestic(pageable);
+                break;
+            case "most-relevant":
+                result = getMostRelevant(pageable);
                 break;
             default:
                 result = getMostRecent(pageable);
