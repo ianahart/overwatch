@@ -26,6 +26,7 @@ import SecurityRoute from './routes/Settings/SecurityRoute';
 import TestimonialRoute from './routes/Settings/TestimonialRoute';
 import NotificationSettingsRoute from './routes/Settings/NotificationSettingsRoute';
 import OTPRoute from './routes/OTPRoute';
+import ExploreProfileRoute from './routes/ExploreProfileRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -62,6 +63,14 @@ const router = createBrowserRouter(
           <RequireGuest>
             <ForgotPasswordRoute />
           </RequireGuest>
+        }
+      />
+      <Route
+        path="profiles/:profileId"
+        element={
+          <RequireAuth>
+            <ExploreProfileRoute />
+          </RequireAuth>
         }
       />
       <Route path="auth/otp" element={<OTPRoute />} />

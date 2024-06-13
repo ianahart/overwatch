@@ -2,6 +2,7 @@ import { IoPin } from 'react-icons/io5';
 import { AiFillStar, AiOutlineLike } from 'react-icons/ai';
 import { FaHeart } from 'react-icons/fa';
 import dayjs from 'dayjs';
+import { useNavigate } from 'react-router-dom';
 
 import { IMinProfile } from '../../interfaces';
 import Avatar from '../Shared/Avatar';
@@ -12,6 +13,11 @@ export interface IReviewerProps {
 }
 
 const Reviewer = ({ reviewer, filterValue }: IReviewerProps) => {
+  const navigate = useNavigate();
+
+  const goToProfile = (profileId: number) => {
+    navigate(`/profiles/${profileId}`);
+  };
   return (
     <div className="my-4 border border-gray-800 rounded-lg p-4">
       <div className="header md:flex md:justify-between">
@@ -72,6 +78,11 @@ const Reviewer = ({ reviewer, filterValue }: IReviewerProps) => {
             </div>
           );
         })}
+      </div>
+      <div className="flex justify-end">
+        <button onClick={() => goToProfile(reviewer.id)} className="outline-btn bg-gray-400">
+          View
+        </button>
       </div>
     </div>
   );
