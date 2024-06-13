@@ -20,6 +20,8 @@ public class AllProfileDto {
     private List<FullAvailabilityDto> availability;
 
     private List<ItemDto> programmingLanguages;
+    
+    private FullPackageDto basic;
 
     // Not in constructor
 
@@ -36,7 +38,7 @@ public class AllProfileDto {
 
     public AllProfileDto(Long id, Long userId, String fullName, String avatarUrl, String country,
             Timestamp createdAt, List<FullAvailabilityDto> availability,
-            List<ItemDto> programmingLanguages) {
+            List<ItemDto> programmingLanguages, FullPackageDto basic) {
         this.id = id;
         this.userId = userId;
         this.fullName = fullName;
@@ -45,7 +47,13 @@ public class AllProfileDto {
         this.createdAt = createdAt;
         this.availability = availability;
         this.programmingLanguages = programmingLanguages;
+        this.basic = basic;
     }
+
+    public FullPackageDto getBasic() {
+        return basic;
+    }
+
 
     public Long getId() {
         return id;
@@ -136,6 +144,10 @@ public class AllProfileDto {
 
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public void setBasic(FullPackageDto basic) {
+        this.basic = basic;
     }
 
 }

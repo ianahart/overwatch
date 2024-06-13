@@ -199,14 +199,23 @@ export interface IChangePasswordForm {
   curPassword: IFormField<string>;
 }
 
+export interface ICompatibleProgrammingLanguage extends IProgrammingLanguage {
+  isCompatible: boolean;
+}
+
 export interface IMinProfile {
   availability: IDayAvailability[];
   avatarUrl: string;
   country: string;
   fullName: string;
   id: number;
-  programmingLanguages: IProgrammingLanguage[];
+  programmingLanguages: ICompatibleProgrammingLanguage[];
+  basic: IPackage;
   userId: number;
+  numOfReviews: number;
+  createdAt: string;
+  weekendsAvailable: boolean;
+  reviewAvgRating: number;
 }
 
 export interface ISignOut {
