@@ -1,9 +1,9 @@
 export interface IFilterControlsProps {
   handleSetFilter: (value: string, desc: string) => void;
-  fetchProfiles: (paginate: boolean, filterValue: string) => Promise<void>;
+  fetchReviewers: (paginate: boolean, filterValue: string) => Promise<void>;
   filter: { value: string; desc: string };
 }
-const FilterControls = ({ handleSetFilter, fetchProfiles, filter }: IFilterControlsProps) => {
+const FilterControls = ({ handleSetFilter, fetchReviewers, filter }: IFilterControlsProps) => {
   const filters = [
     {
       id: 1,
@@ -23,7 +23,7 @@ const FilterControls = ({ handleSetFilter, fetchProfiles, filter }: IFilterContr
 
   const handleOnClick = async (value: string, desc: string) => {
     handleSetFilter(value, desc);
-    await fetchProfiles(false, value);
+    await fetchReviewers(false, value);
   };
 
   return (

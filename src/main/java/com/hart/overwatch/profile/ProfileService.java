@@ -162,7 +162,6 @@ public class ProfileService {
         profile.setBasic(cleanPckg(request.getBasic()));
         profile.setStandard(cleanPckg(request.getStandard()));
         profile.setPro(cleanPckg(request.getPro()));
-        System.out.println(request.getAvailability());
         profile.setAvailability(request.getAvailability());
         profile.setMoreInfo(request.getMoreInfo());
 
@@ -249,14 +248,13 @@ public class ProfileService {
             throw new BadRequestException("User does not have any relavant programming languages");
         }
         return currentUser.getProfile().getProgrammingLanguages().stream()
-                .map(lang -> lang.getName()).collect(Collectors.toList());
+                .map(lang -> lang.getName().toLowerCase()).collect(Collectors.toList());
 
     }
 
     private Page<AllProfileDto> getMostRelevant(Pageable pageable) {
         Page<Map<String, Object>> rawResults =
                 profileRepository.getMostRelevant(pageable, getUserProgrammingLanguages());
-        System.out.println("Raw Results: " + rawResults.getContent());
 
         List<AllProfileDto> profiles =
                 rawResults.stream().map(this::mapToAllProfileDto).collect(Collectors.toList());
@@ -321,13 +319,31 @@ public class ProfileService {
                     + e.getMessage());
         }
 
-        AllProfileDto allProfile = new AllProfileDto(id, userId, fullName, avatarUrl, country,
-                createdAt, availability, programmingLanguages, basic);
+        List<ItemDto> compatibleProgrammingLanguages =
+                
+                getCompatibleProgrammingLanguages(programmingLanguages);
 
-        if (availability != null) {
+        AllProfileDto allProfile = new AllProfileDto(id, userId, fullName, avatarUrl, country,
+                createdAt, availability, compatibleProgrammingLanguages, basic);
+
+                if (availability != null) {
             attachProfileStatistics(allProfile, userId, availability);
         }
         return allProfile;
+    }
+
+    private List<ItemDto> getCompatibleProgrammingLanguages(List<ItemDto> programmingLanguages) {
+        List<String> userProgrammingLanguages = getUserProgrammingLanguages();
+        List<ItemDto> compatibleProgrammingLanguages = programmingLanguages.stream().map(v -> {
+            if (userProgrammingLanguages.contains(v.getName().toLowerCase())) {
+                v.setIsCompatible(true);
+            } else {
+                v.setIsCompatible(false);
+            }
+            return v;
+        }).toList();
+
+        return compatibleProgrammingLanguages;
     }
 
     public PaginationDto<AllProfileDto> getAllProfiles(String filterType, int page, int pageSize,

@@ -30,7 +30,7 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
                   AND EXISTS (
                       SELECT 1
                       FROM jsonb_array_elements(p.programming_languages) AS lang
-                      WHERE jsonb_extract_path_text(lang, 'name') IN (:languages)
+                      WHERE LOWER(jsonb_extract_path_text(lang, 'name')) IN (:languages)
                   )
             """, nativeQuery = true)
     Page<Map<String, Object>> getMostRelevant(@Param("pageable") Pageable pageable,
