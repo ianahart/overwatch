@@ -34,7 +34,7 @@ const Testimonials = ({ userId }: ITestimonialsProps) => {
               return (
                 <li key={item.id} className="my-4">
                   <p className="text-gray-400">{item.name}</p>
-                  <p className="text-sm">{item.text}</p>
+                  <p className="text-sm">&ldquo;{item.text}&rdquo;</p>
                 </li>
               );
             })}

@@ -1,4 +1,5 @@
 import { IFullProfile } from '../../interfaces';
+import Reviews from '../Review';
 import AdditionalInfo from './AdditionalInfo';
 import BasicInfo from './BasicInfo';
 import ContactInfo from './ContactInfo';
@@ -48,6 +49,11 @@ const ReviewerProfile = ({ profile }: IReviewerProfileProps) => {
             tagLine={profile.profileSetup.tagLine}
           />
           <Testimonials userId={profile.userProfile.userId} />
+          <Reviews
+            avatarUrl={profile.profileSetup.avatar}
+            fullName={profile.basicInfo.fullName}
+            userId={profile.userProfile.userId}
+          />
         </div>
       </div>
     </>
