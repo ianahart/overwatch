@@ -13,6 +13,7 @@ import com.hart.overwatch.paymentmethod.UserPaymentMethod;
 import com.hart.overwatch.phone.Phone;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.refreshtoken.RefreshToken;
+import com.hart.overwatch.review.Review;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.testimonial.Testimonial;
 import com.hart.overwatch.token.Token;
@@ -109,6 +110,13 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<Testimonial> testimonials;
 
+    @OneToMany(mappedBy = "reviewer", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Review> reviewerReviews;
+
+    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Review> authorReviews;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "setting_id", referencedColumnName = "id")
@@ -178,6 +186,14 @@ public class User implements UserDetails {
 
     public List<Testimonial> getTestimonials() {
         return testimonials;
+    }
+
+    public List<Review> getAuthorReviews() {
+        return authorReviews;
+    }
+
+    public List<Review> getReviewerReviews() {
+        return reviewerReviews;
     }
 
     public List<RefreshToken> getRefreshTokens() {
@@ -268,6 +284,13 @@ public class User implements UserDetails {
         this.phones = phones;
     }
 
+    public void setAuthorReviews(List<Review> authorReviews) {
+        this.authorReviews = authorReviews;
+    }
+
+    public void setReviewerReviews(List<Review> reviewerReviews) {
+        this.reviewerReviews = reviewerReviews;
+    }
 
     public void setSetting(Setting setting) {
         this.setting = setting;

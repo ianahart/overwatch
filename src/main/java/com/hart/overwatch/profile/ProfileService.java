@@ -3,6 +3,7 @@ package com.hart.overwatch.profile;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.jsoup.Jsoup;
@@ -39,6 +40,7 @@ import com.hart.overwatch.profile.dto.WorkExpsDto;
 import com.hart.overwatch.profile.request.RemoveAvatarRequest;
 import com.hart.overwatch.profile.request.UpdateProfileRequest;
 import com.hart.overwatch.profile.request.UploadAvatarRequest;
+import com.hart.overwatch.review.ReviewService;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 
@@ -50,16 +52,18 @@ public class ProfileService {
     private final AmazonService amazonService;
     private final PaginationService paginationService;
     private final ObjectMapper objectMapper;
+    private final ReviewService reviewService;
 
     @Autowired
     public ProfileService(ProfileRepository profileRepository, UserService userService,
             AmazonService amazonService, PaginationService paginationService,
-            ObjectMapper objectMapper) {
+            ObjectMapper objectMapper, ReviewService reviewService) {
         this.profileRepository = profileRepository;
         this.userService = userService;
         this.amazonService = amazonService;
         this.paginationService = paginationService;
         this.objectMapper = objectMapper;
+        this.reviewService = reviewService;
     }
 
     public Profile getProfileById(Long profileId) {
@@ -243,9 +247,9 @@ public class ProfileService {
 
     private List<String> getUserProgrammingLanguages() {
         User currentUser = this.userService.getCurrentlyLoggedInUser();
-        if (currentUser.getProfile().getProgrammingLanguages() == null
-                || currentUser.getProfile().getProgrammingLanguages().size() == 0) {
-            throw new BadRequestException("User does not have any relavant programming languages");
+        if (currentUser.getProfile().getProgrammingLanguages() == null) {
+            List<String> empty = new ArrayList<String>();
+            return empty;
         }
         return currentUser.getProfile().getProgrammingLanguages().stream()
                 .map(lang -> lang.getName().toLowerCase()).collect(Collectors.toList());
@@ -283,7 +287,9 @@ public class ProfileService {
                         && innerObj.getStartTime() != null);
         profile.setWeekendsAvailable(weekendsAvailable);
 
-        // add numOfReviews and reviewAvgRating
+        profile.setNumOfReviews(this.reviewService.getTotalCountOfReviews(userId));
+
+        profile.setReviewAvgRating(this.reviewService.getAvgReviewRating(userId));
     }
 
     private AllProfileDto mapToAllProfileDto(Map<String, Object> rawResult) {
@@ -320,13 +326,13 @@ public class ProfileService {
         }
 
         List<ItemDto> compatibleProgrammingLanguages =
-                
+
                 getCompatibleProgrammingLanguages(programmingLanguages);
 
         AllProfileDto allProfile = new AllProfileDto(id, userId, fullName, avatarUrl, country,
                 createdAt, availability, compatibleProgrammingLanguages, basic);
 
-                if (availability != null) {
+        if (availability != null) {
             attachProfileStatistics(allProfile, userId, availability);
         }
         return allProfile;
