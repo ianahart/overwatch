@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { nanoid } from '@reduxjs/toolkit';
 import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
 import { useSelector } from 'react-redux';
@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 import Avatar from '../Shared/Avatar';
 import { TRootState } from '../../state/store';
-import { useCreateReviewMutation } from '../../state/apis/reviewsApi';
+import { useCreateReviewMutation, useEditReviewMutation, useFetchReviewQuery } from '../../state/apis/reviewsApi';
 import Spinner from '../Shared/Spinner';
 
 type MessageType = { message: string };
@@ -21,22 +21,44 @@ export interface IPayload {
   review: string;
 }
 
+export interface IEditPayload extends IPayload {
+  reviewId: number;
+}
+
 export interface IActionReviewProps {
   action: string;
   authorId: number;
   reviewerId: number;
   avatarUrl: string;
   fullName: string;
+  reviewId?: number;
 }
 
-const ActionReview = ({ action, authorId, reviewerId, avatarUrl, fullName }: IActionReviewProps) => {
+const ActionReview = ({
+  reviewId = undefined,
+  action,
+  authorId,
+  reviewerId,
+  avatarUrl,
+  fullName,
+}: IActionReviewProps) => {
   const navigate = useNavigate();
   const [createReview, { isLoading: createReviewIsLoading }] = useCreateReviewMutation();
+  const [editReview, { isLoading: editReviewIsLoading }] = useEditReviewMutation();
   const { token } = useSelector((store: TRootState) => store.user);
+  const { data } = useFetchReviewQuery({ token, reviewId });
   const NUM_OF_STARS = 5;
   const [error, setError] = useState('');
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState('');
+
+  useEffect(() => {
+    if (data !== undefined) {
+      const { rating, review } = data.data;
+      setRating(rating);
+      setReview(review);
+    }
+  }, [data]);
 
   const handleOnMouseEnter = (index: number) => {
     setRating(index);
@@ -66,16 +88,15 @@ const ActionReview = ({ action, authorId, reviewerId, avatarUrl, fullName }: IAc
       handleCreateReview(payload);
       return;
     }
-    if (action === 'edit') {
-      handleEditReview(payload);
+    if (action === 'edit' && reviewId !== undefined) {
+      handleEditReview({ ...payload, reviewId });
       return;
     }
   };
   const handleCreateReview = (payload: IPayload) => {
     createReview(payload)
       .unwrap()
-      .then((res) => {
-        console.log(res);
+      .then(() => {
         navigate(-1);
       })
       .catch((err) => {
@@ -84,8 +105,15 @@ const ActionReview = ({ action, authorId, reviewerId, avatarUrl, fullName }: IAc
       });
   };
 
-  const handleEditReview = (payload: IPayload) => {
-    console.log(payload);
+  const handleEditReview = (payload: IEditPayload) => {
+    editReview(payload)
+      .unwrap()
+      .then(() => {
+        navigate(-1);
+      })
+      .catch((err) => {
+        applyError(err.data);
+      });
   };
 
   return (
@@ -94,7 +122,7 @@ const ActionReview = ({ action, authorId, reviewerId, avatarUrl, fullName }: IAc
         <div className="max-w-[600px] w-full border rounded-lg border-gray-800 p-4">
           <form onSubmit={handleOnSubmit}>
             <div className="flex justify-center my-8">
-              <h2 className="text-2xl text-gray-400">Write a review</h2>
+              <h2 className="text-2xl text-gray-400">{action === 'edit' ? 'Edit review' : 'Write a review'}</h2>
             </div>
             <div className="my-2 flex items-center flex-col">
               <p>Reviewing {fullName}</p>
@@ -143,11 +171,11 @@ const ActionReview = ({ action, authorId, reviewerId, avatarUrl, fullName }: IAc
                 </div>
               )}
               <div className="my-8">
-                {createReviewIsLoading ? (
-                  <Spinner message="Creating review..." />
+                {createReviewIsLoading || editReviewIsLoading ? (
+                  <Spinner message="Please wait..." />
                 ) : (
                   <button type="submit" className="btn w-full">
-                    Submit
+                    {action === 'edit' ? 'Update' : 'Submit'}
                   </button>
                 )}
               </div>

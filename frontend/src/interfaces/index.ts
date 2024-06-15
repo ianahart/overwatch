@@ -582,6 +582,10 @@ export interface ICreateReviewRequest {
   review: string;
 }
 
+export interface IEditReviewRequest extends ICreateReviewRequest {
+  reviewId: number;
+}
+
 export interface IFetchReviewsRequest {
   userId: number;
   token: string;
@@ -601,6 +605,22 @@ export interface IFetchReviewsResponse {
     totalElements: number;
   };
 }
+
+export interface IFetchReviewResponse {
+  message: string;
+  data: {
+    id: number;
+    rating: number;
+    review: string;
+  };
+}
+
+export interface IFetchReviewRequest {
+  token: string;
+  reviewId?: number | undefined;
+}
+
+export interface IEditReviewResponse extends IBaseResponse {}
 
 export interface ICreateReviewResponse extends IBaseResponse {}
 
