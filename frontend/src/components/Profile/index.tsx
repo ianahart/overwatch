@@ -11,14 +11,12 @@ export interface IProfileProps {
 }
 
 const Profile = ({ profileId }: IProfileProps) => {
-  console.log(profileId);
   const { token } = useSelector((store: TRootState) => store.user);
   const { data } = useFetchProfileQuery({ profileId, token });
   const [profile, setProfile] = useState<IFullProfile>(profileState);
 
   useEffect(() => {
     if (data) {
-      console.log(data);
       setProfile(data.data);
     }
   }, [data]);

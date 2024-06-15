@@ -54,6 +54,7 @@ import { locationsApi } from './apis/locationsApi';
 import { profilesApi } from './apis/profilesApi';
 import { paymentMethodsApi } from './apis/paymentMethodsApi';
 import { testimonialsApi } from './apis/testimonialsApi';
+import { reviewsApi } from './apis/reviewsApi';
 
 export const store = configureStore({
   reducer: {
@@ -77,6 +78,7 @@ export const store = configureStore({
     [profilesApi.reducerPath]: profilesApi.reducer,
     [paymentMethodsApi.reducerPath]: paymentMethodsApi.reducer,
     [testimonialsApi.reducerPath]: testimonialsApi.reducer,
+    [reviewsApi.reducerPath]: reviewsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -93,7 +95,8 @@ export const store = configureStore({
       .concat(locationsApi.middleware)
       .concat(profilesApi.middleware)
       .concat(paymentMethodsApi.middleware)
-      .concat(testimonialsApi.middleware);
+      .concat(testimonialsApi.middleware)
+      .concat(reviewsApi.middleware);
   },
 });
 
@@ -189,6 +192,7 @@ export {
   useLazyFetchTestimonialsQuery,
   useCreateTestimonialMutation,
 } from './apis/testimonialsApi';
+export { useCreateReviewMutation } from './apis/reviewsApi';
 export {
   testimonialsApi,
   authsApi,
@@ -198,4 +202,5 @@ export {
   locationsApi,
   profilesApi,
   paymentMethodsApi,
+  reviewsApi,
 };

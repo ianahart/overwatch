@@ -20,7 +20,7 @@ public class AllProfileDto {
     private List<FullAvailabilityDto> availability;
 
     private List<ItemDto> programmingLanguages;
-    
+
     private FullPackageDto basic;
 
     // Not in constructor
@@ -28,9 +28,9 @@ public class AllProfileDto {
 
     private Boolean weekendsAvailable;
 
-    private Integer numOfReviews;
+    private Long numOfReviews;
 
-    private Integer reviewAvgRating;
+    private Float reviewAvgRating;
 
     public AllProfileDto() {
 
@@ -80,11 +80,11 @@ public class AllProfileDto {
         return avatarUrl;
     }
 
-    public Integer getNumOfReviews() {
+    public Long getNumOfReviews() {
         return numOfReviews;
     }
 
-    public Integer getReviewAvgRating() {
+    public Float getReviewAvgRating() {
         return reviewAvgRating;
     }
 
@@ -106,11 +106,11 @@ public class AllProfileDto {
     }
 
 
-    public void setNumOfReviews(Integer numOfReviews) {
+    public void setNumOfReviews(Long numOfReviews) {
         this.numOfReviews = numOfReviews;
     }
 
-    public void setReviewAvgRating(Integer reviewAvgRating) {
+    public void setReviewAvgRating(Float reviewAvgRating) {
         this.reviewAvgRating = reviewAvgRating;
     }
 

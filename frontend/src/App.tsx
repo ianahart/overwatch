@@ -25,6 +25,7 @@ import TeamsRoute from './routes/Settings/TeamsRoute';
 import SecurityRoute from './routes/Settings/SecurityRoute';
 import TestimonialRoute from './routes/Settings/TestimonialRoute';
 import NotificationSettingsRoute from './routes/Settings/NotificationSettingsRoute';
+import CreateReviewRoute from './routes/CreateReviewRoute';
 import OTPRoute from './routes/OTPRoute';
 import ExploreProfileRoute from './routes/ExploreProfileRoute';
 
@@ -70,6 +71,14 @@ const router = createBrowserRouter(
         element={
           <RequireAuth>
             <ExploreProfileRoute />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/reviews/create"
+        element={
+          <RequireAuth>
+            <CreateReviewRoute />
           </RequireAuth>
         }
       />

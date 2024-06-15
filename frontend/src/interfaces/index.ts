@@ -563,6 +563,16 @@ export interface IFetchAllProfileRequest {
   filter: string;
 }
 
+export interface ICreateReviewRequest {
+  authorId: number;
+  reviewerId: number;
+  token: string;
+  rating: number;
+  review: string;
+}
+
+export interface ICreateReviewResponse extends IBaseResponse {}
+
 export interface IDeleteTestimonialResponse extends IBaseResponse {}
 
 export interface ICreateTestimonialResponse extends IBaseResponse {}
