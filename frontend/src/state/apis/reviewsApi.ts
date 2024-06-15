@@ -2,6 +2,8 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import {
   ICreateReviewRequest,
   ICreateReviewResponse,
+  IDeleteReviewRequest,
+  IDeleteReviewResponse,
   IEditReviewRequest,
   IEditReviewResponse,
   IFetchReviewRequest,
@@ -84,10 +86,25 @@ const reviewsApi = createApi({
         },
         invalidatesTags: [{ type: 'Review', id: 'LIST' }],
       }),
+      deleteReview: builder.mutation<IDeleteReviewResponse, IDeleteReviewRequest>({
+        query: ({ reviewId, token }) => ({
+          url: `reviews/${reviewId}`,
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }),
+        //@ts-ignore
+        invalidatesTags: (_, error, { reviewId }) => [
+          { type: 'Review', id: reviewId },
+          { type: 'Review', id: 'LIST' },
+        ],
+      }),
     };
   },
 });
 export const {
+  useDeleteReviewMutation,
   useCreateReviewMutation,
   useLazyFetchReviewsQuery,
   useFetchReviewsQuery,

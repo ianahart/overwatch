@@ -2,9 +2,12 @@ import { AiFillEdit, AiFillStar } from 'react-icons/ai';
 import dayjs from 'dayjs';
 import { BsThreeDots, BsTrash } from 'react-icons/bs';
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+
 import { IReview } from '../../interfaces';
 import Avatar from '../Shared/Avatar';
-import { useNavigate } from 'react-router-dom';
+import { TRootState, useDeleteReviewMutation } from '../../state/store';
 
 export interface IReviewDisplayProps {
   review: IReview;
@@ -16,6 +19,8 @@ export interface IReviewDisplayProps {
 
 const ReviewDisplay = ({ review, currentUserId, reviewerId, avatarUrl, fullName }: IReviewDisplayProps) => {
   const navigate = useNavigate();
+  const { token } = useSelector((store: TRootState) => store.user);
+  const [deleteReview] = useDeleteReviewMutation();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
@@ -42,6 +47,7 @@ const ReviewDisplay = ({ review, currentUserId, reviewerId, avatarUrl, fullName 
 
   const handleDelete = () => {
     setMenuOpen(false);
+    deleteReview({ token, reviewId: review.id });
   };
 
   return (

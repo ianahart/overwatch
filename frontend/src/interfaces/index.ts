@@ -620,6 +620,13 @@ export interface IFetchReviewRequest {
   reviewId?: number | undefined;
 }
 
+export interface IDeleteReviewRequest {
+  token: string;
+  reviewId: number;
+}
+
+export interface IDeleteReviewResponse extends IBaseResponse {}
+
 export interface IEditReviewResponse extends IBaseResponse {}
 
 export interface ICreateReviewResponse extends IBaseResponse {}

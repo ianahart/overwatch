@@ -131,8 +131,27 @@ public class ReviewService {
             this.reviewRepository.save(review);
 
 
-        } catch  (DataIntegrityViolationException ex) {
+        } catch (DataIntegrityViolationException ex) {
             throw new BadRequestException("You have already reviewed this reviewer");
+        }
+    }
+
+
+    public void deleteReview(Long reviewId) {
+        try {
+
+            User currentUser = this.userService.getCurrentlyLoggedInUser();
+            Review review = getReviewById(reviewId);
+
+            if (review.getAuthor().getId() != currentUser.getId()) {
+                throw new ForbiddenException("Cannot delete another person's review");
+            }
+
+            this.reviewRepository.delete(review);
+
+        } catch (DataAccessException ex) {
+            throw new BadRequestException(
+                    String.format("Could not find review with the id %d", reviewId));
         }
     }
 }

@@ -198,6 +198,7 @@ export {
   useLazyFetchReviewsQuery,
   useFetchReviewsQuery,
   useEditReviewMutation,
+  useDeleteReviewMutation,
 } from './apis/reviewsApi';
 export {
   testimonialsApi,

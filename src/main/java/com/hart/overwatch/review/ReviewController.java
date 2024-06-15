@@ -3,6 +3,7 @@ package com.hart.overwatch.review;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hart.overwatch.review.request.CreateReviewRequest;
 import com.hart.overwatch.review.request.UpdateReviewRequest;
 import com.hart.overwatch.review.response.CreateReviewResponse;
+import com.hart.overwatch.review.response.DeleteReviewResponse;
 import com.hart.overwatch.review.response.GetReviewResponse;
 import com.hart.overwatch.review.response.GetReviewsResponse;
 import com.hart.overwatch.review.response.UpdateReviewResponse;
@@ -59,5 +61,11 @@ public class ReviewController {
             @Valid @RequestBody UpdateReviewRequest request) {
         this.reviewService.updateReview(reviewId, request);
         return ResponseEntity.status(HttpStatus.OK).body(new UpdateReviewResponse("success"));
+    }
+
+    @DeleteMapping(path = "/{reviewId}")
+    ResponseEntity<DeleteReviewResponse> deleteReview(@PathVariable("reviewId") Long reviewId) {
+        this.reviewService.deleteReview(reviewId);
+        return ResponseEntity.status(HttpStatus.OK).body(new DeleteReviewResponse("success"));
     }
 }
