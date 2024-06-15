@@ -189,6 +189,31 @@ export interface IForgotPasswordForm {
   email: IFormField<string>;
 }
 
+export interface IPaymentMethod {
+  id: string;
+  city: string;
+  country: string;
+  line1: string;
+  line2: string;
+  postalCode: string;
+  name: string;
+  displayBrand: string;
+  type: string;
+  expMonth: number;
+  expYear: number;
+}
+
+export interface IReview {
+  id: number;
+  authorId: number;
+  avatarUrl: string;
+  rating: number;
+  review: string;
+  createdAt: string;
+  isEdited: boolean;
+  name: string;
+}
+
 export interface IResetPasswordForm {
   password: IFormField<string>;
   confirmPassword: IFormField<string>;
@@ -460,20 +485,6 @@ export interface IFetchFullProfileRequest {
   token: string;
 }
 
-export interface IPaymentMethod {
-  id: string;
-  city: string;
-  country: string;
-  line1: string;
-  line2: string;
-  postalCode: string;
-  name: string;
-  displayBrand: string;
-  type: string;
-  expMonth: number;
-  expYear: number;
-}
-
 export interface ICreatePaymentMethodRequest {
   token: string;
   userId: number;
@@ -569,6 +580,26 @@ export interface ICreateReviewRequest {
   token: string;
   rating: number;
   review: string;
+}
+
+export interface IFetchReviewsRequest {
+  userId: number;
+  token: string;
+  page: number;
+  pageSize: number;
+  direction: string;
+}
+
+export interface IFetchReviewsResponse {
+  message: string;
+  data: {
+    items: IReview[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
 }
 
 export interface ICreateReviewResponse extends IBaseResponse {}

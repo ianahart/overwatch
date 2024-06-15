@@ -5,10 +5,15 @@ import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.pagination.PaginationService;
+import com.hart.overwatch.pagination.dto.PaginationDto;
+import com.hart.overwatch.review.dto.ReviewDto;
 import com.hart.overwatch.review.request.CreateReviewRequest;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
@@ -20,10 +25,14 @@ public class ReviewService {
 
     private final UserService userService;
 
+    private final PaginationService paginationService;
+
     @Autowired
-    public ReviewService(ReviewRepository reviewRepository, UserService userService) {
+    public ReviewService(ReviewRepository reviewRepository, UserService userService,
+            PaginationService paginationService) {
         this.reviewRepository = reviewRepository;
         this.userService = userService;
+        this.paginationService = paginationService;
     }
 
 
@@ -80,5 +89,19 @@ public class ReviewService {
         } catch (DataIntegrityViolationException ex) {
             throw new BadRequestException("Cannot insert duplicate review");
         }
+    }
+
+
+    public PaginationDto<ReviewDto> getReviews(Long userId, int page, int pageSize,
+            String direction) {
+
+        Pageable pageable = this.paginationService.getPageable(page, pageSize, direction);
+
+        Page<ReviewDto> result = this.reviewRepository.getAllReviewsByReviewerId(pageable, userId);
+
+
+                return new PaginationDto<ReviewDto>(result.getContent(), result.getNumber(), pageSize,
+                result.getTotalPages(), direction, result.getTotalElements());
+
     }
 }

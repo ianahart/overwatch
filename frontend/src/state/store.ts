@@ -192,7 +192,7 @@ export {
   useLazyFetchTestimonialsQuery,
   useCreateTestimonialMutation,
 } from './apis/testimonialsApi';
-export { useCreateReviewMutation } from './apis/reviewsApi';
+export { useCreateReviewMutation, useLazyFetchReviewsQuery, useFetchReviewsQuery } from './apis/reviewsApi';
 export {
   testimonialsApi,
   authsApi,
