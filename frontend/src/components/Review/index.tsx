@@ -88,7 +88,16 @@ const Reviews = ({ userId, fullName, avatarUrl }: IReviewsProps) => {
         </div>
       )}
       {reviews.map((review) => {
-        return <ReviewDisplay key={review.id} review={review} />;
+        return (
+          <ReviewDisplay
+            fullName={fullName}
+            avatarUrl={avatarUrl}
+            reviewerId={userId}
+            key={review.id}
+            review={review}
+            currentUserId={user.id}
+          />
+        );
       })}
 
       <div className="flex items-center justify-center">

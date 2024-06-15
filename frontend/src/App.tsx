@@ -28,6 +28,7 @@ import NotificationSettingsRoute from './routes/Settings/NotificationSettingsRou
 import CreateReviewRoute from './routes/CreateReviewRoute';
 import OTPRoute from './routes/OTPRoute';
 import ExploreProfileRoute from './routes/ExploreProfileRoute';
+import EditReviewRoute from './routes/EditReviewRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -79,6 +80,14 @@ const router = createBrowserRouter(
         element={
           <RequireAuth>
             <CreateReviewRoute />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/reviews/:reviewId/edit"
+        element={
+          <RequireAuth>
+            <EditReviewRoute />
           </RequireAuth>
         }
       />

@@ -1,12 +1,14 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import ActionReview from './ActionReview';
 
-const CreateReview = () => {
+const EditReview = () => {
   const { authorId, reviewerId, avatarUrl, fullName } = useLocation().state;
-
+  const params = useParams();
+  const reviewId = params.reviewId as string;
   return (
     <ActionReview
-      action="create"
+      reviewId={Number.parseInt(reviewId)}
+      action="edit"
       authorId={authorId}
       reviewerId={reviewerId}
       avatarUrl={avatarUrl}
@@ -15,4 +17,4 @@ const CreateReview = () => {
   );
 };
 
-export default CreateReview;
+export default EditReview;

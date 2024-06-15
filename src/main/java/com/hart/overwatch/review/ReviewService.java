@@ -13,8 +13,10 @@ import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
+import com.hart.overwatch.review.dto.MinReviewDto;
 import com.hart.overwatch.review.dto.ReviewDto;
 import com.hart.overwatch.review.request.CreateReviewRequest;
+import com.hart.overwatch.review.request.UpdateReviewRequest;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 
@@ -100,8 +102,56 @@ public class ReviewService {
         Page<ReviewDto> result = this.reviewRepository.getAllReviewsByReviewerId(pageable, userId);
 
 
-                return new PaginationDto<ReviewDto>(result.getContent(), result.getNumber(), pageSize,
+        return new PaginationDto<ReviewDto>(result.getContent(), result.getNumber(), pageSize,
                 result.getTotalPages(), direction, result.getTotalElements());
 
+    }
+
+
+    public MinReviewDto getReview(Long reviewId) {
+        Review review = getReviewById(reviewId);
+
+        return new MinReviewDto(review.getId(), review.getRating(), review.getReview());
+    }
+
+
+    public void updateReview(Long reviewId, UpdateReviewRequest request) {
+        try {
+
+            User user = this.userService.getCurrentlyLoggedInUser();
+
+            if (user.getId() != request.getAuthorId()) {
+                throw new ForbiddenException("You cannot edit another person's review");
+            }
+            Review review = getReviewById(reviewId);
+
+            review.setRating(request.getRating());
+            review.setReview(Jsoup.clean(request.getReview(), Safelist.none()));
+
+            this.reviewRepository.save(review);
+
+
+        } catch (DataIntegrityViolationException ex) {
+            throw new BadRequestException("You have already reviewed this reviewer");
+        }
+    }
+
+
+    public void deleteReview(Long reviewId) {
+        try {
+
+            User currentUser = this.userService.getCurrentlyLoggedInUser();
+            Review review = getReviewById(reviewId);
+
+            if (review.getAuthor().getId() != currentUser.getId()) {
+                throw new ForbiddenException("Cannot delete another person's review");
+            }
+
+            this.reviewRepository.delete(review);
+
+        } catch (DataAccessException ex) {
+            throw new BadRequestException(
+                    String.format("Could not find review with the id %d", reviewId));
+        }
     }
 }
