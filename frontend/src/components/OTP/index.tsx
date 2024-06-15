@@ -9,8 +9,9 @@ const OTP = () => {
   const navigate = useNavigate();
   const [otpCode, setOtpCode] = useState('');
   const location = useLocation();
-  const { data } = useFetchOTPQuery(location.state.userId);
+  useFetchOTPQuery(location.state.userId);
   const [verifyOTP] = useVerifyOTPMutation();
+  const [error, setError] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -19,6 +20,7 @@ const OTP = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError('');
     if (otpCode.trim().length === 0) {
       return;
     }
@@ -31,9 +33,8 @@ const OTP = () => {
         navigate('/');
       })
       .catch((err) => {
-        console.log(err);
+        setError(err.data.message);
       });
-    console.log('submit');
   };
 
   return (
@@ -43,6 +44,11 @@ const OTP = () => {
           <div>
             <h1 className="text-gray-400 text-2xl">Enter Code</h1>
             <p className="text-sm">Check your phone for a text that includes a one time pass code</p>
+            {error.length > 0 && (
+              <div className="flex justify-center my-2">
+                <p className="text-sm text-red-400">{error}</p>
+              </div>
+            )}
             <div className="my-4">
               <label htmlFor="otpCode">OTP Code</label>
               <input

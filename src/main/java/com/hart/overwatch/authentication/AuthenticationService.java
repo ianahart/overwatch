@@ -79,13 +79,19 @@ public class AuthenticationService {
             boolean isVerified = this.phoneService.verifyUserOTP(user, otpCode);
             AuthDto authenticationItems = postAuthenticationSteps(user);
 
-            return new LoginResponse(authenticationItems.getUser(),
-                    authenticationItems.getJwtToken(),
-                    authenticationItems.getRefreshToken().getRefreshToken());
+            if (isVerified) {
+                return new LoginResponse(authenticationItems.getUser(),
+                        authenticationItems.getJwtToken(),
+                        authenticationItems.getRefreshToken().getRefreshToken());
+
+            } else {
+                throw new BadRequestException("Incorrect pass code");
+            }
+
 
 
         } catch (Exception ex) {
-            return new LoginResponse();
+            throw new BadRequestException("Incorrect pass code");
         }
     }
 

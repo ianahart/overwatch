@@ -3,7 +3,7 @@ export interface ISwitchProps {
   handleSwitchToggled: (switchToggled: boolean) => void;
 }
 
-const Switch = ({ switchToggled, handleSwitchToggled }: ISwitchProps) => {
+const Switch = ({ switchToggled = false, handleSwitchToggled }: ISwitchProps) => {
   return (
     <label className="relative flex justify-between items-center group p-2 text-xl">
       <input
