@@ -7,6 +7,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.hart.overwatch.connection.Connection;
 import com.hart.overwatch.location.Location;
 import com.hart.overwatch.passwordreset.PasswordReset;
 import com.hart.overwatch.paymentmethod.UserPaymentMethod;
@@ -118,6 +119,16 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<Review> authorReviews;
 
+
+    @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Connection> senderConnections;
+
+    @OneToMany(mappedBy = "receiver", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Connection> receiverConnections;
+
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "setting_id", referencedColumnName = "id")
     private Setting setting;
@@ -178,6 +189,14 @@ public class User implements UserDetails {
 
     public Location getLocation() {
         return location;
+    }
+
+    public List<Connection> getSenderConnections() {
+        return senderConnections;
+    }
+
+    public List<Connection> getReceiverConnections() {
+        return receiverConnections;
     }
 
     public Long getId() {
@@ -344,6 +363,14 @@ public class User implements UserDetails {
 
     public void setAbbreviation(String abbreviation) {
         this.abbreviation = abbreviation;
+    }
+
+    public void setSenderConnections(List<Connection> senderConnections) {
+        this.senderConnections = senderConnections;
+    }
+
+    public void setReceiverConnections(List<Connection> receiverConnections) {
+        this.receiverConnections = receiverConnections;
     }
 
     public void setSlug(String slug) {

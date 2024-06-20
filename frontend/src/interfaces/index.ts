@@ -625,6 +625,14 @@ export interface IDeleteReviewRequest {
   reviewId: number;
 }
 
+export interface ICreateConnectionRequest {
+  token: string;
+  senderId: number;
+  receiverId: number;
+}
+
+export interface ICreateConnectionResponse extends IBaseResponse {}
+
 export interface IDeleteReviewResponse extends IBaseResponse {}
 
 export interface IEditReviewResponse extends IBaseResponse {}

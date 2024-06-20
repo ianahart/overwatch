@@ -4,6 +4,7 @@ import ProfileContainer from './ProfileContainer';
 import { useSelector } from 'react-redux';
 import { TRootState } from '../../state/store';
 import { BsThreeDots } from 'react-icons/bs';
+import Connect from './Connect';
 
 export interface IBasicInfoProps {
   userId: number;
@@ -41,6 +42,15 @@ const BasicInfo = ({ userId, city, abbreviation, avatarUrl, fullName, country }:
             </div>
           )}
         </div>
+        {userId !== user.id && user.role !== 'REVIEWER' && (
+          <Connect
+            avatarUrl={avatarUrl}
+            abbreviation={abbreviation}
+            fullName={fullName}
+            receiverId={userId}
+            senderId={user.id}
+          />
+        )}
       </>
     </ProfileContainer>
   );

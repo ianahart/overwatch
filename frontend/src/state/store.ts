@@ -55,6 +55,7 @@ import { profilesApi } from './apis/profilesApi';
 import { paymentMethodsApi } from './apis/paymentMethodsApi';
 import { testimonialsApi } from './apis/testimonialsApi';
 import { reviewsApi } from './apis/reviewsApi';
+import { connectionsApi } from './apis/connectionsApi';
 
 export const store = configureStore({
   reducer: {
@@ -79,6 +80,7 @@ export const store = configureStore({
     [paymentMethodsApi.reducerPath]: paymentMethodsApi.reducer,
     [testimonialsApi.reducerPath]: testimonialsApi.reducer,
     [reviewsApi.reducerPath]: reviewsApi.reducer,
+    [connectionsApi.reducerPath]: connectionsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -96,7 +98,8 @@ export const store = configureStore({
       .concat(profilesApi.middleware)
       .concat(paymentMethodsApi.middleware)
       .concat(testimonialsApi.middleware)
-      .concat(reviewsApi.middleware);
+      .concat(reviewsApi.middleware)
+      .concat(connectionsApi.middleware);
   },
 });
 
@@ -200,6 +203,9 @@ export {
   useEditReviewMutation,
   useDeleteReviewMutation,
 } from './apis/reviewsApi';
+
+export { useCreateConnectionMutation } from './apis/connectionsApi';
+
 export {
   testimonialsApi,
   authsApi,
@@ -210,4 +216,5 @@ export {
   profilesApi,
   paymentMethodsApi,
   reviewsApi,
+  connectionsApi,
 };
