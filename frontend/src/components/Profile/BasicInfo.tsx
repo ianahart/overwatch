@@ -47,7 +47,7 @@ const BasicInfo = ({ userId, city, abbreviation, avatarUrl, fullName, country }:
             avatarUrl={avatarUrl}
             abbreviation={abbreviation}
             fullName={fullName}
-            recieverId={userId}
+            receiverId={userId}
             senderId={user.id}
           />
         )}
