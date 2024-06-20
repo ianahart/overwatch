@@ -22,13 +22,13 @@ const Profile = ({ profileId }: IProfileProps) => {
   }, [data]);
 
   return (
-    <>
+    <div>
       {profile.userProfile.role === 'REVIEWER' ? (
         <ReviewerProfile profile={profile} />
       ) : (
         <UserProfile profile={profile} />
       )}
-    </>
+    </div>
   );
 };
 
