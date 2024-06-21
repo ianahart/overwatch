@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.hart.overwatch.connection.Connection;
 import com.hart.overwatch.location.Location;
+import com.hart.overwatch.notification.Notification;
 import com.hart.overwatch.passwordreset.PasswordReset;
 import com.hart.overwatch.paymentmethod.UserPaymentMethod;
 import com.hart.overwatch.phone.Phone;
@@ -127,6 +128,14 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "receiver", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
             orphanRemoval = true)
     private List<Connection> receiverConnections;
+
+    @OneToMany(mappedBy = "receiver", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Notification> receiverNotifications;
+
+    @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Notification> senderNotifications;
 
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -264,6 +273,15 @@ public class User implements UserDetails {
         return firstName;
     }
 
+    public List<Notification> getSenderNotifications() {
+        return senderNotifications;
+    }
+
+    public List<Notification> getReceiverNotifications() {
+        return receiverNotifications;
+    }
+
+
     public Timestamp getUpdatedAt() {
         return updatedAt;
     }
@@ -301,6 +319,15 @@ public class User implements UserDetails {
 
     public void setPhones(List<Phone> phones) {
         this.phones = phones;
+    }
+
+
+    public void setSenderNotifications(List<Notification> senderNotifications) {
+        this.senderNotifications = senderNotifications;
+    }
+
+    public void setReceiverNotifications(List<Notification> receiverNotifications) {
+        this.receiverNotifications = receiverNotifications;
     }
 
     public void setAuthorReviews(List<Review> authorReviews) {
