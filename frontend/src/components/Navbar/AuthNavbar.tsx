@@ -6,8 +6,9 @@ import Avatar from '../Shared/Avatar';
 import { TRootState, clearSetting, clearUser, useSignOutMutation } from '../../state/store';
 import { openMobile, closeMobile } from '../../state/store';
 import UserInfo from './UserInfo';
-import { AiOutlineClose, AiOutlineLogout } from 'react-icons/ai';
+import { AiOutlineBell, AiOutlineClose, AiOutlineLogout } from 'react-icons/ai';
 import { nanoid } from 'nanoid';
+import Notifications from '../Notification';
 
 const AuthNavbar = () => {
   const navigate = useNavigate();
@@ -36,8 +37,13 @@ const AuthNavbar = () => {
   return (
     <nav className="flex justify-between p-1">
       <h1 className="text-2xl text-green-400 font-bold font-display tracking-wider">OverWatch</h1>
-      <div onClick={() => dispatch(openMobile())} className="relative cursor-pointer">
-        <Avatar initials={user.abbreviation} avatarUrl={user.avatarUrl} width="w-10" height="h-10" />
+      <div className="relative cursor-pointer">
+        <div className="flex items-center">
+          {user.loggedIn && <Notifications />}
+          <div onClick={() => dispatch(openMobile())}>
+            <Avatar initials={user.abbreviation} avatarUrl={user.avatarUrl} width="w-10" height="h-10" />
+          </div>
+        </div>
         {isMobileOpen && (
           <div className="p-2 z-10 shadow-md bg-gray-900 rounded absolute top-2  min-h-[calc(100vh-10vh)] w-60 animate-slidemenu right-3">
             <div className="flex justify-end">
