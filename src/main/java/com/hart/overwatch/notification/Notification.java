@@ -3,7 +3,6 @@ package com.hart.overwatch.notification;
 import java.sql.Timestamp;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.mapping.Set;
 import com.hart.overwatch.user.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -42,7 +41,12 @@ public class Notification {
     private String text;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "notification_type")
     private NotificationType notificationType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "notification_role")
+    private NotificationRole notificationRole;
 
     @ManyToOne()
     @JoinColumn(name = "receiver", referencedColumnName = "id", nullable = false)
@@ -58,26 +62,30 @@ public class Notification {
     }
 
     public Notification(Long id, Timestamp createdAt, Timestamp updatedAt, String text,
-            NotificationType notificationType) {
+            NotificationType notificationType, NotificationRole notificationRole) {
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.text = text;
         this.notificationType = notificationType;
+        this.notificationRole = notificationRole;
     }
 
-    public Notification(String text, NotificationType notificationType, User receiver,
-            User sender) {
+    public Notification(String text, NotificationType notificationType, User receiver, User sender,
+            NotificationRole notificationRole) {
         this.text = text;
         this.notificationType = notificationType;
         this.receiver = receiver;
         this.sender = sender;
+        this.notificationRole = notificationRole;
     }
 
-    public Notification(String text, NotificationType notificationType, User receiver) {
+    public Notification(String text, NotificationType notificationType, User receiver,
+            NotificationRole notificationRole) {
         this.text = text;
         this.notificationType = notificationType;
         this.receiver = receiver;
+        this.notificationRole = notificationRole;
     }
 
     public Long getId() {
@@ -86,6 +94,10 @@ public class Notification {
 
     public User getSender() {
         return sender;
+    }
+
+    public NotificationRole getNotificationRole() {
+        return notificationRole;
     }
 
     public String getText() {
@@ -134,6 +146,10 @@ public class Notification {
 
     public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public void setNotificationRole(NotificationRole notificationRole) {
+        this.notificationRole = notificationRole;
     }
 }
 
