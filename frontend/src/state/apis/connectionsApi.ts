@@ -2,6 +2,8 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import {
   ICreateConnectionRequest,
   ICreateConnectionResponse,
+  IDeleteConnectionRequest,
+  IDeleteConnectionResponse,
   IVerifyConnectionRequest,
   IVerifyConnectionResponse,
 } from '../../interfaces';
@@ -41,9 +43,20 @@ const connectionsApi = createApi({
           };
         },
       }),
+      deleteConnection: builder.mutation<IDeleteConnectionResponse, IDeleteConnectionRequest>({
+        query: ({ connectionId, token }) => {
+          return {
+            url: `/connections/${connectionId}`,
+            method: 'DELETE',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+      }),
     };
   },
 });
 
-export const { useCreateConnectionMutation, useVerifyConnectionQuery } = connectionsApi;
+export const { useCreateConnectionMutation, useVerifyConnectionQuery, useDeleteConnectionMutation } = connectionsApi;
 export { connectionsApi };

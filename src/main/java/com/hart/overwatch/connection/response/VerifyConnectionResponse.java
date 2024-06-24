@@ -1,28 +1,29 @@
 package com.hart.overwatch.connection.response;
 
 import com.hart.overwatch.connection.RequestStatus;
+import com.hart.overwatch.connection.dto.MinConnectionDto;
 
 public class VerifyConnectionResponse {
 
     private String message;
 
-    private RequestStatus data;
+    private MinConnectionDto data;
 
 
     public VerifyConnectionResponse() {
 
     }
 
-    public VerifyConnectionResponse(String message, RequestStatus data) {
+    public VerifyConnectionResponse(String message, MinConnectionDto data) {
         this.message = message;
-        this.data = data;
+        this.data  = data;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public RequestStatus getData() {
+    public MinConnectionDto getData() {
         return data;
     }
 
@@ -30,7 +31,7 @@ public class VerifyConnectionResponse {
         this.message = message;
     }
 
-    public void setData(RequestStatus data) {
+    public void setData(MinConnectionDto data) {
         this.data = data;
     }
 }

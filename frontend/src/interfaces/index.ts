@@ -678,8 +678,18 @@ export interface IDeleteNotificationRequest {
 
 export interface IVerifyConnectionResponse {
   message: string;
-  data: RequestStatus;
+  data: {
+    status: RequestStatus;
+    id: number;
+  };
 }
+
+export interface IDeleteConnectionRequest {
+  token: string;
+  connectionId: number;
+}
+
+export interface IDeleteConnectionResponse extends IBaseResponse {}
 
 export interface IDeleteNotificationResponse extends IBaseResponse {}
 
