@@ -25,6 +25,9 @@ export const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, Fetch
       try {
         const refreshToken = retrieveTokens().refreshToken;
 
+        if (!refreshToken) {
+          throw new Error('No refresh token available');
+        }
         const refreshResult = await baseQuery(
           {
             url: '/auth/refresh',

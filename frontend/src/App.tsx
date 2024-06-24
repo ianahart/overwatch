@@ -204,7 +204,7 @@ const router = createBrowserRouter(
 const App = () => {
   const dispatch = useDispatch();
   const token = retrieveTokens()?.token;
-  const { data } = token ? useSyncUserQuery(token) : { data: null };
+  const { data } = useSyncUserQuery(token);
 
   useEffect(() => {
     if (data) {

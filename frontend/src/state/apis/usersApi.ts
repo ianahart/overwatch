@@ -62,6 +62,9 @@ const usersApi = createApi({
       }),
       syncUser: builder.query<ISyncUserResponse, string>({
         query: (token) => {
+          if (!token) {
+            return '';
+          }
           return {
             url: '/users/sync',
             method: 'GET',
