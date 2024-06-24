@@ -75,6 +75,15 @@ public class ConnectionService {
             this.connectionRepository.delete(connection);
 
         }
+    }
+
+    public void updateConnectionStatus(Long senderId, Long receiverId, RequestStatus status) {
+
+        Connection connection = getConnectionBySenderIdAndReceverId(senderId, receiverId);
+
+        connection.setStatus(status);
+
+        this.connectionRepository.save(connection);
 
     }
 }

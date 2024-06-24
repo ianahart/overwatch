@@ -1,5 +1,6 @@
 package com.hart.overwatch.notification;
 
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -7,10 +8,24 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import com.hart.overwatch.notification.dto.NotificationDto;
+import com.hart.overwatch.notification.dto.MinNotificationDto;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
+    @Query(value = """
+                SELECT new com.hart.overwatch.notification.dto.MinNotificationDto(
+                n.id AS id)
+                FROM Notification n
+                INNER JOIN n.receiver r
+                INNER JOIN n.sender s
+                WHERE s.id = :senderId
+                AND r.id = :receiverId
+                AND n.notificationType = :notificationType
+            """)
+    List<MinNotificationDto> getNotificationBySenderIdAndReceiverId(
+            @Param("senderId") Long senderId, @Param("receiverId") Long receiverId,
+            @Param("notificationType") NotificationType notificationType);
 
     @Query(value = """
             SELECT new com.hart.overwatch.notification.dto.NotificationDto(

@@ -11,9 +11,10 @@ dayjs.extend(relativeTime);
 export interface INotificationListProps {
   notifications: INotification[];
   handleDeleteNotification: (notification: INotification) => void;
+  emitNotification: (notification: INotification) => void;
 }
 
-const NotificationList = ({ notifications, handleDeleteNotification }: INotificationListProps) => {
+const NotificationList = ({ notifications, handleDeleteNotification, emitNotification }: INotificationListProps) => {
   return (
     <div className="p-2">
       {notifications.map((notification) => {
@@ -29,8 +30,18 @@ const NotificationList = ({ notifications, handleDeleteNotification }: INotifica
             {notification.notificationRole === NotificationRole.RECEIVER &&
               notification.notificationType === NotificationType.CONNECTION_REQUEST_PENDING && (
                 <div className="flex justify-center">
-                  <button className="bg-blue-400 text-xs rounded-lg p-2 text-black mx-1">Accept</button>
-                                    <button onClick={() => handleDeleteNotification(notification)} className="bg-gray-400 text-xs rounded-lg p-2 text-black mx-1">Deny</button>
+                  <button
+                    onClick={() => emitNotification(notification)}
+                    className="bg-blue-400 text-xs rounded-lg p-2 text-black mx-1"
+                  >
+                    Accept
+                  </button>
+                  <button
+                    onClick={() => handleDeleteNotification(notification)}
+                    className="bg-gray-400 text-xs rounded-lg p-2 text-black mx-1"
+                  >
+                    Deny
+                  </button>
                 </div>
               )}
             <div className="flex justify-end">

@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.connection.ConnectionService;
+import com.hart.overwatch.connection.RequestStatus;
+import com.hart.overwatch.notification.dto.MinNotificationDto;
 import com.hart.overwatch.notification.dto.NotificationDto;
 import com.hart.overwatch.notification.request.CreateNotificationRequest;
 import com.hart.overwatch.user.User;
@@ -52,6 +54,18 @@ public class NotificationService {
     }
 
 
+
+    private void deletePendingNotification(Long senderId, long receiverId,
+            NotificationType notificationType) {
+
+        List<MinNotificationDto> notifications = this.notificationRepository
+                .getNotificationBySenderIdAndReceiverId(senderId, receiverId, notificationType);
+
+        for (MinNotificationDto notification : notifications) {
+            this.notificationRepository.deleteById(notification.getId());
+        }
+    }
+
     private Map<String, String> constructNotificationText(User sender, User receiver,
             NotificationType notificationType) {
 
@@ -74,6 +88,10 @@ public class NotificationService {
                         String.format("You are now connected with %s.", sender.getFullName()));
                 notificationText.put("sender", String.format("%s accepted your connection request.",
                         receiver.getFullName()));
+                this.connectionService.updateConnectionStatus(sender.getId(), receiver.getId(),
+                        RequestStatus.ACCEPTED);
+                deletePendingNotification(sender.getId(), receiver.getId(),
+                        NotificationType.CONNECTION_REQUEST_PENDING);
                 break;
             default:
 
@@ -153,23 +171,9 @@ public class NotificationService {
     private void deleteNotification(Long notificationId) {
 
         Optional<Notification> notification = this.notificationRepository.findById(notificationId);
-        System.out.println(notification);
-        System.out.println(notificationId);
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
 
         if (notification.isPresent()) {
-            System.out.println(notification.get());
 
-            System.out.println();
-            System.out.println();
-            System.out.println();
-            System.out.println();
-            System.out.println();
             this.notificationRepository.delete(notification.get());
         }
     }

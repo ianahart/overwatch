@@ -12,6 +12,7 @@ import {
 import { INotification, IPaginationState } from '../../interfaces';
 import { paginationState } from '../../data';
 import NotificationList from './NotificationList';
+import { NotificationType } from '../../enums';
 
 let stompClient: any = null;
 
@@ -149,6 +150,16 @@ const Notifications = () => {
     deleteNotification({ ...payload }).unwrap();
   };
 
+  const emitNotification = (notification: INotification) => {
+    if (stompClient && stompClient.connected) {
+      const { receiverId, senderId } = notification;
+      const payload = { receiverId, senderId, notificationType: NotificationType.CONNECTION_REQUEST_ACCEPTED };
+      stompClient.send('/api/v1/notify', {}, JSON.stringify(payload));
+    } else {
+      console.error('WebSocket is not connected');
+    }
+  };
+
   return (
     <div className="relative">
       <div ref={triggerRef} className="relative">
@@ -164,7 +175,11 @@ const Notifications = () => {
           ref={menuRef}
           className="h-36 overflow-y-auto absolute top-8 z-10 rounded md:-left-64 right-0 md:w-[300px] w-[180px] bg-gray-900 shadow-md"
         >
-          <NotificationList handleDeleteNotification={handleDeleteNotification} notifications={notifications} />
+          <NotificationList
+            emitNotification={emitNotification}
+            handleDeleteNotification={handleDeleteNotification}
+            notifications={notifications}
+          />
           {pag.page < pag.totalPages - 1 && (
             <div className="p-2 justify-center flex my-2">
               <button onClick={() => paginateNotifications('next')} className="text-xs cursor-pointer">
