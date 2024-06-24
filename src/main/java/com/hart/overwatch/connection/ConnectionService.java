@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.connection.dto.MinConnectionDto;
 import com.hart.overwatch.advice.BadRequestException;
 
 @Service
@@ -23,7 +24,7 @@ public class ConnectionService {
         this.userService = userService;
     }
 
-    private Connection getConnetionById(Long connectionId) {
+    private Connection getConnectionById(Long connectionId) {
         return this.connectionRepository.findById(connectionId)
                 .orElseThrow(() -> new NotFoundException(
                         String.format("Connection with the id %d was not found", connectionId)));
@@ -87,13 +88,25 @@ public class ConnectionService {
 
     }
 
-    public RequestStatus verifyConnection(Long senderId, Long receiverId) {
+    public MinConnectionDto verifyConnection(Long senderId, Long receiverId) {
         Connection connection = getConnectionBySenderIdAndReceverId(senderId, receiverId);
 
         if (connection == null) {
-            return RequestStatus.UNINITIATED;
+            return new MinConnectionDto(0L, RequestStatus.UNINITIATED);
         }
 
-        return connection.getStatus();
+        return new MinConnectionDto(connection.getId(), connection.getStatus());
+    }
+
+
+    public void deleteConnectionById(Long connectionId) {
+        try {
+            Connection connection = getConnectionById(connectionId);
+
+            this.connectionRepository.delete(connection);
+
+        } catch  (DataAccessException ex) {
+            throw ex;
+        }
     }
 }
