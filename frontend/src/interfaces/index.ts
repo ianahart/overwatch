@@ -1,4 +1,4 @@
-import { Role } from '../enums';
+import { NotificationRole, NotificationType, Role } from '../enums';
 
 export interface ITestimonial {
   id: number;
@@ -6,6 +6,17 @@ export interface ITestimonial {
   name: string;
   text: string;
   createdAt: string;
+}
+
+export interface INotification {
+  id: number;
+  createdAt: string;
+  text: string;
+  receiverId: number;
+  senderId: number;
+  avatarUrl: string;
+  notificationType: NotificationType;
+  notificationRole: NotificationRole;
 }
 
 export interface IPaginationState {
@@ -629,6 +640,26 @@ export interface ICreateConnectionRequest {
   token: string;
   senderId: number;
   receiverId: number;
+}
+
+export interface IFetchNotificationsRequest {
+  userId: number;
+  token: string;
+  page: number;
+  pageSize: number;
+  direction: string;
+}
+
+export interface IFetchNotificationsResponse {
+  message: string;
+  data: {
+    items: INotification[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
 }
 
 export interface ICreateConnectionResponse extends IBaseResponse {}

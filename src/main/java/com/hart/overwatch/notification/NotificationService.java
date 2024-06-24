@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.hart.overwatch.advice.BadRequestException;
@@ -15,6 +17,8 @@ import com.hart.overwatch.notification.dto.NotificationDto;
 import com.hart.overwatch.notification.request.CreateNotificationRequest;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
+import com.hart.overwatch.pagination.PaginationService;
+import com.hart.overwatch.pagination.dto.PaginationDto;
 
 @Service
 public class NotificationService {
@@ -24,11 +28,15 @@ public class NotificationService {
     private final UserService userService;
 
 
+    private final PaginationService paginationService;
+
+
     @Autowired
     public NotificationService(NotificationRepository notificationRepository,
-            UserService userService) {
+            UserService userService, PaginationService paginationService) {
         this.notificationRepository = notificationRepository;
         this.userService = userService;
+        this.paginationService = paginationService;
     }
 
 
@@ -118,4 +126,22 @@ public class NotificationService {
             throw new BadRequestException("Duplicate notifications emitted");
         }
     }
+
+
+    public PaginationDto<NotificationDto> getAllNotifications(Long userId, int page, int pageSize,
+            String direction) {
+
+        Pageable pageable =
+                
+                this.paginationService.getSortedPageable(page, pageSize, direction, "desc");
+
+        Page<NotificationDto> result =
+                this.notificationRepository.getAllNotificationsByReceiverId(pageable, userId);
+
+
+        return new PaginationDto<NotificationDto>(result.getContent(), result.getNumber(), pageSize,
+                result.getTotalPages(), direction, result.getTotalElements());
+
+    }
+
 }
