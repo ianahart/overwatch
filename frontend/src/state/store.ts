@@ -56,6 +56,7 @@ import { paymentMethodsApi } from './apis/paymentMethodsApi';
 import { testimonialsApi } from './apis/testimonialsApi';
 import { reviewsApi } from './apis/reviewsApi';
 import { connectionsApi } from './apis/connectionsApi';
+import { notificationsApi } from './apis/notificationsApi';
 
 export const store = configureStore({
   reducer: {
@@ -81,6 +82,7 @@ export const store = configureStore({
     [testimonialsApi.reducerPath]: testimonialsApi.reducer,
     [reviewsApi.reducerPath]: reviewsApi.reducer,
     [connectionsApi.reducerPath]: connectionsApi.reducer,
+    [notificationsApi.reducerPath]: notificationsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -99,7 +101,8 @@ export const store = configureStore({
       .concat(paymentMethodsApi.middleware)
       .concat(testimonialsApi.middleware)
       .concat(reviewsApi.middleware)
-      .concat(connectionsApi.middleware);
+      .concat(connectionsApi.middleware)
+      .concat(notificationsApi.middleware);
   },
 });
 
@@ -207,6 +210,12 @@ export {
 export { useCreateConnectionMutation } from './apis/connectionsApi';
 
 export {
+  useDeleteNotificationMutation,
+  useFetchNotificationsQuery,
+  useLazyFetchNotificationsQuery,
+} from './apis/notificationsApi';
+
+export {
   testimonialsApi,
   authsApi,
   heartbeatApi,
@@ -217,4 +226,5 @@ export {
   paymentMethodsApi,
   reviewsApi,
   connectionsApi,
+  notificationsApi,
 };

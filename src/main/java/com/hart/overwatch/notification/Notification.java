@@ -49,11 +49,11 @@ public class Notification {
     private NotificationRole notificationRole;
 
     @ManyToOne()
-    @JoinColumn(name = "receiver", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "receiver_id", referencedColumnName = "id", nullable = false)
     private User receiver;
 
     @ManyToOne()
-    @JoinColumn(name = "sender", referencedColumnName = "id", nullable = true)
+    @JoinColumn(name = "sender_id", referencedColumnName = "id", nullable = true)
     private User sender;
 
 

@@ -8,6 +8,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ConnectionRepository extends JpaRepository<Connection, Long> {
 
+    Connection findBySenderIdAndReceiverId(Long senderId, Long receiverId);
+
+
 
     @Query(value = """
             SELECT EXISTS(SELECT 1 FROM Connection c

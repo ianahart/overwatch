@@ -1,6 +1,7 @@
 package com.hart.overwatch.connection;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.user.User;
@@ -54,5 +55,35 @@ public class ConnectionService {
             ex.printStackTrace();
             throw ex;
         }
+    }
+
+    private Connection getConnectionBySenderIdAndReceverId(Long senderId, Long receiverId) {
+        try {
+            return this.connectionRepository.findBySenderIdAndReceiverId(senderId, receiverId);
+
+        } catch (DataAccessException ex) {
+            throw ex;
+        }
+    }
+
+    public void deleteConnection(Long senderId, Long receiverId) {
+
+        Connection connection = getConnectionBySenderIdAndReceverId(senderId, receiverId);
+
+
+        if (connection != null) {
+            this.connectionRepository.delete(connection);
+
+        }
+    }
+
+    public void updateConnectionStatus(Long senderId, Long receiverId, RequestStatus status) {
+
+        Connection connection = getConnectionBySenderIdAndReceverId(senderId, receiverId);
+
+        connection.setStatus(status);
+
+        this.connectionRepository.save(connection);
+
     }
 }
