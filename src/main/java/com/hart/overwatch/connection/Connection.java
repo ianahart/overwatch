@@ -50,6 +50,10 @@ public class Connection {
     private User receiver;
 
 
+    public Connection() {
+
+    }
+
     public Connection(Long id, Timestamp createdAt, Timestamp updatedAt, RequestStatus status) {
         this.id = id;
         this.createdAt = createdAt;

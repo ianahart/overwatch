@@ -5,7 +5,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.connection.ConnectionService;
 import com.hart.overwatch.notification.dto.NotificationDto;
 import com.hart.overwatch.notification.request.CreateNotificationRequest;
 import com.hart.overwatch.user.User;
@@ -27,16 +30,18 @@ public class NotificationService {
 
     private final UserService userService;
 
-
     private final PaginationService paginationService;
 
+    private final ConnectionService connectionService;
 
     @Autowired
     public NotificationService(NotificationRepository notificationRepository,
-            UserService userService, PaginationService paginationService) {
+            UserService userService, PaginationService paginationService,
+            ConnectionService connectionService) {
         this.notificationRepository = notificationRepository;
         this.userService = userService;
         this.paginationService = paginationService;
+        this.connectionService = connectionService;
     }
 
 
@@ -132,7 +137,7 @@ public class NotificationService {
             String direction) {
 
         Pageable pageable =
-                
+
                 this.paginationService.getSortedPageable(page, pageSize, direction, "desc");
 
         Page<NotificationDto> result =
@@ -142,6 +147,49 @@ public class NotificationService {
         return new PaginationDto<NotificationDto>(result.getContent(), result.getNumber(), pageSize,
                 result.getTotalPages(), direction, result.getTotalElements());
 
+    }
+
+
+    private void deleteNotification(Long notificationId) {
+
+        Optional<Notification> notification = this.notificationRepository.findById(notificationId);
+        System.out.println(notification);
+        System.out.println(notificationId);
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+
+        if (notification.isPresent()) {
+            System.out.println(notification.get());
+
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            this.notificationRepository.delete(notification.get());
+        }
+    }
+
+    public void handleDeleteNotification(NotificationRole notificationRole, Long senderId,
+            Long receiverId, Long notificationId) {
+        try {
+
+
+            if (notificationRole == NotificationRole.RECEIVER) {
+
+                this.connectionService.deleteConnection(senderId, receiverId);
+            }
+
+            deleteNotification(notificationId);
+
+        } catch (DataAccessException ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
     }
 
 }

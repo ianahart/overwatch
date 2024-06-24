@@ -1,5 +1,10 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { IFetchNotificationsRequest, IFetchNotificationsResponse } from '../../interfaces';
+import {
+  IDeleteNotificationRequest,
+  IDeleteNotificationResponse,
+  IFetchNotificationsRequest,
+  IFetchNotificationsResponse,
+} from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
 const notificationsApi = createApi({
@@ -30,22 +35,23 @@ const notificationsApi = createApi({
               ]
             : [{ type: 'Notification', id: 'LIST' }],
       }),
-      //  deleteReview: builder.mutation<IDeleteReviewResponse, IDeleteReviewRequest>({
-      //    query: ({ reviewId, token }) => ({
-      //      url: `reviews/${reviewId}`,
-      //      method: 'DELETE',
-      //      headers: {
-      //        Authorization: `Bearer ${token}`,
-      //      },
-      //    }),
-      //    //@ts-ignore
-      //    invalidatesTags: (_, error, { reviewId }) => [
-      //      { type: 'Review', id: reviewId },
-      //      { type: 'Review', id: 'LIST' },
-      //    ],
-      //  }),
+      deleteNotification: builder.mutation<IDeleteNotificationResponse, IDeleteNotificationRequest>({
+        query: ({ notificationId, token, notificationRole, senderId, receiverId }) => ({
+          url: `notifications/${notificationId}?notificationRole=${notificationRole}&senderId=${senderId}&receiverId=${receiverId}`,
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }),
+        //@ts-ignore
+        invalidatesTags: (_, error, { notificationId }) => [
+          { type: 'Notification', id: notificationId },
+          { type: 'Notification', id: 'LIST' },
+        ],
+      }),
     };
   },
 });
-export const { useFetchNotificationsQuery, useLazyFetchNotificationsQuery } = notificationsApi;
+export const { useDeleteNotificationMutation, useFetchNotificationsQuery, useLazyFetchNotificationsQuery } =
+  notificationsApi;
 export { notificationsApi };

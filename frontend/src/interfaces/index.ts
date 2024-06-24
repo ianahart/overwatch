@@ -662,6 +662,16 @@ export interface IFetchNotificationsResponse {
   };
 }
 
+export interface IDeleteNotificationRequest {
+  notificationId: number;
+  token: string;
+  notificationRole: NotificationRole;
+  senderId: number;
+  receiverId: number;
+}
+
+export interface IDeleteNotificationResponse extends IBaseResponse {}
+
 export interface ICreateConnectionResponse extends IBaseResponse {}
 
 export interface IDeleteReviewResponse extends IBaseResponse {}

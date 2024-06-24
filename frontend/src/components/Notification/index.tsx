@@ -3,7 +3,12 @@ import { over } from 'stompjs';
 import SockJS from 'sockjs-client';
 import { AiOutlineBell } from 'react-icons/ai';
 import { useSelector } from 'react-redux';
-import { TRootState, useFetchNotificationsQuery, useLazyFetchNotificationsQuery } from '../../state/store';
+import {
+  TRootState,
+  useDeleteNotificationMutation,
+  useFetchNotificationsQuery,
+  useLazyFetchNotificationsQuery,
+} from '../../state/store';
 import { INotification, IPaginationState } from '../../interfaces';
 import { paginationState } from '../../data';
 import NotificationList from './NotificationList';
@@ -15,6 +20,7 @@ const Notifications = () => {
   const [pag, setPag] = useState<IPaginationState>(paginationState);
   const [notifications, setNotifications] = useState<INotification[]>([]);
   const [fetchNotifications] = useLazyFetchNotificationsQuery();
+  const [deleteNotification] = useDeleteNotificationMutation();
 
   const { data } = useFetchNotificationsQuery({
     userId: user.id,
@@ -30,7 +36,6 @@ const Notifications = () => {
 
   useEffect(() => {
     if (data !== undefined) {
-      console.log(data);
       const { items, page, pageSize, totalPages, direction, totalElements } = data.data;
       setPag((prevState) => ({
         ...prevState,
@@ -56,7 +61,7 @@ const Notifications = () => {
 
   const paginateNotifications = async (dir: string) => {
     try {
-      const response = await fetchNotifications({
+      const res = await fetchNotifications({
         userId: user.id,
         token,
         page: pag.page,
@@ -64,7 +69,7 @@ const Notifications = () => {
         direction: dir,
       }).unwrap();
 
-      const { items, page, pageSize, totalPages, direction, totalElements } = response.data;
+      const { items, page, pageSize, totalPages, direction, totalElements } = res.data;
       setPag((prevState) => ({
         ...prevState,
         page,
@@ -95,9 +100,27 @@ const Notifications = () => {
     stompClient.subscribe(`/user/${user.id}/topic/notifications`, onNotification);
   };
 
-  const onNotification = (message: any) => {
-    const notification = JSON.parse(message.body);
-    setNotifications((prevState) => [notification, ...prevState]);
+  const onNotification = () => {
+    fetchNotifications({
+      userId: user.id,
+      token,
+      page: -1,
+      pageSize: 2,
+      direction: 'next',
+    })
+      .unwrap()
+      .then((res) => {
+        const { items, page, pageSize, totalPages, direction, totalElements } = res.data;
+        setPag((prevState) => ({
+          ...prevState,
+          page,
+          pageSize,
+          totalElements,
+          totalPages,
+          direction,
+        }));
+        setNotifications(items);
+      });
   };
 
   const onError = () => {};
@@ -105,7 +128,6 @@ const Notifications = () => {
   useEffect(() => {
     if (user.id !== 0) {
       connect();
-      console.log(user.id);
     } else {
       if (stompClient !== null) {
         stompClient.disconnect();
@@ -118,24 +140,31 @@ const Notifications = () => {
     return () => window.removeEventListener('click', clickAway);
   }, [clickAway]);
 
-  const deleteNotification = (notification: INotification) => {
-    console.log(notification);
+  const handleDeleteNotification = (notification: INotification) => {
+    if (!notification) {
+      return;
+    }
+    const { notificationRole, senderId, receiverId } = notification;
+    const payload = { token, notificationId: notification.id, notificationRole, senderId, receiverId };
+    deleteNotification({ ...payload }).unwrap();
   };
 
   return (
     <div className="relative">
       <div ref={triggerRef} className="relative">
         <AiOutlineBell onClick={() => setIsNotificationsOpen((prevState) => !prevState)} className="text-2xl mr-2" />
-        <div className="absolute z-10 -top-2 -left-4 bg-red-400 rounded-lg p-1 w-6 h-6 flex items-center justify-center flex-col">
-          <p className="text-white font-bold text-sm">{pag.totalElements}</p>
-        </div>
+        {pag.totalElements > 0 && (
+          <div className="absolute z-10 -top-2 -left-4 bg-red-400 rounded-lg p-1 w-6 h-6 flex items-center justify-center flex-col">
+            <p className="text-white font-bold text-sm">{pag.totalElements > 9 ? '+9' : pag.totalElements}</p>
+          </div>
+        )}
       </div>
       {isNotificationsOpen && (
         <div
           ref={menuRef}
           className="h-36 overflow-y-auto absolute top-8 z-10 rounded md:-left-64 right-0 md:w-[300px] w-[180px] bg-gray-900 shadow-md"
         >
-          <NotificationList deleteNotification={deleteNotification} notifications={notifications} />
+          <NotificationList handleDeleteNotification={handleDeleteNotification} notifications={notifications} />
           {pag.page < pag.totalPages - 1 && (
             <div className="p-2 justify-center flex my-2">
               <button onClick={() => paginateNotifications('next')} className="text-xs cursor-pointer">

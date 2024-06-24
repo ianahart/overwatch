@@ -209,7 +209,11 @@ export {
 
 export { useCreateConnectionMutation } from './apis/connectionsApi';
 
-export { useFetchNotificationsQuery, useLazyFetchNotificationsQuery } from './apis/notificationsApi';
+export {
+  useDeleteNotificationMutation,
+  useFetchNotificationsQuery,
+  useLazyFetchNotificationsQuery,
+} from './apis/notificationsApi';
 
 export {
   testimonialsApi,
