@@ -1,4 +1,4 @@
-import { NotificationRole, NotificationType, Role } from '../enums';
+import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 
 export interface ITestimonial {
   id: number;
@@ -642,6 +642,12 @@ export interface ICreateConnectionRequest {
   receiverId: number;
 }
 
+export interface IVerifyConnectionRequest {
+  token: string;
+  senderId: number;
+  receiverId: number;
+}
+
 export interface IFetchNotificationsRequest {
   userId: number;
   token: string;
@@ -668,6 +674,11 @@ export interface IDeleteNotificationRequest {
   notificationRole: NotificationRole;
   senderId: number;
   receiverId: number;
+}
+
+export interface IVerifyConnectionResponse {
+  message: string;
+  data: RequestStatus;
 }
 
 export interface IDeleteNotificationResponse extends IBaseResponse {}

@@ -5,9 +5,9 @@ import { over } from 'stompjs';
 import SockJS from 'sockjs-client';
 import { AiOutlineCheck } from 'react-icons/ai';
 
-import { NotificationType } from '../../enums';
+import { NotificationType, RequestStatus } from '../../enums';
 import Avatar from '../Shared/Avatar';
-import { TRootState, useCreateConnectionMutation } from '../../state/store';
+import { TRootState, useCreateConnectionMutation, useVerifyConnectionQuery } from '../../state/store';
 
 export interface IConnectProps {
   receiverId: number;
@@ -24,6 +24,8 @@ const Connect = ({ receiverId, senderId, fullName, avatarUrl, abbreviation }: IC
   const { token } = useSelector((store: TRootState) => store.user);
   const [error, setError] = useState('');
   const [createConnection, { isLoading }] = useCreateConnectionMutation();
+  const { data } = useVerifyConnectionQuery({ token, receiverId, senderId });
+  const [status, setStatus] = useState<RequestStatus>(RequestStatus.UNINITIATED);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const points = ['Stay in touch easier', 'Get to know one another', 'Get help when you need it'];
 
@@ -47,6 +49,12 @@ const Connect = ({ receiverId, senderId, fullName, avatarUrl, abbreviation }: IC
     console.error('WebSocket error:', err);
     // Reconnect after a delay
   };
+
+  useEffect(() => {
+    if (data) {
+      setStatus(data.data);
+    }
+  }, [data]);
 
   useEffect(() => {
     if (shouldRun.current) {
@@ -73,6 +81,10 @@ const Connect = ({ receiverId, senderId, fullName, avatarUrl, abbreviation }: IC
   };
 
   const handleConnectToReviewer = () => {
+    if (status === RequestStatus.PENDING || status === RequestStatus.ACCEPTED) {
+      return;
+    }
+
     setError('');
     createConnection({ token, receiverId, senderId })
       .unwrap()
@@ -85,12 +97,25 @@ const Connect = ({ receiverId, senderId, fullName, avatarUrl, abbreviation }: IC
       });
   };
 
+  const renderConnectionStatus = () => {
+    switch (status) {
+      case RequestStatus.ACCEPTED:
+        return 'Connected';
+      case RequestStatus.PENDING:
+        return 'Pending...';
+      case RequestStatus.UNINITIATED:
+        return 'Connect';
+      default:
+        return 'Connect';
+    }
+  };
+
   return (
     <div className="flex justify-end text-gray-400">
       {!isLoading && (
         <button onClick={() => setIsModalOpen(true)} className="btn flex items-center">
           <BsLightningCharge />
-          Connect
+          {renderConnectionStatus()}
         </button>
       )}
       {isModalOpen && (

@@ -86,4 +86,14 @@ public class ConnectionService {
         this.connectionRepository.save(connection);
 
     }
+
+    public RequestStatus verifyConnection(Long senderId, Long receiverId) {
+        Connection connection = getConnectionBySenderIdAndReceverId(senderId, receiverId);
+
+        if (connection == null) {
+            return RequestStatus.UNINITIATED;
+        }
+
+        return connection.getStatus();
+    }
 }

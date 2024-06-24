@@ -207,7 +207,7 @@ export {
   useDeleteReviewMutation,
 } from './apis/reviewsApi';
 
-export { useCreateConnectionMutation } from './apis/connectionsApi';
+export { useCreateConnectionMutation, useVerifyConnectionQuery } from './apis/connectionsApi';
 
 export {
   useDeleteNotificationMutation,
