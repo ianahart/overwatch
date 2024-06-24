@@ -15,3 +15,10 @@ export enum NotificationRole {
   SENDER = 'SENDER',
   RECEIVER = 'RECEIVER',
 }
+
+export enum RequestStatus {
+  PENDING = 'PENDING',
+  ACCEPTED = 'ACCEPTED',
+  DECLINED = 'DECLINED',
+  UNINITIATED = 'UNINITIATED',
+}
