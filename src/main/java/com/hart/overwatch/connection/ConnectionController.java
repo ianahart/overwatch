@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hart.overwatch.connection.request.CreateConnectionRequest;
 import com.hart.overwatch.connection.response.CreateConnectionResponse;
 import com.hart.overwatch.connection.response.DeleteConnectionResponse;
+import com.hart.overwatch.connection.response.GetAllConnectionsResponse;
 import com.hart.overwatch.connection.response.VerifyConnectionResponse;
 import jakarta.validation.Valid;
 
@@ -47,8 +48,18 @@ public class ConnectionController {
     }
 
     @DeleteMapping(path = "/{connectionId}")
-    public ResponseEntity<DeleteConnectionResponse> deleteConnection(@PathVariable("connectionId") Long connectionId) {
+    public ResponseEntity<DeleteConnectionResponse> deleteConnection(
+            @PathVariable("connectionId") Long connectionId) {
         this.connectionService.deleteConnectionById(connectionId);
         return ResponseEntity.status(HttpStatus.OK).body(new DeleteConnectionResponse("success"));
+    }
+
+    @GetMapping(path = "")
+    public ResponseEntity<GetAllConnectionsResponse> getAllConnections(
+            @RequestParam("userId") Long userId, @RequestParam("page") int page,
+            @RequestParam("pageSize") int pageSize, @RequestParam("direction") String direction) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(new GetAllConnectionsResponse("success",
+                this.connectionService.getAllConnections(userId, page, pageSize, direction)));
     }
 }

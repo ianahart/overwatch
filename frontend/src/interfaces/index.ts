@@ -1,5 +1,27 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 
+export interface IConnection {
+  senderId: number;
+  receiverId: number;
+  phoneNumber: string;
+  lastName: string;
+  id: number;
+  firstName: string;
+  email: string;
+  country: string;
+  city: string;
+  bio: string;
+  avatarUrl: string;
+}
+
+export interface IMessage {
+  fullName: string;
+  createdAt: string;
+  text: string;
+  avatarUrl: string;
+  id: number;
+}
+
 export interface ITestimonial {
   id: number;
   userId: number;
@@ -687,6 +709,26 @@ export interface IVerifyConnectionResponse {
 export interface IDeleteConnectionRequest {
   token: string;
   connectionId: number;
+}
+
+export interface IFetchConnectionsRequest {
+  userId: number;
+  token: string;
+  page: number;
+  pageSize: number;
+  direction: string;
+}
+
+export interface IFetchConnectionsResponse {
+  message: string;
+  data: {
+    items: IConnection[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
 }
 
 export interface IDeleteConnectionResponse extends IBaseResponse {}

@@ -3,6 +3,10 @@ export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      gridTemplateColumns: {
+        chat: '1fr 2fr 1fr',
+        'chat-mobile': '1fr',
+      },
       animation: {
         slidemenu: 'slidemenu 0.35s ease-in-out',
         slidedown: 'slidedown 0.35s ease-in-out',

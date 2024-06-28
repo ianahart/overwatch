@@ -1,5 +1,7 @@
+import Connects from '../../components/Settings/Connects';
+
 const ConnectsRoute = () => {
-  return <div>Connects Route</div>;
+  return <Connects />;
 };
 
 export default ConnectsRoute;
