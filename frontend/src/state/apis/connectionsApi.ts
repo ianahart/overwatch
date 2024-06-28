@@ -4,6 +4,8 @@ import {
   ICreateConnectionResponse,
   IDeleteConnectionRequest,
   IDeleteConnectionResponse,
+  IFetchConnectionsRequest,
+  IFetchConnectionsResponse,
   IVerifyConnectionRequest,
   IVerifyConnectionResponse,
 } from '../../interfaces';
@@ -14,6 +16,21 @@ const connectionsApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints(builder) {
     return {
+      fetchConnections: builder.query<IFetchConnectionsResponse, IFetchConnectionsRequest>({
+        query: ({ userId, token, page, pageSize, direction }) => {
+          if (userId === 0 || !token) {
+            return '';
+          }
+          return {
+            url: `/connections?userId=${userId}&page=${page}&pageSize=${pageSize}&direction=${direction}`,
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+      }),
+
       verifyConnection: builder.query<IVerifyConnectionResponse, IVerifyConnectionRequest>({
         query: ({ senderId, receiverId, token }) => {
           if (senderId === null || senderId === 0 || receiverId === 0 || receiverId === null) {
@@ -58,5 +75,11 @@ const connectionsApi = createApi({
   },
 });
 
-export const { useCreateConnectionMutation, useVerifyConnectionQuery, useDeleteConnectionMutation } = connectionsApi;
+export const {
+  useCreateConnectionMutation,
+  useVerifyConnectionQuery,
+  useDeleteConnectionMutation,
+  useFetchConnectionsQuery,
+  useLazyFetchConnectionsQuery,
+} = connectionsApi;
 export { connectionsApi };

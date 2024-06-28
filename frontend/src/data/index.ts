@@ -37,6 +37,20 @@ export const profileState = {
   },
 };
 
+export const connectionState = {
+  id: 0,
+  receiverId: 0,
+  senderId: 0,
+  firstName: '',
+  lastName: '',
+  avatarUrl: '',
+  email: '',
+  city: '',
+  country: '',
+  phoneNumber: '',
+  bio: '',
+};
+
 export const paginationState = {
   page: 0,
   pageSize: 3,

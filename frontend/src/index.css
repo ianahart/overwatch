@@ -3,6 +3,16 @@
 @tailwind components;
 @tailwind utilities;
 
+.chat-grid {
+  @apply grid grid-cols-chat;
+}
+
+@media (max-width: 1200px) {
+  .chat-grid {
+    @apply grid-cols-chat-mobile;
+  }
+}
+
 body {
   @apply bg-black text-gray-500;
 }

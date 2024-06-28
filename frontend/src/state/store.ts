@@ -5,6 +5,7 @@ import { signUpReducer, updateSignUpField, updateRole, clearSignUpForm } from '.
 import { updateSignInField, clearSignInForm, signInReducer } from './slices/signinSlice';
 import { userReducer, updateUser, updateTokens, clearUser, updateUserAndTokens } from './slices/userSlice';
 import { settingReducer, updateSetting, clearSetting } from './slices/settingSlice';
+import { setConnections, setCurrentConnection, clearChat, chatReducer } from './slices/chatSlice';
 import {
   updateBasicInfo,
   updateBasicInfoFormField,
@@ -60,6 +61,7 @@ import { notificationsApi } from './apis/notificationsApi';
 
 export const store = configureStore({
   reducer: {
+    chat: chatReducer,
     additionalInfo: additionalInfoFormReducer,
     package: packageFormReducer,
     workExp: workExpFormReducer,
@@ -153,6 +155,9 @@ export {
   updatePackages,
   updateAdditionalInfo,
   updatePackagePrice,
+  clearChat,
+  setCurrentConnection,
+  setConnections,
 };
 export {
   useSignUpMutation,
@@ -208,6 +213,8 @@ export {
 } from './apis/reviewsApi';
 
 export {
+  useFetchConnectionsQuery,
+  useLazyFetchConnectionsQuery,
   useDeleteConnectionMutation,
   useCreateConnectionMutation,
   useVerifyConnectionQuery,
