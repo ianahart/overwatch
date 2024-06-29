@@ -7,6 +7,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.hart.overwatch.chatmessage.ChatMessage;
 import com.hart.overwatch.connection.Connection;
 import com.hart.overwatch.location.Location;
 import com.hart.overwatch.notification.Notification;
@@ -137,6 +138,10 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<Notification> senderNotifications;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<ChatMessage> chatMessages;
+
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "setting_id", referencedColumnName = "id")
@@ -198,6 +203,10 @@ public class User implements UserDetails {
 
     public Location getLocation() {
         return location;
+    }
+
+    public List<ChatMessage> getChatMessages() {
+        return chatMessages;
     }
 
     public List<Connection> getSenderConnections() {
@@ -340,6 +349,10 @@ public class User implements UserDetails {
 
     public void setSetting(Setting setting) {
         this.setting = setting;
+    }
+
+    public void setChatMessages(List<ChatMessage> chatMessages) {
+        this.chatMessages = chatMessages;
     }
 
     public void setRefreshTokens(List<RefreshToken> refreshTokens) {

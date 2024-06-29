@@ -21,10 +21,22 @@ const chatSlice = createSlice({
   reducers: {
     setCurrentConnection: (state, action: PayloadAction<IConnection>) => {
       state.currentConnection = action.payload;
+      state.messages = [];
     },
 
     setConnections: (state, action: PayloadAction<IConnection[]>) => {
       state.connections = [...state.connections, ...action.payload];
+    },
+
+    setMessages: (state, action: PayloadAction<IMessage[]>) => {
+      state.messages = [...state.messages, ...action.payload];
+    },
+
+    addMessage: (state, action: PayloadAction<IMessage>) => {
+      state.messages = [action.payload, ...state.messages];
+    },
+    clearMessages: (state) => {
+      state.messages = [];
     },
 
     clearChat: () => {
@@ -38,6 +50,7 @@ const chatSlice = createSlice({
   },
 });
 
-export const { clearChat, setConnections, setCurrentConnection } = chatSlice.actions;
+export const { clearMessages, addMessage, setMessages, clearChat, setConnections, setCurrentConnection } =
+  chatSlice.actions;
 
 export const chatReducer = chatSlice.reducer;

@@ -15,11 +15,14 @@ export interface IConnection {
 }
 
 export interface IMessage {
-  fullName: string;
+  firstName: string;
+  lastName: string;
   createdAt: string;
   text: string;
   avatarUrl: string;
   id: number;
+  connectionId: number;
+  userId: number;
 }
 
 export interface ITestimonial {
@@ -729,6 +732,16 @@ export interface IFetchConnectionsResponse {
     direction: string;
     totalElements: number;
   };
+}
+
+export interface IFetchChatMessagesRequest {
+  token: string;
+  connectionId: number;
+}
+
+export interface IFetchChatMessagesResponse {
+  message: string;
+  data: IMessage[];
 }
 
 export interface IDeleteConnectionResponse extends IBaseResponse {}

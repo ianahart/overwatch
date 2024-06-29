@@ -5,7 +5,15 @@ import { signUpReducer, updateSignUpField, updateRole, clearSignUpForm } from '.
 import { updateSignInField, clearSignInForm, signInReducer } from './slices/signinSlice';
 import { userReducer, updateUser, updateTokens, clearUser, updateUserAndTokens } from './slices/userSlice';
 import { settingReducer, updateSetting, clearSetting } from './slices/settingSlice';
-import { setConnections, setCurrentConnection, clearChat, chatReducer } from './slices/chatSlice';
+import {
+  setMessages,
+  addMessage,
+  setConnections,
+  setCurrentConnection,
+  clearChat,
+  chatReducer,
+  clearMessages,
+} from './slices/chatSlice';
 import {
   updateBasicInfo,
   updateBasicInfoFormField,
@@ -58,6 +66,7 @@ import { testimonialsApi } from './apis/testimonialsApi';
 import { reviewsApi } from './apis/reviewsApi';
 import { connectionsApi } from './apis/connectionsApi';
 import { notificationsApi } from './apis/notificationsApi';
+import { chatMessagesApi } from './apis/chatMessagesApi';
 
 export const store = configureStore({
   reducer: {
@@ -85,6 +94,7 @@ export const store = configureStore({
     [reviewsApi.reducerPath]: reviewsApi.reducer,
     [connectionsApi.reducerPath]: connectionsApi.reducer,
     [notificationsApi.reducerPath]: notificationsApi.reducer,
+    [chatMessagesApi.reducerPath]: chatMessagesApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -104,7 +114,8 @@ export const store = configureStore({
       .concat(testimonialsApi.middleware)
       .concat(reviewsApi.middleware)
       .concat(connectionsApi.middleware)
-      .concat(notificationsApi.middleware);
+      .concat(notificationsApi.middleware)
+      .concat(chatMessagesApi.middleware);
   },
 });
 
@@ -158,7 +169,13 @@ export {
   clearChat,
   setCurrentConnection,
   setConnections,
+  setMessages,
+  addMessage,
+  clearMessages,
 };
+
+export { useLazyFetchChatMessagesQuery } from './apis/chatMessagesApi';
+
 export {
   useSignUpMutation,
   useSignInMutation,
