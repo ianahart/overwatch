@@ -35,7 +35,7 @@ public class ConnectionService {
         this.paginationService = paginationService;
     }
 
-    private Connection getConnectionById(Long connectionId) {
+    public Connection getConnectionById(Long connectionId) {
         return this.connectionRepository.findById(connectionId)
                 .orElseThrow(() -> new NotFoundException(
                         String.format("Connection with the id %d was not found", connectionId)));

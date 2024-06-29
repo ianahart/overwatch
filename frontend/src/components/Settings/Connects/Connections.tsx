@@ -9,6 +9,7 @@ import {
   setConnections,
   setCurrentConnection,
   useLazyFetchConnectionsQuery,
+  clearChat,
 } from '../../../state/store';
 import Avatar from '../../Shared/Avatar';
 import Spinner from '../../Shared/Spinner';

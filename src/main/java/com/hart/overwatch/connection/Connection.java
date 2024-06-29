@@ -1,19 +1,24 @@
 package com.hart.overwatch.connection;
 
 import java.sql.Timestamp;
+import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import com.hart.overwatch.chatmessage.ChatMessage;
 import com.hart.overwatch.user.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity()
@@ -49,6 +54,10 @@ public class Connection {
     @JoinColumn(name = "receiver_id", referencedColumnName = "id", nullable = false)
     private User receiver;
 
+    @OneToMany(mappedBy = "connection", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<ChatMessage> chatMessages;
+
 
     public Connection() {
 
@@ -73,6 +82,10 @@ public class Connection {
 
     public User getSender() {
         return sender;
+    }
+
+    public List<ChatMessage> getChatMessages() {
+        return chatMessages;
     }
 
     public User getReceiver() {
@@ -113,6 +126,10 @@ public class Connection {
 
     public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public void setChatMessages(List<ChatMessage> chatMessages) {
+        this.chatMessages = chatMessages;
     }
 }
 

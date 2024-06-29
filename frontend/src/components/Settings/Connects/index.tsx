@@ -4,14 +4,14 @@ import Connections from './Connections';
 
 const Connects = () => {
   return (
-    <div className="border min-h-full chat-grid">
-      <section className="border border-red-400">
+    <div className=" min-h-full chat-grid">
+      <section className="">
         <Connections />
       </section>
-      <section className="border border-blue-400">
+      <section className="">
         <Chat />
       </section>
-      <section className="border border-yellow-400">
+      <section className="">
         <Profile />
       </section>
     </div>
