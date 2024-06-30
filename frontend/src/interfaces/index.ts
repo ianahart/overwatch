@@ -12,6 +12,7 @@ export interface IConnection {
   city: string;
   bio: string;
   avatarUrl: string;
+  lastMessage: string;
 }
 
 export interface IMessage {

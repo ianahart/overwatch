@@ -22,3 +22,10 @@ export const maskEmail = (email: string) => {
   });
   return mask;
 };
+
+export const shortenString = (str: string) => {
+  if (str.length === 0) {
+    return '';
+  }
+  return str.split(' ').slice(0, 5).join(' ') + '...';
+};

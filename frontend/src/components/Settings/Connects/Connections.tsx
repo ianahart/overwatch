@@ -9,11 +9,13 @@ import {
   setConnections,
   setCurrentConnection,
   useLazyFetchConnectionsQuery,
-  clearChat,
+  clearMessages,
 } from '../../../state/store';
 import Avatar from '../../Shared/Avatar';
 import Spinner from '../../Shared/Spinner';
 import { IConnection } from '../../../interfaces';
+import { shortenString } from '../../../util';
+import { FaLongArrowAltRight } from 'react-icons/fa';
 
 const Connections = () => {
   const dispatch = useDispatch();
@@ -77,6 +79,7 @@ const Connections = () => {
 
   const changeConnection = (connection: IConnection) => {
     dispatch(setCurrentConnection(connection));
+    dispatch(clearMessages());
   };
 
   return (
@@ -98,7 +101,7 @@ const Connections = () => {
             <div
               onClick={() => changeConnection(connection)}
               key={connection.id}
-              className={`my-4 hover:bg-stone-950 hover:text-gray-400 cursor-pointer ${
+              className={`my-4 p-1 rounded hover:bg-stone-950 hover:text-gray-400 cursor-pointer ${
                 currentConnection.id === connection.id ? 'bg-green-400 text-black' : 'bg-transparent text-gray-400'
               }`}
             >
@@ -106,6 +109,12 @@ const Connections = () => {
                 <Avatar initials="?.?" width="h-9" height="h-9" avatarUrl={connection.avatarUrl} />
                 <p className="ml-2">
                   {connection.firstName} {connection.lastName}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs flex items-center">
+                  {connection.lastMessage.length > 0 && <FaLongArrowAltRight className="mr-1 text-gray-500" />}
+                  {shortenString(connection.lastMessage)}
                 </p>
               </div>
             </div>

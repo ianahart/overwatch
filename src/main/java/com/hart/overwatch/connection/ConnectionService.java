@@ -1,5 +1,6 @@
 package com.hart.overwatch.connection;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -10,6 +11,7 @@ import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.chatmessage.ChatMessage;
 import com.hart.overwatch.connection.dto.ConnectionDto;
 import com.hart.overwatch.connection.dto.MinConnectionDto;
 import com.hart.overwatch.pagination.PaginationService;
@@ -122,6 +124,25 @@ public class ConnectionService {
     }
 
 
+    private List<ConnectionDto> connectMessages(List<ConnectionDto> connections,
+            Long currentUserId) {
+        for (ConnectionDto connection : connections) {
+            Connection connectionEntity = getConnectionById(connection.getId());
+            try {
+                ChatMessage lastMessage = connectionEntity.getChatMessages().stream()
+                        .filter(v -> v.getUser().getId() != currentUserId).toList().get(0);
+                connection.setLastMessage(lastMessage.getText());
+
+                System.out.println(lastMessage.getText());
+            } catch (IndexOutOfBoundsException ex) {
+                connection.setLastMessage("");
+            }
+
+        }
+
+        return connections;
+    }
+
     public PaginationDto<ConnectionDto> getAllConnections(Long userId, int page, int pageSize,
             String direction) {
 
@@ -142,9 +163,10 @@ public class ConnectionService {
                 queryResult = this.connectionRepository.getSenderConnections(pageable, userId);
             }
 
-            return new PaginationDto<ConnectionDto>(queryResult.getContent(),
-                    queryResult.getNumber(), pageSize, queryResult.getTotalPages(), direction,
-                    queryResult.getTotalElements());
+            List<ConnectionDto> connections = connectMessages(queryResult.getContent(), userId);
+
+            return new PaginationDto<ConnectionDto>(connections, queryResult.getNumber(), pageSize,
+                    queryResult.getTotalPages(), direction, queryResult.getTotalElements());
 
         } catch (DataAccessException ex) {
             throw ex;
