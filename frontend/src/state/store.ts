@@ -230,6 +230,7 @@ export {
 } from './apis/reviewsApi';
 
 export {
+  useLazyFetchSearchConnectionsQuery,
   useFetchConnectionsQuery,
   useLazyFetchConnectionsQuery,
   useDeleteConnectionMutation,

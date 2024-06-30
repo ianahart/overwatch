@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { AiOutlineSearch } from 'react-icons/ai';
 
 import { paginationState } from '../../../data';
 import {
@@ -16,6 +15,7 @@ import Spinner from '../../Shared/Spinner';
 import { IConnection } from '../../../interfaces';
 import { shortenString } from '../../../util';
 import { FaLongArrowAltRight } from 'react-icons/fa';
+import ConnectionSearch from './ConnectionSearch';
 
 const Connections = () => {
   const dispatch = useDispatch();
@@ -84,12 +84,7 @@ const Connections = () => {
 
   return (
     <div className="p-2">
-      <div className="my-4">
-        <div className="relative">
-          <input placeholder="Search" className=" pl-7 w-full h-9 bg-transparent rounded border border-gray-800" />
-          <AiOutlineSearch className="absolute top-2 left-2 text-xl" />
-        </div>
-      </div>
+      <ConnectionSearch changeConnection={changeConnection} connectionId={currentConnection.id} />
       {isLoading && (
         <div className="flex justify-center my-8">
           <Spinner message="Loading connections..." />
