@@ -24,6 +24,8 @@ public class ConnectionDto {
 
     private String bio;
 
+    private String lastMessage;
+
     public ConnectionDto(Long id, Long receiverId, Long senderId, String firstName, String lastName,
             String avatarUrl, String email, String city, String country, String phoneNumber,
             String bio) {
@@ -43,6 +45,10 @@ public class ConnectionDto {
 
     public Long getId() {
         return id;
+    }
+
+    public String getLastMessage() {
+        return lastMessage;
     }
 
     public String getBio() {
@@ -127,5 +133,9 @@ public class ConnectionDto {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public void setLastMessage(String lastMessage) {
+        this.lastMessage = lastMessage;
     }
 }

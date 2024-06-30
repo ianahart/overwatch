@@ -36,3 +36,4 @@ build/
 .vim 
 .env
 .DS_Store
+dump.rdb

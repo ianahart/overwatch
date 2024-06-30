@@ -18,6 +18,12 @@ const Chat = () => {
   const { messages } = useSelector((store: TRootState) => store.chat);
   const [fetchChatMessages, { isLoading }] = useLazyFetchChatMessagesQuery();
   const { currentConnection } = useSelector((store: TRootState) => store.chat);
+  const currentConnectionRef = useRef(currentConnection);
+
+  useEffect(() => {
+    currentConnectionRef.current = currentConnection;
+  }, [currentConnection]);
+
   const [message, setMessage] = useState<string>('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -39,7 +45,14 @@ const Chat = () => {
 
   const onFetchMessages = (data: any) => {
     const newMessage = JSON.parse(data.body) as IMessage;
-    dispatch(addMessage(newMessage));
+    console.log(
+      `newMessage.userId: ${newMessage.userId} currentConnection.senderId: ${currentConnection.senderId} currentConnection.recevierId ${currentConnection.receiverId}`
+    );
+    const { senderId, receiverId } = currentConnectionRef.current;
+
+    if (newMessage.userId === senderId || newMessage.userId === receiverId) {
+      dispatch(addMessage(newMessage));
+    }
   };
 
   const emitMessage = () => {
@@ -108,7 +121,7 @@ const Chat = () => {
           </div>
         )}
         <div className="overflow-y-auto h-[600px]">
-          <div className="my-8  flex flex-col-reverse">
+          <div className="my-4  p-2 flex flex-col-reverse">
             {messages.map((message) => {
               return (
                 <div
