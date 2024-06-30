@@ -723,6 +723,14 @@ export interface IFetchConnectionsRequest {
   direction: string;
 }
 
+export interface IFetchSearchConnectionsRequest {
+  token: string;
+  page: number;
+  pageSize: number;
+  direction: string;
+  query: string;
+}
+
 export interface IFetchConnectionsResponse {
   message: string;
   data: {
@@ -734,6 +742,8 @@ export interface IFetchConnectionsResponse {
     totalElements: number;
   };
 }
+
+export interface IFetchSearchConnectionsResposne extends IFetchConnectionsResponse {}
 
 export interface IFetchChatMessagesRequest {
   token: string;

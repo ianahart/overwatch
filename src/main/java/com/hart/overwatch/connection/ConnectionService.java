@@ -171,6 +171,40 @@ public class ConnectionService {
         } catch (DataAccessException ex) {
             throw ex;
         }
+    }
+
+
+    public PaginationDto<ConnectionDto> getAllSearchConnections(String query, int page,
+            int pageSize, String direction) {
+
+        try {
+            User user = this.userService.getCurrentlyLoggedInUser();
+
+
+            Pageable pageable = this.paginationService.getPageable(page, pageSize, direction);
+
+            Page<ConnectionDto> queryResult = null;
+
+            String searchQuery = "%" + query.toLowerCase() + "%";
+
+            if (user.getRole() == Role.REVIEWER) {
+                queryResult = this.connectionRepository.getSearchReceiverConnections(pageable,
+                        user.getId(), searchQuery);
+            } else {
+                queryResult = this.connectionRepository.getSearchSenderConnections(pageable,
+                        user.getId(), searchQuery);
+            }
+
+            List<ConnectionDto> connections =
+                    connectMessages(queryResult.getContent(), user.getId());
+
+            return new PaginationDto<ConnectionDto>(connections, queryResult.getNumber(), pageSize,
+                    queryResult.getTotalPages(), direction, queryResult.getTotalElements());
+
+        } catch (DataAccessException ex) {
+            throw ex;
+        }
+
 
 
     }

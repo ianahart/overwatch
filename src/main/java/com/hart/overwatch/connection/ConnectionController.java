@@ -15,6 +15,7 @@ import com.hart.overwatch.connection.request.CreateConnectionRequest;
 import com.hart.overwatch.connection.response.CreateConnectionResponse;
 import com.hart.overwatch.connection.response.DeleteConnectionResponse;
 import com.hart.overwatch.connection.response.GetAllConnectionsResponse;
+import com.hart.overwatch.connection.response.GetAllSearchConnectionsResponse;
 import com.hart.overwatch.connection.response.VerifyConnectionResponse;
 import jakarta.validation.Valid;
 
@@ -61,5 +62,14 @@ public class ConnectionController {
 
         return ResponseEntity.status(HttpStatus.OK).body(new GetAllConnectionsResponse("success",
                 this.connectionService.getAllConnections(userId, page, pageSize, direction)));
+    }
+
+    @GetMapping(path = "/search")
+    public ResponseEntity<GetAllSearchConnectionsResponse> getAllSearchConnections(
+            @RequestParam("query") String query, @RequestParam("page") int page,
+            @RequestParam("pageSize") int pageSize, @RequestParam("direction") String direction) {
+        return ResponseEntity.status(HttpStatus.OK).body(new GetAllSearchConnectionsResponse(
+                "success",
+                this.connectionService.getAllSearchConnections(query, page, pageSize, direction)));
     }
 }

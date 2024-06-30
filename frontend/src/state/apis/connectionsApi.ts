@@ -6,6 +6,8 @@ import {
   IDeleteConnectionResponse,
   IFetchConnectionsRequest,
   IFetchConnectionsResponse,
+  IFetchSearchConnectionsRequest,
+  IFetchSearchConnectionsResposne,
   IVerifyConnectionRequest,
   IVerifyConnectionResponse,
 } from '../../interfaces';
@@ -30,7 +32,21 @@ const connectionsApi = createApi({
           };
         },
       }),
-
+      fetchSearchConnections: builder.query<IFetchSearchConnectionsResposne, IFetchSearchConnectionsRequest>({
+        query: ({ token, page, pageSize, direction, query }) => {
+          console.log(token);
+          if (!token) {
+            return '';
+          }
+          return {
+            url: `/connections/search?query=${query}&page=${page}&pageSize=${pageSize}&direction=${direction}`,
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+      }),
       verifyConnection: builder.query<IVerifyConnectionResponse, IVerifyConnectionRequest>({
         query: ({ senderId, receiverId, token }) => {
           if (senderId === null || senderId === 0 || receiverId === 0 || receiverId === null) {
@@ -76,6 +92,7 @@ const connectionsApi = createApi({
 });
 
 export const {
+  useLazyFetchSearchConnectionsQuery,
   useCreateConnectionMutation,
   useVerifyConnectionQuery,
   useDeleteConnectionMutation,
