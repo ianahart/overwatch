@@ -22,6 +22,9 @@ const profilesApi = createApi({
     return {
       fetchAllProfile: builder.query<IFetchAllProfileResponse, IFetchAllProfileRequest>({
         query: ({ token, page, pageSize, direction, filter }) => {
+          if (!token) {
+            return '';
+          }
           return {
             url: `/profiles/all/${filter}?page=${page}&pageSize=${pageSize}&direction=${direction}`,
             method: 'GET',

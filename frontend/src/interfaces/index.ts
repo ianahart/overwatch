@@ -278,6 +278,7 @@ export interface IMinProfile {
   createdAt: string;
   weekendsAvailable: boolean;
   reviewAvgRating: number;
+  isFavorited: boolean;
 }
 
 export interface ISignOut {
@@ -754,6 +755,15 @@ export interface IFetchChatMessagesResponse {
   message: string;
   data: IMessage[];
 }
+
+export interface IToggleFavoriteRequest {
+  token: string;
+  isFavorited: boolean;
+  userId: number;
+  profileId: number;
+}
+
+export interface IToggleFavoriteResponse extends IBaseResponse {}
 
 export interface IDeleteConnectionResponse extends IBaseResponse {}
 

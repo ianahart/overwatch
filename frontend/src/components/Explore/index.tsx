@@ -1,17 +1,16 @@
-import { useEffect, useState, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import FilterControls from './FilterControls';
 import { paginationState } from '../../data';
-import { TRootState, useLazyFetchAllProfileQuery } from '../../state/store';
+import { useLazyFetchAllProfileQuery } from '../../state/store';
 import { IMinProfile } from '../../interfaces';
 import Reviewers from './Reviewers';
+import { retrieveTokens } from '../../util';
 
 const initialDescriptionState = 'Browse Reviewers that have just signed up and our new to the platform.';
 
 const Explore = () => {
   const shouldRun = useRef(true);
-  const { token } = useSelector((store: TRootState) => store.user);
   const [fetchAllProfiles] = useLazyFetchAllProfileQuery();
   const params = useParams();
   const navigate = useNavigate();
@@ -25,7 +24,13 @@ const Explore = () => {
   const fetchReviewers = async (paginate: boolean, filterValue: string) => {
     try {
       const pageNum = paginate ? pag.page : -1;
-      const params = { token, page: pageNum, direction: 'next', pageSize: 2, filter: filterValue };
+      const params = {
+        token: retrieveTokens().token,
+        page: pageNum,
+        direction: 'next',
+        pageSize: 2,
+        filter: filterValue,
+      };
       const response = await fetchAllProfiles(params).unwrap();
       const { items, direction, page, pageSize, totalElements, totalPages } = response.data;
 
@@ -64,6 +69,20 @@ const Explore = () => {
     }));
   };
 
+  const updateFavoritedReviewer = useCallback(
+    (id: number, isFavorited: boolean) => {
+      const updated = reviewers.map((reviewer) => {
+        if (reviewer.id === id) {
+          return { ...reviewer, isFavorited };
+        } else {
+          return { ...reviewer };
+        }
+      });
+      setReviewers(updated);
+    },
+    [setReviewers, reviewers]
+  );
+
   return (
     <div>
       <div className="max-w-[1280px]  mx-auto">
@@ -74,7 +93,11 @@ const Explore = () => {
               <p>{filter.desc}</p>
             </div>
           </div>
-          <Reviewers filterValue={filter.value} reviewers={reviewers} />
+          <Reviewers
+            updateFavoritedReviewer={updateFavoritedReviewer}
+            filterValue={filter.value}
+            reviewers={reviewers}
+          />
           <div className="flex my-8">
             {pag.page < pag.totalPages - 1 && (
               <button onClick={() => fetchReviewers(true, filter.value)} className="btn w-full">
