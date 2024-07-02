@@ -12,12 +12,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.amazon.AmazonService;
+import com.hart.overwatch.favorite.FavoriteService;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.advice.BadRequestException;
@@ -53,17 +55,20 @@ public class ProfileService {
     private final PaginationService paginationService;
     private final ObjectMapper objectMapper;
     private final ReviewService reviewService;
+    private final FavoriteService favoriteService;
 
     @Autowired
     public ProfileService(ProfileRepository profileRepository, UserService userService,
             AmazonService amazonService, PaginationService paginationService,
-            ObjectMapper objectMapper, ReviewService reviewService) {
+            ObjectMapper objectMapper, ReviewService reviewService,
+            @Lazy FavoriteService favoriteService) {
         this.profileRepository = profileRepository;
         this.userService = userService;
         this.amazonService = amazonService;
         this.paginationService = paginationService;
         this.objectMapper = objectMapper;
         this.reviewService = reviewService;
+        this.favoriteService = favoriteService;
     }
 
     public Profile getProfileById(Long profileId) {
@@ -290,6 +295,10 @@ public class ProfileService {
         profile.setNumOfReviews(this.reviewService.getTotalCountOfReviews(userId));
 
         profile.setReviewAvgRating(this.reviewService.getAvgReviewRating(userId));
+
+        Long currentUserId = this.userService.getCurrentlyLoggedInUser().getId();
+
+        profile.setIsFavorited(this.favoriteService.favoriteExists(currentUserId, profile.getId()));
     }
 
     private AllProfileDto mapToAllProfileDto(Map<String, Object> rawResult) {
@@ -352,6 +361,18 @@ public class ProfileService {
         return compatibleProgrammingLanguages;
     }
 
+
+    private Page<AllProfileDto> getSaved(Pageable pageable) {
+        Long currentUserId = this.userService.getCurrentlyLoggedInUser().getId();
+        Page<Long> favorites = this.favoriteService.getFavoriteIds(pageable, currentUserId);
+        List<Map<String, Object>> rawResults = profileRepository.getSaved(favorites.getContent());
+        List<AllProfileDto> profiles =
+                rawResults.stream().map(this::mapToAllProfileDto).collect(Collectors.toList());
+        return new PageImpl<>(profiles, pageable, favorites.getTotalElements());
+    }
+
+
+
     public PaginationDto<AllProfileDto> getAllProfiles(String filterType, int page, int pageSize,
             String direction) {
         Pageable pageable = filterType.equals("most-recent")
@@ -367,6 +388,9 @@ public class ProfileService {
                 break;
             case "most-relevant":
                 result = getMostRelevant(pageable);
+                break;
+            case "saved":
+                result = getSaved(pageable);
                 break;
             default:
                 result = getMostRecent(pageable);

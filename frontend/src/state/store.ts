@@ -67,6 +67,7 @@ import { reviewsApi } from './apis/reviewsApi';
 import { connectionsApi } from './apis/connectionsApi';
 import { notificationsApi } from './apis/notificationsApi';
 import { chatMessagesApi } from './apis/chatMessagesApi';
+import { favoritesApi } from './apis/favoritesApi';
 
 export const store = configureStore({
   reducer: {
@@ -95,6 +96,7 @@ export const store = configureStore({
     [connectionsApi.reducerPath]: connectionsApi.reducer,
     [notificationsApi.reducerPath]: notificationsApi.reducer,
     [chatMessagesApi.reducerPath]: chatMessagesApi.reducer,
+    [favoritesApi.reducerPath]: favoritesApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -115,7 +117,8 @@ export const store = configureStore({
       .concat(reviewsApi.middleware)
       .concat(connectionsApi.middleware)
       .concat(notificationsApi.middleware)
-      .concat(chatMessagesApi.middleware);
+      .concat(chatMessagesApi.middleware)
+      .concat(favoritesApi.middleware);
   },
 });
 
@@ -173,6 +176,8 @@ export {
   addMessage,
   clearMessages,
 };
+
+export { useToggleFavoriteMutation } from './apis/favoritesApi';
 
 export { useLazyFetchChatMessagesQuery } from './apis/chatMessagesApi';
 

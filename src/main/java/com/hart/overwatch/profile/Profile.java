@@ -3,6 +3,7 @@ package com.hart.overwatch.profile;
 import java.sql.Timestamp;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hart.overwatch.favorite.Favorite;
 import com.hart.overwatch.profile.dto.FullAvailabilityDto;
 import com.hart.overwatch.profile.dto.FullPackageDto;
 import com.hart.overwatch.profile.dto.ItemDto;
@@ -15,9 +16,11 @@ import org.hibernate.annotations.UpdateTimestamp;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
@@ -110,6 +113,12 @@ public class Profile {
     @OneToOne(mappedBy = "profile", cascade = CascadeType.ALL)
     private User user;
 
+
+    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Favorite> favorites;
+
+
     public Profile() {
 
     }
@@ -144,6 +153,10 @@ public class Profile {
 
     public Long getId() {
         return id;
+    }
+
+    public List<Favorite> getFavorites() {
+        return favorites;
     }
 
     public String getAvatarUrl() {
@@ -313,6 +326,10 @@ public class Profile {
 
     public void setProgrammingLanguages(List<ItemDto> programmingLanguages) {
         this.programmingLanguages = programmingLanguages;
+    }
+
+    public void setFavorites(List<Favorite> favorites) {
+        this.favorites = favorites;
     }
 
 }

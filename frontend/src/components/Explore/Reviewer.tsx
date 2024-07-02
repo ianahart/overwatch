@@ -6,18 +6,36 @@ import { useNavigate } from 'react-router-dom';
 
 import { IMinProfile } from '../../interfaces';
 import Avatar from '../Shared/Avatar';
+import { useSelector } from 'react-redux';
+import { TRootState, useToggleFavoriteMutation } from '../../state/store';
 
 export interface IReviewerProps {
   reviewer: IMinProfile;
   filterValue: string;
+  updateFavoritedReviewer: (id: number, isFavorited: boolean) => void;
 }
 
-const Reviewer = ({ reviewer, filterValue }: IReviewerProps) => {
+const Reviewer = ({ reviewer, filterValue, updateFavoritedReviewer }: IReviewerProps) => {
+  const { user, token } = useSelector((store: TRootState) => store.user);
+  const [toggleFavorite] = useToggleFavoriteMutation();
   const navigate = useNavigate();
 
   const goToProfile = (profileId: number) => {
     navigate(`/profiles/${profileId}`);
   };
+
+  const handleToggleFavorite = () => {
+    const payload = { profileId: reviewer.id, userId: user.id, isFavorited: reviewer.isFavorited, token };
+    toggleFavorite(payload)
+      .unwrap()
+      .then(() => {
+        updateFavoritedReviewer(reviewer.id, !reviewer.isFavorited);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div className="my-4 border border-gray-800 rounded-lg p-4">
       <div className="header md:flex md:justify-between">
@@ -37,7 +55,10 @@ const Reviewer = ({ reviewer, filterValue }: IReviewerProps) => {
         <div className="actions">
           <div className="flex justify-end">
             <AiOutlineLike className="text-xl mx-1 cursor-pointer" />
-            <FaHeart className="text-xl mx-1 cursor-pointer" />
+            <FaHeart
+              onClick={handleToggleFavorite}
+              className={`${reviewer.isFavorited ? 'text-red-400' : 'text-gray-400'}  text-xl mx-1 cursor-pointer`}
+            />
           </div>
           <div className=" my-2 flex items-center justify-end">
             <AiFillStar className="text-xl text-yellow-400" />

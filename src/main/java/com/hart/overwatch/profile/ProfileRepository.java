@@ -66,6 +66,21 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
     Page<Map<String, Object>> getDomestic(@Param("pageable") Pageable pageable,
             @Param("full") String full, @Param("abbrev") String abbrev);
 
+
+
+    @Query(value = """
+                SELECT p.id AS id, u.id AS userId, p.full_name AS fullName, p.avatar_url AS avatarUrl,
+                       l.country AS country, p.created_at AS createdAt, p.availability AS availability, p.programming_languages AS programmingLanguages,
+                       p.basic AS basic
+                FROM _user u
+                JOIN profile p ON u.profile_id = p.id
+                JOIN location l ON u.id = l.user_id
+                WHERE p.id IN :favoriteIds
+                AND u.role = 'REVIEWER'
+            """,
+            nativeQuery = true)
+    List<Map<String, Object>> getSaved(@Param("favoriteIds") List<Long> favoriteIds);
+
 }
 
 

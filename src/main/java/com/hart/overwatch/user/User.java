@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.hart.overwatch.chatmessage.ChatMessage;
 import com.hart.overwatch.connection.Connection;
+import com.hart.overwatch.favorite.Favorite;
 import com.hart.overwatch.location.Location;
 import com.hart.overwatch.notification.Notification;
 import com.hart.overwatch.passwordreset.PasswordReset;
@@ -142,6 +143,10 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<ChatMessage> chatMessages;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Favorite> favorites;
+
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "setting_id", referencedColumnName = "id")
@@ -195,6 +200,10 @@ public class User implements UserDetails {
 
     public String getSlug() {
         return (firstName + lastName).toLowerCase();
+    }
+
+    public List<Favorite> getFavorites() {
+        return favorites;
     }
 
     public List<UserPaymentMethod> getUserPaymentMethods() {
@@ -309,6 +318,9 @@ public class User implements UserDetails {
         this.testimonials = testimonials;
     }
 
+    public void setFavorites(List<Favorite> favorites) {
+        this.favorites = favorites;
+    }
 
     public void setRole(Role role) {
         this.role = role;

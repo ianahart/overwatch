@@ -32,6 +32,8 @@ public class AllProfileDto {
 
     private Float reviewAvgRating;
 
+    private Boolean isFavorited;
+
     public AllProfileDto() {
 
     }
@@ -82,6 +84,10 @@ public class AllProfileDto {
 
     public Long getNumOfReviews() {
         return numOfReviews;
+    }
+
+    public Boolean getIsFavorited() {
+        return isFavorited;
     }
 
     public Float getReviewAvgRating() {
@@ -148,6 +154,10 @@ public class AllProfileDto {
 
     public void setBasic(FullPackageDto basic) {
         this.basic = basic;
+    }
+
+    public void setIsFavorited(Boolean isFavorited) {
+        this.isFavorited = isFavorited;
     }
 
 }
