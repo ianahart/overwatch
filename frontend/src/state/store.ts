@@ -13,6 +13,11 @@ import {
   clearChat,
   chatReducer,
   clearMessages,
+  removeConnection,
+  setPinnedConnections,
+  removePinnedConnection,
+  clearPinnedConnections,
+  clearConnections,
 } from './slices/chatSlice';
 import {
   updateBasicInfo,
@@ -68,6 +73,7 @@ import { connectionsApi } from './apis/connectionsApi';
 import { notificationsApi } from './apis/notificationsApi';
 import { chatMessagesApi } from './apis/chatMessagesApi';
 import { favoritesApi } from './apis/favoritesApi';
+import { pinnedConnectionsApi } from './apis/pinnedConnectionsApi';
 
 export const store = configureStore({
   reducer: {
@@ -97,6 +103,7 @@ export const store = configureStore({
     [notificationsApi.reducerPath]: notificationsApi.reducer,
     [chatMessagesApi.reducerPath]: chatMessagesApi.reducer,
     [favoritesApi.reducerPath]: favoritesApi.reducer,
+    [pinnedConnectionsApi.reducerPath]: pinnedConnectionsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -118,7 +125,8 @@ export const store = configureStore({
       .concat(connectionsApi.middleware)
       .concat(notificationsApi.middleware)
       .concat(chatMessagesApi.middleware)
-      .concat(favoritesApi.middleware);
+      .concat(favoritesApi.middleware)
+      .concat(pinnedConnectionsApi.middleware);
   },
 });
 
@@ -175,7 +183,19 @@ export {
   setMessages,
   addMessage,
   clearMessages,
+  removeConnection,
+  setPinnedConnections,
+  removePinnedConnection,
+  clearPinnedConnections,
+  clearConnections,
 };
+
+export {
+  useDeletePinnedConnectionMutation,
+  useLazyFetchPinnedConnectionsQuery,
+  useFetchPinnedConnectionsQuery,
+  useCreatePinnedConnectionMutation,
+} from './apis/pinnedConnectionsApi';
 
 export { useToggleFavoriteMutation } from './apis/favoritesApi';
 
@@ -261,4 +281,5 @@ export {
   reviewsApi,
   connectionsApi,
   notificationsApi,
+  pinnedConnectionsApi,
 };

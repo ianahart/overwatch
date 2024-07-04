@@ -49,6 +49,7 @@ export const connectionState = {
   country: '',
   phoneNumber: '',
   bio: '',
+  lastMessage: '',
 };
 
 export const paginationState = {

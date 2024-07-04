@@ -5,6 +5,7 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import com.hart.overwatch.chatmessage.ChatMessage;
+import com.hart.overwatch.connectionpin.ConnectionPin;
 import com.hart.overwatch.user.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -58,6 +59,10 @@ public class Connection {
             orphanRemoval = true)
     private List<ChatMessage> chatMessages;
 
+    @OneToMany(mappedBy = "connection", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<ConnectionPin> pinnedConnections;
+
 
     public Connection() {
 
@@ -96,6 +101,10 @@ public class Connection {
         return createdAt;
     }
 
+    public List<ConnectionPin> getPinnedConnections() {
+        return pinnedConnections;
+    }
+
     public Timestamp getUpdatedAt() {
         return updatedAt;
     }
@@ -130,6 +139,10 @@ public class Connection {
 
     public void setChatMessages(List<ChatMessage> chatMessages) {
         this.chatMessages = chatMessages;
+    }
+
+    public void setPinnedConnections(List<ConnectionPin> pinnedConnections) {
+        this.pinnedConnections = pinnedConnections;
     }
 }
 

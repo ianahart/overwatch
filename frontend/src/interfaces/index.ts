@@ -15,6 +15,10 @@ export interface IConnection {
   lastMessage: string;
 }
 
+export interface IPinnedConnection extends IConnection {
+  connectionPinId: number;
+}
+
 export interface IMessage {
   firstName: string;
   lastName: string;
@@ -732,6 +736,16 @@ export interface IFetchSearchConnectionsRequest {
   query: string;
 }
 
+export interface IFetchPinnedConnectionsResponse {
+  message: string;
+  data: IPinnedConnection[];
+}
+
+export interface IFetchPinnedConnectionsRequest {
+  userId: number;
+  token: string;
+}
+
 export interface IFetchConnectionsResponse {
   message: string;
   data: {
@@ -742,6 +756,17 @@ export interface IFetchConnectionsResponse {
     direction: string;
     totalElements: number;
   };
+}
+
+export interface ICreatePinnedConnectionResponse {
+  message: string;
+}
+
+export interface ICreatePinnedConnectionRequest {
+  ownerId: number;
+  connectionId: number;
+  pinnedId: number;
+  token: string;
 }
 
 export interface IFetchSearchConnectionsResposne extends IFetchConnectionsResponse {}
@@ -762,6 +787,13 @@ export interface IToggleFavoriteRequest {
   userId: number;
   profileId: number;
 }
+
+export interface IDeletePinnedConnectionRequest {
+  token: string;
+  connectionPinId: number;
+}
+
+export interface IDeletePinnedConnectionResponse extends IBaseResponse {}
 
 export interface IToggleFavoriteResponse extends IBaseResponse {}
 

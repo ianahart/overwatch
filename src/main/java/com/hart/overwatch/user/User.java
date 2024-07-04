@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.hart.overwatch.chatmessage.ChatMessage;
 import com.hart.overwatch.connection.Connection;
+import com.hart.overwatch.connectionpin.ConnectionPin;
 import com.hart.overwatch.favorite.Favorite;
 import com.hart.overwatch.location.Location;
 import com.hart.overwatch.notification.Notification;
@@ -146,6 +147,15 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
             orphanRemoval = true)
     private List<Favorite> favorites;
+
+    @OneToMany(mappedBy = "pinned", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<ConnectionPin> pinnedUserConnections;
+
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<ConnectionPin> pinnedOwnerConnections;
+
 
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -291,6 +301,15 @@ public class User implements UserDetails {
         return firstName;
     }
 
+
+    public List<ConnectionPin> getPinnedUserConnections() {
+        return pinnedUserConnections;
+    }
+
+    public List<ConnectionPin> getPinnedOwnerConnections() {
+        return pinnedOwnerConnections;
+    }
+
     public List<Notification> getSenderNotifications() {
         return senderNotifications;
     }
@@ -307,6 +326,14 @@ public class User implements UserDetails {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setPinnedUserConnections(List<ConnectionPin> pinnedUserConnections) {
+        this.pinnedUserConnections = pinnedUserConnections;
+    }
+
+    public void setPinnedOwnerConnections(List<ConnectionPin> pinnedOwnerConnections) {
+        this.pinnedOwnerConnections = pinnedOwnerConnections;
     }
 
     public void setLocation(Location location) {
