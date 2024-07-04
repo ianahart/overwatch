@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { paginationState } from '../../../data';
@@ -9,20 +9,36 @@ import {
   setCurrentConnection,
   useLazyFetchConnectionsQuery,
   clearMessages,
+  useFetchPinnedConnectionsQuery,
+  setPinnedConnections,
+  useDeletePinnedConnectionMutation,
+  removePinnedConnection,
+  useCreatePinnedConnectionMutation,
+  removeConnection,
+  useLazyFetchPinnedConnectionsQuery,
+  clearPinnedConnections,
+  clearConnections,
 } from '../../../state/store';
-import Avatar from '../../Shared/Avatar';
 import Spinner from '../../Shared/Spinner';
 import { IConnection } from '../../../interfaces';
-import { shortenString } from '../../../util';
-import { FaLongArrowAltRight } from 'react-icons/fa';
 import ConnectionSearch from './ConnectionSearch';
+import Connection from './Connection';
+import { retrieveTokens } from '../../../util';
 
 const Connections = () => {
   const dispatch = useDispatch();
+  const shouldRun = useRef(true);
   const { user, token } = useSelector((store: TRootState) => store.user);
-  const { connections, currentConnection } = useSelector((store: TRootState) => store.chat);
+  const { connections, currentConnection, pinnedConnections } = useSelector((store: TRootState) => store.chat);
   const [pag, setPag] = useState(paginationState);
   const [fetchConnections, { isLoading: fetchLoading }] = useLazyFetchConnectionsQuery();
+  const [deletePinnedConnection] = useDeletePinnedConnectionMutation();
+  const [createPinnedConnection] = useCreatePinnedConnectionMutation();
+  const [fetchPinnedConnections] = useLazyFetchPinnedConnectionsQuery();
+  const { data: pinnedConnectionsData } = useFetchPinnedConnectionsQuery({
+    userId: user.id,
+    token: retrieveTokens().token,
+  });
 
   const { data, isLoading } = useFetchConnectionsQuery({
     userId: user.id,
@@ -33,7 +49,14 @@ const Connections = () => {
   });
 
   useEffect(() => {
-    if (data !== undefined) {
+    if (pinnedConnectionsData !== undefined) {
+      dispatch(setPinnedConnections(pinnedConnectionsData.data));
+    }
+  }, [pinnedConnectionsData, dispatch]);
+
+  useEffect(() => {
+    if (data !== undefined && shouldRun.current) {
+      shouldRun.current = false;
       const { items, page, pageSize, totalPages, direction, totalElements } = data.data;
       setPag((prevState) => ({
         ...prevState,
@@ -48,7 +71,7 @@ const Connections = () => {
         dispatch(setCurrentConnection(items[0]));
       }
     }
-  }, [data, dispatch]);
+  }, [data, dispatch, shouldRun.current]);
 
   const paginateConnections = async (dir: string) => {
     try {
@@ -82,6 +105,56 @@ const Connections = () => {
     dispatch(clearMessages());
   };
 
+  const pin = (ownerId: number, connectionId: number, pinnedId: number, token: string, connection: IConnection) => {
+    createPinnedConnection({ ownerId, connectionId, pinnedId, token })
+      .unwrap()
+      .then(() => {
+        dispatch(clearPinnedConnections());
+        fetchPinnedConnections({ userId: user.id, token: retrieveTokens().token })
+          .unwrap()
+          .then(() => {});
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    dispatch(removeConnection(connection));
+  };
+
+  const unPin = (id: number) => {
+    deletePinnedConnection({ connectionPinId: id, token: retrieveTokens().token })
+      .unwrap()
+      .then(() => {
+        dispatch(removePinnedConnection(id));
+        dispatch(clearConnections());
+
+        setPag(paginationState);
+      })
+      .then(() => {
+        fetchConnections({ userId: user.id, token, page: -1, pageSize: 3, direction: 'next' })
+          .unwrap()
+          .then((res) => {
+            const { items, page, pageSize, totalPages, direction, totalElements } = res.data;
+            setPag((prevState) => ({
+              ...prevState,
+              page,
+              pageSize,
+              totalElements,
+              totalPages,
+              direction,
+            }));
+            dispatch(setConnections(items));
+            if (items.length > 0) {
+              dispatch(setCurrentConnection(items[0]));
+            }
+          });
+      })
+
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div className="p-2">
       <ConnectionSearch changeConnection={changeConnection} connectionId={currentConnection.id} />
@@ -90,29 +163,31 @@ const Connections = () => {
           <Spinner message="Loading connections..." />
         </div>
       )}
+      <div className="my-12">
+        {pinnedConnections.map((connection) => {
+          return (
+            <Connection
+              key={connection.id}
+              isPinned={true}
+              changeConnection={changeConnection}
+              connection={connection}
+              unPin={unPin}
+              pin={pin}
+            />
+          );
+        })}
+      </div>
       <div className="my-8">
         {connections.map((connection) => {
           return (
-            <div
-              onClick={() => changeConnection(connection)}
+            <Connection
               key={connection.id}
-              className={`my-4 p-1 rounded hover:bg-stone-950 hover:text-gray-400 cursor-pointer ${
-                currentConnection.id === connection.id ? 'bg-green-400 text-black' : 'bg-transparent text-gray-400'
-              }`}
-            >
-              <div className="flex items-center">
-                <Avatar initials="?.?" width="h-9" height="h-9" avatarUrl={connection.avatarUrl} />
-                <p className="ml-2">
-                  {connection.firstName} {connection.lastName}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs flex items-center">
-                  {connection.lastMessage.length > 0 && <FaLongArrowAltRight className="mr-1 text-gray-500" />}
-                  {shortenString(connection.lastMessage)}
-                </p>
-              </div>
-            </div>
+              isPinned={false}
+              changeConnection={changeConnection}
+              connection={connection}
+              unPin={unPin}
+              pin={pin}
+            />
           );
         })}
       </div>

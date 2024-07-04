@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { IConnection, IMessage } from '../../interfaces';
+import { IConnection, IMessage, IPinnedConnection } from '../../interfaces';
 import { clearUser } from '../store';
 import { connectionState } from '../../data';
 
@@ -7,12 +7,14 @@ interface IChatState {
   messages: IMessage[];
   connections: IConnection[];
   currentConnection: IConnection;
+  pinnedConnections: IPinnedConnection[];
 }
 
 const initialState: IChatState = {
   messages: [],
   connections: [],
   currentConnection: connectionState,
+  pinnedConnections: [],
 };
 
 const chatSlice = createSlice({
@@ -28,6 +30,20 @@ const chatSlice = createSlice({
       state.connections = [...state.connections, ...action.payload];
     },
 
+    setPinnedConnections: (state, action: PayloadAction<IPinnedConnection[]>) => {
+      state.pinnedConnections = [...state.pinnedConnections, ...action.payload];
+    },
+
+    removeConnection: (state, action: PayloadAction<IConnection>) => {
+      state.connections = state.connections.filter((connection) => connection.id !== action.payload.id);
+    },
+
+    removePinnedConnection: (state, action: PayloadAction<number>) => {
+      state.pinnedConnections = state.pinnedConnections.filter(
+        (connection) => connection.connectionPinId !== action.payload
+      );
+    },
+
     setMessages: (state, action: PayloadAction<IMessage[]>) => {
       state.messages = [...state.messages, ...action.payload];
     },
@@ -37,6 +53,14 @@ const chatSlice = createSlice({
     },
     clearMessages: (state) => {
       state.messages = [];
+    },
+
+    clearPinnedConnections: (state) => {
+      state.pinnedConnections = [];
+    },
+
+    clearConnections: (state) => {
+      state.connections = [];
     },
 
     clearChat: () => {
@@ -50,7 +74,18 @@ const chatSlice = createSlice({
   },
 });
 
-export const { clearMessages, addMessage, setMessages, clearChat, setConnections, setCurrentConnection } =
-  chatSlice.actions;
+export const {
+  removeConnection,
+  clearMessages,
+  addMessage,
+  setMessages,
+  clearChat,
+  setConnections,
+  setCurrentConnection,
+  setPinnedConnections,
+  removePinnedConnection,
+  clearPinnedConnections,
+  clearConnections,
+} = chatSlice.actions;
 
 export const chatReducer = chatSlice.reducer;

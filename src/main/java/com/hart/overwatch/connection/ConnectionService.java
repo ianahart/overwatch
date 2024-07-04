@@ -2,6 +2,7 @@ package com.hart.overwatch.connection;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -14,6 +15,7 @@ import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.chatmessage.ChatMessage;
 import com.hart.overwatch.connection.dto.ConnectionDto;
 import com.hart.overwatch.connection.dto.MinConnectionDto;
+import com.hart.overwatch.connectionpin.ConnectionPinService;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.advice.BadRequestException;
@@ -29,12 +31,15 @@ public class ConnectionService {
 
     private final PaginationService paginationService;
 
+    private final ConnectionPinService connectionPinService;
+
     @Autowired
     public ConnectionService(ConnectionRepository connectionRepository, UserService userService,
-            PaginationService paginationService) {
+            PaginationService paginationService, @Lazy ConnectionPinService connectionPinService) {
         this.connectionRepository = connectionRepository;
         this.userService = userService;
         this.paginationService = paginationService;
+        this.connectionPinService = connectionPinService;
     }
 
     public Connection getConnectionById(Long connectionId) {
@@ -157,10 +162,23 @@ public class ConnectionService {
 
             Page<ConnectionDto> queryResult = null;
 
+            List<Long> pinnedConnectionIds =
+                    this.connectionPinService.getOwnerConnectionPins(user.getId());
+
+
             if (user.getRole() == Role.REVIEWER) {
-                queryResult = this.connectionRepository.getReceiverConnections(pageable, userId);
+
+                queryResult = pinnedConnectionIds.size() == 0
+                        ? this.connectionRepository.getReceiverConnectionsWithoutPins(pageable,
+                                userId)
+                        : this.connectionRepository.getReceiverConnections(pageable, userId,
+                                pinnedConnectionIds);
             } else {
-                queryResult = this.connectionRepository.getSenderConnections(pageable, userId);
+                queryResult = pinnedConnectionIds.size() == 0
+                        ? this.connectionRepository.getSenderConnectionsWithoutPins(pageable,
+                                userId)
+                        : this.connectionRepository.getSenderConnections(pageable, userId,
+                                pinnedConnectionIds);
             }
 
             List<ConnectionDto> connections = connectMessages(queryResult.getContent(), userId);
