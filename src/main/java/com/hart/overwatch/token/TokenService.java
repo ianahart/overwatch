@@ -39,6 +39,11 @@ public class TokenService {
         this.tokenRepository.saveAll(tokens);
     }
 
+    public void deleteAllExpiredTokens() {
+        List<Token> tokens = this.tokenRepository.deleteAllExpiredTokens();
+
+        tokens.forEach(token -> this.tokenRepository.delete(token));
+    }
 }
 
 

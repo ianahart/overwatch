@@ -88,7 +88,7 @@ const Notifications = () => {
   const connect = () => {
     if (stompClient && stompClient.connected) {
       console.log('WebSocket already connected');
-      return;
+      stompClient.disconnect();
     }
 
     let Sock = new SockJS('http://localhost:8080/ws');
