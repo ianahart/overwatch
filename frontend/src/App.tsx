@@ -29,6 +29,11 @@ import CreateReviewRoute from './routes/CreateReviewRoute';
 import OTPRoute from './routes/OTPRoute';
 import ExploreProfileRoute from './routes/ExploreProfileRoute';
 import EditReviewRoute from './routes/EditReviewRoute';
+import DashboardRoute from './routes/Dashboard/DashboardRoute';
+import AddReviewRoute from './routes/Dashboard/User/AddReviewRoute';
+import ReviewsRoute from './routes/Dashboard/User/ReviewsRoute';
+import StatisticRoute from './routes/Dashboard/User/StatisticRoute';
+import GuideRoute from './routes/Dashboard/User/GuideRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -42,6 +47,47 @@ const router = createBrowserRouter(
           </RequireAuth>
         }
       />
+      <Route
+        path="dashboard/:slug"
+        element={
+          <RequireAuth>
+            <DashboardRoute />
+          </RequireAuth>
+        }
+      >
+        <Route
+          path="user/add-review"
+          element={
+            <RequireAuth>
+              <AddReviewRoute />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="user/reviews"
+          element={
+            <RequireAuth>
+              <ReviewsRoute />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="user/stats"
+          element={
+            <RequireAuth>
+              <StatisticRoute />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="user/guides"
+          element={
+            <RequireAuth>
+              <GuideRoute />
+            </RequireAuth>
+          }
+        />
+      </Route>
       <Route path="community" element={<CommunityRoute />} />
       <Route
         path="signin"

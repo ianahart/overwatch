@@ -6,9 +6,10 @@ import Avatar from '../Shared/Avatar';
 import { TRootState, clearSetting, clearUser, useSignOutMutation } from '../../state/store';
 import { openMobile, closeMobile } from '../../state/store';
 import UserInfo from './UserInfo';
-import { AiOutlineBell, AiOutlineClose, AiOutlineLogout } from 'react-icons/ai';
+import { AiOutlineClose, AiOutlineLogout } from 'react-icons/ai';
 import { nanoid } from 'nanoid';
 import Notifications from '../Notification';
+import { MdOutlineSpaceDashboard } from 'react-icons/md';
 
 const AuthNavbar = () => {
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ const AuthNavbar = () => {
   };
 
   const links = [
+    { path: `/dashboard/${user.slug}`, title: 'Dashboard', icon: <MdOutlineSpaceDashboard /> },
     { path: 'explore/most-recent', title: 'Explore', icon: <IoTelescopeOutline /> },
     { path: 'community', title: 'Community', icon: <IoPeopleOutline /> },
     { path: `settings/${user.slug}/profile`, title: 'Settings', icon: <IoSettingsOutline /> },

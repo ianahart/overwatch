@@ -16,7 +16,7 @@ const RequireGuest: React.FC<Props> = ({ children }) => {
     return children;
   } else {
     if (user.id !== 0) {
-      return <Navigate to="/" replace state={{ path: location.pathname }} />;
+      return <Navigate to={`/dashboard/${user.slug}`} replace state={{ path: location.pathname }} />;
     }
   }
 };

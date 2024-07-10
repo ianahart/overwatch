@@ -30,7 +30,7 @@ const OTP = () => {
       .then(({ user, token, refreshToken }) => {
         const tokens = { token, refreshToken };
         dispatch(updateUserAndTokens({ user, tokens }));
-        navigate('/');
+        navigate(`/dashboard/${user.slug}`);
       })
       .catch((err) => {
         setError(err.data.message);
