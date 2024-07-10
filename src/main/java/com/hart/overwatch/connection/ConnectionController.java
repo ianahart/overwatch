@@ -58,10 +58,10 @@ public class ConnectionController {
     @GetMapping(path = "")
     public ResponseEntity<GetAllConnectionsResponse> getAllConnections(
             @RequestParam("userId") Long userId, @RequestParam("page") int page,
-            @RequestParam("pageSize") int pageSize, @RequestParam("direction") String direction) {
+            @RequestParam("pageSize") int pageSize, @RequestParam("direction") String direction, @RequestParam("override") String override) {
 
         return ResponseEntity.status(HttpStatus.OK).body(new GetAllConnectionsResponse("success",
-                this.connectionService.getAllConnections(userId, page, pageSize, direction)));
+                this.connectionService.getAllConnections(userId, page, pageSize, direction, override)));
     }
 
     @GetMapping(path = "/search")

@@ -1,5 +1,9 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 
+export interface ISelectedReviewer {
+  reviewer: IConnection;
+}
+
 export interface IConnection {
   senderId: number;
   receiverId: number;
@@ -726,6 +730,7 @@ export interface IFetchConnectionsRequest {
   page: number;
   pageSize: number;
   direction: string;
+  override: string;
 }
 
 export interface IFetchSearchConnectionsRequest {

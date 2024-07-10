@@ -6,6 +6,14 @@ import { updateSignInField, clearSignInForm, signInReducer } from './slices/sign
 import { userReducer, updateUser, updateTokens, clearUser, updateUserAndTokens } from './slices/userSlice';
 import { settingReducer, updateSetting, clearSetting } from './slices/settingSlice';
 import {
+  clearAddReview,
+  clearSelectedReviewer,
+  clearReviewers,
+  setReviewers,
+  setSelectedReviewer,
+  addReviewReducer,
+} from './slices/addReviewSlice';
+import {
   setMessages,
   addMessage,
   setConnections,
@@ -77,6 +85,7 @@ import { pinnedConnectionsApi } from './apis/pinnedConnectionsApi';
 
 export const store = configureStore({
   reducer: {
+    addReview: addReviewReducer,
     chat: chatReducer,
     additionalInfo: additionalInfoFormReducer,
     package: packageFormReducer,
@@ -188,6 +197,11 @@ export {
   removePinnedConnection,
   clearPinnedConnections,
   clearConnections,
+  clearAddReview,
+  clearSelectedReviewer,
+  clearReviewers,
+  setReviewers,
+  setSelectedReviewer,
 };
 
 export {

@@ -19,12 +19,12 @@ const connectionsApi = createApi({
   endpoints(builder) {
     return {
       fetchConnections: builder.query<IFetchConnectionsResponse, IFetchConnectionsRequest>({
-        query: ({ userId, token, page, pageSize, direction }) => {
+        query: ({ userId, token, page, pageSize, direction, override = 'false' }) => {
           if (userId === 0 || !token) {
             return '';
           }
           return {
-            url: `/connections?userId=${userId}&page=${page}&pageSize=${pageSize}&direction=${direction}`,
+            url: `/connections?userId=${userId}&page=${page}&pageSize=${pageSize}&direction=${direction}&override=${override}`,
             method: 'GET',
             headers: {
               Authorization: `Bearer ${token}`,
