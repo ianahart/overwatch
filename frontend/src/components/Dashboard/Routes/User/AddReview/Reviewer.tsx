@@ -11,7 +11,6 @@ export interface IReviewerProps {
 
 const Reviewer = ({ data }: IReviewerProps) => {
   const dispatch = useDispatch();
-  console.log(data);
 
   const { selectedReviewer } = useSelector((store: TRootState) => store.addReview);
 

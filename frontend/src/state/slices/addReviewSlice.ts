@@ -18,11 +18,13 @@ const addReviewSlice = createSlice({
   initialState,
   reducers: {
     setSelectedReviewer: (state, action: PayloadAction<ISelectedReviewer>) => {
-            state.selectedReviewer = action.payload.reviewer;
+      state.selectedReviewer = action.payload.reviewer;
+      localStorage.setItem('selected_reviewer', action.payload.reviewer.receiverId.toString());
     },
 
     clearSelectedReviewer: (state) => {
       state.selectedReviewer = connectionState;
+      localStorage.removeItem('selected_reviewer');
     },
 
     setReviewers: (state, action: PayloadAction<IConnection[]>) => {
@@ -34,6 +36,7 @@ const addReviewSlice = createSlice({
     },
 
     clearAddReview: () => {
+      localStorage.removeItem('selected_reviewer');
       return initialState;
     },
   },

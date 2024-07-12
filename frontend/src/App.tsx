@@ -34,11 +34,20 @@ import AddReviewRoute from './routes/Dashboard/User/AddReviewRoute';
 import ReviewsRoute from './routes/Dashboard/User/ReviewsRoute';
 import StatisticRoute from './routes/Dashboard/User/StatisticRoute';
 import GuideRoute from './routes/Dashboard/User/GuideRoute';
+import GitHubSuccessRoute from './routes/GitHubSuccessRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootLayout />}>
       <Route path="about" element={<AboutRoute />} />
+      <Route
+        path="github/success"
+        element={
+          <RequireAuth>
+            <GitHubSuccessRoute />
+          </RequireAuth>
+        }
+      />
       <Route
         path="explore/:filter"
         element={

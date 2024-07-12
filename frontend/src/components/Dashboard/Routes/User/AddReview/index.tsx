@@ -1,27 +1,33 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useLocation, useSearchParams } from 'react-router-dom';
 
+import { Session } from '../../../../../util/SessionService';
 import Reviewer from './Reviewer';
 import { paginationState } from '../../../../../data';
 import {
   TRootState,
   clearAddReview,
   setReviewers,
+  setSelectedReviewer,
   useFetchConnectionsQuery,
   useLazyFetchConnectionsQuery,
 } from '../../../../../state/store';
 import { retrieveTokens } from '../../../../../util';
 import Spinner from '../../../../Shared/Spinner';
 import ChosenReviewer from './ChosenReviewer';
+import GitHubLogin from './GitHubLogin';
 
 const AddReview = () => {
+  const [searchParams, _] = useSearchParams();
+  const location = useLocation();
   const dispatch = useDispatch();
   const shouldRun = useRef(true);
   const [pag, setPag] = useState(paginationState);
   const [fetchConnections, { isLoading: fetchLoading }] = useLazyFetchConnectionsQuery();
 
   const { user } = useSelector((store: TRootState) => store.user);
-  const { reviewers } = useSelector((store: TRootState) => store.addReview);
+  const { reviewers, selectedReviewer } = useSelector((store: TRootState) => store.addReview);
 
   const { data, isLoading } = useFetchConnectionsQuery({
     userId: user.id,
@@ -31,6 +37,12 @@ const AddReview = () => {
     direction: 'next',
     override: 'true',
   });
+
+  useEffect(() => {
+    if (!Session.getItem('github_access_token') && searchParams.has('verified')) {
+      Session.setItem(location.state.accessToken);
+    }
+  }, [location, searchParams]);
 
   useEffect(() => {
     return () => {
@@ -82,12 +94,27 @@ const AddReview = () => {
     }
   };
 
+  useEffect(() => {
+    console.log('SOUP');
+    const storedSelectedReviewer = localStorage.getItem('selected_reviewer');
+    if (selectedReviewer.id === 0 && storedSelectedReviewer && reviewers.length) {
+      const reviewer = [...reviewers].find(
+        (reviewer) => reviewer.receiverId === Number.parseInt(storedSelectedReviewer)
+      );
+      console.log('soup', reviewer);
+      if (reviewer) {
+        console.log(reviewer, 'foo');
+        dispatch(setSelectedReviewer({ reviewer }));
+      }
+    }
+  }, [selectedReviewer.id, reviewers]);
+
   return (
     <div>
       <div className="my-8 flex justify-center">
         <ChosenReviewer />
       </div>
-      <div className="flex justify-between my-8">
+      <div className="user-dashboard-add-review my-8">
         <div>
           {isLoading && <Spinner message="Loading reviewers..." />}
 
@@ -112,8 +139,10 @@ const AddReview = () => {
             </div>
           )}
         </div>
-
-        <div>{/*GITHUB STUFF GOES HERE*/}</div>
+        <div>
+          <p className="text-white">REPOS GO HERE</p>
+        </div>
+        <div>{!Session.getItem('github_access_token') && <GitHubLogin />}</div>
       </div>
     </div>
   );

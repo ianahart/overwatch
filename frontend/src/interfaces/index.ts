@@ -798,6 +798,16 @@ export interface IDeletePinnedConnectionRequest {
   connectionPinId: number;
 }
 
+export interface IFetchGitHubTokenRequest {
+  token: string;
+  code: string;
+}
+
+export interface IFetchGitHubTokenResponse {
+  message: string;
+  accessToken: string;
+}
+
 export interface IDeletePinnedConnectionResponse extends IBaseResponse {}
 
 export interface IToggleFavoriteResponse extends IBaseResponse {}

@@ -10,6 +10,7 @@ import { AiOutlineClose, AiOutlineLogout } from 'react-icons/ai';
 import { nanoid } from 'nanoid';
 import Notifications from '../Notification';
 import { MdOutlineSpaceDashboard } from 'react-icons/md';
+import { Session } from '../../util/SessionService';
 
 const AuthNavbar = () => {
   const navigate = useNavigate();
@@ -25,6 +26,8 @@ const AuthNavbar = () => {
         dispatch(clearUser());
         dispatch(closeMobile());
         dispatch(clearSetting());
+        Session.removeItem('github_access_token');
+        localStorage.clear();
         navigate('/signin');
       });
   };
