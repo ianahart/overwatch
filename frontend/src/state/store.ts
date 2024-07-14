@@ -83,6 +83,7 @@ import { chatMessagesApi } from './apis/chatMessagesApi';
 import { favoritesApi } from './apis/favoritesApi';
 import { pinnedConnectionsApi } from './apis/pinnedConnectionsApi';
 import { githubApi } from './apis/githubApi';
+import { repositoriesApi } from './apis/repositoriesApi';
 
 export const store = configureStore({
   reducer: {
@@ -115,6 +116,7 @@ export const store = configureStore({
     [favoritesApi.reducerPath]: favoritesApi.reducer,
     [pinnedConnectionsApi.reducerPath]: pinnedConnectionsApi.reducer,
     [githubApi.reducerPath]: githubApi.reducer,
+    [repositoriesApi.reducerPath]: repositoriesApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -138,7 +140,8 @@ export const store = configureStore({
       .concat(chatMessagesApi.middleware)
       .concat(favoritesApi.middleware)
       .concat(pinnedConnectionsApi.middleware)
-      .concat(githubApi.middleware);
+      .concat(githubApi.middleware)
+      .concat(repositoriesApi.middleware);
   },
 });
 
@@ -286,7 +289,13 @@ export {
   useLazyFetchNotificationsQuery,
 } from './apis/notificationsApi';
 
-export { useLazyFetchGitHubAccessTokenQuery, useFetchGitHubUserReposQuery } from './apis/githubApi';
+export {
+  useLazyFetchGitHubAccessTokenQuery,
+  useFetchGitHubUserReposQuery,
+  useLazyFetchGitHubUserReposQuery,
+} from './apis/githubApi';
+
+export { useCreateUserRepositoryMutation } from './apis/repositoriesApi';
 
 export {
   testimonialsApi,
@@ -302,4 +311,5 @@ export {
   notificationsApi,
   pinnedConnectionsApi,
   githubApi,
+  repositoriesApi,
 };

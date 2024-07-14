@@ -18,6 +18,7 @@ import com.hart.overwatch.paymentmethod.UserPaymentMethod;
 import com.hart.overwatch.phone.Phone;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.refreshtoken.RefreshToken;
+import com.hart.overwatch.repository.Repository;
 import com.hart.overwatch.review.Review;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.testimonial.Testimonial;
@@ -156,6 +157,13 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<ConnectionPin> pinnedOwnerConnections;
 
+    @OneToMany(mappedBy = "reviewer", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Repository> reviewerRepositories;
+
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Repository> ownerRepositories;
 
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -230,6 +238,14 @@ public class User implements UserDetails {
 
     public List<Connection> getSenderConnections() {
         return senderConnections;
+    }
+
+    public List<Repository> getOwnerRepositories() {
+        return ownerRepositories;
+    }
+
+    public List<Repository> getReviewerRepositories() {
+        return reviewerRepositories;
     }
 
     public List<Connection> getReceiverConnections() {
@@ -338,6 +354,14 @@ public class User implements UserDetails {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public void setOwnerRepositories(List<Repository> ownerRepositories) {
+        this.ownerRepositories = ownerRepositories;
+    }
+
+    public void setReviewerRepositories(List<Repository> reviewerRepositories) {
+        this.reviewerRepositories = reviewerRepositories;
     }
 
 
