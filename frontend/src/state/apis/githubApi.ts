@@ -1,5 +1,10 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { IFetchGitHubTokenRequest, IFetchGitHubTokenResponse } from '../../interfaces';
+import {
+  IFetchGitHubTokenRequest,
+  IFetchGitHubTokenResponse,
+  IFetchGitHubUserReposRequest,
+  IFetchGitHubUserReposResponse,
+} from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
 const githubApi = createApi({
@@ -7,6 +12,18 @@ const githubApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints(builder) {
     return {
+      fetchGitHubUserRepos: builder.query<IFetchGitHubUserReposResponse, IFetchGitHubUserReposRequest>({
+        query: ({ accessToken, token, page }) => {
+          return {
+            url: `/github/user/repos?page=${page}`,
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'GitHub-Token': accessToken,
+            },
+          };
+        },
+      }),
       fetchGitHubAccessToken: builder.query<IFetchGitHubTokenResponse, IFetchGitHubTokenRequest>({
         query: ({ code, token }) => {
           return {
@@ -22,5 +39,6 @@ const githubApi = createApi({
   },
 });
 
-export const { useLazyFetchGitHubAccessTokenQuery } = githubApi;
+export const { useLazyFetchGitHubAccessTokenQuery, useFetchGitHubUserReposQuery, useLazyFetchGitHubUserReposQuery } =
+  githubApi;
 export { githubApi };

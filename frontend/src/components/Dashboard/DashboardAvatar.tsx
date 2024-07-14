@@ -6,7 +6,7 @@ export interface IDashboardAvatarProps {
 }
 
 const DashboardAvatar = ({ url = '', abbreviation, width, height }: IDashboardAvatarProps) => {
-  if (url.length > 0) {
+  if (url !== null) {
     return (
       <div>
         <img className={`${height} ${width} rounded-lg`} src={url} alt={`A profile picture of ${abbreviation}`} />

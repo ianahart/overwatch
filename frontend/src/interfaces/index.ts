@@ -4,6 +4,15 @@ export interface ISelectedReviewer {
   reviewer: IConnection;
 }
 
+export interface IGitHubRepositoryPreview {
+  id: number;
+  fullName: string;
+  avatarUrl: string;
+  htmlUrl: string;
+  language: string;
+  stargazersCount: number;
+}
+
 export interface IConnection {
   senderId: number;
   receiverId: number;
@@ -806,6 +815,17 @@ export interface IFetchGitHubTokenRequest {
 export interface IFetchGitHubTokenResponse {
   message: string;
   accessToken: string;
+}
+
+export interface IFetchGitHubUserReposRequest {
+  accessToken: string;
+  token: string;
+  page: number;
+}
+
+export interface IFetchGitHubUserReposResponse {
+  message: string;
+  data: { repositories: IGitHubRepositoryPreview[]; nextPageUrl: string };
 }
 
 export interface IDeletePinnedConnectionResponse extends IBaseResponse {}

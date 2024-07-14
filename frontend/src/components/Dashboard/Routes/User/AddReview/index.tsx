@@ -17,6 +17,7 @@ import { retrieveTokens } from '../../../../../util';
 import Spinner from '../../../../Shared/Spinner';
 import ChosenReviewer from './ChosenReviewer';
 import GitHubLogin from './GitHubLogin';
+import RepositoryList from './RepositoryList';
 
 const AddReview = () => {
   const [searchParams, _] = useSearchParams();
@@ -95,15 +96,12 @@ const AddReview = () => {
   };
 
   useEffect(() => {
-    console.log('SOUP');
     const storedSelectedReviewer = localStorage.getItem('selected_reviewer');
     if (selectedReviewer.id === 0 && storedSelectedReviewer && reviewers.length) {
       const reviewer = [...reviewers].find(
         (reviewer) => reviewer.receiverId === Number.parseInt(storedSelectedReviewer)
       );
-      console.log('soup', reviewer);
       if (reviewer) {
-        console.log(reviewer, 'foo');
         dispatch(setSelectedReviewer({ reviewer }));
       }
     }
@@ -115,34 +113,35 @@ const AddReview = () => {
         <ChosenReviewer />
       </div>
       <div className="user-dashboard-add-review my-8">
-        <div>
-          {isLoading && <Spinner message="Loading reviewers..." />}
-
-          <div className="my-2 md:w-[250px] w-full">
-            <p className="text-gray-400">Select a connection that you want to review your code.</p>
-          </div>
-          {reviewers.length > 0 && (
-            <ul>
-              {reviewers.map((reviewer) => {
-                return <Reviewer key={reviewer.id} data={reviewer} />;
-              })}
-            </ul>
-          )}
-          {pag.page < pag.totalPages - 1 && (
-            <div className="my-4">
-              <button
-                onClick={() => paginateConnections('next')}
-                className="!text-gray-400 outline-btn border border-gray-800 rounded"
-              >
-                Load more...
-              </button>
+        {Session.getItem('github_access_token') && (
+          <div>
+            {isLoading && <Spinner message="Loading reviewers..." />}
+            <div className="my-2 md:w-[250px] w-full">
+              <p className="text-gray-400">Select a connection that you want to review your code.</p>
             </div>
-          )}
+            {reviewers.length > 0 && (
+              <ul>
+                {reviewers.map((reviewer) => {
+                  return <Reviewer key={reviewer.id} data={reviewer} />;
+                })}
+              </ul>
+            )}
+            {pag.page < pag.totalPages - 1 && (
+              <div className="my-4">
+                <button
+                  onClick={() => paginateConnections('next')}
+                  className="!text-gray-400 outline-btn border border-gray-800 rounded"
+                >
+                  Load more...
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+        <div className="w-[40%] p-4">
+          {Session.getItem('github_access_token') && localStorage.getItem('selected_reviewer') && <RepositoryList />}
         </div>
-        <div>
-          <p className="text-white">REPOS GO HERE</p>
-        </div>
-        <div>{!Session.getItem('github_access_token') && <GitHubLogin />}</div>
+        <div className="min-w-[200px]">{!Session.getItem('github_access_token') && <GitHubLogin />}</div>
       </div>
     </div>
   );

@@ -1,11 +1,7 @@
 import { FaGithub } from 'react-icons/fa';
-import { useSelector } from 'react-redux';
-import { TRootState } from '../../../../../state/store';
 
 const GitHubLogin = () => {
-  const { selectedReviewer } = useSelector((store: TRootState) => store.addReview);
   const handleSignInWithGitHub = () => {
-    if (selectedReviewer.id === 0) return;
     const gitHubClientId = import.meta.env.VITE_GITHUB_CLIENT_ID;
     const githubLoginUrl = `https://github.com/login/oauth/authorize?client_id=${gitHubClientId}`;
     window.location.assign(githubLoginUrl);

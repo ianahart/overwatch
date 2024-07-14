@@ -32,23 +32,20 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.cors(
-                cors -> cors.disable()).csrf(
-                        AbstractHttpConfigurer::disable)
+        http.cors(cors -> cors.disable()).csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
-                        req -> req.requestMatchers("/api/v1/auth/**", "ws/**", "wss/**",
-                                "/oauth2/**", "/login/**").permitAll().anyRequest().authenticated())
-                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
+                        req -> req.requestMatchers("/api/v1/auth/**", "ws/**", "wss/**").permitAll()
+                                .anyRequest().authenticated()
+
+                ).sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(this.authenticationProvider)
                 .addFilterBefore(this.jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class)
-                .oauth2Login(oauth2 -> oauth2.loginPage("/login")
-                        .defaultSuccessUrl("/github/repositories", true)
-                        .failureUrl("/login?error=true"))
                 .logout(logout -> logout.logoutUrl("/api/v1/auth/logout")
                         .addLogoutHandler(logoutHandler).logoutSuccessHandler((request, response,
                                 authentication) -> SecurityContextHolder.clearContext()));
 
         return http.build();
     }
+
 }

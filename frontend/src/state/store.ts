@@ -286,7 +286,7 @@ export {
   useLazyFetchNotificationsQuery,
 } from './apis/notificationsApi';
 
-export { useLazyFetchGitHubAccessTokenQuery } from './apis/githubApi';
+export { useLazyFetchGitHubAccessTokenQuery, useFetchGitHubUserReposQuery } from './apis/githubApi';
 
 export {
   testimonialsApi,
