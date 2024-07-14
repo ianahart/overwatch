@@ -828,6 +828,20 @@ export interface IFetchGitHubUserReposResponse {
   data: { repositories: IGitHubRepositoryPreview[]; nextPageUrl: string };
 }
 
+export interface ICreateUserRepositoryRequest {
+  token: string;
+  payload: {
+    reviewerId: number;
+    ownerId: number;
+    repoName: string;
+    repoUrl: string;
+    avatarUrl: string;
+    comment: string;
+  };
+}
+
+export interface ICreateUserRepositoryResponse extends IBaseResponse {}
+
 export interface IDeletePinnedConnectionResponse extends IBaseResponse {}
 
 export interface IToggleFavoriteResponse extends IBaseResponse {}
