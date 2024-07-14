@@ -1,5 +1,18 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 
+export interface ISelectedReviewer {
+  reviewer: IConnection;
+}
+
+export interface IGitHubRepositoryPreview {
+  id: number;
+  fullName: string;
+  avatarUrl: string;
+  htmlUrl: string;
+  language: string;
+  stargazersCount: number;
+}
+
 export interface IConnection {
   senderId: number;
   receiverId: number;
@@ -726,6 +739,7 @@ export interface IFetchConnectionsRequest {
   page: number;
   pageSize: number;
   direction: string;
+  override: string;
 }
 
 export interface IFetchSearchConnectionsRequest {
@@ -791,6 +805,27 @@ export interface IToggleFavoriteRequest {
 export interface IDeletePinnedConnectionRequest {
   token: string;
   connectionPinId: number;
+}
+
+export interface IFetchGitHubTokenRequest {
+  token: string;
+  code: string;
+}
+
+export interface IFetchGitHubTokenResponse {
+  message: string;
+  accessToken: string;
+}
+
+export interface IFetchGitHubUserReposRequest {
+  accessToken: string;
+  token: string;
+  page: number;
+}
+
+export interface IFetchGitHubUserReposResponse {
+  message: string;
+  data: { repositories: IGitHubRepositoryPreview[]; nextPageUrl: string };
 }
 
 export interface IDeletePinnedConnectionResponse extends IBaseResponse {}

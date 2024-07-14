@@ -37,6 +37,18 @@ body {
   @apply bg-[url('./assets/forgot-password.png')] bg-cover w-full min-h-screen;
 }
 
+.user-dashboard-add-review {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+@media (max-width: 1100px) {
+  .user-dashboard-add-review {
+    flex-direction: column;
+  }
+}
+
 /* width */
 ::-webkit-scrollbar {
   width: 10px;

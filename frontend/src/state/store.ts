@@ -6,6 +6,14 @@ import { updateSignInField, clearSignInForm, signInReducer } from './slices/sign
 import { userReducer, updateUser, updateTokens, clearUser, updateUserAndTokens } from './slices/userSlice';
 import { settingReducer, updateSetting, clearSetting } from './slices/settingSlice';
 import {
+  clearAddReview,
+  clearSelectedReviewer,
+  clearReviewers,
+  setReviewers,
+  setSelectedReviewer,
+  addReviewReducer,
+} from './slices/addReviewSlice';
+import {
   setMessages,
   addMessage,
   setConnections,
@@ -74,9 +82,11 @@ import { notificationsApi } from './apis/notificationsApi';
 import { chatMessagesApi } from './apis/chatMessagesApi';
 import { favoritesApi } from './apis/favoritesApi';
 import { pinnedConnectionsApi } from './apis/pinnedConnectionsApi';
+import { githubApi } from './apis/githubApi';
 
 export const store = configureStore({
   reducer: {
+    addReview: addReviewReducer,
     chat: chatReducer,
     additionalInfo: additionalInfoFormReducer,
     package: packageFormReducer,
@@ -104,6 +114,7 @@ export const store = configureStore({
     [chatMessagesApi.reducerPath]: chatMessagesApi.reducer,
     [favoritesApi.reducerPath]: favoritesApi.reducer,
     [pinnedConnectionsApi.reducerPath]: pinnedConnectionsApi.reducer,
+    [githubApi.reducerPath]: githubApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -126,7 +137,8 @@ export const store = configureStore({
       .concat(notificationsApi.middleware)
       .concat(chatMessagesApi.middleware)
       .concat(favoritesApi.middleware)
-      .concat(pinnedConnectionsApi.middleware);
+      .concat(pinnedConnectionsApi.middleware)
+      .concat(githubApi.middleware);
   },
 });
 
@@ -188,6 +200,11 @@ export {
   removePinnedConnection,
   clearPinnedConnections,
   clearConnections,
+  clearAddReview,
+  clearSelectedReviewer,
+  clearReviewers,
+  setReviewers,
+  setSelectedReviewer,
 };
 
 export {
@@ -269,6 +286,8 @@ export {
   useLazyFetchNotificationsQuery,
 } from './apis/notificationsApi';
 
+export { useLazyFetchGitHubAccessTokenQuery, useFetchGitHubUserReposQuery } from './apis/githubApi';
+
 export {
   testimonialsApi,
   authsApi,
@@ -282,4 +301,5 @@ export {
   connectionsApi,
   notificationsApi,
   pinnedConnectionsApi,
+  githubApi,
 };

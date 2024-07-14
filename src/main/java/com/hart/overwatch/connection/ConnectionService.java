@@ -149,7 +149,7 @@ public class ConnectionService {
     }
 
     public PaginationDto<ConnectionDto> getAllConnections(Long userId, int page, int pageSize,
-            String direction) {
+            String direction, String override) {
 
         try {
             User user = this.userService.getUserById(userId);
@@ -168,13 +168,13 @@ public class ConnectionService {
 
             if (user.getRole() == Role.REVIEWER) {
 
-                queryResult = pinnedConnectionIds.size() == 0
+                queryResult = pinnedConnectionIds.size() == 0 || override.equals("true")
                         ? this.connectionRepository.getReceiverConnectionsWithoutPins(pageable,
                                 userId)
                         : this.connectionRepository.getReceiverConnections(pageable, userId,
                                 pinnedConnectionIds);
             } else {
-                queryResult = pinnedConnectionIds.size() == 0
+                queryResult = pinnedConnectionIds.size() == 0 || override.equals("true")
                         ? this.connectionRepository.getSenderConnectionsWithoutPins(pageable,
                                 userId)
                         : this.connectionRepository.getSenderConnections(pageable, userId,

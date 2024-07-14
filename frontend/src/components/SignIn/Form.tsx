@@ -69,7 +69,7 @@ const Form = () => {
         } else {
           const tokens = { token, refreshToken };
           dispatch(updateUserAndTokens({ user, tokens }));
-          navigate('/');
+          navigate(`/dashboard/${user.slug}`);
         }
       })
       .catch(({ data }) => {

@@ -6,9 +6,11 @@ import Avatar from '../Shared/Avatar';
 import { TRootState, clearSetting, clearUser, useSignOutMutation } from '../../state/store';
 import { openMobile, closeMobile } from '../../state/store';
 import UserInfo from './UserInfo';
-import { AiOutlineBell, AiOutlineClose, AiOutlineLogout } from 'react-icons/ai';
+import { AiOutlineClose, AiOutlineLogout } from 'react-icons/ai';
 import { nanoid } from 'nanoid';
 import Notifications from '../Notification';
+import { MdOutlineSpaceDashboard } from 'react-icons/md';
+import { Session } from '../../util/SessionService';
 
 const AuthNavbar = () => {
   const navigate = useNavigate();
@@ -24,11 +26,14 @@ const AuthNavbar = () => {
         dispatch(clearUser());
         dispatch(closeMobile());
         dispatch(clearSetting());
+        Session.removeItem('github_access_token');
+        localStorage.clear();
         navigate('/signin');
       });
   };
 
   const links = [
+    { path: `/dashboard/${user.slug}`, title: 'Dashboard', icon: <MdOutlineSpaceDashboard /> },
     { path: 'explore/most-recent', title: 'Explore', icon: <IoTelescopeOutline /> },
     { path: 'community', title: 'Community', icon: <IoPeopleOutline /> },
     { path: `settings/${user.slug}/profile`, title: 'Settings', icon: <IoSettingsOutline /> },

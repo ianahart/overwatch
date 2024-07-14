@@ -46,6 +46,7 @@ const Connections = () => {
     page: -1,
     pageSize: 3,
     direction: 'next',
+    override: 'false',
   });
 
   useEffect(() => {
@@ -83,6 +84,7 @@ const Connections = () => {
         page: pag.page,
         pageSize: pag.pageSize,
         direction: dir,
+        override: 'false',
       }).unwrap();
 
       const { items, page, pageSize, totalPages, direction, totalElements } = response.data;
@@ -131,7 +133,7 @@ const Connections = () => {
         setPag(paginationState);
       })
       .then(() => {
-        fetchConnections({ userId: user.id, token, page: -1, pageSize: 3, direction: 'next' })
+        fetchConnections({ userId: user.id, token, page: -1, pageSize: 3, direction: 'next', override: 'false' })
           .unwrap()
           .then((res) => {
             const { items, page, pageSize, totalPages, direction, totalElements } = res.data;
