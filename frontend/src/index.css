@@ -13,6 +13,16 @@
   }
 }
 
+.reviews-filter-container {
+  @apply flex flex-row justify-between;
+}
+
+@media (max-width: 1060px) {
+  .reviews-filter-container {
+    @apply flex-col;
+  }
+}
+
 body {
   @apply bg-black text-gray-500;
 }

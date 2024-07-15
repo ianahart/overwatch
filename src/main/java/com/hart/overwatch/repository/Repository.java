@@ -51,6 +51,9 @@ public class Repository {
     @Column(name = "repo_name", length = 200)
     private String repoName;
 
+    @Column(name = "language", length = 100)
+    private String language;
+
     @Enumerated(EnumType.STRING)
     private RepositoryStatus status;
 
@@ -68,7 +71,7 @@ public class Repository {
     }
 
     public Repository(Long id, LocalDateTime createdAt, LocalDateTime updatedAt, String feedback,
-            String comment, String avatarUrl, String repoUrl, String repoName,
+            String comment, String avatarUrl, String repoUrl, String repoName, String language,
             RepositoryStatus status) {
         this.id = id;
         this.createdAt = createdAt;
@@ -78,17 +81,19 @@ public class Repository {
         this.avatarUrl = avatarUrl;
         this.repoUrl = repoUrl;
         this.repoName = repoName;
+        this.language = language;
         this.status = status;
 
     }
 
     public Repository(String feedback, String comment, String avatarUrl, String repoUrl,
-            String repoName, RepositoryStatus status, User reviewer, User owner) {
+            String repoName, String language, RepositoryStatus status, User reviewer, User owner) {
         this.feedback = feedback;
         this.comment = comment;
         this.avatarUrl = avatarUrl;
         this.repoUrl = repoUrl;
         this.repoName = repoName;
+        this.language = language;
         this.status = status;
         this.reviewer = reviewer;
         this.owner = owner;
@@ -100,6 +105,10 @@ public class Repository {
 
     public User getOwner() {
         return owner;
+    }
+
+    public String getLanguage() {
+        return language;
     }
 
     public User getReviewer() {
@@ -182,5 +191,8 @@ public class Repository {
         this.updatedAt = updatedAt;
     }
 
+    public void setLanguage(String language) {
+        this.language = language;
+    }
 
 }

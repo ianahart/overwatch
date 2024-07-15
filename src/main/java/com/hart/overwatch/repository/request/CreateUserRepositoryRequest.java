@@ -14,6 +14,8 @@ public class CreateUserRepositoryRequest {
 
     private String avatarUrl;
 
+    private String language;
+
     @Size(max = 500, message = "Comment must be under 500 characters")
     private String comment;
 
@@ -23,15 +25,19 @@ public class CreateUserRepositoryRequest {
     }
 
     public CreateUserRepositoryRequest(Long reviewerId, Long ownerId, String repoName,
-            String repoUrl, String avatarUrl, String comment) {
+            String repoUrl, String avatarUrl, String comment, String language) {
         this.reviewerId = reviewerId;
         this.ownerId = ownerId;
         this.repoName = repoName;
         this.repoUrl = repoUrl;
         this.avatarUrl = avatarUrl;
         this.comment = comment;
+        this.language = language;
     }
 
+    public String getLanguage() {
+        return language;
+    }
 
     public Long getOwnerId() {
         return ownerId;
@@ -79,5 +85,9 @@ public class CreateUserRepositoryRequest {
 
     public void setReviewerId(Long reviewerId) {
         this.reviewerId = reviewerId;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 }

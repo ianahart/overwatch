@@ -4,6 +4,20 @@ export interface ISelectedReviewer {
   reviewer: IConnection;
 }
 
+export interface IRepositoryReview {
+  avatarUrl: string;
+  createdAt: string;
+  firstName: string;
+  id: number;
+  language: string;
+  lastName: string;
+  ownerId: number;
+  profileUrl: string;
+  repoName: string;
+  repoUrl: string;
+  reviewerId: number;
+}
+
 export interface IGitHubRepositoryPreview {
   id: number;
   fullName: string;
@@ -837,6 +851,38 @@ export interface ICreateUserRepositoryRequest {
     repoUrl: string;
     avatarUrl: string;
     comment: string;
+    language: string;
+  };
+}
+
+export interface IFetchDistinctRepositoryLanguagesResponse {
+  message: string;
+  data: string[];
+}
+
+export interface IFetchDistinctRepositoryLanguagesRequest {
+  token: string;
+}
+
+export interface IFetchRepositoriesRequest {
+  token: string;
+  page: number;
+  pageSize: number;
+  direction: string;
+  sortFilter: string;
+  statusFilter: string;
+  languageFilter: string;
+}
+
+export interface IFetchRepositoriesResponse {
+  message: string;
+  data: {
+    items: IRepositoryReview[];
+    page: number;
+    pageSize: number;
+    totalElements: number;
+    totalPages: number;
+    direction: string;
   };
 }
 
