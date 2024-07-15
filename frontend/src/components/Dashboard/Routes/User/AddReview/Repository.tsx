@@ -5,13 +5,13 @@ import { IGitHubRepositoryPreview } from '../../../../../interfaces';
 
 export interface IRepositoryProps {
   data: IGitHubRepositoryPreview;
-  addReview: (repoName: string, repoUrl: string, avatarUrl: string) => void;
+  addReview: (repoName: string, repoUrl: string, avatarUrl: string, language: string) => void;
 }
 
 const Repository = ({ data, addReview }: IRepositoryProps) => {
   const handleOnClick = () => {
-    const { fullName: repoName, avatarUrl, htmlUrl: repoUrl } = data;
-    addReview(repoName, avatarUrl, repoUrl);
+    const { fullName: repoName, avatarUrl, htmlUrl: repoUrl, language } = data;
+    addReview(repoName, repoUrl, avatarUrl, language);
   };
 
   return (

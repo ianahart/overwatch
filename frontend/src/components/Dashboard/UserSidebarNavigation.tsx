@@ -13,7 +13,7 @@ const UserSidebarNavigation = () => {
   const { user } = useSelector((store: TRootState) => store.user);
   const links = [
     { path: 'user/add-review', label: 'Get a review', id: 1, icon: <VscOpenPreview /> },
-    { path: 'user/reviews', label: 'Reviews in progress', id: 2, icon: <GoCodeReview /> },
+    { path: 'user/reviews', label: 'Your Reviews', id: 2, icon: <GoCodeReview /> },
     { path: `/settings/${user.slug}/connects`, label: 'Connects', id: 3, icon: <GiCheckboxTree /> },
     { path: 'user/stats', label: 'Your statistics', id: 4, icon: <VscGraphLine /> },
     { path: 'user/guides', label: 'Guides', id: 5, icon: <FaNewspaper /> },

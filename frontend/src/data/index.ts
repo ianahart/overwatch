@@ -1,3 +1,14 @@
+export const reviewsFilterStatusOptions = [
+  { id: 1, value: 'INPROGRESS', name: 'In Progress' },
+  { id: 2, value: 'INCOMPLETE', name: 'In Complete' },
+  { id: 3, value: 'COMPLETED', name: 'Completed' },
+];
+
+export const reviewsFilterSortingOptions = [
+  { id: 1, value: 'desc', name: 'Newest' },
+  { id: 2, value: 'asc', name: 'Oldest' },
+];
+
 export const profileState = {
   additionalInfo: {
     availability: [],
@@ -55,6 +66,14 @@ export const connectionState = {
 export const paginationState = {
   page: 0,
   pageSize: 3,
+  totalPages: 0,
+  direction: 'next',
+  totalElements: 0,
+};
+
+export const repositoryPaginationState = {
+  page: 0,
+  pageSize: 5,
   totalPages: 0,
   direction: 'next',
   totalElements: 0,

@@ -6,6 +6,13 @@ import { updateSignInField, clearSignInForm, signInReducer } from './slices/sign
 import { userReducer, updateUser, updateTokens, clearUser, updateUserAndTokens } from './slices/userSlice';
 import { settingReducer, updateSetting, clearSetting } from './slices/settingSlice';
 import {
+  setRepositoryReviews,
+  setRepositoryPagination,
+  setRepositorySearchFilter,
+  clearRepositoryReviews,
+  repositoryReviewsReducer,
+} from './slices/repositoryReviewsSlice';
+import {
   clearAddReview,
   clearSelectedReviewer,
   clearReviewers,
@@ -87,6 +94,7 @@ import { repositoriesApi } from './apis/repositoriesApi';
 
 export const store = configureStore({
   reducer: {
+    repositoryReviews: repositoryReviewsReducer,
     addReview: addReviewReducer,
     chat: chatReducer,
     additionalInfo: additionalInfoFormReducer,
@@ -208,6 +216,10 @@ export {
   clearReviewers,
   setReviewers,
   setSelectedReviewer,
+  clearRepositoryReviews,
+  setRepositorySearchFilter,
+  setRepositoryReviews,
+  setRepositoryPagination,
 };
 
 export {
@@ -295,7 +307,12 @@ export {
   useLazyFetchGitHubUserReposQuery,
 } from './apis/githubApi';
 
-export { useCreateUserRepositoryMutation } from './apis/repositoriesApi';
+export {
+  useFetchDistinctRepositoryLanguagesQuery,
+  useCreateUserRepositoryMutation,
+  useFetchRepositoriesQuery,
+  useLazyFetchRepositoriesQuery,
+} from './apis/repositoriesApi';
 
 export {
   testimonialsApi,

@@ -56,7 +56,7 @@ const RepositoryList = () => {
   };
 
   const addReview = useCallback(
-    (repoName: string, repoUrl: string, avatarUrl: string) => {
+    (repoName: string, repoUrl: string, avatarUrl: string, language: string) => {
       const payload = {
         reviewerId: selectedReviewer.receiverId,
         ownerId: user.id,
@@ -64,6 +64,7 @@ const RepositoryList = () => {
         repoUrl,
         avatarUrl,
         comment,
+        language,
       };
 
       createUserRepository({ payload, token })

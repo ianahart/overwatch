@@ -1,13 +1,20 @@
 package com.hart.overwatch.repository;
 
+import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.pagination.PaginationService;
+import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.advice.BadRequestException;
+import com.hart.overwatch.repository.dto.RepositoryDto;
 import com.hart.overwatch.repository.request.CreateUserRepositoryRequest;
+import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 
@@ -18,10 +25,14 @@ public class RepositoryService {
 
     private final UserService userService;
 
+    private final PaginationService paginationService;
+
     @Autowired
-    public RepositoryService(RepositoryRepository repositoryRepository, UserService userService) {
+    public RepositoryService(RepositoryRepository repositoryRepository, UserService userService,
+            PaginationService paginationService) {
         this.repositoryRepository = repositoryRepository;
         this.userService = userService;
+        this.paginationService = paginationService;
     }
 
     private Repository getRepositoryById(Long repositoryId) {
@@ -52,7 +63,7 @@ public class RepositoryService {
         Repository repository =
                 new Repository(feedback, Jsoup.clean(request.getComment(), Safelist.none()),
                         request.getAvatarUrl(), request.getRepoUrl(), request.getRepoName(),
-                        RepositoryStatus.INCOMPLETE, reviewer, owner);
+                        request.getLanguage(), RepositoryStatus.INCOMPLETE, reviewer, owner);
 
         this.repositoryRepository.save(repository);
 
@@ -66,4 +77,58 @@ public class RepositoryService {
         }
         createUserRepository(request);
     }
+
+
+    private List<String> getReviewerDistinctRepositoryLanguages(Long userId) {
+        return this.repositoryRepository.getReviewerDistinctRepositoryLanguages(userId);
+    }
+
+
+    private List<String> getOwnerDistinctRepositoryLanguages(Long userId) {
+        return this.repositoryRepository.getOwnerDistinctRepositoryLanguages(userId);
+    }
+
+
+    public List<String> getDistinctRepositoryLanguages() {
+        User currentUser = this.userService.getCurrentlyLoggedInUser();
+        List<String> languages = currentUser.getRole() == Role.REVIEWER
+                ? getReviewerDistinctRepositoryLanguages(currentUser.getId())
+                : getOwnerDistinctRepositoryLanguages(currentUser.getId());
+        languages.add("All");
+        return languages;
+    }
+
+    public PaginationDto<RepositoryDto> getAllRepositories(int page, int pageSize, String direction,
+            String sort, RepositoryStatus status, String language) {
+
+        User currentUser = this.userService.getCurrentlyLoggedInUser();
+        Pageable pageable =
+                this.paginationService.getSortedPageable(page, pageSize, direction, sort);
+
+
+        Page<RepositoryDto> queryResult = null;
+        if (currentUser.getRole() == Role.REVIEWER && language.toLowerCase().equals("all")) {
+
+            queryResult = this.repositoryRepository.getAllReviewerRepositories(pageable,
+                    currentUser.getId(), status);
+
+        } else if (currentUser.getRole() == Role.REVIEWER
+                && !language.toLowerCase().equals("all")) {
+
+            queryResult = this.repositoryRepository.getReviewerRepositoriesByLanguage(pageable,
+                    currentUser.getId(), language, status);
+
+        } else if (currentUser.getRole() == Role.USER && language.toLowerCase().equals("all")) {
+
+            queryResult = this.repositoryRepository.getAllOwnerRepositories(pageable,
+                    currentUser.getId(), status);
+        } else {
+            queryResult = this.repositoryRepository.getOwnerRepositoriesByLanguage(pageable,
+                    currentUser.getId(), language, status);
+        }
+
+        return new PaginationDto<RepositoryDto>(queryResult.getContent(), queryResult.getNumber(),
+                pageSize, queryResult.getTotalPages(), direction, queryResult.getTotalElements());
+    }
 }
+
