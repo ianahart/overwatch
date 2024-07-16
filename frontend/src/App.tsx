@@ -35,6 +35,7 @@ import ReviewsRoute from './routes/Dashboard/User/ReviewsRoute';
 import StatisticRoute from './routes/Dashboard/User/StatisticRoute';
 import GuideRoute from './routes/Dashboard/User/GuideRoute';
 import GitHubSuccessRoute from './routes/GitHubSuccessRoute';
+import EditRepositoryReviewRoute from './routes/Dashboard/User/EditRepositoryReviewRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -56,6 +57,7 @@ const router = createBrowserRouter(
           </RequireAuth>
         }
       />
+
       <Route
         path="dashboard/:slug"
         element={
@@ -80,6 +82,15 @@ const router = createBrowserRouter(
             </RequireAuth>
           }
         />
+        <Route
+          path="user/reviews/:repositoryId/edit"
+          element={
+            <RequireAuth>
+              <EditRepositoryReviewRoute />
+            </RequireAuth>
+          }
+        />
+
         <Route
           path="user/stats"
           element={

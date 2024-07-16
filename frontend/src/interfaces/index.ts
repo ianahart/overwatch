@@ -16,6 +16,7 @@ export interface IRepositoryReview {
   repoName: string;
   repoUrl: string;
   reviewerId: number;
+  status: string;
 }
 
 export interface IGitHubRepositoryPreview {
@@ -885,6 +886,31 @@ export interface IFetchRepositoriesResponse {
     direction: string;
   };
 }
+
+export interface IDeleteUserRepositoryRequest {
+  repositoryId: number;
+  token: string;
+}
+
+export interface IFetchUserCommentRepositoryRequest {
+  repositoryId: number;
+  token: string;
+}
+
+export interface IFetchUserCommentRepositoryResponse {
+  message: string;
+  data: string;
+}
+
+export interface IUpdateRepositoryCommentRequest {
+  token: string;
+  repositoryId: number;
+  comment: string;
+}
+
+export interface IUpdateRepositoryCommentResponse extends IBaseResponse {}
+
+export interface IDeleteUserRepositoryResponse extends IBaseResponse {}
 
 export interface ICreateUserRepositoryResponse extends IBaseResponse {}
 

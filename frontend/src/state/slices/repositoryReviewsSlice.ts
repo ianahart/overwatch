@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { clearUser } from '../store';
 import { IPaginationState, IRepositoryReview } from '../../interfaces';
-import { paginationState, repositoryPaginationState } from '../../data';
+import { repositoryPaginationState } from '../../data';
 
 interface IRepositoryReviewsState {
   sortFilter: string;

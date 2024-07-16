@@ -3,16 +3,23 @@ package com.hart.overwatch.repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.hart.overwatch.repository.request.CreateUserRepositoryRequest;
+import com.hart.overwatch.repository.request.UpdateRepositoryCommentRequest;
 import com.hart.overwatch.repository.response.CreateUserRepositoryResponse;
+import com.hart.overwatch.repository.response.DeleteRepositoryResponse;
 import com.hart.overwatch.repository.response.GetAllRepositoriesResponse;
 import com.hart.overwatch.repository.response.GetDistinctRepositoryLanguagesResponse;
+import com.hart.overwatch.repository.response.GetRepositoryCommentResponse;
+import com.hart.overwatch.repository.response.UpdateRepositoryCommentResponse;
 import jakarta.validation.Valid;
 
 @RestController
@@ -51,5 +58,28 @@ public class RepositoryController {
                         .getAllRepositories(page, pageSize, direction, sort, status, language)));
     }
 
+    @DeleteMapping("/{repositoryId}")
+    ResponseEntity<DeleteRepositoryResponse> deleteRepository(
+            @PathVariable("repositoryId") Long repositoryId) {
+        this.repositoryService.deleteRepository(repositoryId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new DeleteRepositoryResponse("success"));
+    }
+
+    @GetMapping("/{repositoryId}/comment")
+    ResponseEntity<GetRepositoryCommentResponse> getRepositoryComment(
+            @PathVariable("repositoryId") Long repositoryId) {
+        return ResponseEntity.status(HttpStatus.OK).body(new GetRepositoryCommentResponse("success",
+                this.repositoryService.getRepositoryComment(repositoryId)));
+    }
+
+    @PatchMapping("/{repositoryId}/comment")
+    ResponseEntity<UpdateRepositoryCommentResponse> updateRepositoryComment(
+            @PathVariable("repositoryId") Long repositoryId,
+            @RequestBody UpdateRepositoryCommentRequest request) {
+        this.repositoryService.updateRepositoryComment(repositoryId, request.getComment());
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new UpdateRepositoryCommentResponse("success"));
+    }
 
 }
