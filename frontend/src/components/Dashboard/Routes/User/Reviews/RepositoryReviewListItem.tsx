@@ -1,21 +1,36 @@
-import { IRepositoryReview } from '../../../../../interfaces';
 import dayjs from 'dayjs';
-import DashboardAvatar from '../../../DashboardAvatar';
 import { useMemo } from 'react';
 import { FaPen } from 'react-icons/fa';
-import { useSelector } from 'react-redux';
-import { TRootState } from '../../../../../state/store';
+import { AiOutlineEdit } from 'react-icons/ai';
+import { BsTrash } from 'react-icons/bs';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { TRootState, clearRepositoryReviews, useDeleteUserRepositoryMutation } from '../../../../../state/store';
+import { IRepositoryReview } from '../../../../../interfaces';
 import { Role } from '../../../../../enums';
+import DashboardAvatar from '../../../DashboardAvatar';
 
 export interface IRepositoryReviewListItemProps {
   data: IRepositoryReview;
 }
 
 const RepositoryReviewListItem = ({ data }: IRepositoryReviewListItemProps) => {
-  const { user } = useSelector((store: TRootState) => store.user);
+  const [deleteRepository] = useDeleteUserRepositoryMutation();
+  const { user, token } = useSelector((store: TRootState) => store.user);
+  const dispatch = useDispatch();
   const abbreviation = useMemo(() => {
     return data.firstName[0] + '.' + data.lastName[0];
   }, [data.firstName, data.lastName]);
+
+  const handleOnDeleteRepository = async () => {
+    try {
+      await deleteRepository({ token, repositoryId: data.id }).unwrap();
+      dispatch(clearRepositoryReviews());
+    } catch (err) {
+      const error = err as string;
+      throw new Error(error);
+    }
+  };
 
   return (
     <li className="my-4 border p-1 rounded border-gray-800">
@@ -36,19 +51,23 @@ const RepositoryReviewListItem = ({ data }: IRepositoryReviewListItemProps) => {
                 <p>{data.repoName}</p>
               </a>
             </div>
-            <div className="flex items-center mx-2">
+            <div className="md:flex hidden items-center mx-2">
               <FaPen className="text-sm text-gray-800 mr-1" />
               <p className="">{data.language}</p>
-            </div>
-            <div className="text-xs mx-2">
-              <p>Sent in for review on:</p>
-              <p>{dayjs(data.createdAt).format('MM/DD/YYYY')}</p>
             </div>
           </div>
         </div>
         {user.role === Role.USER && user.id === data.ownerId && (
-          <div className="mx-2">
-            <button className="text-gray-400 hover:opacity-80">Delete</button>
+          <div className="md:flex hidden items-center justify-between">
+            <div className="text-xs mx-2">
+              <p>Sent in for review on:</p>
+              <p>{dayjs(data.createdAt).format('MM/DD/YYYY')}</p>
+            </div>
+
+            <div className="flex items-center">
+              <AiOutlineEdit className="mx-2 text-lg cursor-pointer" />
+              <BsTrash onClick={handleOnDeleteRepository} className="max-2 text-lg cursor-pointer" />
+            </div>
           </div>
         )}
       </div>

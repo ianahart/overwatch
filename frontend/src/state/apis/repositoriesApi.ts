@@ -2,6 +2,8 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import {
   ICreateUserRepositoryRequest,
   ICreateUserRepositoryResponse,
+  IDeleteUserRepositoryResponse,
+  IDeleteUserRepositoryRequest,
   IFetchDistinctRepositoryLanguagesRequest,
   IFetchDistinctRepositoryLanguagesResponse,
   IFetchRepositoriesRequest,
@@ -12,6 +14,7 @@ import { baseQueryWithReauth } from '../util';
 const repositoriesApi = createApi({
   reducerPath: 'repository',
   baseQuery: baseQueryWithReauth,
+  tagTypes: ['Repository'],
   endpoints(builder) {
     return {
       fetchRepositories: builder.query<IFetchRepositoriesResponse, IFetchRepositoriesRequest>({
@@ -24,6 +27,11 @@ const repositoriesApi = createApi({
             },
           };
         },
+        //@ts-ignore
+        providesTags: (result, error, arg) =>
+          result
+            ? [...result.data.items.map(({ id }) => ({ type: 'Repository', id })), { type: 'Repository', id: 'LIST' }]
+            : [{ type: 'Repository', id: 'LIST' }],
       }),
 
       fetchDistinctRepositoryLanguages: builder.query<
@@ -52,11 +60,28 @@ const repositoriesApi = createApi({
           };
         },
       }),
+      deleteUserRepository: builder.mutation<IDeleteUserRepositoryResponse, IDeleteUserRepositoryRequest>({
+        query: ({ repositoryId, token }) => {
+          return {
+            url: `/repositories/${repositoryId}`,
+            method: 'DELETE',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+        //@ts-ignore
+        invalidatesTags: (_, error, { repositoryId }) => [
+          { type: 'Repository', id: repositoryId },
+          { type: 'Repository', id: 'LIST' },
+        ],
+      }),
     };
   },
 });
 
 export const {
+  useDeleteUserRepositoryMutation,
   useFetchRepositoriesQuery,
   useLazyFetchRepositoriesQuery,
   useCreateUserRepositoryMutation,

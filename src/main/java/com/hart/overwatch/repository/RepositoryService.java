@@ -12,6 +12,7 @@ import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.advice.BadRequestException;
+import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.repository.dto.RepositoryDto;
 import com.hart.overwatch.repository.request.CreateUserRepositoryRequest;
 import com.hart.overwatch.user.Role;
@@ -129,6 +130,24 @@ public class RepositoryService {
 
         return new PaginationDto<RepositoryDto>(queryResult.getContent(), queryResult.getNumber(),
                 pageSize, queryResult.getTotalPages(), direction, queryResult.getTotalElements());
+    }
+
+
+    public void deleteRepository(Long repositoryId) {
+        try {
+            Long currentUserId = this.userService.getCurrentlyLoggedInUser().getId();
+            Repository repository = getRepositoryById(repositoryId);
+
+            if (currentUserId != repository.getOwner().getId()) {
+                throw new ForbiddenException("Cannot delete a repository that is not yours");
+            }
+
+            this.repositoryRepository.delete(repository);
+
+        } catch (DataAccessException ex) {
+            System.out.println(ex.getMessage());
+            throw ex;
+        }
     }
 }
 

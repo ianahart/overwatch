@@ -886,6 +886,13 @@ export interface IFetchRepositoriesResponse {
   };
 }
 
+export interface IDeleteUserRepositoryRequest {
+  repositoryId: number;
+  token: string;
+}
+
+export interface IDeleteUserRepositoryResponse extends IBaseResponse {}
+
 export interface ICreateUserRepositoryResponse extends IBaseResponse {}
 
 export interface IDeletePinnedConnectionResponse extends IBaseResponse {}

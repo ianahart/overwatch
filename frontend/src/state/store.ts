@@ -308,6 +308,7 @@ export {
 } from './apis/githubApi';
 
 export {
+  useDeleteUserRepositoryMutation,
   useFetchDistinctRepositoryLanguagesQuery,
   useCreateUserRepositoryMutation,
   useFetchRepositoriesQuery,
