@@ -8,6 +8,10 @@ import {
   IFetchDistinctRepositoryLanguagesResponse,
   IFetchRepositoriesRequest,
   IFetchRepositoriesResponse,
+  IFetchUserCommentRepositoryRequest,
+  IFetchUserCommentRepositoryResponse,
+  IUpdateRepositoryCommentResponse,
+  IUpdateRepositoryCommentRequest,
 } from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
@@ -17,6 +21,29 @@ const repositoriesApi = createApi({
   tagTypes: ['Repository'],
   endpoints(builder) {
     return {
+      fetchUserCommentRepository: builder.query<
+        IFetchUserCommentRepositoryResponse,
+        IFetchUserCommentRepositoryRequest
+      >({
+        query: ({ token, repositoryId }) => {
+          return {
+            url: `/repositories/${repositoryId}/comment`,
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+        providesTags: (_, error, { repositoryId }) => {
+          console.log(error);
+          return [{ type: 'Repository', id: repositoryId }];
+        },
+        //@ts-ignore
+        invalidatesTags: (_, error, { repositoryId }) => [
+          { type: 'Repository', id: repositoryId },
+          { type: 'Repository', id: 'LIST' },
+        ],
+      }),
       fetchRepositories: builder.query<IFetchRepositoriesResponse, IFetchRepositoriesRequest>({
         query: ({ token, page, pageSize, direction, sortFilter, statusFilter, languageFilter }) => {
           return {
@@ -76,11 +103,32 @@ const repositoriesApi = createApi({
           { type: 'Repository', id: 'LIST' },
         ],
       }),
+      updateRepositoryComment: builder.mutation<IUpdateRepositoryCommentResponse, IUpdateRepositoryCommentRequest>({
+        query: ({ repositoryId, token, comment }) => {
+          return {
+            url: `/repositories/${repositoryId}/comment`,
+            method: 'PATCH',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: {
+              comment,
+            },
+          };
+        },
+        //@ts-ignore
+        invalidatesTags: (_, error, { repositoryId }) => [
+          { type: 'Repository', id: repositoryId },
+          { type: 'Repository', id: 'LIST' },
+        ],
+      }),
     };
   },
 });
 
 export const {
+  useUpdateRepositoryCommentMutation,
+  useFetchUserCommentRepositoryQuery,
   useDeleteUserRepositoryMutation,
   useFetchRepositoriesQuery,
   useLazyFetchRepositoriesQuery,

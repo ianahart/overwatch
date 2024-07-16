@@ -5,6 +5,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -146,6 +147,31 @@ public class RepositoryService {
 
         } catch (DataAccessException ex) {
             System.out.println(ex.getMessage());
+            throw ex;
+        }
+    }
+
+    public String getRepositoryComment(Long repositoryId) {
+        try {
+            Repository repository = getRepositoryById(repositoryId);
+            return repository.getComment();
+
+        } catch (DataAccessException ex) {
+            throw ex;
+        }
+    }
+
+    public void updateRepositoryComment(Long repositoryId, String comment) {
+        try {
+            Repository repository = getRepositoryById(repositoryId);
+
+            String cleanedComment = Jsoup.clean(comment, Safelist.none());
+
+            repository.setComment(cleanedComment);
+
+            this.repositoryRepository.save(repository);
+
+        } catch (DataIntegrityViolationException ex) {
             throw ex;
         }
     }

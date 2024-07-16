@@ -1,6 +1,7 @@
 package com.hart.overwatch.repository.dto;
 
 import java.time.LocalDateTime;
+import com.hart.overwatch.repository.RepositoryStatus;
 
 public class RepositoryDto {
 
@@ -26,13 +27,15 @@ public class RepositoryDto {
 
     private LocalDateTime createdAt;
 
+    private RepositoryStatus status;
+
     public RepositoryDto() {
 
     }
 
     public RepositoryDto(Long id, Long ownerId, Long reviewerId, String firstName, String lastName,
             String profileUrl, String repoName, String language, String repoUrl, String avatarUrl,
-            LocalDateTime createdAt) {
+            LocalDateTime createdAt, RepositoryStatus status) {
 
         this.id = id;
         this.ownerId = ownerId;
@@ -45,6 +48,7 @@ public class RepositoryDto {
         this.repoUrl = repoUrl;
         this.avatarUrl = avatarUrl;
         this.createdAt = createdAt;
+        this.status = status;
     }
 
     public Long getId() {
@@ -57,6 +61,10 @@ public class RepositoryDto {
 
     public String getRepoUrl() {
         return repoUrl;
+    }
+
+    public RepositoryStatus getStatus() {
+        return status;
     }
 
     public String getLanguage() {
@@ -133,5 +141,9 @@ public class RepositoryDto {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public void setStatus(RepositoryStatus status) {
+        this.status = status;
     }
 }
