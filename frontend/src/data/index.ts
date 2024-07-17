@@ -1,3 +1,18 @@
+export const repositoryState = {
+  avatarUrl: '',
+  comment: '',
+  createdAt: '',
+  feedback: '',
+  id: 0,
+  language: '',
+  ownerId: 0,
+  repoName: '',
+  repoUrl: '',
+  reviewerId: 0,
+  status: '',
+  updatedAt: '',
+};
+
 export const reviewsFilterStatusOptions = [
   { id: 1, value: 'INPROGRESS', name: 'In Progress' },
   { id: 2, value: 'INCOMPLETE', name: 'In Complete' },

@@ -1,7 +1,43 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 
+export interface ILanguageMap {
+  [key: string]: string;
+  js: string;
+  jsx: string;
+  ts: string;
+  tsx: string;
+  java: string;
+  css: string;
+  py: string;
+  html: string;
+  php: string;
+}
+
 export interface ISelectedReviewer {
   reviewer: IConnection;
+}
+
+export interface IGitHubRepository {
+  avatarUrl: string;
+  comment: string;
+  createdAt: string;
+  feedback: string;
+  id: number;
+  language: string;
+  ownerId: number;
+  repoName: string;
+  repoUrl: string;
+  reviewerId: number;
+  status: string;
+  updatedAt: string;
+}
+
+export interface IGitHubTree {
+  path: string;
+  sha: string;
+  size: number;
+  type: string;
+  url: string;
 }
 
 export interface IRepositoryReview {
@@ -902,10 +938,38 @@ export interface IFetchUserCommentRepositoryResponse {
   data: string;
 }
 
+export interface IFetchRepositoryRequest {
+  repositoryId: number;
+  token: string;
+  accessToken: string;
+  repositoryPage: number;
+}
+
+export interface IFetchRepositoryResponse {
+  message: string;
+  data: {
+    repository: IGitHubRepository;
+    tree: IGitHubTree[];
+  };
+}
+
 export interface IUpdateRepositoryCommentRequest {
   token: string;
   repositoryId: number;
   comment: string;
+}
+
+export interface ICreateRepositoryFileRequest {
+  token: string;
+  accessToken: string;
+  owner: string;
+  repoName: string;
+  path: string;
+}
+
+export interface ICreateRepositoryFileResponse {
+  message: string;
+  data: any;
 }
 
 export interface IUpdateRepositoryCommentResponse extends IBaseResponse {}

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
-import { FaPen } from 'react-icons/fa';
+import { FaCode, FaPen } from 'react-icons/fa';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { BsTrash } from 'react-icons/bs';
 import { useDispatch, useSelector } from 'react-redux';
@@ -49,7 +49,7 @@ const RepositoryReviewListItem = ({ data }: IRepositoryReviewListItemProps) => {
 
   return (
     <li className="my-4 border p-1 rounded border-gray-800">
-      <div className="flex items-center justify-between">
+      <div className="flex items-end justify-between">
         <div className="items-end flex">
           <div>
             <p
@@ -85,13 +85,22 @@ const RepositoryReviewListItem = ({ data }: IRepositoryReviewListItemProps) => {
               <p>Sent in for review on:</p>
               <p>{dayjs(data.createdAt).format('MM/DD/YYYY')}</p>
             </div>
-
             <div className="flex items-center">
               <Link to={`/dashboard/${user.slug}/user/reviews/${data.id}/edit`}>
                 <AiOutlineEdit className="mx-2 text-lg cursor-pointer" />
               </Link>
               <BsTrash onClick={handleOnDeleteRepository} className="max-2 text-lg cursor-pointer" />
             </div>
+          </div>
+        )}
+        {user.role === Role.REVIEWER && user.id === data.reviewerId && (
+          <div className="flex items-end">
+            <Link to={`/reviewer/repositories/${data.id}`}>
+              <div className="flex items-center text-sm">
+                <FaCode className="mr-1" />
+                Review code
+              </div>
+            </Link>
           </div>
         )}
       </div>

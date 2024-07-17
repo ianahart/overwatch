@@ -36,6 +36,10 @@ import StatisticRoute from './routes/Dashboard/User/StatisticRoute';
 import GuideRoute from './routes/Dashboard/User/GuideRoute';
 import GitHubSuccessRoute from './routes/GitHubSuccessRoute';
 import EditRepositoryReviewRoute from './routes/Dashboard/User/EditRepositoryReviewRoute';
+import ReviewerStatisticRoute from './routes/Dashboard/Reviewer/StatistictRoute';
+import ReviewerReviewsRoute from './routes/Dashboard/Reviewer/ReviewsRoute';
+import RepositoryReviewRoute from './routes/Dashboard/Reviewer/RepositoryReviewRoute';
+import RequireAuthUser from './components/Guard/RequireAuthUser';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -59,6 +63,15 @@ const router = createBrowserRouter(
       />
 
       <Route
+        path="/reviewer/repositories/:id"
+        element={
+          <RequireAuth>
+            <RepositoryReviewRoute />
+          </RequireAuth>
+        }
+      />
+
+      <Route
         path="dashboard/:slug"
         element={
           <RequireAuth>
@@ -67,44 +80,60 @@ const router = createBrowserRouter(
         }
       >
         <Route
-          path="user/add-review"
+          path="reviewer/reviews"
           element={
             <RequireAuth>
-              <AddReviewRoute />
+              <ReviewerReviewsRoute />
             </RequireAuth>
+          }
+        />
+        <Route
+          path="reviewer/stats"
+          element={
+            <RequireAuth>
+              <ReviewerStatisticRoute />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="user/add-review"
+          element={
+            <RequireAuthUser>
+              <AddReviewRoute />
+            </RequireAuthUser>
           }
         />
         <Route
           path="user/reviews"
           element={
-            <RequireAuth>
+            <RequireAuthUser>
               <ReviewsRoute />
-            </RequireAuth>
+            </RequireAuthUser>
           }
         />
         <Route
           path="user/reviews/:repositoryId/edit"
           element={
-            <RequireAuth>
+            <RequireAuthUser>
               <EditRepositoryReviewRoute />
-            </RequireAuth>
+            </RequireAuthUser>
           }
         />
 
         <Route
           path="user/stats"
           element={
-            <RequireAuth>
+            <RequireAuthUser>
               <StatisticRoute />
-            </RequireAuth>
+            </RequireAuthUser>
           }
         />
         <Route
           path="user/guides"
           element={
-            <RequireAuth>
+            <RequireAuthUser>
               <GuideRoute />
-            </RequireAuth>
+            </RequireAuthUser>
           }
         />
       </Route>

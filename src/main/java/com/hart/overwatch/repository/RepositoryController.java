@@ -1,5 +1,6 @@
 package com.hart.overwatch.repository;
 
+import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,16 +10,20 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.hart.overwatch.repository.request.CreateRepositoryFileRequest;
 import com.hart.overwatch.repository.request.CreateUserRepositoryRequest;
 import com.hart.overwatch.repository.request.UpdateRepositoryCommentRequest;
+import com.hart.overwatch.repository.response.CreateRepositoryFileResponse;
 import com.hart.overwatch.repository.response.CreateUserRepositoryResponse;
 import com.hart.overwatch.repository.response.DeleteRepositoryResponse;
 import com.hart.overwatch.repository.response.GetAllRepositoriesResponse;
 import com.hart.overwatch.repository.response.GetDistinctRepositoryLanguagesResponse;
 import com.hart.overwatch.repository.response.GetRepositoryCommentResponse;
+import com.hart.overwatch.repository.response.GetRepositoryReviewResponse;
 import com.hart.overwatch.repository.response.UpdateRepositoryCommentResponse;
 import jakarta.validation.Valid;
 
@@ -80,6 +85,23 @@ public class RepositoryController {
         this.repositoryService.updateRepositoryComment(repositoryId, request.getComment());
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new UpdateRepositoryCommentResponse("success"));
+    }
+
+    @GetMapping("/{repositoryId}")
+    ResponseEntity<GetRepositoryReviewResponse> getRepositoryReview(
+            @PathVariable("repositoryId") Long repositoryId,
+            @RequestHeader("GitHub-Token") String gitHubAccessToken, @RequestParam("page") int page,
+            @RequestParam("size") int size) throws IOException {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new GetRepositoryReviewResponse("success", this.repositoryService
+                        .getRepositoryReview(repositoryId, gitHubAccessToken, page, size)));
+    }
+
+    @PostMapping("/file")
+    ResponseEntity<CreateRepositoryFileResponse> createRepositoryFile(
+            @RequestBody CreateRepositoryFileRequest request) throws IOException {
+        return ResponseEntity.status(HttpStatus.OK).body(new CreateRepositoryFileResponse("success",
+                this.repositoryService.getRepositoryFile(request)));
     }
 
 }

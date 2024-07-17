@@ -1,5 +1,6 @@
 package com.hart.overwatch.repository;
 
+import java.io.IOException;
 import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
@@ -10,11 +11,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.github.GitHubService;
+import com.hart.overwatch.github.dto.GitHubTreeNodeDto;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
+import com.hart.overwatch.repository.dto.FullRepositoryDto;
+import com.hart.overwatch.repository.dto.RepositoryContentsDto;
 import com.hart.overwatch.repository.dto.RepositoryDto;
+import com.hart.overwatch.repository.request.CreateRepositoryFileRequest;
 import com.hart.overwatch.repository.request.CreateUserRepositoryRequest;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
@@ -29,12 +35,15 @@ public class RepositoryService {
 
     private final PaginationService paginationService;
 
+    private final GitHubService gitHubService;
+
     @Autowired
     public RepositoryService(RepositoryRepository repositoryRepository, UserService userService,
-            PaginationService paginationService) {
+            PaginationService paginationService, GitHubService gitHubService) {
         this.repositoryRepository = repositoryRepository;
         this.userService = userService;
         this.paginationService = paginationService;
+        this.gitHubService = gitHubService;
     }
 
     private Repository getRepositoryById(Long repositoryId) {
@@ -175,5 +184,34 @@ public class RepositoryService {
             throw ex;
         }
     }
+
+    private FullRepositoryDto constructRepository(Repository entity) {
+        return new FullRepositoryDto(entity.getId(), entity.getOwner().getId(),
+                entity.getReviewer().getId(), entity.getComment(), entity.getRepoUrl(),
+                entity.getFeedback(), entity.getLanguage(), entity.getRepoName(),
+                entity.getAvatarUrl(), entity.getStatus(), entity.getCreatedAt(),
+                entity.getUpdatedAt());
+    }
+
+    public RepositoryContentsDto getRepositoryReview(Long repositoryId, String accessToken,
+            int page, int size) throws IOException {
+        try {
+            Repository entity = getRepositoryById(repositoryId);
+            FullRepositoryDto repository = constructRepository(entity);
+            List<GitHubTreeNodeDto> tree = this.gitHubService
+                    .getRepository(repository.getRepoName(), accessToken, page, size);
+
+            return new RepositoryContentsDto(repository, tree);
+
+        } catch (DataAccessException ex) {
+            throw ex;
+        }
+    }
+
+    public String getRepositoryFile(CreateRepositoryFileRequest request) throws IOException {
+        return this.gitHubService.getRepositoryFile(request.getAccessToken(), request.getPath(),
+                request.getOwner(), request.getRepoName());
+    }
+
 }
 

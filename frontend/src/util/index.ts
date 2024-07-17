@@ -1,4 +1,19 @@
+import { ILanguageMap } from '../interfaces';
+
 export const baseURL = 'http://localhost:5173/api/v1';
+
+export const languageMap: ILanguageMap = {
+  js: 'javascript',
+  jsx: 'jsx',
+  ts: 'typescript',
+  tsx: 'tsx',
+  java: 'java',
+  css: 'css',
+  py: 'python',
+  rb: 'ruby',
+  html: 'html',
+  php: 'php',
+};
 
 export const retrieveTokens = () => {
   const storage = localStorage.getItem('tokens');
