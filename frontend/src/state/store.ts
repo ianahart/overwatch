@@ -6,6 +6,15 @@ import { updateSignInField, clearSignInForm, signInReducer } from './slices/sign
 import { userReducer, updateUser, updateTokens, clearUser, updateUserAndTokens } from './slices/userSlice';
 import { settingReducer, updateSetting, clearSetting } from './slices/settingSlice';
 import {
+  setRepositoryFile,
+  setRepository,
+  setRepositoryTree,
+  setRepositoryPage,
+  repositoryTreeReducer,
+  clearRepositoryTree,
+} from './slices/repositoryTreeSlice';
+
+import {
   setRepositoryReviews,
   setRepositoryPagination,
   setRepositorySearchFilter,
@@ -94,6 +103,7 @@ import { repositoriesApi } from './apis/repositoriesApi';
 
 export const store = configureStore({
   reducer: {
+    repositoryTree: repositoryTreeReducer,
     repositoryReviews: repositoryReviewsReducer,
     addReview: addReviewReducer,
     chat: chatReducer,
@@ -220,6 +230,11 @@ export {
   setRepositorySearchFilter,
   setRepositoryReviews,
   setRepositoryPagination,
+  clearRepositoryTree,
+  setRepository,
+  setRepositoryPage,
+  setRepositoryTree,
+  setRepositoryFile,
 };
 
 export {
@@ -308,6 +323,8 @@ export {
 } from './apis/githubApi';
 
 export {
+  useLazyFetchRepositoryQuery,
+  useFetchRepositoryQuery,
   useUpdateRepositoryCommentMutation,
   useFetchUserCommentRepositoryQuery,
   useDeleteUserRepositoryMutation,
@@ -315,6 +332,7 @@ export {
   useCreateUserRepositoryMutation,
   useFetchRepositoriesQuery,
   useLazyFetchRepositoriesQuery,
+  useCreateRepositoryFileMutation,
 } from './apis/repositoriesApi';
 
 export {

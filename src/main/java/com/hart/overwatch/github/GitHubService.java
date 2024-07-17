@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.github.dto.GitHubPaginationDto;
 import com.hart.overwatch.github.dto.GitHubRepositoryDto;
+import com.hart.overwatch.github.dto.GitHubTreeNodeDto;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -143,5 +144,47 @@ public class GitHubService {
 
     }
 
+
+    private List<GitHubTreeNodeDto> createFileTree(String jsonData, int page, int size) {
+        JSONObject jsonObject = new JSONObject(jsonData);
+        JSONArray treeArray = jsonObject.getJSONArray("tree");
+
+        List<GitHubTreeNodeDto> treeNodes = new ArrayList<>();
+        for (int i = 0; i < treeArray.length(); i++) {
+            JSONObject treeObject = treeArray.getJSONObject(i);
+            GitHubTreeNodeDto treeNode = new GitHubTreeNodeDto(treeObject.getString("path"),
+                    treeObject.getString("type"), treeObject.getString("sha"),
+                    treeObject.optInt("size", 0), // size may not be present for "tree" type nodes
+                    treeObject.getString("url"));
+            treeNodes.add(treeNode);
+        }
+
+        int start = Math.min(page * size, treeNodes.size());
+        int end = Math.min((page + 1) * size, treeNodes.size());
+
+        return treeNodes.subList(start, end);
+    }
+
+    public List<GitHubTreeNodeDto> getRepository(String repoName, String accessToken, int page,
+            int size) throws IOException {
+        String[] ownerAndRepoName = repoName.split("/");
+        String url = String.format("https://api.github.com/repos/%s/%s/git/trees/main?recursive=1",
+                ownerAndRepoName[0], ownerAndRepoName[1]);
+        Map<String, String> result = makeGitHubRequest(url, accessToken);
+        return createFileTree(result.get("body"), page, size);
+    }
+
+    public String getRepositoryFile(String accessToken, String path, String owner, String repoName)
+            throws IOException {
+        String url = String.format("https://api.github.com/repos/%s/%s/contents/%s", owner,
+                repoName, path);
+
+        Map<String, String> result = makeGitHubRequest(url, accessToken);
+
+        JSONObject jsonObject = new JSONObject(result.get("body"));
+        String content = jsonObject.getString("content");
+        return content;
+
+    }
 }
 

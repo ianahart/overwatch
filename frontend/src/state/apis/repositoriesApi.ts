@@ -12,6 +12,10 @@ import {
   IFetchUserCommentRepositoryResponse,
   IUpdateRepositoryCommentResponse,
   IUpdateRepositoryCommentRequest,
+  IFetchRepositoryRequest,
+  IFetchRepositoryResponse,
+  ICreateRepositoryFileResponse,
+  ICreateRepositoryFileRequest,
 } from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
@@ -21,6 +25,40 @@ const repositoriesApi = createApi({
   tagTypes: ['Repository'],
   endpoints(builder) {
     return {
+      createRepositoryFile: builder.mutation<ICreateRepositoryFileResponse, ICreateRepositoryFileRequest>({
+        query: ({ token, accessToken, repoName, owner, path }) => {
+          return {
+            url: `/repositories/file`,
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: { repoName, owner, path, accessToken },
+          };
+        },
+      }),
+      fetchRepository: builder.query<IFetchRepositoryResponse, IFetchRepositoryRequest>({
+        query: ({ token, repositoryId, accessToken, repositoryPage }) => {
+          return {
+            url: `/repositories/${repositoryId}?page=${repositoryPage}&size=50`,
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'GitHub-Token': accessToken,
+            },
+          };
+        },
+        providesTags: (_, error, { repositoryId }) => {
+          console.log(error);
+          return [{ type: 'Repository', id: repositoryId }];
+        },
+        //@ts-ignore
+        invalidatesTags: (_, error, { repositoryId }) => [
+          { type: 'Repository', id: repositoryId },
+          { type: 'Repository', id: 'LIST' },
+        ],
+      }),
+
       fetchUserCommentRepository: builder.query<
         IFetchUserCommentRepositoryResponse,
         IFetchUserCommentRepositoryRequest
@@ -127,6 +165,9 @@ const repositoriesApi = createApi({
 });
 
 export const {
+  useCreateRepositoryFileMutation,
+  useLazyFetchRepositoryQuery,
+  useFetchRepositoryQuery,
   useUpdateRepositoryCommentMutation,
   useFetchUserCommentRepositoryQuery,
   useDeleteUserRepositoryMutation,

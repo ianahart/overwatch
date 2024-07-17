@@ -3,6 +3,8 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { TRootState, useLazyFetchGitHubAccessTokenQuery } from '../state/store';
 import { useSelector } from 'react-redux';
 import { retrieveTokens } from '../util';
+import { Role } from '../enums';
+import { Session } from '../util/SessionService';
 
 const GitHubSuccessRoute = () => {
   const navigate = useNavigate();
@@ -19,7 +21,12 @@ const GitHubSuccessRoute = () => {
           try {
             const response = await fetchGitHubAccessToken({ code, token }).unwrap();
             const { accessToken } = response;
-            navigate(`/dashboard/${user.slug}/user/add-review?verified=true`, { state: { accessToken } });
+            if (user.role === Role.REVIEWER) {
+              Session.setItem(accessToken);
+              navigate(`/dashboard/${user.slug}/reviewer/reviews`);
+            } else {
+              navigate(`/dashboard/${user.slug}/user/add-review?verified=true`, { state: { accessToken } });
+            }
           } catch (err) {
             console.log(err);
           }
@@ -27,7 +34,7 @@ const GitHubSuccessRoute = () => {
         makeReq();
       }
     }
-  }, [searchParams, token, user.slug, navigate]);
+  }, [searchParams, token, user.slug, user.role, navigate]);
 
   return <div></div>;
 };
