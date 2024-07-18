@@ -67,7 +67,7 @@ const repositoryTreeSlice = createSlice({
 });
 
 export const {
-    setRepositoryNavView,
+  setRepositoryNavView,
   setRepositoryLanguages,
   setRepositoryFile,
   setRepositoryTree,

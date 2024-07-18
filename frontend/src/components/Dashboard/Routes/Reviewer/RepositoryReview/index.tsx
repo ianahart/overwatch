@@ -39,28 +39,28 @@ const RepositoryReview = () => {
     };
   }, [dispatch]);
 
-    useEffect(() => {
-      if (accessToken === null) {
-        const gitHubClientId = import.meta.env.VITE_GITHUB_CLIENT_ID;
-        const githubLoginUrl = `https://github.com/login/oauth/authorize?client_id=${gitHubClientId}`;
-        window.location.assign(githubLoginUrl);
-      }
-      if (accessToken !== null && shouldRun.current) {
-        shouldRun.current = false;
-        fetchRepository({ repositoryId, token, accessToken, repositoryPage })
-          .unwrap()
-          .then((res) => {
-            dispatch(setRepository(res.data.repository));
-            dispatch(setRepositoryTree(res.data.contents.tree));
-            dispatch(setRepositoryLanguages(res.data.contents.languages));
-            dispatch(setRepositoryPage(1));
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
-    }, [accessToken, shouldRun.current, fetchRepository, repositoryId, token, repositoryPage]);
-  
+  useEffect(() => {
+    if (accessToken === null) {
+      const gitHubClientId = import.meta.env.VITE_GITHUB_CLIENT_ID;
+      const githubLoginUrl = `https://github.com/login/oauth/authorize?client_id=${gitHubClientId}`;
+      window.location.assign(githubLoginUrl);
+    }
+    if (accessToken !== null && shouldRun.current) {
+      shouldRun.current = false;
+      fetchRepository({ repositoryId, token, accessToken, repositoryPage })
+        .unwrap()
+        .then((res) => {
+          dispatch(setRepository(res.data.repository));
+          dispatch(setRepositoryTree(res.data.contents.tree));
+          dispatch(setRepositoryLanguages(res.data.contents.languages));
+          dispatch(setRepositoryPage(1));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [accessToken, shouldRun.current, fetchRepository, repositoryId, token, repositoryPage]);
+
   return (
     <div className="md:max-w-[1450px] w-full mx-auto mt-8">
       <div className="bg-gray-900 p-2 rounded">
