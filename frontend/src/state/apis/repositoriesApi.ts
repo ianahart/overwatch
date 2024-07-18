@@ -48,15 +48,6 @@ const repositoriesApi = createApi({
             },
           };
         },
-        providesTags: (_, error, { repositoryId }) => {
-          console.log(error);
-          return [{ type: 'Repository', id: repositoryId }];
-        },
-        //@ts-ignore
-        invalidatesTags: (_, error, { repositoryId }) => [
-          { type: 'Repository', id: repositoryId },
-          { type: 'Repository', id: 'LIST' },
-        ],
       }),
 
       fetchUserCommentRepository: builder.query<

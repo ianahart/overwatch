@@ -1,37 +1,38 @@
 package com.hart.overwatch.repository.dto;
 
 import java.util.List;
+import com.hart.overwatch.github.dto.GitHubTreeDto;
 import com.hart.overwatch.github.dto.GitHubTreeNodeDto;
 
 public class RepositoryContentsDto {
 
     private FullRepositoryDto repository;
 
-    private List<GitHubTreeNodeDto> tree;
+    private GitHubTreeDto contents;
 
 
     public RepositoryContentsDto() {
 
     }
 
-    public RepositoryContentsDto(FullRepositoryDto repository, List<GitHubTreeNodeDto> tree) {
+    public RepositoryContentsDto(FullRepositoryDto repository, GitHubTreeDto contents) {
         this.repository = repository;
-        this.tree = tree;
+        this.contents = contents;
     }
 
     public FullRepositoryDto getRepository() {
         return repository;
     }
 
-    public List<GitHubTreeNodeDto> getTree() {
-        return tree;
+    public GitHubTreeDto getContents() {
+        return contents;
     }
 
     public void setRepository(FullRepositoryDto repository) {
         this.repository = repository;
     }
 
-    public void setTree(List<GitHubTreeNodeDto> tree) {
-        this.tree = tree;
+    public void setContents(GitHubTreeDto contents) {
+        this.contents = contents;
     }
 }

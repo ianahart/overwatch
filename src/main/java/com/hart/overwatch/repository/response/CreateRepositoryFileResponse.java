@@ -1,5 +1,6 @@
 package com.hart.overwatch.repository.response;
 
+
 public class CreateRepositoryFileResponse {
 
     private String message;
@@ -26,6 +27,7 @@ public class CreateRepositoryFileResponse {
     public void setData(String data) {
         this.data = data;
     }
+
     public void setMessage(String message) {
         this.message = message;
     }

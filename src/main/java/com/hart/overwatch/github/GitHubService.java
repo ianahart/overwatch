@@ -6,12 +6,15 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.github.dto.GitHubPaginationDto;
 import com.hart.overwatch.github.dto.GitHubRepositoryDto;
+import com.hart.overwatch.github.dto.GitHubRepositoryFileDto;
+import com.hart.overwatch.github.dto.GitHubTreeDto;
 import com.hart.overwatch.github.dto.GitHubTreeNodeDto;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,6 +23,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.HashMap;
+import java.util.Iterator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -165,25 +169,58 @@ public class GitHubService {
         return treeNodes.subList(start, end);
     }
 
-    public List<GitHubTreeNodeDto> getRepository(String repoName, String accessToken, int page,
-            int size) throws IOException {
+    public GitHubTreeDto getRepository(String repoName, String accessToken, int page, int size)
+            throws IOException {
         String[] ownerAndRepoName = repoName.split("/");
         String url = String.format("https://api.github.com/repos/%s/%s/git/trees/main?recursive=1",
                 ownerAndRepoName[0], ownerAndRepoName[1]);
         Map<String, String> result = makeGitHubRequest(url, accessToken);
-        return createFileTree(result.get("body"), page, size);
+
+        String languagesUrl = String.format("https://api.github.com/repos/%s/%s/languages",
+                ownerAndRepoName[0], ownerAndRepoName[1]);
+        Map<String, String> languagesResult = makeGitHubRequest(languagesUrl, accessToken);
+
+        List<String> languages = constructLanguages(languagesResult.get("body"));
+
+
+        return new GitHubTreeDto(languages, createFileTree(result.get("body"), page, size));
+    }
+
+    private String constructContent(String jsonData) {
+        try {
+
+            JSONObject jsonObject = new JSONObject(jsonData);
+            String content = jsonObject.getString("content");
+
+            return content;
+
+        } catch (JSONException ex) {
+            return "";
+        }
+
+    }
+
+    private List<String> constructLanguages(String jsonData) {
+        JSONObject jsonObject = new JSONObject(jsonData);
+        List<String> languages = new ArrayList<>();
+
+        Iterator<String> keys = jsonObject.keys();
+
+        while (keys.hasNext()) {
+            languages.add(keys.next());
+        }
+        return languages;
     }
 
     public String getRepositoryFile(String accessToken, String path, String owner, String repoName)
             throws IOException {
-        String url = String.format("https://api.github.com/repos/%s/%s/contents/%s", owner,
+        String contentsUrl = String.format("https://api.github.com/repos/%s/%s/contents/%s", owner,
                 repoName, path);
 
-        Map<String, String> result = makeGitHubRequest(url, accessToken);
+        Map<String, String> contentsResult = makeGitHubRequest(contentsUrl, accessToken);
 
-        JSONObject jsonObject = new JSONObject(result.get("body"));
-        String content = jsonObject.getString("content");
-        return content;
+        return constructContent(contentsResult.get("body"));
+
 
     }
 }

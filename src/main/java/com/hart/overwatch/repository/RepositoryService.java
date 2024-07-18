@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.github.GitHubService;
+import com.hart.overwatch.github.dto.GitHubTreeDto;
 import com.hart.overwatch.github.dto.GitHubTreeNodeDto;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
@@ -198,10 +199,10 @@ public class RepositoryService {
         try {
             Repository entity = getRepositoryById(repositoryId);
             FullRepositoryDto repository = constructRepository(entity);
-            List<GitHubTreeNodeDto> tree = this.gitHubService
-                    .getRepository(repository.getRepoName(), accessToken, page, size);
+            GitHubTreeDto contents = this.gitHubService.getRepository(repository.getRepoName(),
+                    accessToken, page, size);
 
-            return new RepositoryContentsDto(repository, tree);
+            return new RepositoryContentsDto(repository, contents);
 
         } catch (DataAccessException ex) {
             throw ex;

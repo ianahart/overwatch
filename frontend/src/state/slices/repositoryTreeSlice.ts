@@ -2,6 +2,7 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { clearUser } from '../store';
 import { IGitHubRepository, IGitHubTree } from '../../interfaces';
 import { repositoryState } from '../../data';
+import { ERepositoryView } from '../../enums';
 
 interface IRepositoryFile {
   path: string;
@@ -10,13 +11,17 @@ interface IRepositoryFile {
 }
 
 interface IRepositoryReviewsState {
+  repositoryNavView: ERepositoryView;
   repositoryTree: IGitHubTree[];
+  repositoryLanguages: string[];
   repository: IGitHubRepository;
   repositoryPage: number;
   repositoryFile: IRepositoryFile;
 }
 
 const initialState: IRepositoryReviewsState = {
+  repositoryNavView: ERepositoryView.DETAILS,
+  repositoryLanguages: [],
   repositoryTree: [],
   repository: repositoryState,
   repositoryPage: 0,
@@ -27,6 +32,13 @@ const repositoryTreeSlice = createSlice({
   name: 'repositoryTree',
   initialState,
   reducers: {
+    setRepositoryNavView: (state, action: PayloadAction<ERepositoryView>) => {
+      state.repositoryNavView = action.payload;
+    },
+    setRepositoryLanguages: (state, action: PayloadAction<string[]>) => {
+      state.repositoryLanguages = action.payload;
+    },
+
     setRepository: (state, action: PayloadAction<IGitHubRepository>) => {
       state.repository = action.payload;
     },
@@ -54,7 +66,14 @@ const repositoryTreeSlice = createSlice({
   },
 });
 
-export const { setRepositoryFile, setRepositoryTree, setRepository, setRepositoryPage, clearRepositoryTree } =
-  repositoryTreeSlice.actions;
+export const {
+    setRepositoryNavView,
+  setRepositoryLanguages,
+  setRepositoryFile,
+  setRepositoryTree,
+  setRepository,
+  setRepositoryPage,
+  clearRepositoryTree,
+} = repositoryTreeSlice.actions;
 
 export const repositoryTreeReducer = repositoryTreeSlice.reducer;
