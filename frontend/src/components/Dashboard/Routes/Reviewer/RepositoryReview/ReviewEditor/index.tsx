@@ -1,4 +1,6 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { over } from 'stompjs';
+import SockJS from 'sockjs-client';
 import { useDispatch, useSelector } from 'react-redux';
 import { createEditor, BaseEditor, Descendant } from 'slate';
 import { Slate, Editable, withReact, ReactEditor, RenderElementProps, RenderLeafProps } from 'slate-react';
@@ -12,6 +14,7 @@ import { TCustomElement, TCustomText } from '../../../../../../types';
 import Toolbar from './Toolbar';
 import HeadingElement from './HeadingElement';
 import { TRootState, updateRepository, useUpdateRepositoryReviewMutation } from '../../../../../../state/store';
+import { NotificationType } from '../../../../../../enums';
 
 declare module 'slate' {
   interface CustomTypes {
@@ -21,13 +24,74 @@ declare module 'slate' {
   }
 }
 
+let stompClient: any = null;
+
 const ReviewEditor = () => {
+  const shouldRun = useRef(true);
   const dispatch = useDispatch();
   const { token } = useSelector((store: TRootState) => store.user);
   const [editor] = useState(() => withReact(createEditor()));
   const { repository } = useSelector((store: TRootState) => store.repositoryTree);
   const [status, setStatus] = useState(repository.status ? repository.status : 'COMPLETED');
   const [updateRepositoryReview] = useUpdateRepositoryReviewMutation();
+
+  const connect = () => {
+    if (stompClient && stompClient.connected) {
+      console.log('WebSocket already connected');
+      return;
+    }
+
+    let Sock = new SockJS('http://localhost:8080/ws');
+    stompClient = over(Sock);
+
+    stompClient.connect({}, onConnected, onError);
+  };
+
+  const onConnected = () => {
+    console.log('WebSocket connected');
+  };
+
+  useEffect(() => {
+    if (shouldRun.current) {
+      shouldRun.current = false;
+      connect();
+    }
+    return () => {
+      if (stompClient && stompClient.connected) {
+        stompClient.disconnect(() => {
+          console.log('WebSocket disconnected');
+        });
+      }
+    };
+  }, []);
+
+  const onError = (err: any) => {
+    console.error('WebSocket error:', err);
+  };
+
+  const getNotificationType = (status: string): NotificationType => {
+    switch (status) {
+      case 'INCOMPLETE':
+        return NotificationType.REVIEW_INCOMPLETE;
+      case 'INPROGRESS':
+        return NotificationType.REVIEW_INPROGRESS;
+      case 'COMPLETED':
+        return NotificationType.REVIEW_COMPLETED;
+      default:
+        return NotificationType.REVIEW_INCOMPLETE;
+    }
+  };
+
+  const emitNotification = (): void => {
+    if (stompClient && stompClient.connected) {
+      const receiverId = repository.reviewerId;
+      const senderId = repository.ownerId;
+      const payload = { receiverId, senderId, notificationType: getNotificationType(status) };
+      stompClient.send('/api/v1/notify', {}, JSON.stringify(payload));
+    } else {
+      console.error('WebSocket is not connected');
+    }
+  };
 
   const initialValue: Descendant[] = useMemo(() => {
     const storedContent = localStorage.getItem('content') ?? '';
@@ -106,6 +170,7 @@ const ReviewEditor = () => {
       .then((res) => {
         const { feedback, status } = res.data;
         dispatch(updateRepository({ status, feedback }));
+        emitNotification();
       })
       .catch((err) => {
         console.log(err);

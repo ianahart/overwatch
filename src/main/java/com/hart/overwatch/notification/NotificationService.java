@@ -72,6 +72,25 @@ public class NotificationService {
         Map<String, String> notificationText = new HashMap<>();
 
         switch (notificationType) {
+            case REVIEW_INPROGRESS:
+                notificationText.put("receiver", String.format(
+                        "You started to review one of %s's repositories.", sender.getFullName()));
+                notificationText.put("sender", String.format(
+                        "%s started to review one of your repositories.", receiver.getFullName()));
+                break;
+            case REVIEW_INCOMPLETE:
+                notificationText.put("receiver", String.format(
+                        "You accepted to review one of %s's repositories.", sender.getFullName()));
+                notificationText.put("sender", String.format(
+                        "%s accepted to review one of your repositories.", receiver.getFullName()));
+                break;
+            case REVIEW_COMPLETED:
+                notificationText.put("receiver", String
+                        .format("You completed %s's repository review.", sender.getFullName()));
+                notificationText.put("sender",
+                        String.format("%s completed a review on one of your repositories.",
+                                receiver.getFullName()));
+                break;
             case PAYMENT_ACKNOWLEDGEMENT:
                 notificationText.put("receiver", "");
                 notificationText.put("sender", "");
