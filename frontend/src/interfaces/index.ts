@@ -981,6 +981,21 @@ export interface ICreateRepositoryFileResponse {
   data: any;
 }
 
+export interface IUpdateRepositoryRequest {
+  status: string;
+  feedback: string;
+  token: string;
+  repositoryId: number;
+}
+
+export interface IUpdateRepositoryResponse {
+  message: string;
+  data: {
+    status: string;
+    feedback: string;
+  };
+}
+
 export interface IUpdateRepositoryCommentResponse extends IBaseResponse {}
 
 export interface IDeleteUserRepositoryResponse extends IBaseResponse {}

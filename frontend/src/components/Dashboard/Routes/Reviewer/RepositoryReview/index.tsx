@@ -24,7 +24,7 @@ import RepositoryDetails from './RepositoryDetails';
 const RepositoryReview = () => {
   const dispatch = useDispatch();
   const shouldRun = useRef(true);
-  const { repositoryPage, repositoryNavView } = useSelector((store: TRootState) => store.repositoryTree);
+  const { repositoryPage, repositoryNavView, repository } = useSelector((store: TRootState) => store.repositoryTree);
   const params = useParams();
 
   const token = retrieveTokens()?.token;
@@ -50,6 +50,7 @@ const RepositoryReview = () => {
       fetchRepository({ repositoryId, token, accessToken, repositoryPage })
         .unwrap()
         .then((res) => {
+          localStorage.setItem('content', res.data.repository.feedback);
           dispatch(setRepository(res.data.repository));
           dispatch(setRepositoryTree(res.data.contents.tree));
           dispatch(setRepositoryLanguages(res.data.contents.languages));
@@ -61,6 +62,12 @@ const RepositoryReview = () => {
     }
   }, [accessToken, shouldRun.current, fetchRepository, repositoryId, token, repositoryPage]);
 
+  useEffect(() => {
+    return () => {
+      localStorage.removeItem('content');
+    };
+  }, []);
+
   return (
     <div className="md:max-w-[1450px] w-full mx-auto mt-8">
       <div className="bg-gray-900 p-2 rounded">
@@ -70,7 +77,8 @@ const RepositoryReview = () => {
         </div>
         <div className="md:flex">
           <FileTree />
-          {repositoryNavView === ERepositoryView.CODE ? <CodeViewer /> : <RepositoryDetails />}
+          {repository.id !== 0 && repositoryNavView === ERepositoryView.CODE && <CodeViewer />}
+          {repository.id !== 0 && repositoryNavView === ERepositoryView.DETAILS && <RepositoryDetails />}
         </div>
       </div>
     </div>

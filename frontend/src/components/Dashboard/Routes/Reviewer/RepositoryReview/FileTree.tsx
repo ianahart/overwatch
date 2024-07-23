@@ -8,6 +8,7 @@ import {
   TRootState,
   setRepository,
   setRepositoryFile,
+  setRepositoryNavView,
   setRepositoryPage,
   setRepositoryTree,
   useCreateRepositoryFileMutation,
@@ -16,6 +17,7 @@ import {
 import { Session } from '../../../../../util/SessionService';
 import { useState } from 'react';
 import { IGitHubTree } from '../../../../../interfaces';
+import { ERepositoryView } from '../../../../../enums';
 
 const FileTree = () => {
   const params = useParams();
@@ -23,7 +25,9 @@ const FileTree = () => {
   const repositoryId = Number.parseInt(params.id as string);
   const accessToken = Session.getItem('github_access_token') ?? '';
   const { token } = useSelector((store: TRootState) => store.user);
-  const { repositoryTree, repositoryPage, repository } = useSelector((store: TRootState) => store.repositoryTree);
+  const { repositoryTree, repositoryNavView, repositoryPage, repository } = useSelector(
+    (store: TRootState) => store.repositoryTree
+  );
   const [fetchRepository, { isLoading }] = useLazyFetchRepositoryQuery();
   const [createRepositoryFile] = useCreateRepositoryFileMutation();
   const [searchText, setSearchText] = useState('');
@@ -58,6 +62,9 @@ const FileTree = () => {
           language = languageMap[extension] || 'text';
         } else {
           language = 'text';
+        }
+        if (repositoryNavView === ERepositoryView.DETAILS) {
+          dispatch(setRepositoryNavView(ERepositoryView.CODE));
         }
 
         dispatch(setRepositoryFile({ path, content, language }));

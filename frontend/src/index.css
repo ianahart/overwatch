@@ -35,6 +35,14 @@ body {
   @apply text-slate-700 p-2 h-9 rounded transition ease-in-out  hover:opacity-70;
 }
 
+.editor-btn {
+  @apply text-2xl border rounded border-gray-400 cursor-pointer m-1;
+}
+
+.custom-editor {
+  @apply max-w-full rounded min-h-[450px] mt-0 bg-gray-900 text-gray-400;
+}
+
 .btn {
   @apply bg-green-400 text-slate-700 p-2 h-9 rounded transition ease-in-out  hover:opacity-70;
 }

@@ -4,10 +4,10 @@ import { IoLink } from 'react-icons/io5';
 
 import { TRootState } from '../../../../../state/store';
 import { IProgressMapper } from '../../../../../interfaces';
+import ReviewEditor from './ReviewEditor';
 
 const RepositoryDetails = () => {
   const { repository, repositoryLanguages } = useSelector((store: TRootState) => store.repositoryTree);
-  console.log(repository);
 
   const progressMapper: IProgressMapper = {
     INCOMPLETE: { text: 'Incomplete', background: 'bg-gray-400' },
@@ -30,7 +30,6 @@ const RepositoryDetails = () => {
 
   return (
     <div className="bg-gray-950 w-full p-4 text-gray-400">
-      {/*Header*/}
       <div className="flex items-center">
         <img className="h-16 w-16 rounded-lg" src={repository.avatarUrl} alt={repository.repoName} />
         <h2 className="text-gray-400 ml-4 text-xl">{repository.repoName}</h2>
@@ -38,8 +37,6 @@ const RepositoryDetails = () => {
           <IoLink />
         </a>
       </div>
-      {/*End Header*/}
-      {/*Stats*/}
       <div className="my-8">
         <div
           className={`my-2 text-gray-800 text-center rounded-lg shadow-md w-28 font-bold ${progressMapper[progressStatus]?.background}`}
@@ -67,17 +64,20 @@ const RepositoryDetails = () => {
           </ul>
         </div>
       </div>
-      {/*End Stats*/}
-      {/*Comment*/}
       <div className="my-8">
         <p>The user's instruction(s) and comment(s)</p>
         <div className="my-4 max-w-[550px] bg-gray-900 p-4 rounded">
-          <p>{repository.comment}</p>
+          <p>{repository.comment.length ? repository.comment : 'The user did not leave any comments for you.'}</p>
         </div>
       </div>
-      {/*End Comment*/}
-      {/*Feedback*/}
-      {/*End Feedback*/}
+      <div className="my-8">
+        <p>
+          Your feedback for the repository <span className="font-bold text-green-400">{repository.repoName}</span>
+        </p>
+        <div className="my-4">
+          <ReviewEditor />
+        </div>
+      </div>
     </div>
   );
 };

@@ -14,6 +14,7 @@ import {
   setRepositoryPage,
   repositoryTreeReducer,
   clearRepositoryTree,
+  updateRepository,
 } from './slices/repositoryTreeSlice';
 
 import {
@@ -239,6 +240,7 @@ export {
   setRepositoryFile,
   setRepositoryLanguages,
   setRepositoryNavView,
+  updateRepository,
 };
 
 export {
@@ -337,6 +339,7 @@ export {
   useFetchRepositoriesQuery,
   useLazyFetchRepositoriesQuery,
   useCreateRepositoryFileMutation,
+  useUpdateRepositoryReviewMutation,
 } from './apis/repositoriesApi';
 
 export {

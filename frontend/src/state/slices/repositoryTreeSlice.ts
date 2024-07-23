@@ -39,6 +39,13 @@ const repositoryTreeSlice = createSlice({
       state.repositoryLanguages = action.payload;
     },
 
+    updateRepository: (state, action: PayloadAction<{ status: string; feedback: string }>) => {
+      const { feedback, status } = action.payload;
+      state.repository.feedback = feedback;
+      state.repository.status = status;
+      localStorage.setItem('content', feedback);
+    },
+
     setRepository: (state, action: PayloadAction<IGitHubRepository>) => {
       state.repository = action.payload;
     },
@@ -74,6 +81,7 @@ export const {
   setRepository,
   setRepositoryPage,
   clearRepositoryTree,
+  updateRepository,
 } = repositoryTreeSlice.actions;
 
 export const repositoryTreeReducer = repositoryTreeSlice.reducer;

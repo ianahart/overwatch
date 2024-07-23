@@ -28,6 +28,8 @@
     "react-toastify": "^10.0.5",
     "shiki": "^1.10.3",
     "shiki-themes": "^0.2.7",
+    "slate": "^0.103.0",
+    "slate-react": "^0.107.1",
     "sockjs-client": "^1.6.1",
     "stompjs": "^2.3.3",
     "vscode-textmate": "^9.1.0"

@@ -16,6 +16,8 @@ import {
   IFetchRepositoryResponse,
   ICreateRepositoryFileResponse,
   ICreateRepositoryFileRequest,
+  IUpdateRepositoryResponse,
+  IUpdateRepositoryRequest,
 } from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
@@ -25,6 +27,18 @@ const repositoriesApi = createApi({
   tagTypes: ['Repository'],
   endpoints(builder) {
     return {
+      updateRepositoryReview: builder.mutation<IUpdateRepositoryResponse, IUpdateRepositoryRequest>({
+        query: ({ feedback, repositoryId, status, token }) => {
+          return {
+            url: `/repositories/${repositoryId}`,
+            method: 'PATCH',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: { feedback, status },
+          };
+        },
+      }),
       createRepositoryFile: builder.mutation<ICreateRepositoryFileResponse, ICreateRepositoryFileRequest>({
         query: ({ token, accessToken, repoName, owner, path }) => {
           return {
@@ -156,6 +170,7 @@ const repositoriesApi = createApi({
 });
 
 export const {
+  useUpdateRepositoryReviewMutation,
   useCreateRepositoryFileMutation,
   useLazyFetchRepositoryQuery,
   useFetchRepositoryQuery,
