@@ -12,7 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.github.GitHubService;
-import com.hart.overwatch.github.dto.GitHubTreeNodeDto;
+import com.hart.overwatch.github.dto.GitHubTreeDto;
+import com.hart.overwatch.notification.NotificationService;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.advice.BadRequestException;
@@ -20,8 +21,10 @@ import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.repository.dto.FullRepositoryDto;
 import com.hart.overwatch.repository.dto.RepositoryContentsDto;
 import com.hart.overwatch.repository.dto.RepositoryDto;
+import com.hart.overwatch.repository.dto.RepositoryReviewDto;
 import com.hart.overwatch.repository.request.CreateRepositoryFileRequest;
 import com.hart.overwatch.repository.request.CreateUserRepositoryRequest;
+import com.hart.overwatch.repository.request.UpdateRepositoryReviewRequest;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
@@ -198,10 +201,10 @@ public class RepositoryService {
         try {
             Repository entity = getRepositoryById(repositoryId);
             FullRepositoryDto repository = constructRepository(entity);
-            List<GitHubTreeNodeDto> tree = this.gitHubService
-                    .getRepository(repository.getRepoName(), accessToken, page, size);
+            GitHubTreeDto contents = this.gitHubService.getRepository(repository.getRepoName(),
+                    accessToken, page, size);
 
-            return new RepositoryContentsDto(repository, tree);
+            return new RepositoryContentsDto(repository, contents);
 
         } catch (DataAccessException ex) {
             throw ex;
@@ -213,5 +216,28 @@ public class RepositoryService {
                 request.getOwner(), request.getRepoName());
     }
 
+
+    public RepositoryReviewDto updateRepositoryReview(Long repositoryId,
+            UpdateRepositoryReviewRequest request) {
+        try {
+            Repository repository = getRepositoryById(repositoryId);
+            User reviewer = this.userService.getCurrentlyLoggedInUser();
+
+            if (repository.getReviewer().getId() != reviewer.getId()) {
+                throw new ForbiddenException("Cannot update a review that is not yours");
+            }
+
+            repository.setFeedback(request.getFeedback());
+            repository.setStatus(request.getStatus());
+
+            this.repositoryRepository.save(repository);
+
+            return new RepositoryReviewDto(repository.getStatus(), repository.getFeedback());
+
+        } catch (DataAccessException ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
+    }
 }
 

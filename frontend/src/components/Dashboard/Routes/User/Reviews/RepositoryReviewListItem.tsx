@@ -6,19 +6,13 @@ import { BsTrash } from 'react-icons/bs';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { TRootState, clearRepositoryReviews, useDeleteUserRepositoryMutation } from '../../../../../state/store';
-import { IRepositoryReview } from '../../../../../interfaces';
+import { IRepositoryReview, IProgressMapper } from '../../../../../interfaces';
 import { Role } from '../../../../../enums';
 import DashboardAvatar from '../../../DashboardAvatar';
 import { Link } from 'react-router-dom';
 
 export interface IRepositoryReviewListItemProps {
   data: IRepositoryReview;
-}
-
-export interface IProgressMapper {
-  INCOMPLETE: { text: string; background: string };
-  INPROGRESS: { text: string; background: string };
-  COMPLETED: { text: string; background: string };
 }
 
 const RepositoryReviewListItem = ({ data }: IRepositoryReviewListItemProps) => {

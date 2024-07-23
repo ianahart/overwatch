@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hart.overwatch.repository.request.CreateRepositoryFileRequest;
 import com.hart.overwatch.repository.request.CreateUserRepositoryRequest;
 import com.hart.overwatch.repository.request.UpdateRepositoryCommentRequest;
+import com.hart.overwatch.repository.request.UpdateRepositoryReviewRequest;
 import com.hart.overwatch.repository.response.CreateRepositoryFileResponse;
 import com.hart.overwatch.repository.response.CreateUserRepositoryResponse;
 import com.hart.overwatch.repository.response.DeleteRepositoryResponse;
@@ -25,6 +26,7 @@ import com.hart.overwatch.repository.response.GetDistinctRepositoryLanguagesResp
 import com.hart.overwatch.repository.response.GetRepositoryCommentResponse;
 import com.hart.overwatch.repository.response.GetRepositoryReviewResponse;
 import com.hart.overwatch.repository.response.UpdateRepositoryCommentResponse;
+import com.hart.overwatch.repository.response.UpdateRepositoryReviewResponse;
 import jakarta.validation.Valid;
 
 @RestController
@@ -102,6 +104,11 @@ public class RepositoryController {
             @RequestBody CreateRepositoryFileRequest request) throws IOException {
         return ResponseEntity.status(HttpStatus.OK).body(new CreateRepositoryFileResponse("success",
                 this.repositoryService.getRepositoryFile(request)));
+    }
+
+    @PatchMapping("/{repositoryId}")
+    ResponseEntity<UpdateRepositoryReviewResponse> updateRepositoryReview(@PathVariable("repositoryId") Long repositoryId, @RequestBody UpdateRepositoryReviewRequest request) {
+        return ResponseEntity.status(HttpStatus.OK).body(new UpdateRepositoryReviewResponse("success",        this.repositoryService.updateRepositoryReview(repositoryId, request)));
     }
 
 }

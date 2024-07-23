@@ -11,6 +11,10 @@ const RequireAuth: React.FC<Props> = ({ children }): JSX.Element => {
   const location = useLocation();
   const { user } = useSelector((store: TRootState) => store.user);
 
+  if (!user.loggedIn) {
+    return <p>loading</p>;
+  }
+
   if (retrieveTokens()?.token && user.role === Role.REVIEWER) {
     return children;
   } else {

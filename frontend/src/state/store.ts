@@ -6,12 +6,15 @@ import { updateSignInField, clearSignInForm, signInReducer } from './slices/sign
 import { userReducer, updateUser, updateTokens, clearUser, updateUserAndTokens } from './slices/userSlice';
 import { settingReducer, updateSetting, clearSetting } from './slices/settingSlice';
 import {
+  setRepositoryNavView,
+  setRepositoryLanguages,
   setRepositoryFile,
   setRepository,
   setRepositoryTree,
   setRepositoryPage,
   repositoryTreeReducer,
   clearRepositoryTree,
+  updateRepository,
 } from './slices/repositoryTreeSlice';
 
 import {
@@ -235,6 +238,9 @@ export {
   setRepositoryPage,
   setRepositoryTree,
   setRepositoryFile,
+  setRepositoryLanguages,
+  setRepositoryNavView,
+  updateRepository,
 };
 
 export {
@@ -333,6 +339,7 @@ export {
   useFetchRepositoriesQuery,
   useLazyFetchRepositoriesQuery,
   useCreateRepositoryFileMutation,
+  useUpdateRepositoryReviewMutation,
 } from './apis/repositoriesApi';
 
 export {

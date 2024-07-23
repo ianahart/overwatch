@@ -22,3 +22,8 @@ export enum RequestStatus {
   DECLINED = 'DECLINED',
   UNINITIATED = 'UNINITIATED',
 }
+
+export enum ERepositoryView {
+  DETAILS = 'DETAILS',
+  CODE = 'CODE',
+}

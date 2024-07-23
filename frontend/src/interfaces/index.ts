@@ -1,5 +1,11 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 
+export interface IProgressMapper {
+  INCOMPLETE: { text: string; background: string };
+  INPROGRESS: { text: string; background: string };
+  COMPLETED: { text: string; background: string };
+}
+
 export interface ILanguageMap {
   [key: string]: string;
   js: string;
@@ -949,7 +955,10 @@ export interface IFetchRepositoryResponse {
   message: string;
   data: {
     repository: IGitHubRepository;
-    tree: IGitHubTree[];
+    contents: {
+      tree: IGitHubTree[];
+      languages: string[];
+    };
   };
 }
 
@@ -970,6 +979,21 @@ export interface ICreateRepositoryFileRequest {
 export interface ICreateRepositoryFileResponse {
   message: string;
   data: any;
+}
+
+export interface IUpdateRepositoryRequest {
+  status: string;
+  feedback: string;
+  token: string;
+  repositoryId: number;
+}
+
+export interface IUpdateRepositoryResponse {
+  message: string;
+  data: {
+    status: string;
+    feedback: string;
+  };
 }
 
 export interface IUpdateRepositoryCommentResponse extends IBaseResponse {}

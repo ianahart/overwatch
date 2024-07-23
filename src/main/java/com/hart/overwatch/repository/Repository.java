@@ -36,7 +36,7 @@ public class Repository {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "feedback", length = 500)
+    @Column(name = "feedback", columnDefinition = "TEXT")
     private String feedback;
 
     @Column(name = "comment", length = 500)
