@@ -151,6 +151,35 @@ public class Profile {
         this.moreInfo = moreInfo;
     }
 
+
+    public Profile(Timestamp createdAt, Timestamp updatedAt, String avatarFilename,
+            String avatarUrl, String schoolName, List<WorkExpDto> workExp, String contactNumber,
+            String email, String fullName, String userName, String bio, String tagLine,
+            List<ItemDto> languages, List<ItemDto> programmingLanguages,
+            List<ItemDto> qualifications, FullPackageDto basic, FullPackageDto standard,
+            FullPackageDto pro, List<FullAvailabilityDto> availability, String moreInfo) {
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.avatarFilename = avatarFilename;
+        this.avatarUrl = avatarUrl;
+        this.workExp = workExp;
+        this.contactNumber = contactNumber;
+        this.email = email;
+        this.fullName = fullName;
+        this.userName = userName;
+        this.bio = bio;
+        this.tagLine = tagLine;
+        this.languages = languages;
+        this.programmingLanguages = programmingLanguages;
+        this.qualifications = qualifications;
+        this.basic = basic;
+        this.standard = standard;
+        this.pro = pro;
+        this.availability = availability;
+        this.moreInfo = moreInfo;
+    }
+
+
     public Long getId() {
         return id;
     }
@@ -333,4 +362,3 @@ public class Profile {
     }
 
 }
-

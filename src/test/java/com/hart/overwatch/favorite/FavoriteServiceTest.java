@@ -27,7 +27,9 @@ import com.hart.overwatch.profile.dto.WorkExpDto;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
+import org.springframework.test.context.ActiveProfiles;
 
+@ActiveProfiles("test")
 public class FavoriteServiceTest {
 
     @InjectMocks
