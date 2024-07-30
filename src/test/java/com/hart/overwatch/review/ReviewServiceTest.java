@@ -7,6 +7,8 @@ import java.util.List;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import org.assertj.core.api.Assertions;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +23,7 @@ import org.springframework.data.domain.PageImpl;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.profile.Profile;
+import com.hart.overwatch.review.request.CreateReviewRequest;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
@@ -60,7 +63,8 @@ public class ReviewServiceTest {
                 new Profile(), "Test12345%", new Setting());
         reviewer = new User("jane@mail.com", "Jane", "Doe", "Jane Doe", Role.REVIEWER, loggedIn,
                 new Profile(), "Test12345%", new Setting());
-        review = new Review(author, reviewer, isEdited, rating, reviewContent);
+        review = new Review(author, reviewer, isEdited, rating,
+                Jsoup.clean(reviewContent, Safelist.none()));
 
         author.setId(1L);
         reviewer.setId(2L);
@@ -89,5 +93,43 @@ public class ReviewServiceTest {
                 .hasMessage("Could not get avg review rating");
     }
 
+    @Test
+    public void ReviewService_CreateReview_ReturnNothing() {
+        Byte rating = 5;
+        CreateReviewRequest request =
+                new CreateReviewRequest(author.getId(), reviewer.getId(), rating, "Some content");
+
+        when(reviewRepository.getReviewByReviewerIdAndAuthorId(request.getReviewerId(),
+                request.getAuthorId())).thenReturn(false);
+
+        when(userService.getUserById(request.getAuthorId())).thenReturn(author);
+        when(userService.getUserById(request.getReviewerId())).thenReturn(reviewer);
+
+        reviewService.createReview(request);
+
+        verify(reviewRepository).save(argThat(savedReview -> savedReview.getAuthor().equals(author)
+                && savedReview.getReviewer().equals(reviewer)
+                && savedReview.getRating().equals(request.getRating()) && savedReview.getReview()
+                        .equals(Jsoup.clean(request.getReview(), Safelist.none()))));
+    }
+
+    @Test
+    public void ReviewService_CreateReview_Throws_Bad_Request_Exception() {
+        Byte rating = 5;
+        CreateReviewRequest request =
+                new CreateReviewRequest(author.getId(), reviewer.getId(), rating, "Some content");
+
+        when(reviewRepository.getReviewByReviewerIdAndAuthorId(request.getReviewerId(),
+                request.getAuthorId())).thenReturn(true);
+
+        BadRequestException thrownException =
+                assertThrows(BadRequestException.class, () -> reviewService.createReview(request));
+
+        Assertions.assertThat(thrownException.getMessage())
+                .isEqualTo("You have already reviewed this reviewer");
+
+        verify(reviewRepository, never()).save(any(Review.class));
+
+    }
 }
 
