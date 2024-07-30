@@ -3,10 +3,7 @@ package com.hart.overwatch.review;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import java.util.List;
 import java.util.Optional;
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Collections;
 import org.assertj.core.api.Assertions;
 import org.jsoup.Jsoup;
@@ -16,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Pageable;
@@ -170,8 +166,7 @@ public class ReviewServiceTest {
     @Test
     public void ReviewService_GetReviewById_ReturnMinReviewDto() {
         when(reviewRepository.findById(review.getId())).thenReturn(Optional.of(review));
-                    
-        MinReviewDto expectedMinReviewDto = new MinReviewDto(review.getId(), review.getRating(), review.getReview()); 
+        MinReviewDto expectedMinReviewDto = new MinReviewDto(review.getId(), review.getRating(), review.getReview());
         MinReviewDto actualMinReviewDto = reviewService.getReview(review.getId());
 
         Assertions.assertThat(actualMinReviewDto).isNotNull();
