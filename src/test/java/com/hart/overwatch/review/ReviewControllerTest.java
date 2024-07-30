@@ -186,6 +186,18 @@ public class ReviewControllerTest {
 
     }
 
+    @Test
+    public void ReviewController_DeleteReview_ReturnDeleteReviewResponse() throws Exception {
+
+        doNothing().when(this.reviewService).deleteReview(review.getId());
+
+        ResultActions response = mockMvc
+                .perform(delete("/api/v1/reviews/1").contentType(MediaType.APPLICATION_JSON));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+
+    }
 
 
 }
