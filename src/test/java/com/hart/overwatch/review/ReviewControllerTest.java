@@ -5,8 +5,10 @@ import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.favorite.request.ToggleFavoriteRequest;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
+import com.hart.overwatch.review.dto.MinReviewDto;
 import com.hart.overwatch.review.dto.ReviewDto;
 import com.hart.overwatch.review.request.CreateReviewRequest;
+import com.hart.overwatch.review.request.UpdateReviewRequest;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.user.Role;
@@ -33,9 +35,13 @@ import org.springframework.data.domain.PageImpl;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import java.util.Collections;
 import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matchers;
+
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 
@@ -85,6 +91,26 @@ public class ReviewControllerTest {
         author.setId(1L);
         reviewer.setId(2L);
         review.setId(1L);
+    }
+
+    @Test
+    public void ReviewController_GetReview_ReturnReviewResponse() throws Exception {
+
+        MinReviewDto minReviewDto =
+                new MinReviewDto(review.getId(), review.getRating(), review.getReview());
+
+        when(reviewService.getReview(review.getId())).thenReturn(minReviewDto);
+
+        ResultActions response =
+                mockMvc.perform(get("/api/v1/reviews/1").contentType(MediaType.APPLICATION_JSON));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.id",
+                        Matchers.equalToObject(minReviewDto.getId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.rating",
+                        CoreMatchers.equalToObject(minReviewDto.getRating().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.review",
+                        CoreMatchers.is(minReviewDto.getReview())));
     }
 
     @Test
@@ -141,6 +167,23 @@ public class ReviewControllerTest {
                         CoreMatchers.is(direction)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.totalElements",
                         CoreMatchers.is((int) pageResult.getTotalElements())));
+    }
+
+    @Test
+    public void ReviewController_UpdateReview_ReturnUpdateReviewResponse() throws Exception {
+        Byte rating = 4;
+        String reviewContent = "New content";
+        UpdateReviewRequest request = new UpdateReviewRequest(1L, 2L, rating, reviewContent);
+
+        doNothing().when(this.reviewService).updateReview(review.getId(), request);
+
+        ResultActions response =
+                mockMvc.perform(patch("/api/v1/reviews/1").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+
     }
 
 
