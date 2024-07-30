@@ -230,5 +230,31 @@ public class ReviewServiceTest {
         verify(reviewRepository, never()).save(any(Review.class));
 
     }
+
+    @Test
+    public void ReviewService_DeleteReview_Return_Nothing() {
+
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(author);
+        when(reviewRepository.findById(review.getId())).thenReturn(Optional.of(review));
+
+        doNothing().when(reviewRepository).delete(review);
+
+        reviewService.deleteReview(review.getId());
+
+        verify(reviewRepository, times(1)).delete(review);
+    }
+
+    @Test
+    public void ReviewService_DeleteReview_Throw_Forbidden_Exception() {
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(reviewer);
+        when(reviewRepository.findById(review.getId())).thenReturn(Optional.of(review));
+
+        Assertions.assertThatThrownBy(() -> reviewService.deleteReview(review.getId()))
+        .isInstanceOf(ForbiddenException.class)
+        .hasMessage("Cannot delete another person's review");
+
+        verify(reviewRepository, never()).delete(any(Review.class));
+
+    }
 }
 
