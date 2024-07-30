@@ -30,6 +30,7 @@ import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.review.dto.MinReviewDto;
 import com.hart.overwatch.review.dto.ReviewDto;
 import com.hart.overwatch.review.request.CreateReviewRequest;
+import com.hart.overwatch.review.request.UpdateReviewRequest;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
@@ -188,5 +189,29 @@ public class ReviewServiceTest {
                         .format("A review with the id %d was not found", nonExistentReviewId));
     }
 
+    @Test
+    public void ReviewService_UpdateReview_Return_Nothing() {
+        Byte updatedRating = 4;
+        String updatedReviewContent = "Something new";
+        UpdateReviewRequest request = new UpdateReviewRequest(author.getId(), reviewer.getId(),
+                updatedRating, updatedReviewContent);
+
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(author);
+        when(reviewRepository.findById(review.getId())).thenReturn(Optional.of(review));
+        when(reviewRepository.save(any(Review.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+
+
+        reviewService.updateReview(review.getId(), request);
+
+        verify(reviewRepository)
+                .save(argThat(updatedReview -> updatedReview.getId().equals(review.getId())
+                        && updatedReview.getRating().equals(updatedRating)
+                        && updatedReview.getReview()
+                                .equals(Jsoup.clean(updatedReviewContent, Safelist.none()))));
+
+
+    }
 }
 
