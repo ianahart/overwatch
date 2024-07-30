@@ -121,4 +121,11 @@ public class ReviewRepositoryTest {
 
         Assertions.assertThat(actualAvgRating).isEqualTo(expectedAverageRating);
     }
+
+    @Test
+    void ReviewRepository_GetTotalReviewsCountByReviewerId_ReturnTotalCount() {
+        Long totalCount = reviewRepository.getTotalReviewsCount(reviewer.getId());
+
+        Assertions.assertThat(totalCount).isEqualTo(1);
+    }
 }
