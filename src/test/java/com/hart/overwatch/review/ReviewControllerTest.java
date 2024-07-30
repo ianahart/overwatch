@@ -6,6 +6,7 @@ import com.hart.overwatch.favorite.request.ToggleFavoriteRequest;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.review.dto.ReviewDto;
+import com.hart.overwatch.review.request.CreateReviewRequest;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.user.Role;
@@ -84,6 +85,22 @@ public class ReviewControllerTest {
         author.setId(1L);
         reviewer.setId(2L);
         review.setId(1L);
+    }
+
+    @Test
+    public void ReviewController_CreateReview_ReturnCreateReviewResponse() throws Exception {
+        Byte rating = 5;
+        String reviewContent = "Some content";
+        CreateReviewRequest request = new CreateReviewRequest(1L, 2L, rating, reviewContent);
+
+        doNothing().when(reviewService).createReview(request);
+
+        ResultActions response =
+                mockMvc.perform(post("/api/v1/reviews").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 
     @Test
