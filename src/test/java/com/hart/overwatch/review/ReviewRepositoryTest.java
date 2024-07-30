@@ -103,4 +103,22 @@ public class ReviewRepositoryTest {
         Assertions.assertThat(reviewsByReviewer).isNotNull();
         Assertions.assertThat(reviewsByReviewer.getContent().size()).isEqualTo(2);
     }
+
+    @Test
+    void ReviewRepository_GetAvgRatingByReviewerId_ReturnAvgRating() {
+        Boolean isEdited = true;
+        Byte rating = 2;
+        String reviewContent = "This is some review content";
+        User author2 = new User("author2@mail.com", "Author", "Two", "Author Two", Role.USER, true,
+                new Profile(), "Test12345%", new Setting());
+        userRepository.save(author2);
+
+        Review review2 = new Review(author2, reviewer, isEdited, rating, reviewContent);
+        reviewRepository.save(review2);
+
+        Float actualAvgRating = reviewRepository.getAvgRatingByReviewerId(reviewer.getId());
+        Float expectedAverageRating = ((float) review.getRating() + review2.getRating()) / 2;
+
+        Assertions.assertThat(actualAvgRating).isEqualTo(expectedAverageRating);
+    }
 }
