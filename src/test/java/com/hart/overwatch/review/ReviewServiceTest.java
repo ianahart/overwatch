@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import java.util.List;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import org.assertj.core.api.Assertions;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
@@ -22,7 +23,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.pagination.PaginationService;
+import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
+import com.hart.overwatch.review.dto.ReviewDto;
 import com.hart.overwatch.review.request.CreateReviewRequest;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.user.Role;
@@ -69,6 +72,7 @@ public class ReviewServiceTest {
         author.setId(1L);
         reviewer.setId(2L);
         review.setId(1L);
+
     }
 
 
@@ -129,7 +133,34 @@ public class ReviewServiceTest {
                 .isEqualTo("You have already reviewed this reviewer");
 
         verify(reviewRepository, never()).save(any(Review.class));
+    }
+
+    @Test
+    public void ReviewService_GetReviews_ReturnPaginationDtoOfReviewDto() {
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+        Pageable pageable = Pageable.ofSize(pageSize);
+        ReviewDto reviewDto = new ReviewDto();
+        Page<ReviewDto> pageResult =
+                new PageImpl<>(Collections.singletonList(reviewDto), pageable, 1);
+        PaginationDto<ReviewDto> expectedPaginationDto =
+                new PaginationDto<>(pageResult.getContent(), pageResult.getNumber(), pageSize,
+                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
+
+        when(paginationService.getPageable(page, pageSize, direction)).thenReturn(pageable);
+        when(reviewRepository.getAllReviewsByReviewerId(pageable, reviewer.getId()))
+                .thenReturn(pageResult);
+
+        PaginationDto<ReviewDto> actualPaginationDto =
+                reviewService.getReviews(reviewer.getId(), page, pageSize, direction);
+
+        Assertions.assertThat(actualPaginationDto.getItems())
+                .isEqualTo(expectedPaginationDto.getItems());
+        Assertions.assertThat(actualPaginationDto.getTotalElements())
+                .isEqualTo(expectedPaginationDto.getTotalElements());
 
     }
+
 }
 
