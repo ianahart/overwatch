@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import com.hart.overwatch.advice.BadRequestException;
+import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
@@ -211,6 +212,22 @@ public class ReviewServiceTest {
                         && updatedReview.getReview()
                                 .equals(Jsoup.clean(updatedReviewContent, Safelist.none()))));
 
+
+    }
+
+    @Test
+    public void ReviewService_UpdateReview_Return_Forbidden_Exception() {
+        Byte updatedRating = 4;
+        String updatedReviewContent = "Something new";
+        UpdateReviewRequest request = new UpdateReviewRequest(999L, reviewer.getId(), updatedRating,
+                updatedReviewContent);
+
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(author);
+
+        Assertions.assertThatThrownBy(() -> reviewService.updateReview(review.getId(), request))
+                .isInstanceOf(ForbiddenException.class)
+                .hasMessage("You cannot edit another person's review");
+        verify(reviewRepository, never()).save(any(Review.class));
 
     }
 }
