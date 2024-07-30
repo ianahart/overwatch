@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import java.util.List;
+import java.util.Optional;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,9 +23,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import com.hart.overwatch.advice.BadRequestException;
+import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
+import com.hart.overwatch.review.dto.MinReviewDto;
 import com.hart.overwatch.review.dto.ReviewDto;
 import com.hart.overwatch.review.request.CreateReviewRequest;
 import com.hart.overwatch.setting.Setting;
@@ -160,6 +163,29 @@ public class ReviewServiceTest {
         Assertions.assertThat(actualPaginationDto.getTotalElements())
                 .isEqualTo(expectedPaginationDto.getTotalElements());
 
+    }
+
+    @Test
+    public void ReviewService_GetReviewById_ReturnMinReviewDto() {
+        when(reviewRepository.findById(review.getId())).thenReturn(Optional.of(review));
+                    
+        MinReviewDto expectedMinReviewDto = new MinReviewDto(review.getId(), review.getRating(), review.getReview()); 
+        MinReviewDto actualMinReviewDto = reviewService.getReview(review.getId());
+
+        Assertions.assertThat(actualMinReviewDto).isNotNull();
+        Assertions.assertThat(actualMinReviewDto.getId()).isEqualTo(expectedMinReviewDto.getId());
+        Assertions.assertThat(actualMinReviewDto.getRating()).isEqualTo(expectedMinReviewDto.getRating());
+        Assertions.assertThat(actualMinReviewDto.getReview()).isEqualTo(expectedMinReviewDto.getReview());
+    }
+
+    @Test
+    public void ReviewService_GetReviewById_Throw_Not_Found_Exception() {
+        Long nonExistentReviewId = 999L;
+        when(reviewRepository.findById(nonExistentReviewId)).thenReturn(Optional.empty());
+
+        Assertions.assertThatThrownBy(() -> reviewService.getReview(nonExistentReviewId))
+                .isInstanceOf(NotFoundException.class).hasMessage(String
+                        .format("A review with the id %d was not found", nonExistentReviewId));
     }
 
 }
