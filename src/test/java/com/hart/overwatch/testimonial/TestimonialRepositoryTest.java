@@ -1,6 +1,7 @@
 package com.hart.overwatch.testimonial;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.Arrays;
 
@@ -120,6 +121,19 @@ public class TestimonialRepositoryTest {
 
         Assertions.assertThat(testimonial).isNotNull();
 
+    }
+
+    @Test
+    void TestimonialRepository_DeleteTestimonial_ReturnEmpty() {
+        Long testimonialId = 1L;
+
+        Testimonial testimonial = testimonialRepository.findById(testimonialId).get();
+
+        testimonialRepository.delete(testimonial);
+
+        Optional<Testimonial> deletedTestimonial = testimonialRepository.findById(testimonialId);
+
+        Assertions.assertThat(deletedTestimonial).isEmpty();
     }
 }
 
