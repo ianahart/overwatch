@@ -1,7 +1,5 @@
 package com.hart.overwatch.token;
 
-import java.sql.Timestamp;
-import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -49,8 +47,6 @@ public class TokenRepositoryTest {
     private EntityManager entityManager;
 
     private User user;
-
-    private Token token;
 
     private List<Token> tokens = new ArrayList<>();
 
