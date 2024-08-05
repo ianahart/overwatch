@@ -3,10 +3,8 @@ package com.hart.overwatch.setting;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.profile.Profile;
-import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.setting.dto.SettingDto;
 import com.hart.overwatch.setting.request.UpdateSettingMfaEnabledRequest;
-import com.hart.overwatch.setting.response.UpdateSettingMfaEnabledResponse;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
@@ -25,18 +23,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.sql.Timestamp;
-import java.util.List;
-import java.util.stream.IntStream;
 import org.hamcrest.CoreMatchers;
 
 @ActiveProfiles("test")
@@ -119,8 +109,8 @@ public class SettingControllerTest {
                 .contentType(MediaType.APPLICATION_JSON));
 
         response.andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.mfaEnabled", CoreMatchers.is(true)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.mfaEnabled", CoreMatchers.is(true)));
 
     }
 
