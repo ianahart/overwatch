@@ -88,6 +88,24 @@ public class RefreshTokenServiceTest {
 
     }
 
+    @Test
+    public void RefreshTokenService_VerifyRefreshToken_ReturnRefreshToken() {
+        String tokenValue = "token" + UUID.randomUUID().toString();
+        RefreshToken refreshToken =
+                new RefreshToken(3L, tokenValue, Instant.now().plusMillis(86400000 * 12), user);
+
+        when(refreshTokenRepository.findByRefreshToken(refreshToken.getRefreshToken()))
+                .thenReturn(Optional.of(refreshToken));
+
+
+        RefreshToken returnedRefreshToken =
+                refreshTokenService.verifyRefreshToken(refreshToken.getRefreshToken());
+
+        verify(refreshTokenRepository, times(1)).findByRefreshToken(refreshToken.getRefreshToken());
+        Assertions.assertThat(returnedRefreshToken).isNotNull();
+    }
+
+
 }
 
 
