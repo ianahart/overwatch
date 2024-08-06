@@ -18,6 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.user.Role;
@@ -106,6 +107,19 @@ public class RefreshTokenServiceTest {
     }
 
 
+    @Test
+    public void RefreshTokenService_VerifyRefreshToken_ThrowNotFoundException() {
+        String tokenValue = "token" + UUID.randomUUID().toString();
+
+        when(refreshTokenRepository.findByRefreshToken(tokenValue))
+                .thenReturn(Optional.ofNullable(null));
+
+
+        Assertions.assertThatThrownBy(() -> refreshTokenService.verifyRefreshToken(tokenValue))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("A refresh token is not present.");
+
+    }
 }
 
 
