@@ -1,8 +1,6 @@
 package com.hart.overwatch.phone;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -18,6 +16,7 @@ import org.springframework.test.context.jdbc.Sql;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import com.hart.overwatch.phone.dto.PhoneDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.user.Role;
@@ -43,7 +42,8 @@ public class PhoneRepositoryTest {
 
     private User user;
 
-    private Phone phone;
+    private Phone phone1;
+
 
 
     @BeforeEach
@@ -51,12 +51,12 @@ public class PhoneRepositoryTest {
         Boolean loggedIn = true;
         user = new User("john@mail.com", "John", "Doe", "John Doe", Role.USER, loggedIn,
                 new Profile(), "Test12345%", new Setting());
-        phone = new Phone("4444444444", true, user);
+        phone1 = new Phone("4444444444", true, user);
 
-        user.setPhones(Arrays.asList(phone));
+        user.setPhones(Arrays.asList(phone1));
 
         userRepository.save(user);
-        phoneRepository.save(phone);
+        phoneRepository.save(phone1);
     }
 
     @AfterEach
@@ -71,7 +71,7 @@ public class PhoneRepositoryTest {
 
     @Test
     public void PhoneRepository_DeletePhoneById_ReturnNothing() {
-        Long phoneId = phone.getId();
+        Long phoneId = phone1.getId();
         phoneRepository.deleteByPhoneId(phoneId);
 
         entityManager.flush();
@@ -84,10 +84,18 @@ public class PhoneRepositoryTest {
 
     @Test
     public void PhoneRepository_ExistsByUserId_ReturnBooleanTrue() {
-       boolean exists = phoneRepository.existsByUserId(user.getId());
+        boolean exists = phoneRepository.existsByUserId(user.getId());
 
         Assertions.assertThat(exists).isTrue();
     }
+
+    @Test
+    public void PhoneRepository_GetLatestPhoneByUserId_ReturnPhoneDto() {
+        PhoneDto phoneDto = phoneRepository.getLatestPhoneByUserId(user.getId());
+
+        Assertions.assertThat(phoneDto).isNotNull();
+    }
+
 }
 
 
