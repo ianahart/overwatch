@@ -1,8 +1,5 @@
 package com.hart.overwatch.refreshtoken;
 
-import org.mockito.ArgumentCaptor;
-import static org.mockito.ArgumentCaptor.forClass;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import java.util.List;
@@ -10,7 +7,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,12 +15,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.advice.RefreshTokenException;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserRepository;
-import com.hart.overwatch.user.UserService;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
@@ -118,6 +114,22 @@ public class RefreshTokenServiceTest {
         Assertions.assertThatThrownBy(() -> refreshTokenService.verifyRefreshToken(tokenValue))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("A refresh token is not present.");
+
+    }
+
+    @Test
+    public void RefreshTokenService_VerifyRefreshToken_ThrowRefreshTokenException() {
+        String tokenValue = "token" + UUID.randomUUID().toString();
+        RefreshToken refreshToken =
+                new RefreshToken(3L, tokenValue, Instant.now().minusMillis(100), user);
+
+        when(refreshTokenRepository.findByRefreshToken(refreshToken.getRefreshToken()))
+                .thenReturn(Optional.of(refreshToken));
+
+        Assertions.assertThatThrownBy(
+                () -> refreshTokenService.verifyRefreshToken(refreshToken.getRefreshToken()))
+                .isInstanceOf(RefreshTokenException.class)
+                .hasMessage("Token has expired. Please sign in again.");
 
     }
 }
