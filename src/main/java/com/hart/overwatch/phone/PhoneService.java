@@ -45,7 +45,6 @@ public class PhoneService {
         Twilio.init(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 
         try {
-            System.out.println(otpCode);
 
             String phoneNumber = user.getPhones().getFirst().getPhoneNumber();
 
@@ -71,7 +70,6 @@ public class PhoneService {
         Verification verification =
                 Verification.creator(TWILIO_VERIFICATION_SID, "+1" + phoneNumber, "sms").create();
 
-        System.out.println(verification);
         return null;
     }
 
