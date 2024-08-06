@@ -76,6 +76,18 @@ public class RefreshTokenServiceTest {
         verify(refreshTokenRepository, times(1)).save(any(RefreshToken.class));
     }
 
+    @Test
+    public void RefreshTokenService_RevokeAllUserRefreshTokens_ReturnNothing() {
+        when(refreshTokenRepository.findAllUserRefreshTokens(user.getId())).thenReturn(refreshTokens);
+
+        refreshTokenService.revokeAllUserRefreshTokens(user);
+
+        verify(refreshTokenRepository, times(1)).findAllUserRefreshTokens(user.getId());
+        verify(refreshTokenRepository, times(1)).deleteById(1L);
+        verify(refreshTokenRepository, times(1)).deleteById(2L);
+
+    }
+
 }
 
 
