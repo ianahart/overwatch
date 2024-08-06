@@ -81,6 +81,13 @@ public class PhoneRepositoryTest {
 
         Assertions.assertThat(deletedPhone).isEmpty();
     }
+
+    @Test
+    public void PhoneRepository_ExistsByUserId_ReturnBooleanTrue() {
+       boolean exists = phoneRepository.existsByUserId(user.getId());
+
+        Assertions.assertThat(exists).isTrue();
+    }
 }
 
 
