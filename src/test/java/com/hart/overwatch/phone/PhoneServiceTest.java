@@ -1,10 +1,11 @@
 package com.hart.overwatch.phone;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import java.util.Arrays;
-
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import com.hart.overwatch.advice.BadRequestException;
+import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.user.Role;
@@ -52,7 +55,7 @@ public class PhoneServiceTest {
     @BeforeEach
     void setUp() {
         Boolean loggedIn = true;
-        Boolean isVerified = true;
+        Boolean isVerified = false;
         user = new User("john@mail.com", "John", "Doe", "John Doe", Role.USER, loggedIn,
                 new Profile(), "Test12345%", new Setting());
         phone = new Phone("4444444444", isVerified, user);
@@ -121,6 +124,40 @@ public class PhoneServiceTest {
 
             verify(mockVerificationCreator).create();
         }
+    }
+
+    @Test
+    public void PhoneService_CreatePhone_ReturnNothing() {
+        user.setId(1L);
+
+        when(phoneRepository.existsByUserId(user.getId())).thenReturn(false);
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+        when(phoneRepository.save(any(Phone.class))).thenReturn(phone);
+
+        assertDoesNotThrow(() -> phoneService.createPhone(user.getId(), "4444444444"));
+        verify(phoneRepository, times(1)).save(any(Phone.class));
+    }
+
+    @Test
+    public void PhoneService_CreatePhone_ThrowBadRequestException() {
+        user.setId(1L);
+        when(phoneRepository.existsByUserId(user.getId())).thenReturn(true);
+
+        Assertions.assertThatThrownBy(() -> phoneService.createPhone(user.getId(), "4444444444"))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage("Phone has already been added to our system");
+
+    }
+
+    @Test
+    public void PhoneService_CreatePhone_ThrowForbiddenException() {
+        user.setId(1L);
+        when(phoneRepository.existsByUserId(2L)).thenReturn(false);
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+
+        Assertions.assertThatThrownBy(() -> phoneService.createPhone(2L, "4444444444"))
+                .isInstanceOf(ForbiddenException.class)
+                .hasMessage("Cannot alter settings that are not yours");
     }
 }
 
