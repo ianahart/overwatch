@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -182,6 +183,36 @@ public class PhoneServiceTest {
         Assertions.assertThat(actualPhoneDto.getPhoneNumber())
                 .isEqualTo(expectedPhoneDto.getPhoneNumber());
 
+    }
+
+    @Test
+    public void PhoneService_DeletePhone_ThrowForibiddenException() {
+        phone.setId(1L);
+        user.setId(1L);
+        boolean loggedIn = true;
+        User unauthorizedUser = new User("jane@mail.com", "Jane", "Doe", "Jane Doe", Role.USER,
+                loggedIn, new Profile(), "Test12345%", new Setting());
+        unauthorizedUser.setId(2L);
+        phone.setUser(user);
+
+        when(phoneRepository.findById(phone.getId())).thenReturn(Optional.of(phone));
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(unauthorizedUser);
+
+        Assertions.assertThatThrownBy(() -> phoneService.deletePhone(phone.getId()))
+                .isInstanceOf(ForbiddenException.class)
+                .hasMessage("Cannot delete another user's phone number");
+    }
+
+    @Test
+    public void PhoneService_DeletePhone_ReturnNothing() {
+        phone.setId(1L);
+        user.setId(1L);
+        when(phoneRepository.findById(phone.getId())).thenReturn(Optional.of(phone));
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+        doNothing().when(phoneRepository).deleteByPhoneId(phone.getId());
+
+        assertDoesNotThrow(() -> phoneService.deletePhone(phone.getId()));
+        verify(phoneRepository, times(1)).deleteByPhoneId(phone.getId());
     }
 }
 
