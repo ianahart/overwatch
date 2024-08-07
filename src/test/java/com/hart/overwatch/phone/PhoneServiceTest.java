@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +16,7 @@ import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
+import com.hart.overwatch.phone.dto.PhoneDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.user.Role;
@@ -158,6 +160,28 @@ public class PhoneServiceTest {
         Assertions.assertThatThrownBy(() -> phoneService.createPhone(2L, "4444444444"))
                 .isInstanceOf(ForbiddenException.class)
                 .hasMessage("Cannot alter settings that are not yours");
+    }
+
+    @Test
+    public void PhoneService_GetPhone_ReturnPhoneDto() {
+        Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+        boolean isVerified = false;
+        String phoneNumber = "4444444444";
+        phone.setId(1L);
+        user.setId(1L);
+        phone.setUser(user);
+        PhoneDto expectedPhoneDto = new PhoneDto(phone.getId(), createdAt, isVerified, phoneNumber);
+
+        when(phoneRepository.getLatestPhoneByUserId(user.getId())).thenReturn(expectedPhoneDto);
+
+        PhoneDto actualPhoneDto = phoneService.getPhone(user.getId());
+
+        Assertions.assertThat(actualPhoneDto.getId()).isEqualTo(expectedPhoneDto.getId());
+        Assertions.assertThat(actualPhoneDto.getIsVerified())
+                .isEqualTo(expectedPhoneDto.getIsVerified());
+        Assertions.assertThat(actualPhoneDto.getPhoneNumber())
+                .isEqualTo(expectedPhoneDto.getPhoneNumber());
+
     }
 }
 
