@@ -21,6 +21,10 @@ import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -94,6 +98,26 @@ public class UserServiceTest {
        Assertions.assertThatThrownBy(() -> userService.getUserById(2L))
             .isInstanceOf(NotFoundException.class)
             .hasMessage(String.format("A user with the id %d does not exist", 2L));
+    }
+
+    @Test
+    public void UserService_GetCurrentlyLoggedInUser_ReturnUser() {
+        SecurityContext securityContext = mock(SecurityContext.class);
+        Authentication authentication = mock(Authentication.class);
+        UserDetails userDetails = mock(UserDetails.class);
+        String username = user.getEmail();
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getPrincipal()).thenReturn(userDetails);
+        when(userDetails.getUsername()).thenReturn(username);
+
+        SecurityContextHolder.setContext(securityContext);
+
+        when(userRepository.findByEmail(username)).thenReturn(Optional.of(user));
+
+        User returnedUser = userService.getCurrentlyLoggedInUser();
+
+        Assertions.assertThat(returnedUser.getEmail()).isEqualTo(user.getEmail());
     }
 
 }
