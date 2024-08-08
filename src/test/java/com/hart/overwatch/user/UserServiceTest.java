@@ -16,6 +16,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 
@@ -55,10 +57,24 @@ public class UserServiceTest {
         Assertions.assertThat(userExistsByEmail).isTrue();
     }
 
-    // public boolean userExistsByEmail(String email) {
-    // Optional<User> user = this.userRepository.findByEmail(email);
-    // return user.isPresent();
-    // }
-    //
+    @Test
+    public void UserService_GetUserByEmail_ReturnUser() {
+       when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+
+        User returnedUser = userService.getUserByEmail(user.getEmail());
+
+        Assertions.assertThat(returnedUser).isNotNull();
+        Assertions.assertThat(returnedUser.getId()).isEqualTo(user.getId());
+    }
+
+    @Test
+    public void UserService_GetUserByEmail_ThrowNotFoundException() {
+        when(userRepository.findByEmail("doesnotexist@mail.com")).thenReturn(Optional.ofNullable(null));
+
+        Assertions.assertThatThrownBy(() -> userService.getUserByEmail("doesnotexist@mail.com"))
+        .isInstanceOf(NotFoundException.class)
+        .hasMessage("User with that email does not exist");
+
+    }
 
 }
