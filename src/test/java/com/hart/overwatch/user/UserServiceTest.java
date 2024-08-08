@@ -74,7 +74,26 @@ public class UserServiceTest {
         Assertions.assertThatThrownBy(() -> userService.getUserByEmail("doesnotexist@mail.com"))
         .isInstanceOf(NotFoundException.class)
         .hasMessage("User with that email does not exist");
+    }
 
+    @Test
+    public void UserService_GetUserById_ReturnUser() {
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+
+        User returnedUser = userService.getUserById(user.getId());
+
+        Assertions.assertThat(returnedUser).isNotNull();
+        Assertions.assertThat(returnedUser.getId()).isEqualTo(user.getId());
+
+    }
+
+    @Test
+    public void UserService_GetUserById_ThrowNotFoundException() {
+       when(userRepository.findById(2L)).thenReturn(Optional.ofNullable(null));
+
+       Assertions.assertThatThrownBy(() -> userService.getUserById(2L))
+            .isInstanceOf(NotFoundException.class)
+            .hasMessage(String.format("A user with the id %d does not exist", 2L));
     }
 
 }
