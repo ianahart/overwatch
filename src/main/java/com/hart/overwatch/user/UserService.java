@@ -176,7 +176,7 @@ public class UserService {
                     user.getAbbreviation());
 
         } catch (ConstraintViolationException ex) {
-            return null;
+            throw new BadRequestException("Duplicate user");
 
         }
     }

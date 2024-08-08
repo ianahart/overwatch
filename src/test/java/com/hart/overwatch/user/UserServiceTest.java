@@ -1,19 +1,7 @@
 package com.hart.overwatch.user;
 
-import org.mockito.ArgumentCaptor;
-import static org.mockito.ArgumentCaptor.forClass;
-
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import java.util.List;
 import java.util.Optional;
-
-import javax.crypto.SecretKey;
-
-import java.security.Key;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,9 +16,7 @@ import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.user.dto.UpdateUserDto;
-import com.hart.overwatch.user.dto.UserDto;
 import com.hart.overwatch.user.request.UpdateUserRequest;
-import com.twilio.twiml.voice.Prompt.For;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -40,12 +26,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 
 @ActiveProfiles("test")
 @TestPropertySource(locations = "classpath:application-test.properties")
