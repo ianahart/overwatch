@@ -1,0 +1,2 @@
+ALTER SEQUENCE _user_sequence RESTART WITH 1;
+

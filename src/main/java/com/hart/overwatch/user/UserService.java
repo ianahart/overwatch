@@ -91,7 +91,6 @@ public class UserService {
 
     }
 
-
     private boolean verifyPassword(String currentPassword, String hashedPassword,
             String newPassword) {
 
@@ -134,11 +133,9 @@ public class UserService {
 
             this.userRepository.save(user);
 
-
         } catch (DataAccessException ex) {
             ex.printStackTrace();
         }
-        System.out.println(currentPassword);
     }
 
     public void deleteUser(Long userId, String password) {
@@ -158,7 +155,6 @@ public class UserService {
         } catch (ForbiddenException ex) {
             throw new ForbiddenException(ex.getMessage());
         }
-        System.out.println(password);
     }
 
     public UpdateUserDto updateUser(UpdateUserRequest request, Long userId) {
@@ -168,8 +164,6 @@ public class UserService {
             if (user.getId() != userId) {
                 throw new ForbiddenException("Cannot update another user's information");
             }
-
-
 
             user.setFirstName(
                     Jsoup.clean(MyUtil.capitalize(request.getFirstName()), Safelist.none()));
@@ -181,11 +175,9 @@ public class UserService {
             return new UpdateUserDto(user.getFirstName(), user.getLastName(), user.getEmail(),
                     user.getAbbreviation());
 
-
         } catch (ConstraintViolationException ex) {
-            return null;
+            throw new BadRequestException("Duplicate user");
 
         }
     }
 }
-
