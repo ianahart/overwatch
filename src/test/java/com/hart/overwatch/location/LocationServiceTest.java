@@ -19,12 +19,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.location.request.CreateLocationRequest;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.TestPropertySource;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -117,6 +117,42 @@ public class LocationServiceTest {
                 .isEqualTo("[{\"place\":\"Location 1\"},{\"place\":\"Location 2\"}]");
 
         verify(mockClient, times(1)).newCall(any(Request.class));
+
+    }
+
+    @Test
+    public void LocationService_CreateOrUpdateLocation_Create_ReturnNothing() {
+        Long userId = user.getId();
+        CreateLocationRequest request = new CreateLocationRequest("12 main street", "",
+                "New York City", "United States", "4444444444", "NY", "11111");
+
+        Location locationToSave = new Location(user, request.getCountry(), request.getAddress(),
+                request.getAddressTwo(), request.getCity(), request.getState(),
+                request.getZipCode(), request.getPhoneNumber());
+
+        when(locationRepository.userLocationExists(userId)).thenReturn(false);
+        when(userService.getUserById(userId)).thenReturn(user);
+        when(locationRepository.save(any(Location.class))).thenReturn(locationToSave);
+
+        locationService.createOrUpdateLocation(userId, request);
+
+        verify(locationRepository, times(1)).save(any(Location.class));
+    }
+
+    @Test
+    public void LocationService_CreateOrUpdateLocation_Update_ReturnNothing() {
+        Long userId = user.getId();
+        CreateLocationRequest request = new CreateLocationRequest("12 main street", "",
+                "New York City", "United States", "4444444444", "NY", "11111");
+
+        when(locationRepository.userLocationExists(userId)).thenReturn(true);
+        when(locationRepository.getLocationByUserId(userId)).thenReturn(location);
+        when(locationRepository.save(any(Location.class))).thenReturn(location);
+
+        locationService.createOrUpdateLocation(userId, request);
+
+        verify(locationRepository, times(1)).save(any(Location.class));
+
 
     }
 }
