@@ -31,12 +31,15 @@ public class LocationService {
 
     private final UserService userService;
 
+    private final OkHttpClient client;
+
 
 
     @Autowired
-    public LocationService(LocationRepository locationRepository, UserService userService) {
+    public LocationService(LocationRepository locationRepository, UserService userService, OkHttpClient client) {
         this.locationRepository = locationRepository;
         this.userService = userService;
+        this.client = client;
     }
 
 
@@ -48,8 +51,6 @@ public class LocationService {
 
 
     public String getLocationAutoComplete(String text) {
-
-        OkHttpClient client = new OkHttpClient();
 
         String url = "https://api.geoapify.com/v1/geocode/autocomplete?text=" + text + "&apiKey="
                 + GEOAPIFY_API_KEY;
