@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Optional;
@@ -25,6 +26,11 @@ import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.TestPropertySource;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.Call;
+import okhttp3.ResponseBody;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -35,6 +41,16 @@ public class LocationServiceTest {
 
     @InjectMocks
     private LocationService locationService;
+
+
+    @Mock
+    private OkHttpClient mockClient;
+
+    @Mock
+    private Call mockCall;
+
+    @Mock
+    private Response mockResponse;
 
     @Mock
     private LocationRepository locationRepository;
@@ -78,6 +94,31 @@ public class LocationServiceTest {
             .hasMessage(String.format("A location with the id %d was not found", 2L));
     }
 
+    @Test
+    public void LocationService_GetLocationAutoComplete_ReturnAddress() throws IOException {
+        String mockResponseBody =
+                "{\"features\":[{\"place\":\"Location 1\"},{\"place\":\"Location 2\"}]}";
+        ResponseBody responseBody = ResponseBody.create(mockResponseBody, null);
+
+        Response mockResponse = new Response.Builder()
+                .request(new Request.Builder().url(String.format(
+                        "https://api.geoapify.com/v1/geocode/autocomplete?text=New%%20York&apiKey=%s",
+                        GEOAPIFY_API_KEY)).build())
+                .protocol(okhttp3.Protocol.HTTP_1_1).code(200).message("OK").body(responseBody)
+                .build();
+
+        when(mockCall.execute()).thenReturn(mockResponse);
+        when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+
+        String result = locationService.getLocationAutoComplete("New York");
+
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result)
+                .isEqualTo("[{\"place\":\"Location 1\"},{\"place\":\"Location 2\"}]");
+
+        verify(mockClient, times(1)).newCall(any(Request.class));
+
+    }
 }
 
 
