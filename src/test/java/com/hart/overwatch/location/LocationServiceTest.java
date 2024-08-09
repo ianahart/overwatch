@@ -1,12 +1,8 @@
 package com.hart.overwatch.location;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.util.Arrays;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,11 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.hart.overwatch.advice.BadRequestException;
-import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.location.dto.LocationDto;
 import com.hart.overwatch.location.request.CreateLocationRequest;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
@@ -152,8 +146,27 @@ public class LocationServiceTest {
         locationService.createOrUpdateLocation(userId, request);
 
         verify(locationRepository, times(1)).save(any(Location.class));
+    }
 
+    @Test
+    public void LocationService_GetFullLocationByUserId_ReturnLocationDto() {
+        Long userId = user.getId();
+        LocationDto expectedLocationDto = new LocationDto(location.getAddress(),
+                location.getAddressTwo(), location.getCity(), location.getCountry(),
+                location.getPhoneNumber(), location.getState(), location.getZipCode());
 
+        when(locationRepository.getFullLocationByUserId(userId)).thenReturn(expectedLocationDto);
+
+        LocationDto actualLocationDto = locationService.getFullLocationByUserId(userId);
+
+        Assertions.assertThat(actualLocationDto).isNotNull();
+        Assertions.assertThat(actualLocationDto.getCity()).isEqualTo(expectedLocationDto.getCity());
+        Assertions.assertThat(actualLocationDto.getAddress())
+                .isEqualTo(expectedLocationDto.getAddress());
+        Assertions.assertThat(actualLocationDto.getAddressTwo())
+                .isEqualTo(expectedLocationDto.getAddressTwo());
+        Assertions.assertThat(actualLocationDto.getCountry())
+                .isEqualTo(expectedLocationDto.getCountry());
     }
 }
 
