@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.connection.dto.MinConnectionDto;
 import com.hart.overwatch.connectionpin.ConnectionPinService;
 import com.hart.overwatch.location.Location;
 import com.hart.overwatch.pagination.PaginationService;
@@ -170,7 +171,17 @@ public class ConnectionServiceTest {
         connectionService.updateConnectionStatus(sender.getId(), receiver.getId(), RequestStatus.ACCEPTED);
 
         verify(connectionRepository, times(1)).save(any(Connection.class));
+    }
 
+    @Test
+    public void ConnectionService_VerifyConnection_ReturnMinConnectionDto() {
+      when(connectionRepository.findBySenderIdAndReceiverId(sender.getId(), receiver.getId()))
+            .thenReturn(connection);
+
+      MinConnectionDto minConnectionDto = connectionService.verifyConnection(sender.getId(), receiver.getId());
+
+      Assertions.assertThat(minConnectionDto).isNotNull();
+      Assertions.assertThat(minConnectionDto.getId()).isEqualTo(connection.getId());
     }
 
 
