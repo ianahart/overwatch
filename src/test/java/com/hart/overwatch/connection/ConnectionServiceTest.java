@@ -11,7 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.hart.overwatch.advice.BadRequestException;
-import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.connectionpin.ConnectionPinService;
 import com.hart.overwatch.location.Location;
@@ -160,6 +159,20 @@ public class ConnectionServiceTest {
 
         verify(connectionRepository, times(1)).delete(connection);
     }
+
+    @Test
+    public void ConnectionService_UpdateConnectionStatus_ReturnNothing() {
+        when(connectionRepository.findBySenderIdAndReceiverId(sender.getId(), receiver.getId()))
+            .thenReturn(connection);
+
+        connection.setStatus(RequestStatus.ACCEPTED);
+        when(connectionRepository.save(any(Connection.class))).thenReturn(connection);
+        connectionService.updateConnectionStatus(sender.getId(), receiver.getId(), RequestStatus.ACCEPTED);
+
+        verify(connectionRepository, times(1)).save(any(Connection.class));
+
+    }
+
 
 }
 
