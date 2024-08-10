@@ -10,7 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
+import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.connectionpin.ConnectionPinService;
@@ -21,7 +21,6 @@ import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
-
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
@@ -122,6 +121,44 @@ public class ConnectionServiceTest {
         Assertions.assertThatThrownBy(() -> connectionService.getConnectionById(2L))
             .isInstanceOf(NotFoundException.class)
             .hasMessage(String.format("Connection with the id %d was not found", 2L));
+    }
+
+    @Test
+    public void ConnectionService_CreateConnection_ReturnNothing() {
+        when(connectionRepository.findExistingConnection(receiver.getId(), sender.getId()))
+            .thenReturn(false);
+
+        when(userService.getUserById(receiver.getId())).thenReturn(receiver);
+        when(userService.getUserById(sender.getId())).thenReturn(sender);
+
+        Connection newConnection = new Connection(RequestStatus.PENDING, sender, receiver);
+
+        when(connectionRepository.save(any(Connection.class))).thenReturn(newConnection);
+
+        connectionService.createConnection(receiver.getId(), sender.getId());
+
+        verify(connectionRepository, times(1)).save(any(Connection.class));
+    }
+
+    @Test
+    public void ConnectionService_CreateConnection_ThrowBadRequestException() {
+       when(connectionRepository.findExistingConnection(receiver.getId(), sender.getId())).thenReturn(true);
+
+        Assertions.assertThatThrownBy(() -> connectionService.createConnection(receiver.getId(), sender.getId()))
+            .isInstanceOf(BadRequestException.class)
+            .hasMessage("You have already sent a connection request");
+    }
+
+    @Test
+    public void ConnectionService_DeleteConnection_ReturnNothing() {
+        when(connectionRepository.findBySenderIdAndReceiverId(sender.getId(), receiver.getId())).thenReturn(connection);
+        doNothing().when(connectionRepository).delete(connection);
+
+        Assertions.assertThatCode(() -> {
+            connectionService.deleteConnection(sender.getId(), receiver.getId());
+        }).doesNotThrowAnyException();
+
+        verify(connectionRepository, times(1)).delete(connection);
     }
 
 }
