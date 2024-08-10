@@ -4,6 +4,7 @@ package com.hart.overwatch.connection;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.connection.dto.ConnectionDto;
+import com.hart.overwatch.connection.dto.MinConnectionDto;
 import com.hart.overwatch.connection.request.CreateConnectionRequest;
 import com.hart.overwatch.location.dto.LocationDto;
 import com.hart.overwatch.location.request.CreateLocationRequest;
@@ -153,6 +154,26 @@ public class ConnectionControllerTest {
 
         response.andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
+    @Test
+    public void ConnectionController_VerifyConnection_ReturnVerifyConnectionResponse()
+            throws Exception {
+        String senderId = "1";
+        String receiverId = "2";
+
+        when(connectionService.verifyConnection(sender.getId(), receiver.getId()))
+                .thenReturn(new MinConnectionDto(1L, RequestStatus.ACCEPTED));
+
+        ResultActions response = mockMvc
+                .perform(get("/api/v1/connections/verify").contentType(MediaType.APPLICATION_JSON)
+                        .param("senderId", senderId).param("receiverId", receiverId));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.id", CoreMatchers.is(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.status",
+                        CoreMatchers.is("ACCEPTED")));
     }
 
     // @Test
