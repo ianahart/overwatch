@@ -33,6 +33,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import org.hamcrest.CoreMatchers;
 
 @ActiveProfiles("test")
@@ -174,6 +175,18 @@ public class ConnectionControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.id", CoreMatchers.is(1)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.status",
                         CoreMatchers.is("ACCEPTED")));
+    }
+
+    @Test
+    public void ConnectionController_DeleteConnection_ReturnDeleteConnectionResponse()
+            throws Exception {
+        doNothing().when(connectionService).deleteConnectionById(connection.getId());
+
+        ResultActions response = mockMvc
+                .perform(delete("/api/v1/connections/1").contentType(MediaType.APPLICATION_JSON));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 
     // @Test
