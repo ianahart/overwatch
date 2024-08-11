@@ -39,7 +39,7 @@ public class ChatMessageServiceTest {
 
 
     @InjectMocks
-    private ChatMessageService connectionPinService;
+    private ChatMessageService chatMessageService;
 
     @Mock
     private ChatMessageRepository chatMessageRepository;
@@ -134,6 +134,27 @@ public class ChatMessageServiceTest {
         chatMessageDto = createChatMessageDto(sender, connection, chatMessages);
     }
 
+    @Test
+    public void ChatMessageService_GetChatMessageById_ReturnChatMessage() {
+        when(chatMessageRepository.findById(chatMessages.get(0).getId()))
+            .thenReturn(Optional.of(chatMessages.get(0)));
+
+        ChatMessage actualChatMessage = chatMessageService.getChatMessageById(chatMessages.get(0).getId());
+
+        Assertions.assertThat(actualChatMessage).isNotNull();
+        Assertions.assertThat(actualChatMessage.getId()).isEqualTo(chatMessages.get(0).getId());
+    }
+
+    @Test
+    public void ChatMessageService_GetChatMessageById_ThrowNotFoundException() {
+        when(chatMessageRepository.findById(999L)).thenReturn(Optional.ofNullable(null));
+
+        Assertions.assertThatThrownBy(() -> {
+           chatMessageService.getChatMessageById(999L);
+        })
+            .isInstanceOf(NotFoundException.class)
+            .hasMessage(String.format("Could not find a chat message with the id %d", 999L));
+    }
 
 }
 
