@@ -11,6 +11,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -132,6 +133,7 @@ public class ChatMessageServiceTest {
         connection = createConnection(sender, receiver);
         chatMessages = createChatMessages(connection, sender);
         chatMessageDto = createChatMessageDto(sender, connection, chatMessages);
+        chatMessageDto.setId(1L);
     }
 
     @Test
@@ -156,6 +158,39 @@ public class ChatMessageServiceTest {
             .hasMessage(String.format("Could not find a chat message with the id %d", 999L));
     }
 
+    @Test
+    public void ChatMessageService_CreateChatMessage_ReturnChatMessageDto() {
+        String messageJson = "{\"connectionId\": 1, \"userId\": 1, \"text\": \"hi\"}";
+
+        when(userService.getUserById(sender.getId())).thenReturn(sender);
+        when(connectionService.getConnectionById(connection.getId())).thenReturn(connection);
+
+        ArgumentCaptor<ChatMessage> chatMessageCaptor = ArgumentCaptor.forClass(ChatMessage.class);
+
+        when(chatMessageRepository.save(chatMessageCaptor.capture())).thenAnswer(invocation -> {
+            ChatMessage capturedChatMessage = chatMessageCaptor.getValue();
+            capturedChatMessage.setId(1L);
+            return capturedChatMessage;
+        });
+
+        when(chatMessageRepository.getChatMessage(1L)).thenReturn(chatMessageDto);
+
+        ChatMessageDto actualChatMessageDto = chatMessageService.createChatMessage(messageJson);
+
+        Assertions.assertThat(actualChatMessageDto).isNotNull();
+        Assertions.assertThat(actualChatMessageDto.getId()).isEqualTo(chatMessageDto.getId());
+        Assertions.assertThat(actualChatMessageDto.getText()).isEqualTo(chatMessageDto.getText());
+    }
+
+    @Test
+    public void ChatMessageService_GetChatMessages_ReturnListOfChatMessageDto() {
+        when(chatMessageRepository.getChatMessages(connection.getId())).thenReturn(List.of(chatMessageDto));
+
+        List<ChatMessageDto> result = chatMessageService.getChatMessages(connection.getId());
+
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.get(0).getId()).isEqualTo(chatMessageDto.getId());
+    }
 }
 
 
