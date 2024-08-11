@@ -21,6 +21,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import com.hart.overwatch.connection.Connection;
 import com.hart.overwatch.connection.dto.ConnectionDto;
+import com.hart.overwatch.connectionpin.dto.ConnectionPinDto;
 import com.hart.overwatch.location.Location;
 import com.hart.overwatch.location.LocationRepository;
 import com.hart.overwatch.profile.Profile;
@@ -83,6 +84,7 @@ public class ConnectionPinRepositoryTest {
         location.setCountry("United States");
         location.setCity("New York City");
         location.setUser(owner);
+        owner.setLocation(location);
 
         locationRepository.save(location);
         userRepository.save(owner);
@@ -106,6 +108,7 @@ public class ConnectionPinRepositoryTest {
         location.setCountry("United States");
         location.setCity("New York City");
         location.setUser(pinned);
+        pinned.setLocation(location);
 
         locationRepository.save(location);
         userRepository.save(pinned);
@@ -155,6 +158,25 @@ public class ConnectionPinRepositoryTest {
 
         Assertions.assertThat(connectionPins).isNotNull();
         Assertions.assertThat(connectionPins.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void ConnectionPinRepository_GetConnectionPinsByOwnerId_ReturnPageOfConnectionPinDto() {
+        ConnectionPinDto expectedConnectionPinDto =
+                new ConnectionPinDto(connection.getId(), connectionPin.getId(), pinned.getId(),
+                        owner.getId(), pinned.getFirstName(), pinned.getLastName(),
+                        pinned.getProfile().getAvatarUrl(), pinned.getProfile().getEmail(),
+                        pinned.getLocation().getCity(), pinned.getLocation().getCountry(),
+                        pinned.getProfile().getContactNumber(), pinned.getProfile().getBio());
+
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<ConnectionPinDto> result =
+                connectionPinRepository.getConnectionPinsByOwnerId(owner.getId(), pageable);
+
+        Assertions.assertThat(result.getContent().size()).isEqualTo(1);
+        ConnectionPinDto actualConnectionPinDto = result.getContent().get(0);
+        Assertions.assertThat(actualConnectionPinDto).usingRecursiveComparison()
+                .isEqualTo(expectedConnectionPinDto);
     }
 
 }
