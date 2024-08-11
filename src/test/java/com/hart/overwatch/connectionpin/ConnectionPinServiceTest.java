@@ -1,6 +1,7 @@
 package com.hart.overwatch.connectionpin;
 
 import static org.mockito.Mockito.*;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +19,9 @@ import com.hart.overwatch.chatmessage.ChatMessage;
 import com.hart.overwatch.connection.Connection;
 import com.hart.overwatch.connection.ConnectionService;
 import com.hart.overwatch.connection.RequestStatus;
+import com.hart.overwatch.connection.dto.ConnectionDto;
 import com.hart.overwatch.connectionpin.ConnectionPinService;
+import com.hart.overwatch.connectionpin.dto.ConnectionPinDto;
 import com.hart.overwatch.location.Location;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
@@ -208,22 +211,32 @@ public class ConnectionPinServiceTest {
         }).doesNotThrowAnyException();
 
         verify(connectionPinRepository, times(1)).save(any(ConnectionPin.class));
+    }
 
 
+    @Test
+    public void ConnectionPinService_GetConnectionPins_ReturnListOfConnectionPinDto() {
+        ConnectionPinDto expectedConnectionPinDto =
+                new ConnectionPinDto(connection.getId(), connectionPin.getId(), pinned.getId(),
+                        owner.getId(), pinned.getFirstName(), pinned.getLastName(),
+                        pinned.getProfile().getAvatarUrl(), pinned.getProfile().getEmail(),
+                        pinned.getLocation().getCity(), pinned.getLocation().getCountry(),
+                        pinned.getProfile().getContactNumber(), pinned.getProfile().getBio());
+        int pageSize = 3;
+        Pageable pageable = Pageable.ofSize(pageSize);
+        Page<ConnectionPinDto> pageResult =
+                new PageImpl<>(Collections.singletonList(expectedConnectionPinDto), pageable, 1);
 
+        when(connectionPinRepository.getConnectionPinsByOwnerId(owner.getId(), pageable))
+                .thenReturn(pageResult);
 
+        List<ConnectionPinDto> actualConnectionPinDtoList =
+                connectionPinService.getConnectionPins(owner.getId());
 
-
-
-
-
-
-
-
-
-
-
-
+        Assertions.assertThat(actualConnectionPinDtoList).isNotNull();
+        Assertions.assertThat(actualConnectionPinDtoList.size()).isEqualTo(1L);
+        ConnectionPinDto actualConnectionPinDto = actualConnectionPinDtoList.get(0);
+        Assertions.assertThat(actualConnectionPinDto).usingRecursiveComparison().isEqualTo(expectedConnectionPinDto);
     }
 }
 
