@@ -13,18 +13,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.hart.overwatch.advice.BadRequestException;
-import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
-import com.hart.overwatch.chatmessage.ChatMessage;
 import com.hart.overwatch.connection.Connection;
 import com.hart.overwatch.connection.ConnectionService;
 import com.hart.overwatch.connection.RequestStatus;
-import com.hart.overwatch.connection.dto.ConnectionDto;
-import com.hart.overwatch.connectionpin.ConnectionPinService;
 import com.hart.overwatch.connectionpin.dto.ConnectionPinDto;
 import com.hart.overwatch.location.Location;
 import com.hart.overwatch.pagination.PaginationService;
-import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.user.Role;
@@ -32,7 +27,6 @@ import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -236,7 +230,20 @@ public class ConnectionPinServiceTest {
         Assertions.assertThat(actualConnectionPinDtoList).isNotNull();
         Assertions.assertThat(actualConnectionPinDtoList.size()).isEqualTo(1L);
         ConnectionPinDto actualConnectionPinDto = actualConnectionPinDtoList.get(0);
-        Assertions.assertThat(actualConnectionPinDto).usingRecursiveComparison().isEqualTo(expectedConnectionPinDto);
+        Assertions.assertThat(actualConnectionPinDto).usingRecursiveComparison()
+                .isEqualTo(expectedConnectionPinDto);
+    }
+
+    @Test
+    public void ConnectionPinService_DeletePinnedConnection_ReturnNothing() {
+        when(connectionPinRepository.findById(connectionPin.getId())).thenReturn(Optional.of(connectionPin));
+        doNothing().when(connectionPinRepository).delete(connectionPin);
+
+        Assertions.assertThatCode(() -> {
+            connectionPinService.deletePinnedConnection(connectionPin.getId());
+        }).doesNotThrowAnyException();;
+
+        verify(connectionPinRepository, times(1)).delete(connectionPin);
     }
 }
 
