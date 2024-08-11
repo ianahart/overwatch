@@ -1,6 +1,7 @@
 package com.hart.overwatch.chatmessage;
 
 import java.util.List;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import com.hart.overwatch.chatmessage.dto.ChatMessageDto;
 import com.hart.overwatch.connection.Connection;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.profile.ProfileRepository;
@@ -53,6 +55,8 @@ public class ChatMessageRepositoryTest {
     private Connection connection;
 
     private List<ChatMessage> chatMessages;
+
+    private ChatMessageDto chatMessageDto;
 
     private User sender;
 
@@ -112,12 +116,24 @@ public class ChatMessageRepositoryTest {
         return chatMessages;
     }
 
+    private ChatMessageDto createChatMessageDto(User sender, Connection connection,
+            List<ChatMessage> chatMessages) {
+        Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+        ChatMessage firstMessage =
+                chatMessages.size() > 0 ? chatMessages.get(0) : new ChatMessage();
+
+        return new ChatMessageDto(firstMessage.getId(), sender.getFirstName(), sender.getLastName(),
+                createdAt, firstMessage.getText(), sender.getProfile().getAvatarUrl(),
+                connection.getId(), sender.getId());
+    }
+
     @BeforeEach
     public void setUp() {
         sender = createSender();
         receiver = createReceiver();
         connection = createConnection(sender, receiver);
         chatMessages = createChatMessages(connection, sender);
+        chatMessageDto = createChatMessageDto(sender, connection, chatMessages);
     }
 
     @AfterEach
@@ -129,6 +145,28 @@ public class ChatMessageRepositoryTest {
         userRepository.deleteAll();
         entityManager.flush();
         entityManager.clear();
+    }
+
+    @Test
+    public void ChatMessageRepository_GetChatMessages_ReturnListofChatMessageDto() {
+        List<ChatMessageDto> chatMessageList =
+                chatMessageRepository.getChatMessages(connection.getId());
+
+        Assertions.assertThat(chatMessageList).isNotNull();
+        Assertions.assertThat(chatMessageList.size()).isEqualTo(chatMessages.size());
+        List<String> chatMessageText = chatMessageList.stream().map(cm -> cm.getText()).toList();
+        Assertions.assertThat(chatMessageText).usingRecursiveAssertion()
+                .isEqualTo(List.of("hi", "hello", "hello there", "good morning").reversed());
+    }
+
+    @Test
+    public void ChatMessageRepository_GetChatMessage_ReturnChatMessageDto() {
+        ChatMessage firstChatMessage = chatMessages.get(0);
+        ChatMessageDto actualChatMessageDto =
+                chatMessageRepository.getChatMessage(firstChatMessage.getId());
+
+        Assertions.assertThat(actualChatMessageDto).isNotNull();
+        Assertions.assertThat(actualChatMessageDto.getId()).isEqualTo(chatMessageDto.getId());
     }
 }
 
