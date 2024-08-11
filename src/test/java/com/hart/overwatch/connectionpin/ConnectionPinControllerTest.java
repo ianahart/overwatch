@@ -4,12 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.connection.Connection;
 import com.hart.overwatch.connection.RequestStatus;
-import com.hart.overwatch.connection.dto.ConnectionDto;
-import com.hart.overwatch.connection.dto.MinConnectionDto;
-import com.hart.overwatch.connection.request.CreateConnectionRequest;
 import com.hart.overwatch.connectionpin.dto.ConnectionPinDto;
 import com.hart.overwatch.connectionpin.request.CreateConnectionPinRequest;
-import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.location.Location;
 import com.hart.overwatch.setting.Setting;
@@ -205,24 +201,16 @@ public class ConnectionPinControllerTest {
 
     }
 
-    // @Test
-    // public void ConnectionController_CreateConnection_ReturnCreateConnectionResponse()
-    // throws Exception {
-    //
-    // CreateConnectionRequest request =
-    // new CreateConnectionRequest(receiver.getId(), sender.getId());
-    //
-    // doNothing().when(connectionService).createConnection(request.getReceiverId(),
-    // request.getSenderId());
-    //
-    // ResultActions response =
-    // mockMvc.perform(post("/api/v1/connections").contentType(MediaType.APPLICATION_JSON)
-    // .content(objectMapper.writeValueAsString(request)));
-    //
-    // response.andExpect(MockMvcResultMatchers.status().isCreated())
-    // .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
-    // }
-    //
+    @Test
+    public void ConnectionPinController_DeleteConnectionPin_ReturnNothing() throws Exception {
+        doNothing().when(connectionPinService).deletePinnedConnection(connectionPin.getId());
+
+        ResultActions response = mockMvc.perform(
+                delete("/api/v1/connection-pins/1").contentType(MediaType.APPLICATION_JSON));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
 }
 
 
