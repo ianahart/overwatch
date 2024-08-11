@@ -165,6 +165,64 @@ public class ConnectionPinServiceTest {
 
         Assertions.assertThat(actualConnectionPinIds).isNotNull();
         Assertions.assertThat(actualConnectionPinIds).isEqualTo(expectedConnectionPinIds);
+    }
+
+    @Test
+    public void ConnectionPinService_CreateConnectionPin_ThrowBadRequestExceptionMaxpins() {
+        Long MAX_PINS = 3L;
+        when(connectionPinRepository.countConnectionPinsByOwnerId(owner.getId()))
+                .thenReturn(MAX_PINS);
+
+        Assertions.assertThatThrownBy(() -> {
+            connectionPinService.createConnectionPin(owner.getId(), pinned.getId(),
+                    connection.getId());
+
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage("You have pinned the max amount of connections");
+
+    }
+
+    @Test
+    public void ConnectionPinService_CreateConnectionPin_ThrowBadRequestExceptionAlreadyPinned() {
+        when(connectionPinRepository.countConnectionPinsByOwnerId(owner.getId())).thenReturn(1L);
+        when(connectionPinRepository.connectionPinAlreadyExists(owner.getId(), pinned.getId(), connectionPin.getId())).thenReturn(true);
+
+        Assertions.assertThatThrownBy(() -> {
+           connectionPinService.createConnectionPin(owner.getId(), pinned.getId(), connection.getId());
+        }).isInstanceOf(BadRequestException.class).hasMessage("You have already pinned this connection");
+    }
+
+    @Test
+    public void ConnectionPinService_CreateConnectionPin_ReturnNothing() {
+        when(connectionPinRepository.countConnectionPinsByOwnerId(owner.getId())).thenReturn(1L);
+        when(connectionPinRepository.connectionPinAlreadyExists(owner.getId(), pinned.getId(), connectionPin.getId())).thenReturn(false);
+        when(userService.getUserById(owner.getId())).thenReturn(owner);
+        when(userService.getUserById(pinned.getId())).thenReturn(pinned);
+        when(connectionService.getConnectionById(connection.getId())).thenReturn(connection);
+
+        when(connectionPinRepository.save(any(ConnectionPin.class))).thenReturn(connectionPin);
+
+
+        Assertions.assertThatCode(() -> {
+        connectionPinService.createConnectionPin(owner.getId(), pinned.getId(), connection.getId());
+        }).doesNotThrowAnyException();
+
+        verify(connectionPinRepository, times(1)).save(any(ConnectionPin.class));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     }
 }
