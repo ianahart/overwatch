@@ -7,6 +7,7 @@ import com.hart.overwatch.connection.RequestStatus;
 import com.hart.overwatch.connection.dto.ConnectionDto;
 import com.hart.overwatch.connection.dto.MinConnectionDto;
 import com.hart.overwatch.connection.request.CreateConnectionRequest;
+import com.hart.overwatch.connectionpin.dto.ConnectionPinDto;
 import com.hart.overwatch.connectionpin.request.CreateConnectionPinRequest;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
@@ -156,6 +157,52 @@ public class ConnectionPinControllerTest {
                         .content(objectMapper.writeValueAsString(request)));
         response.andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
+    @Test
+    public void ConnectionPinControllerTest_GetConnectionPins_ReturnGetConnectionPinsResponse()
+            throws Exception {
+        ConnectionPinDto expectedConnectionPinDto =
+                new ConnectionPinDto(connection.getId(), connectionPin.getId(), pinned.getId(),
+                        owner.getId(), pinned.getFirstName(), pinned.getLastName(),
+                        pinned.getProfile().getAvatarUrl(), pinned.getProfile().getEmail(),
+                        pinned.getLocation().getCity(), pinned.getLocation().getCountry(),
+                        pinned.getProfile().getContactNumber(), pinned.getProfile().getBio());
+        int pageSize = 3;
+        Pageable pageable = Pageable.ofSize(pageSize);
+        Page<ConnectionPinDto> pageResult =
+                new PageImpl<>(Collections.singletonList(expectedConnectionPinDto), pageable, 1);
+
+        when(connectionPinService.getConnectionPins(owner.getId()))
+                .thenReturn(pageResult.getContent());
+
+        ResultActions response = mockMvc
+                .perform(get("/api/v1/connection-pins").contentType(MediaType.APPLICATION_JSON)
+                        .param("ownerId", String.valueOf(owner.getId())));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].id",
+                        CoreMatchers.is(expectedConnectionPinDto.getId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].connectionPinId",
+                        CoreMatchers.is(expectedConnectionPinDto.getConnectionPinId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].receiverId",
+                        CoreMatchers.is(expectedConnectionPinDto.getReceiverId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].senderId",
+                        CoreMatchers.is(expectedConnectionPinDto.getSenderId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].avatarUrl",
+                        CoreMatchers.is(expectedConnectionPinDto.getAvatarUrl())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].email",
+                        CoreMatchers.is(expectedConnectionPinDto.getEmail())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].city",
+                        CoreMatchers.is(expectedConnectionPinDto.getCity())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].country",
+                        CoreMatchers.is(expectedConnectionPinDto.getCountry())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].phoneNumber",
+                        CoreMatchers.is(expectedConnectionPinDto.getPhoneNumber())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].bio",
+                        CoreMatchers.is(expectedConnectionPinDto.getBio())));
+
     }
 
     // @Test
