@@ -1,7 +1,6 @@
 package com.hart.overwatch.connectionpin;
 
 
-import java.util.Arrays;
 import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -20,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import com.hart.overwatch.connection.Connection;
-import com.hart.overwatch.connection.dto.ConnectionDto;
 import com.hart.overwatch.connectionpin.dto.ConnectionPinDto;
 import com.hart.overwatch.location.Location;
 import com.hart.overwatch.location.LocationRepository;
