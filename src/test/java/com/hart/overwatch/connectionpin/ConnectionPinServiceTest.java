@@ -153,6 +153,20 @@ public class ConnectionPinServiceTest {
         Assertions.assertThat(actualConnectionPin.getId()).isEqualTo(connectionPin.getId());
     }
 
+    @Test
+    public void ConnectionPinService_GetOwnerConnectionPins_ReturnListOfConnectionPinIds() {
+        List<Long> expectedConnectionPinIds =
+                List.of(connectionPin).stream().map(cp -> cp.getId()).toList();
+        when(connectionPinRepository.findConnectionPinByOwnerId(owner.getId()))
+                .thenReturn(List.of(connectionPin));
+
+        List<Long> actualConnectionPinIds =
+                connectionPinService.getOwnerConnectionPins(owner.getId());
+
+        Assertions.assertThat(actualConnectionPinIds).isNotNull();
+        Assertions.assertThat(actualConnectionPinIds).isEqualTo(expectedConnectionPinIds);
+
+    }
 }
 
 
