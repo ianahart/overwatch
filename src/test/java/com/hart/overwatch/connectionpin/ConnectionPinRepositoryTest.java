@@ -148,6 +148,15 @@ public class ConnectionPinRepositoryTest {
         entityManager.clear();
     }
 
+    @Test
+    public void ConnectionPinRepository_FindConnectionPinByOwnerId_ReturnlistOfConnectionPin() {
+        List<ConnectionPin> connectionPins =
+                connectionPinRepository.findConnectionPinByOwnerId(owner.getId());
+
+        Assertions.assertThat(connectionPins).isNotNull();
+        Assertions.assertThat(connectionPins.size()).isEqualTo(1);
+    }
+
 }
 
 
