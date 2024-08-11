@@ -179,6 +179,14 @@ public class ConnectionPinRepositoryTest {
                 .isEqualTo(expectedConnectionPinDto);
     }
 
+    @Test
+    public void ConnectionPinRepository_CountConnectionPinsByOwnerId_ReturnLongCount() {
+        Long actualCount = connectionPinRepository.countConnectionPinsByOwnerId(owner.getId());
+        Long expectedCount = 1L;
+
+        Assertions.assertThat(actualCount).isEqualTo(expectedCount);
+    }
+
 }
 
 
