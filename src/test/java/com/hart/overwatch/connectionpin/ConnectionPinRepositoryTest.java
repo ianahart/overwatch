@@ -187,6 +187,14 @@ public class ConnectionPinRepositoryTest {
         Assertions.assertThat(actualCount).isEqualTo(expectedCount);
     }
 
+    @Test
+    public void ConnectionPinRepository_ConnectionPinAlreadyExists_ReturnBooleanTrue() {
+        boolean connectionPinExists = connectionPinRepository
+                .connectionPinAlreadyExists(owner.getId(), pinned.getId(), connection.getId());
+
+        Assertions.assertThat(connectionPinExists).isTrue();
+    }
+
 }
 
 
