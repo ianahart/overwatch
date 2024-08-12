@@ -1,49 +1,56 @@
 package com.hart.overwatch.chatmessage;
 
-import static org.mockito.Mockito.*;
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Optional;
-
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.chatmessage.dto.ChatMessageDto;
+import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.connection.Connection;
-import com.hart.overwatch.connection.ConnectionService;
 import com.hart.overwatch.connection.RequestStatus;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
+import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
-import com.hart.overwatch.user.UserService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import static org.mockito.Mockito.when;
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.ArrayList;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import org.hamcrest.CoreMatchers;
 
 @ActiveProfiles("test")
+@WebMvcTest(controllers = ChatMessageController.class)
+@AutoConfigureMockMvc(addFilters = false)
 @ExtendWith(MockitoExtension.class)
-public class ChatMessageServiceTest {
+public class ChatMessageControllerTest {
 
+    @Autowired
+    private MockMvc mockMvc;
 
-    @InjectMocks
+    @MockBean
     private ChatMessageService chatMessageService;
 
-    @Mock
-    private ChatMessageRepository chatMessageRepository;
+    @MockBean
+    private JwtService jwtService;
 
-    @Mock
-    private ConnectionService connectionService;
+    @MockBean
+    private UserDetailsService userDetailsService;
 
-    @Mock
-    private UserService userService;
-
-    private Connection connection;
+    @MockBean
+    private TokenRepository tokenRepository;
 
     private List<ChatMessage> chatMessages;
 
@@ -52,6 +59,8 @@ public class ChatMessageServiceTest {
     private User sender;
 
     private User receiver;
+
+    private Connection connection;
 
     private User createSender() {
         Boolean loggedIn = false;
@@ -129,60 +138,25 @@ public class ChatMessageServiceTest {
     }
 
     @Test
-    public void ChatMessageService_GetChatMessageById_ReturnChatMessage() {
-        when(chatMessageRepository.findById(chatMessages.get(0).getId()))
-            .thenReturn(Optional.of(chatMessages.get(0)));
+    public void ChatMessageControllerTest_GetAllChatMessages_ReturnGetAllChatMessagesResponse() throws Exception {
+        when(chatMessageService.getChatMessages(connection.getId())).thenReturn(List.of(chatMessageDto));
 
-        ChatMessage actualChatMessage = chatMessageService.getChatMessageById(chatMessages.get(0).getId());
+        ResultActions response = mockMvc
+        .perform(get("/api/v1/chat-messages")
+            .contentType(MediaType.APPLICATION_JSON)
+            .param("connectionId", String.valueOf(connection.getId())));
 
-        Assertions.assertThat(actualChatMessage).isNotNull();
-        Assertions.assertThat(actualChatMessage.getId()).isEqualTo(chatMessages.get(0).getId());
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].id", CoreMatchers.is(chatMessageDto.getId().intValue())))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].firstName", CoreMatchers.is(chatMessageDto.getFirstName())))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].lastName", CoreMatchers.is(chatMessageDto.getLastName())))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].text", CoreMatchers.is(chatMessageDto.getText())))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].avatarUrl", CoreMatchers.is(chatMessageDto.getAvatarUrl())))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].connectionId", CoreMatchers.is(chatMessageDto.getConnectionId().intValue())))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].userId", CoreMatchers.is(chatMessageDto.getUserId().intValue())));
+
     }
 
-    @Test
-    public void ChatMessageService_GetChatMessageById_ThrowNotFoundException() {
-        when(chatMessageRepository.findById(999L)).thenReturn(Optional.ofNullable(null));
-
-        Assertions.assertThatThrownBy(() -> {
-           chatMessageService.getChatMessageById(999L);
-        })
-            .isInstanceOf(NotFoundException.class)
-            .hasMessage(String.format("Could not find a chat message with the id %d", 999L));
-    }
-
-    @Test
-    public void ChatMessageService_CreateChatMessage_ReturnChatMessageDto() {
-        String messageJson = "{\"connectionId\": 1, \"userId\": 1, \"text\": \"hi\"}";
-
-        when(userService.getUserById(sender.getId())).thenReturn(sender);
-        when(connectionService.getConnectionById(connection.getId())).thenReturn(connection);
-
-        ArgumentCaptor<ChatMessage> chatMessageCaptor = ArgumentCaptor.forClass(ChatMessage.class);
-
-        when(chatMessageRepository.save(chatMessageCaptor.capture())).thenAnswer(invocation -> {
-            ChatMessage capturedChatMessage = chatMessageCaptor.getValue();
-            capturedChatMessage.setId(1L);
-            return capturedChatMessage;
-        });
-
-        when(chatMessageRepository.getChatMessage(1L)).thenReturn(chatMessageDto);
-
-        ChatMessageDto actualChatMessageDto = chatMessageService.createChatMessage(messageJson);
-
-        Assertions.assertThat(actualChatMessageDto).isNotNull();
-        Assertions.assertThat(actualChatMessageDto.getId()).isEqualTo(chatMessageDto.getId());
-        Assertions.assertThat(actualChatMessageDto.getText()).isEqualTo(chatMessageDto.getText());
-    }
-
-    @Test
-    public void ChatMessageService_GetChatMessages_ReturnListOfChatMessageDto() {
-        when(chatMessageRepository.getChatMessages(connection.getId())).thenReturn(List.of(chatMessageDto));
-
-        List<ChatMessageDto> result = chatMessageService.getChatMessages(connection.getId());
-
-        Assertions.assertThat(result).isNotNull();
-        Assertions.assertThat(result.get(0).getId()).isEqualTo(chatMessageDto.getId());
-    }
 }
-
 
