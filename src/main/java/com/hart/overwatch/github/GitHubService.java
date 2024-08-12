@@ -75,7 +75,7 @@ public class GitHubService {
 
 
 
-    private Map<String, String> makeGitHubRequest(String url, String accessToken)
+    protected Map<String, String> makeGitHubRequest(String url, String accessToken)
 
             throws IOException {
         Request request = new Request.Builder().url(url)
