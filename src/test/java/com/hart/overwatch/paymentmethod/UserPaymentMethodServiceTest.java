@@ -2,9 +2,7 @@ package com.hart.overwatch.paymentmethod;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +13,7 @@ import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.NotFoundException;
-import com.hart.overwatch.location.dto.LocationDto;
+import com.hart.overwatch.paymentmethod.dto.UserPaymentMethodDto;
 import com.hart.overwatch.paymentmethod.request.CreateUserPaymentMethodRequest;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
@@ -26,11 +24,9 @@ import org.springframework.test.context.TestPropertySource;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Customer;
 import com.stripe.model.PaymentMethod;
+import com.stripe.model.PaymentMethodCollection;
 import com.stripe.param.CustomerCreateParams;
-import com.stripe.param.PaymentMethodAttachParams;
 import com.stripe.param.PaymentMethodListParams;
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Safelist;
 
 @ExtendWith(MockitoExtension.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
@@ -58,7 +54,7 @@ public class UserPaymentMethodServiceTest {
     private UserPaymentMethod createUserPaymentMethod(User user) {
         UserPaymentMethod userPaymentMethod =
                 new UserPaymentMethod(user, "New York City", "United States", "line 1", "line 2",
-                        "03212", "John Doe", "visa", "card", 3, 26, "dummy_stripe_customer_id");
+                        "03212", "John Doe", "visa", "card", 3, 2028, "dummy_stripe_customer_id");
         userPaymentMethod.setId(1L);
         userPaymentMethod.setUser(user);
 
@@ -138,6 +134,46 @@ public class UserPaymentMethodServiceTest {
             }
         }
     }
+
+    @Test
+    public void UserPaymentMethodService_GetUserPaymentMethods_ReturnUserPaymentMethodDto() {
+        when(userPaymentMethodRepository.getUserPaymentMethodByUserId(999L)).thenReturn(null);
+
+        Assertions.assertThatThrownBy(() -> {
+           userPaymentMethodService.getUserPaymentMethods(999L);
+        }).isInstanceOf(NotFoundException.class).hasMessage("A user payment method does not exist for this user");
+    }
+
+    @Test
+    public void UserPaymenetMethodService_GetUserPaymentMethods_ReturnUserPaymentMethodDto() throws StripeException {
+        when(userPaymentMethodRepository.getUserPaymentMethodByUserId(user.getId())).thenReturn(userPaymentMethod);
+
+        PaymentMethod.Card mockCard = mock(PaymentMethod.Card.class); 
+        when(mockCard.getLast4()).thenReturn("4242");
+        when(mockCard.getBrand()).thenReturn("Visa");
+        when(mockCard.getExpMonth()).thenReturn(3L);
+        when(mockCard.getExpYear()).thenReturn(2028L);
+
+           PaymentMethod mockPaymentMethod = mock(PaymentMethod.class);
+           when(mockPaymentMethod.getCard()).thenReturn(mockCard);
+
+    PaymentMethodCollection mockPaymentMethodCollection = mock(PaymentMethodCollection.class);
+    when(mockPaymentMethodCollection.getData()).thenReturn(List.of(mockPaymentMethod));
+
+    try (MockedStatic<PaymentMethod> mockedStaticPaymentMethod = mockStatic(PaymentMethod.class)) {
+        mockedStaticPaymentMethod.when(() -> PaymentMethod.list(any(PaymentMethodListParams.class)))
+                                 .thenReturn(mockPaymentMethodCollection);
+
+        UserPaymentMethodDto result = userPaymentMethodService.getUserPaymentMethods(user.getId());
+
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getId()).isEqualTo(userPaymentMethod.getId());
+        Assertions.assertThat(result.getExpYear()).isEqualTo(userPaymentMethod.getExpYear().intValue());
+        Assertions.assertThat(result.getExpMonth()).isEqualTo(userPaymentMethod.getExpMonth().intValue());
+        Assertions.assertThat(result.getName()).isEqualTo(userPaymentMethod.getName());
+   }
+}
+
 }
 
 
