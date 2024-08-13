@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.location.dto.LocationDto;
 import com.hart.overwatch.location.request.CreateLocationRequest;
+import com.hart.overwatch.paymentmethod.dto.UserPaymentMethodDto;
 import com.hart.overwatch.paymentmethod.request.CreateUserPaymentMethodRequest;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
@@ -103,6 +104,36 @@ public class UserPaymentMethodControllerTest {
 
         response.andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
+    @Test
+    public void UserPaymentMethodController_GetUserPaymentMethods_ReturnGetUserPaymentMethodResponse()
+            throws Exception {
+        UserPaymentMethodDto userPaymentMethodDto = new UserPaymentMethodDto(
+                userPaymentMethod.getId(), "4242", userPaymentMethod.getDisplayBrand(), 12L, 2028L,
+                userPaymentMethod.getName());
+
+
+        when(userPaymentMethodService.getUserPaymentMethods(user.getId()))
+                .thenReturn(userPaymentMethodDto);
+
+        ResultActions response = mockMvc.perform(
+                get("/api/v1/users/1/payment-methods").contentType(MediaType.APPLICATION_JSON));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.id",
+                        CoreMatchers.is(userPaymentMethodDto.getId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.last4",
+                        CoreMatchers.is(userPaymentMethodDto.getLast4())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.displayBrand",
+                        CoreMatchers.is(userPaymentMethodDto.getDisplayBrand())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.expMonth",
+                        CoreMatchers.is(userPaymentMethodDto.getExpMonth().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.expYear",
+                        CoreMatchers.is(userPaymentMethodDto.getExpYear().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.name",
+                        CoreMatchers.is(userPaymentMethodDto.getName())));
     }
 
 
