@@ -59,6 +59,7 @@ More to come.
 As of right now only the Spring Boot API has testing implemented. The frontend in React does not.
 
 ### Instructions to run the API testing.
+
 - If you have not downloaded [postgresql](https://www.postgresql.org/) go ahead and do so.
 - In the terminal run `psql postgres` and create a database called `overwatch_test`
 - in the root of the project, run `mvn clean install`
