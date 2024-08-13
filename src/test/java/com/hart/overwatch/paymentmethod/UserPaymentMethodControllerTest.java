@@ -136,6 +136,19 @@ public class UserPaymentMethodControllerTest {
                         CoreMatchers.is(userPaymentMethodDto.getName())));
     }
 
+    @Test
+    public void UserPaymentMethodController_DeleteUserPaymentMethod_ReturnDeleteUserPaymentMethodResponse()
+            throws Exception {
+        doNothing().when(userPaymentMethodService)
+                .deleteUserPaymentMethod(userPaymentMethod.getId());
+
+        ResultActions response = mockMvc.perform(
+                delete("/api/v1/payment-methods/1").contentType(MediaType.APPLICATION_JSON));
+
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
 
 }
 
