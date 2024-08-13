@@ -2,8 +2,6 @@ package com.hart.overwatch.paymentmethod;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.config.JwtService;
-import com.hart.overwatch.location.dto.LocationDto;
-import com.hart.overwatch.location.request.CreateLocationRequest;
 import com.hart.overwatch.paymentmethod.dto.UserPaymentMethodDto;
 import com.hart.overwatch.paymentmethod.request.CreateUserPaymentMethodRequest;
 import com.hart.overwatch.profile.Profile;
@@ -11,7 +9,6 @@ import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
-import com.stripe.exception.StripeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -145,9 +142,8 @@ public class UserPaymentMethodControllerTest {
         ResultActions response = mockMvc.perform(
                 delete("/api/v1/payment-methods/1").contentType(MediaType.APPLICATION_JSON));
 
-
         response.andExpect(MockMvcResultMatchers.status().isOk())
-                    .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 
 }
