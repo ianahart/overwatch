@@ -3,6 +3,7 @@ package com.hart.overwatch.paymentmethod;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import java.util.List;
+import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -117,8 +118,6 @@ public class UserPaymentMethodServiceTest {
         when(mockCustomer.getId()).thenReturn("cus_12345");
 
         try (MockedStatic<Customer> mockedCustomer = mockStatic(Customer.class)) {
-            CustomerCreateParams expectedParams = CustomerCreateParams.builder()
-                    .setName(request.getName()).setEmail(mockUser.getEmail()).build();
             mockedCustomer.when(() -> Customer.create(any(CustomerCreateParams.class)))
                     .thenReturn(mockCustomer);
 
@@ -148,7 +147,7 @@ public class UserPaymentMethodServiceTest {
     public void UserPaymenetMethodService_GetUserPaymentMethods_ReturnUserPaymentMethodDto() throws StripeException {
         when(userPaymentMethodRepository.getUserPaymentMethodByUserId(user.getId())).thenReturn(userPaymentMethod);
 
-        PaymentMethod.Card mockCard = mock(PaymentMethod.Card.class); 
+        PaymentMethod.Card mockCard = mock(PaymentMethod.Card.class);
         when(mockCard.getLast4()).thenReturn("4242");
         when(mockCard.getBrand()).thenReturn("Visa");
         when(mockCard.getExpMonth()).thenReturn(3L);
@@ -174,6 +173,22 @@ public class UserPaymentMethodServiceTest {
    }
 }
 
+    @Test
+    public void UserPaymentMethodService_DeleteUserPaymentMethod_ReturnNothing() throws StripeException {
+        when(userPaymentMethodRepository.findById(userPaymentMethod.getId())).thenReturn(Optional.of(userPaymentMethod));
+
+        try (MockedStatic<Customer> mockedStaticCustomer = mockStatic(Customer.class)) {
+            Customer mockCustomer = mock(Customer.class);
+            mockedStaticCustomer.when(() -> Customer.retrieve(userPaymentMethod.getStripeCustomerId())).thenReturn(mockCustomer);
+
+
+            userPaymentMethodService.deleteUserPaymentMethod(userPaymentMethod.getId());
+
+            verify(mockCustomer, times(1)).delete();
+
+            verify(userPaymentMethodRepository, times(1)).delete(userPaymentMethod);
+    }
+}
 }
 
 
