@@ -1,6 +1,5 @@
 package com.hart.overwatch.paymentmethod;
 
-import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,7 +39,6 @@ public class UserPaymentMethodRepositoryTest {
     private User user;
 
     private UserPaymentMethod userPaymentMethod;
-
 
     private UserPaymentMethod createUserPaymentMethod(User user) {
         UserPaymentMethod userPaymentMethod =
