@@ -84,6 +84,13 @@ public class UserPaymentMethodRepositoryTest {
         Assertions.assertThat(returnedUserPaymentMethod.getUser().getId()).isEqualTo(user.getId());
     }
 
+    @Test
+    public void UserPaymentMethodRepository_GetBooleanUserPaymentMethodByUserId_ReturnBooleanTrue() {
+        boolean userPaymentMethodExists =
+                userPaymentMethodRepository.getBooleanUserPaymentMethodByUserId(user.getId());
+
+        Assertions.assertThat(userPaymentMethodExists).isTrue();
+    }
 }
 
 
