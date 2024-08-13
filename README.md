@@ -51,12 +51,19 @@ OverWatch is a marketplace for users to get code reviews from industry professio
 More to come.
 
 ## Visuals
-<img width="700" alt="overwatch_screenshot" src="https://github.com/ianahart/overwatch/assets/29121238/d036be82-0f5d-45e1-b78d-548c11d3fb10">
 
+<img width="700" alt="overwatch_screenshot" src="https://github.com/ianahart/overwatch/assets/29121238/d036be82-0f5d-45e1-b78d-548c11d3fb10">
 
 ## Tests
 
-N/A
+As of right now only the Spring Boot API has testing implemented. The frontend in React does not.
+
+### Instructions to run the API testing.
+- If you have not downloaded [postgresql](https://www.postgresql.org/) go ahead and do so.
+- In the terminal run `psql postgres` and create a database called `overwatch_test`
+- in the root of the project, run `mvn clean install`
+- to run all tests use `mvn test`
+- To run a test against an individual file, use `mvn test -Dtest="<nameOfFile>"`
 
 ## Credits
 
