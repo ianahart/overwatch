@@ -72,6 +72,17 @@ public class PasswordResetRepositoryTest {
 
         Assertions.assertThat(passwordResetExists).isTrue();
     }
+
+    @Test
+    public void PasswordResetRepository_GetPasswordResetByUserId_ReturnPasswordReset() {
+        PasswordReset returnedPasswordReset =
+                passwordResetRepository.getPasswordResetByUserId(user.getId());
+
+        Assertions.assertThat(returnedPasswordReset).isNotNull();
+        Assertions.assertThat(returnedPasswordReset.getId()).isEqualTo(passwordReset.getId());
+        Assertions.assertThat(returnedPasswordReset.getCode()).isEqualTo(passwordReset.getCode());
+        Assertions.assertThat(returnedPasswordReset.getToken()).isEqualTo(passwordReset.getToken());
+    }
 }
 
 
