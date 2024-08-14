@@ -1,7 +1,5 @@
 package com.hart.overwatch.passwordreset;
 
-import java.util.List;
-import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -83,6 +81,16 @@ public class PasswordResetRepositoryTest {
         Assertions.assertThat(returnedPasswordReset.getCode()).isEqualTo(passwordReset.getCode());
         Assertions.assertThat(returnedPasswordReset.getToken()).isEqualTo(passwordReset.getToken());
     }
+
+    @Test
+    public void PasswordResetRepository_DeleteUserPasswordResetsById_ReturnNothing() {
+
+        Assertions.assertThatCode(() -> {
+                passwordResetRepository.deleteUserPasswordResetsById(user.getId());
+
+        }).doesNotThrowAnyException();
+    }
+
 }
 
 
