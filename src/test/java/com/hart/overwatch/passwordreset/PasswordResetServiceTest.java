@@ -124,6 +124,14 @@ public class PasswordResetServiceTest {
         verify(javaMailSender, times(1)).send(mimeMessage);
     }
 
+    @Test
+    public void PasswordResetService_DeletePasswordResetsById_ReturnNothing() {
+        doNothing().when(passwordResetRepository).deleteUserPasswordResetsById(user.getId());
+
+        passwordResetService.deletePasswordResetsById(user.getId());
+
+        verify(passwordResetRepository, times(1)).deleteUserPasswordResetsById(user.getId());
+    }
 }
 
 
