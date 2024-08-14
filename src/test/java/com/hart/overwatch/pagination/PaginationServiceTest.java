@@ -1,21 +1,15 @@
 package com.hart.overwatch.pagination;
 
-import org.mockito.ArgumentCaptor;
-import static org.mockito.ArgumentCaptor.forClass;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Arrays;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
@@ -61,6 +55,45 @@ public class PaginationServiceTest {
         Assertions.assertThat(pageable.getPageSize()).isEqualTo(pageSize);
         Assertions.assertThat(pageable.getPageNumber()).isEqualTo(page + 1);
     }
+
+    @Test
+    public void PaginationService_GetSortedPageableAscending_ReturnPageable() {
+        int page = 1;
+        int pageSize = 3;
+        String direction = "next";
+        String order = "asc";
+
+        Pageable sortedPageable =
+                paginationService.getSortedPageable(page, pageSize, direction, order);
+        Pageable expectedSortedPageable =
+                PageRequest.of(2, pageSize, Sort.by("createdAt").ascending());
+
+
+        Assertions.assertThat(sortedPageable).isNotNull();
+        Assertions.assertThat(sortedPageable.getPageSize()).isEqualTo(pageSize);
+        Assertions.assertThat(sortedPageable.getPageNumber()).isEqualTo(page + 1);
+        Assertions.assertThat(sortedPageable.getSort()).isEqualTo(expectedSortedPageable.getSort());
+    }
+
+    @Test
+    public void PaginationService_GetSortedPageableDescending_ReturnPageable() {
+        int page = 1;
+        int pageSize = 3;
+        String direction = "next";
+        String order = "desc";
+
+        Pageable sortedPageable =
+                paginationService.getSortedPageable(page, pageSize, direction, order);
+        Pageable expectedSortedPageable =
+                PageRequest.of(2, pageSize, Sort.by("createdAt").descending());
+
+
+        Assertions.assertThat(sortedPageable).isNotNull();
+        Assertions.assertThat(sortedPageable.getPageSize()).isEqualTo(pageSize);
+        Assertions.assertThat(sortedPageable.getPageNumber()).isEqualTo(page + 1);
+        Assertions.assertThat(sortedPageable.getSort()).isEqualTo(expectedSortedPageable.getSort());
+    }
+
 }
 
 
