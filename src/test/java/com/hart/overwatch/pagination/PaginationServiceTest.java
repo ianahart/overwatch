@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
@@ -46,6 +47,19 @@ public class PaginationServiceTest {
         int result = paginationService.paginate(page, direction);
 
         Assertions.assertThat(result).isEqualTo(1);
+    }
+
+    @Test
+    public void PaginationService_GetPageable_ReturnPageable() {
+        int page = 1;
+        int pageSize = 3;
+        String direction = "next";
+
+        Pageable pageable = paginationService.getPageable(page, pageSize, direction);
+
+        Assertions.assertThat(pageable).isNotNull();
+        Assertions.assertThat(pageable.getPageSize()).isEqualTo(pageSize);
+        Assertions.assertThat(pageable.getPageNumber()).isEqualTo(page + 1);
     }
 }
 
