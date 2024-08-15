@@ -2,9 +2,7 @@ package com.hart.overwatch.authentication;
 
 import static org.mockito.Mockito.*;
 import java.lang.reflect.Field;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.List;
+import java.time.Instant;
 import java.util.Optional;
 import javax.crypto.SecretKey;
 import org.assertj.core.api.Assertions;
@@ -15,8 +13,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.hart.overwatch.advice.BadRequestException;
-import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.advice.ForbiddenException;
+import com.hart.overwatch.authentication.request.LoginRequest;
 import com.hart.overwatch.authentication.request.RegisterRequest;
+import com.hart.overwatch.authentication.response.LoginResponse;
 import com.hart.overwatch.authentication.response.RegisterResponse;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
@@ -24,6 +24,7 @@ import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserRepository;
 import com.hart.overwatch.user.UserService;
+import com.hart.overwatch.user.dto.UserDto;
 import com.hart.overwatch.util.MyUtil;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -36,12 +37,12 @@ import com.hart.overwatch.refreshtoken.RefreshToken;
 import com.hart.overwatch.refreshtoken.RefreshTokenService;
 import com.hart.overwatch.setting.SettingService;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import com.hart.overwatch.token.Token;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.token.TokenService;
-import com.hart.overwatch.token.TokenType;
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
@@ -113,8 +114,6 @@ public class AuthenticationServiceTest {
 
     private String createAuthToken(String subject) {
         SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-        byte[] encodedKey = secretKey.getEncoded();
-        // String encodedKeyBase64 = Base64.getEncoder().encodeToString(encodedKey);
         return Jwts.builder().setSubject(subject).signWith(secretKey).compact();
 
     }
@@ -201,7 +200,58 @@ public class AuthenticationServiceTest {
 
         Assertions.assertThat(response.getMessage()).isEqualTo("User created");
         verify(userRepository, times(1)).save(any(User.class));
+    }
 
+    @Test
+    public void AuthenticationService_LoginBadCredentials_ThrowForbiddenException() {
+        LoginRequest loginRequest = new LoginRequest(user.getEmail(), user.getPassword());
+
+        doThrow(new BadCredentialsException("Invalid credentials")).when(authenticationManager)
+                .authenticate(any(UsernamePasswordAuthenticationToken.class));
+
+        ForbiddenException exception = Assertions.catchThrowableOfType(
+                () -> authenticationService.login(loginRequest), ForbiddenException.class);
+
+        Assertions.assertThat(exception).isInstanceOf(ForbiddenException.class)
+                .hasMessage("Credentials are invalid");
+    }
+
+    @Test
+    public void AuthenticationService_Login_ReturnLoginResponse() {
+        LoginRequest loginRequest = new LoginRequest(user.getEmail(), "password");
+
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenReturn(mock(Authentication.class));
+
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        String token = "jwtToken";
+        when(jwtService.generateToken(user, 86400000L)).thenReturn(token);
+
+        doNothing().when(tokenService).revokeAllUserTokens(user);
+        when(userRepository.save(any(User.class))).thenReturn(user);
+        when(refreshTokenService.generateRefreshToken(user.getId())).thenReturn(
+                new RefreshToken("refreshToken", Instant.now().plusMillis(86400000L), user));
+
+        LoginResponse response = authenticationService.login(loginRequest);
+
+        Assertions.assertThat(response).isNotNull();
+
+        UserDto userDto = response.getUser();
+        Assertions.assertThat(userDto).isNotNull();
+        Assertions.assertThat(userDto.getId()).isEqualTo(user.getId());
+        Assertions.assertThat(userDto.getEmail()).isEqualTo(user.getEmail());
+        Assertions.assertThat(userDto.getFirstName()).isEqualTo(user.getFirstName());
+        Assertions.assertThat(userDto.getLastName()).isEqualTo(user.getLastName());
+
+        Assertions.assertThat(response.getToken()).isEqualTo(token);
+        Assertions.assertThat(response.getRefreshToken()).isEqualTo("refreshToken");
+
+        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verify(userRepository).findByEmail(user.getEmail());
+        verify(jwtService).generateToken(user, 86400000L);
+        verify(tokenService).revokeAllUserTokens(user);
+        verify(userRepository).save(any(User.class));
+        verify(refreshTokenService).generateRefreshToken(user.getId());
     }
 }
 
