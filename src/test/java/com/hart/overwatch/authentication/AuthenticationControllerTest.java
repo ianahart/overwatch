@@ -8,7 +8,10 @@ import com.hart.overwatch.authentication.response.RegisterResponse;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.passwordreset.PasswordResetService;
 import com.hart.overwatch.profile.Profile;
+import com.hart.overwatch.refreshtoken.RefreshToken;
 import com.hart.overwatch.refreshtoken.RefreshTokenService;
+import com.hart.overwatch.refreshtoken.request.RefreshTokenRequest;
+import com.hart.overwatch.refreshtoken.response.RefreshTokenResponse;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.token.TokenService;
@@ -40,6 +43,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import javax.crypto.SecretKey;
 import java.util.ArrayList;
@@ -195,39 +199,31 @@ public class AuthenticationControllerTest {
                         CoreMatchers.is(user.getProfile().getId().intValue())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.user.settingId",
                         CoreMatchers.is(user.getSetting().getId().intValue())));
-
     }
 
-    //
-    // @Test
-    // public void ChatMessageControllerTest_GetAllChatMessages_ReturnGetAllChatMessagesResponse()
-    // throws Exception {
-    // when(chatMessageService.getChatMessages(connection.getId())).thenReturn(List.of(chatMessageDto));
-    //
-    // ResultActions response = mockMvc
-    // .perform(get("/api/v1/chat-messages")
-    // .contentType(MediaType.APPLICATION_JSON)
-    // .param("connectionId", String.valueOf(connection.getId())));
-    //
-    // response.andExpect(MockMvcResultMatchers.status().isOk())
-    // .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
-    // .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].id",
-    // CoreMatchers.is(chatMessageDto.getId().intValue())))
-    // .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].firstName",
-    // CoreMatchers.is(chatMessageDto.getFirstName())))
-    // .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].lastName",
-    // CoreMatchers.is(chatMessageDto.getLastName())))
-    // .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].text",
-    // CoreMatchers.is(chatMessageDto.getText())))
-    // .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].avatarUrl",
-    // CoreMatchers.is(chatMessageDto.getAvatarUrl())))
-    // .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].connectionId",
-    // CoreMatchers.is(chatMessageDto.getConnectionId().intValue())))
-    // .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].userId",
-    // CoreMatchers.is(chatMessageDto.getUserId().intValue())));
-    //
-    // }
-    //
+    @Test
+    public void AuthenticationController_Refresh_ReturnRefreshTokenResponse() throws Exception {
+        String refreshToken = "dummy_refresh_token";
+        RefreshToken refreshTokenEntity =
+                new RefreshToken(1L, refreshToken, Instant.now().plusMillis(86400000L), user);
+        refreshTokenEntity.setUser(user);
+
+        String token = createAuthToken(user.getEmail());
+        when(refreshTokenService.verifyRefreshToken(refreshToken)).thenReturn(refreshTokenEntity);
+        doNothing().when(tokenService).revokeAllUserTokens(refreshTokenEntity.getUser());
+        when(jwtService.generateToken(refreshTokenEntity.getUser(), 86400000L)).thenReturn(token);
+        doNothing().when(authenticationService).saveTokenWithUser(token,
+                refreshTokenEntity.getUser());
+
+        ResultActions response = mockMvc.perform(
+                post("/api/v1/auth/refresh").contentType(MediaType.APPLICATION_JSON).content(
+                        objectMapper.writeValueAsString(new RefreshTokenRequest(refreshToken))));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.token", CoreMatchers.is(token)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.refreshToken",
+                        CoreMatchers.is(refreshToken)));
+    }
 }
 
 
