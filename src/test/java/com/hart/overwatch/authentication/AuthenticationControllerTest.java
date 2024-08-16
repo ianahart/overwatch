@@ -3,7 +3,7 @@ package com.hart.overwatch.authentication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.authentication.request.LoginRequest;
 import com.hart.overwatch.authentication.request.RegisterRequest;
-import com.hart.overwatch.authentication.response.GetOtpResponse;
+import com.hart.overwatch.authentication.request.VerifyOTPRequest;
 import com.hart.overwatch.authentication.response.LoginResponse;
 import com.hart.overwatch.authentication.response.RegisterResponse;
 import com.hart.overwatch.config.JwtService;
@@ -16,7 +16,6 @@ import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.refreshtoken.RefreshToken;
 import com.hart.overwatch.refreshtoken.RefreshTokenService;
 import com.hart.overwatch.refreshtoken.request.RefreshTokenRequest;
-import com.hart.overwatch.refreshtoken.response.RefreshTokenResponse;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.token.TokenService;
@@ -42,7 +41,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -50,11 +48,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.lang.reflect.Field;
-import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.List;
 import javax.crypto.SecretKey;
-import java.util.ArrayList;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import org.assertj.core.api.Assertions;
@@ -275,10 +270,8 @@ public class AuthenticationControllerTest {
                 .perform(post("/api/v1/auth/reset-password").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)));
 
-        result.andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.message",
-                        CoreMatchers.is(response.getMessage())))
-                .andDo(MockMvcResultHandlers.print());
+        result.andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers
+                .jsonPath("$.message", CoreMatchers.is(response.getMessage())));
     }
 
     @Test
@@ -290,8 +283,56 @@ public class AuthenticationControllerTest {
                 .contentType(MediaType.APPLICATION_JSON).param("userId", "1"));
 
         response.andExpect(MockMvcResultMatchers.status().isOk())
-        .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.otp", CoreMatchers.is(otp)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.otp", CoreMatchers.is(otp)));
+    }
+
+    @Test
+    public void AuthenticationController_VerifyOtp_ReturnLoginResponse() throws Exception {
+        UserDto userDto = new UserDto();
+        userDto.setId(user.getId());
+        userDto.setEmail(user.getEmail());
+        userDto.setFirstName(MyUtil.capitalize(user.getFirstName()));
+        userDto.setLastName(MyUtil.capitalize(user.getLastName()));
+        userDto.setRole(user.getRole());
+        userDto.setAbbreviation(user.getAbbreviation());
+        userDto.setLoggedIn(user.getLoggedIn());
+        userDto.setProfileId(user.getProfile().getId());
+        userDto.setAvatarUrl(user.getProfile().getAvatarUrl());
+        userDto.setFullName(String.format("%s %s", userDto.getFirstName(), userDto.getLastName()));
+        userDto.setSettingId(user.getSetting().getId());
+        userDto.setSlug(user.getSlug());
+
+        String refreshToken = "refreshToken";
+        String otp = "123456";
+        LoginResponse loginResponse = new LoginResponse(userDto, token, refreshToken);
+        VerifyOTPRequest request = new VerifyOTPRequest(user.getId(), otp);
+
+        when(authenticationService.verifyOTP(user.getId(), otp)).thenReturn(loginResponse);
+
+        ResultActions response = mockMvc
+                .perform(post("/api/v1/auth/verify-otp").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.token", CoreMatchers.is(token)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.refreshToken",
+                        CoreMatchers.is(refreshToken)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.user.id",
+                        CoreMatchers.is(user.getId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.user.email",
+                        CoreMatchers.is(user.getEmail())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.user.firstName",
+                        Matchers.equalToIgnoringCase(user.getFirstName())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.user.lastName",
+                        Matchers.equalToIgnoringCase(user.getLastName())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.user.loggedIn",
+                        CoreMatchers.is(user.getLoggedIn())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.user.profileId",
+                        CoreMatchers.is(user.getProfile().getId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.user.settingId",
+                        CoreMatchers.is(user.getSetting().getId().intValue())));
+
     }
 }
 
