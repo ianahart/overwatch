@@ -3,6 +3,7 @@ package com.hart.overwatch.authentication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.authentication.request.LoginRequest;
 import com.hart.overwatch.authentication.request.RegisterRequest;
+import com.hart.overwatch.authentication.response.GetOtpResponse;
 import com.hart.overwatch.authentication.response.LoginResponse;
 import com.hart.overwatch.authentication.response.RegisterResponse;
 import com.hart.overwatch.config.JwtService;
@@ -278,8 +279,19 @@ public class AuthenticationControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message",
                         CoreMatchers.is(response.getMessage())))
                 .andDo(MockMvcResultHandlers.print());
+    }
 
+    @Test
+    public void AuthenticationController_GetOtp_ReturnGetOtpResponse() throws Exception {
+        String otp = "34598";
+        when(authenticationService.generateOTP(user.getId())).thenReturn(otp);
 
+        ResultActions response = mockMvc.perform(get("/api/v1/auth/generate-otp")
+                .contentType(MediaType.APPLICATION_JSON).param("userId", "1"));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.otp", CoreMatchers.is(otp)));
     }
 }
 
