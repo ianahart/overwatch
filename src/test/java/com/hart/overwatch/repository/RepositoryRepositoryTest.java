@@ -149,7 +149,7 @@ public class RepositoryRepositoryTest {
     }
 
     @Test
-    public void RepositoryRepository_GetReviewerRepositories_ReturnPageOfRepositoryDto() {
+    public void RepositoryRepository_GetReviewerRepositoriesByLanguage_ReturnPageOfRepositoryDto() {
         Pageable pageable = PageRequest.of(0, 3);
         Long reviewerUserId = reviewer.getId();
         String language = repository.getLanguage();
@@ -170,6 +170,27 @@ public class RepositoryRepositoryTest {
         Assertions.assertThat(actualRepositoryDto.getLanguage())
                 .isEqualTo(reviewerRepositoryDto.getLanguage());
     }
+
+    @Test
+    public void RepositoryRepository_GetAllReviewerRepositories_ReturnPageOfRepositoryDto() {
+        Pageable pageable = PageRequest.of(0, 3);
+        Long reviewerUserId = reviewer.getId();
+        RepositoryStatus status = repository.getStatus();
+
+        Page<RepositoryDto> result =
+                repositoryRepository.getAllReviewerRepositories(pageable, reviewerUserId, status);
+
+        List<RepositoryDto> actualRepositoryDtos = result.getContent();
+        Assertions.assertThat(actualRepositoryDtos.size()).isEqualTo(1);
+        RepositoryDto actualRepositoryDto = actualRepositoryDtos.get(0);
+        Assertions.assertThat(actualRepositoryDto.getFirstName())
+                .isEqualTo(reviewerRepositoryDto.getFirstName());
+        Assertions.assertThat(actualRepositoryDto.getLastName())
+                .isEqualTo(reviewerRepositoryDto.getLastName());
+        Assertions.assertThat(actualRepositoryDto.getProfileUrl())
+                .isEqualTo(reviewerRepositoryDto.getProfileUrl());
+    }
+
 }
 
 
