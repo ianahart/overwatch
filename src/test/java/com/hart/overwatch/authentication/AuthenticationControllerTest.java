@@ -7,6 +7,8 @@ import com.hart.overwatch.authentication.response.LoginResponse;
 import com.hart.overwatch.authentication.response.RegisterResponse;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.passwordreset.PasswordResetService;
+import com.hart.overwatch.passwordreset.request.ForgotPasswordRequest;
+import com.hart.overwatch.passwordreset.response.ForgotPasswordResponse;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.refreshtoken.RefreshToken;
 import com.hart.overwatch.refreshtoken.RefreshTokenService;
@@ -26,6 +28,7 @@ import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -40,6 +43,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
@@ -49,6 +54,7 @@ import javax.crypto.SecretKey;
 import java.util.ArrayList;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import org.assertj.core.api.Assertions;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 
@@ -223,6 +229,36 @@ public class AuthenticationControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.token", CoreMatchers.is(token)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.refreshToken",
                         CoreMatchers.is(refreshToken)));
+    }
+
+    @Test
+    public void AuthenticationController_ForgotPassword_ReturnForgotPasswordResponse()
+            throws Exception {
+        ForgotPasswordRequest request = new ForgotPasswordRequest(user.getEmail());
+        ForgotPasswordResponse response = new ForgotPasswordResponse("Email sent successfully...");
+
+        when(userService.getUserByEmail(request.getEmail())).thenReturn(user);
+        doNothing().when(passwordResetService).deleteUserPasswordResetsById(user.getId());
+
+        ArgumentCaptor<ForgotPasswordRequest> captor =
+                ArgumentCaptor.forClass(ForgotPasswordRequest.class);
+        when(passwordResetService.sendForgotPasswordEmail(captor.capture())).thenReturn(response);
+
+        ResultActions result = mockMvc.perform(
+                post("/api/v1/auth/forgot-password").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        result.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message",
+                        CoreMatchers.is(response.getMessage())))
+                .andDo(MockMvcResultHandlers.print());
+
+        verify(userService, times(1)).getUserByEmail(request.getEmail());
+        verify(passwordResetService, times(1)).deleteUserPasswordResetsById(user.getId());
+        verify(passwordResetService, times(1))
+                .sendForgotPasswordEmail(any(ForgotPasswordRequest.class));
+
+        Assertions.assertThat(captor.getValue().getEmail()).isEqualTo(request.getEmail());
     }
 }
 
