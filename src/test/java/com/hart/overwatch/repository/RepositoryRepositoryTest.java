@@ -214,6 +214,28 @@ public class RepositoryRepositoryTest {
                 .isEqualTo(ownerRepositoryDto.getLanguage());
     }
 
+    @Test
+    public void RepositoryRepository_GetAllOwnerRepositories_ReturnPageOfRepositoryDto() {
+        Pageable pageable = PageRequest.of(0, 3);
+        Long ownerUserId = owner.getId();
+        RepositoryStatus status = repository.getStatus();
+
+        Page<RepositoryDto> result = repositoryRepository.getAllOwnerRepositories(pageable,
+                ownerUserId,  status);
+
+        List<RepositoryDto> actualRepositoryDtos = result.getContent();
+        Assertions.assertThat(actualRepositoryDtos.size()).isEqualTo(1);
+        RepositoryDto actualRepositoryDto = actualRepositoryDtos.get(0);
+        Assertions.assertThat(actualRepositoryDto.getFirstName())
+                .isEqualTo(ownerRepositoryDto.getFirstName());
+        Assertions.assertThat(actualRepositoryDto.getLastName())
+                .isEqualTo(ownerRepositoryDto.getLastName());
+        Assertions.assertThat(actualRepositoryDto.getProfileUrl())
+                .isEqualTo(ownerRepositoryDto.getProfileUrl());
+        Assertions.assertThat(actualRepositoryDto.getLanguage())
+                .isEqualTo(ownerRepositoryDto.getLanguage());
+    }
+
 
 }
 
