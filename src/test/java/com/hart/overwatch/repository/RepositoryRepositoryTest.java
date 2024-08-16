@@ -220,8 +220,8 @@ public class RepositoryRepositoryTest {
         Long ownerUserId = owner.getId();
         RepositoryStatus status = repository.getStatus();
 
-        Page<RepositoryDto> result = repositoryRepository.getAllOwnerRepositories(pageable,
-                ownerUserId,  status);
+        Page<RepositoryDto> result =
+                repositoryRepository.getAllOwnerRepositories(pageable, ownerUserId, status);
 
         List<RepositoryDto> actualRepositoryDtos = result.getContent();
         Assertions.assertThat(actualRepositoryDtos.size()).isEqualTo(1);
@@ -234,6 +234,24 @@ public class RepositoryRepositoryTest {
                 .isEqualTo(ownerRepositoryDto.getProfileUrl());
         Assertions.assertThat(actualRepositoryDto.getLanguage())
                 .isEqualTo(ownerRepositoryDto.getLanguage());
+    }
+
+    @Test
+    public void RepositoryRepository_GetReviewerDistinctRepositoryLanguages_ReturnStringList() {
+        List<String> returnedLanguages =
+                repositoryRepository.getReviewerDistinctRepositoryLanguages(reviewer.getId());
+
+        Assertions.assertThat(returnedLanguages.size()).isEqualTo(1);
+        Assertions.assertThat(returnedLanguages).isEqualTo(List.of("Java"));
+    }
+
+    @Test
+    public void RepositoryRepository_GetOwnerDistinctRepositoryLanguages_ReturnStringList() {
+        List<String> returnedLanguages =
+                repositoryRepository.getOwnerDistinctRepositoryLanguages(owner.getId());
+
+        Assertions.assertThat(returnedLanguages.size()).isEqualTo(1);
+        Assertions.assertThat(returnedLanguages).isEqualTo(List.of("Java"));
     }
 
 
