@@ -254,6 +254,13 @@ public class RepositoryRepositoryTest {
         Assertions.assertThat(returnedLanguages).isEqualTo(List.of("Java"));
     }
 
+    @Test
+    public void RepositoryRepository_RepositoryAlreadyInReview_ReturnBoolean() {
+        boolean alreadyInReview = repositoryRepository.repositoryAlreadyInReview(owner.getId(),
+                reviewer.getId(), repository.getRepoName());
+
+        Assertions.assertThat(alreadyInReview).isTrue();
+    }
 
 }
 
