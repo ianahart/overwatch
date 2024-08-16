@@ -8,7 +8,9 @@ import com.hart.overwatch.authentication.response.RegisterResponse;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.passwordreset.PasswordResetService;
 import com.hart.overwatch.passwordreset.request.ForgotPasswordRequest;
+import com.hart.overwatch.passwordreset.request.PasswordResetRequest;
 import com.hart.overwatch.passwordreset.response.ForgotPasswordResponse;
+import com.hart.overwatch.passwordreset.response.PasswordResetResponse;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.refreshtoken.RefreshToken;
 import com.hart.overwatch.refreshtoken.RefreshTokenService;
@@ -248,10 +250,8 @@ public class AuthenticationControllerTest {
                 post("/api/v1/auth/forgot-password").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)));
 
-        result.andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.message",
-                        CoreMatchers.is(response.getMessage())))
-                .andDo(MockMvcResultHandlers.print());
+        result.andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers
+                .jsonPath("$.message", CoreMatchers.is(response.getMessage())));
 
         verify(userService, times(1)).getUserByEmail(request.getEmail());
         verify(passwordResetService, times(1)).deleteUserPasswordResetsById(user.getId());
@@ -259,6 +259,27 @@ public class AuthenticationControllerTest {
                 .sendForgotPasswordEmail(any(ForgotPasswordRequest.class));
 
         Assertions.assertThat(captor.getValue().getEmail()).isEqualTo(request.getEmail());
+    }
+
+    @Test
+    public void AuthenticationController_ResetPassword_ReturnPasswordResetResponse()
+            throws Exception {
+        PasswordResetRequest request =
+                new PasswordResetRequest("dumm_token", "123456", "Test12345%", "Test12345%");
+        PasswordResetResponse response = new PasswordResetResponse("success");
+
+        doNothing().when(passwordResetService).resetPassword(request);
+
+        ResultActions result = mockMvc
+                .perform(post("/api/v1/auth/reset-password").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        result.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message",
+                        CoreMatchers.is(response.getMessage())))
+                .andDo(MockMvcResultHandlers.print());
+
+
     }
 }
 
