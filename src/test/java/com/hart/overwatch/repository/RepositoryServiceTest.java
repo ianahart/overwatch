@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,9 +27,13 @@ import org.springframework.data.domain.Pageable;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.github.GitHubService;
+import com.hart.overwatch.github.dto.GitHubTreeDto;
+import com.hart.overwatch.github.dto.GitHubTreeNodeDto;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
+import com.hart.overwatch.repository.dto.FullRepositoryDto;
+import com.hart.overwatch.repository.dto.RepositoryContentsDto;
 import com.hart.overwatch.repository.dto.RepositoryDto;
 import com.hart.overwatch.repository.request.CreateUserRepositoryRequest;
 import com.hart.overwatch.setting.Setting;
@@ -329,6 +334,64 @@ public class RepositoryServiceTest {
 
         Assertions.assertThat(repositoryComment).isNotNull();
         Assertions.assertThat(repositoryComment).isEqualTo(repository.getComment());
+    }
+
+    @Test
+    public void RepositoryService_UpdateRepositoryComment_ReturnNothing() {
+        Repository updatedRepository = new Repository();
+        updatedRepository.setComment("current comment");
+        updatedRepository.setId(2L);
+
+        when(repositoryRepository.findById(updatedRepository.getId()))
+                .thenReturn(Optional.of(updatedRepository));
+        when(repositoryRepository.save(any(Repository.class))).thenReturn(updatedRepository);
+
+        repositoryService.updateRepositoryComment(updatedRepository.getId(), "updated comment");
+
+        verify(repositoryRepository, times(1)).save(any(Repository.class));
+    }
+
+    @Test
+    public void RepositoryService_GetRepositoryReview_ReturnRepositoryContentsDto()
+            throws IOException {
+        RepositoryContentsDto repositoryContentsDto = new RepositoryContentsDto();
+        FullRepositoryDto fullRepositoryDto = new FullRepositoryDto();
+        fullRepositoryDto.setId(repository.getId());
+        fullRepositoryDto.setOwnerId(owner.getId());
+        fullRepositoryDto.setReviewerId(reviewer.getId());
+        fullRepositoryDto.setComment(repository.getComment());
+        fullRepositoryDto.setRepoUrl(repository.getRepoUrl());
+        fullRepositoryDto.setFeedback(repository.getFeedback());
+        fullRepositoryDto.setLanguage(repository.getLanguage());
+        fullRepositoryDto.setRepoName(repository.getRepoName());
+        fullRepositoryDto.setAvatarUrl(repository.getAvatarUrl());
+        fullRepositoryDto.setStatus(repository.getStatus());
+        fullRepositoryDto.setCreatedAt(repository.getCreatedAt());
+        fullRepositoryDto.setUpdatedAt(repository.getCreatedAt());
+        GitHubTreeDto gitHubTreeDto = new GitHubTreeDto();
+        gitHubTreeDto.setLanguages(List.of("Java", "HTML", "Python"));
+        GitHubTreeNodeDto gitHubTreeNodeDto = new GitHubTreeNodeDto();
+        gitHubTreeNodeDto.setSha("234sdfljdsj234k5");
+        gitHubTreeNodeDto.setUrl("https://github.com/react");
+        gitHubTreeNodeDto.setPath("dsf/sdf/dsf/ds/");
+        gitHubTreeNodeDto.setType("file");
+        gitHubTreeNodeDto.setSize(2);
+        gitHubTreeDto.setTree(List.of(gitHubTreeNodeDto));
+        repositoryContentsDto.setRepository(fullRepositoryDto);
+        repositoryContentsDto.setContents(gitHubTreeDto);
+
+        when(repositoryRepository.findById(repository.getId())).thenReturn(Optional.of(repository));
+        when(gitHubService.getRepository(repository.getRepoName(), "dummy_github_access_token", 1,
+                10)).thenReturn(gitHubTreeDto);
+
+        RepositoryContentsDto result = repositoryService.getRepositoryReview(repository.getId(),
+                "dummy_github_access_token", 1, 10);
+
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getRepository()).usingRecursiveComparison()
+                .isEqualTo(repositoryContentsDto.getRepository());
+        Assertions.assertThat(result.getContents()).usingRecursiveComparison()
+                .isEqualTo(repositoryContentsDto.getContents());
     }
 }
 
