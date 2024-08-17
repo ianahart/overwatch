@@ -3,8 +3,6 @@ package com.hart.overwatch.repository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
-import com.hart.overwatch.phone.dto.PhoneDto;
-import com.hart.overwatch.phone.request.CreatePhoneRequest;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.repository.dto.RepositoryDto;
 import com.hart.overwatch.repository.request.CreateUserRepositoryRequest;
@@ -36,11 +34,13 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import org.hamcrest.CoreMatchers;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 @ActiveProfiles("test")
 @WebMvcTest(controllers = RepositoryController.class)
@@ -196,6 +196,18 @@ public class RepositoryControllerTest {
 
         response.andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
+    @Test
+    public void RepositoryController_GetDistinctRepositoryLanguages_ReturnGetDistinctRepositoryLanguagesResponse() throws Exception {
+        when(repositoryService.getDistinctRepositoryLanguages()).thenReturn(List.of("Java", "Python", "HTML"));
+
+        ResultActions response = mockMvc.perform(get("/api/v1/repositories/languages").contentType(MediaType.APPLICATION_JSON));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.data", CoreMatchers.hasItems("Java","Python", "HTML")));
+
     }
 }
 
