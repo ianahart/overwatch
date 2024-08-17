@@ -7,9 +7,11 @@ import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.repository.dto.RepositoryContentsDto;
 import com.hart.overwatch.repository.dto.RepositoryDto;
+import com.hart.overwatch.repository.dto.RepositoryReviewDto;
 import com.hart.overwatch.repository.request.CreateRepositoryFileRequest;
 import com.hart.overwatch.repository.request.CreateUserRepositoryRequest;
 import com.hart.overwatch.repository.request.UpdateRepositoryCommentRequest;
+import com.hart.overwatch.repository.request.UpdateRepositoryReviewRequest;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.user.Role;
@@ -296,6 +298,23 @@ public class RepositoryControllerTest {
 
         ResultActions response = mockMvc
                 .perform(post("/api/v1/repositories/file").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
+    @Test
+    public void RepositoryController_UpdateRepositoryReview_ReturnUpdateRepositoryReviewResponse()
+            throws Exception {
+        UpdateRepositoryReviewRequest request =
+                new UpdateRepositoryReviewRequest(RepositoryStatus.INPROGRESS, "some feedback");
+
+        when(repositoryService.updateRepositoryReview(repository.getId(), request))
+                .thenReturn(new RepositoryReviewDto(request.getStatus(), request.getFeedback()));
+
+        ResultActions response = mockMvc
+                .perform(patch("/api/v1/repositories/1").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)));
 
         response.andExpect(MockMvcResultMatchers.status().isOk())
