@@ -320,6 +320,16 @@ public class RepositoryServiceTest {
         verify(userService, times(1)).getCurrentlyLoggedInUser();
         verify(repositoryRepository, times(1)).delete(repository);;
     }
+
+    @Test
+    public void RepositoryService_GetRepositoryComment_ReturnStringComment() {
+        when(repositoryRepository.findById(repository.getId())).thenReturn(Optional.of(repository));
+
+        String repositoryComment = repositoryService.getRepositoryComment(repository.getId());
+
+        Assertions.assertThat(repositoryComment).isNotNull();
+        Assertions.assertThat(repositoryComment).isEqualTo(repository.getComment());
+    }
 }
 
 
