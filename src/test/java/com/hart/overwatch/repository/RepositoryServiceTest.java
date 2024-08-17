@@ -6,7 +6,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -173,6 +175,38 @@ public class RepositoryServiceTest {
         repositoryService.handleCreateUserRepository(request);
 
         verify(repositoryRepository, times(1)).save(any(Repository.class));
+    }
+
+    @Test
+    public void RepositoryService_GetDistinctRepositoryLanguagesOwner_ReturnListOfString() {
+        List<String> expectedLanguages = new ArrayList<>();
+        expectedLanguages.add(repository.getLanguage());
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(owner);
+        when(repositoryRepository.getOwnerDistinctRepositoryLanguages(owner.getId()))
+                .thenReturn(expectedLanguages);
+
+        List<String> actualLanguages = repositoryService.getDistinctRepositoryLanguages();
+
+        Assertions.assertThat(actualLanguages).isNotNull();
+        Assertions.assertThat(actualLanguages.size()).isEqualTo(2);
+        Assertions.assertThat(actualLanguages.get(0)).isEqualTo(expectedLanguages.get(0));
+        Assertions.assertThat(actualLanguages.get(1)).isEqualTo("All");
+    }
+
+    @Test
+    public void RepositoryService_GetDistinctRepositoryLanguagesReviewer_ReturnListOfString() {
+        List<String> expectedLanguages = new ArrayList<>();
+        expectedLanguages.add(repository.getLanguage());
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(reviewer);
+        when(repositoryRepository.getReviewerDistinctRepositoryLanguages(reviewer.getId()))
+                .thenReturn(expectedLanguages);
+
+        List<String> actualLanguages = repositoryService.getDistinctRepositoryLanguages();
+
+        Assertions.assertThat(actualLanguages).isNotNull();
+        Assertions.assertThat(actualLanguages.size()).isEqualTo(2);
+        Assertions.assertThat(actualLanguages.get(0)).isEqualTo(expectedLanguages.get(0));
+        Assertions.assertThat(actualLanguages.get(1)).isEqualTo("All");
     }
 }
 
