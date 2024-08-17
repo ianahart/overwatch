@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
@@ -18,10 +19,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.github.GitHubService;
 import com.hart.overwatch.pagination.PaginationService;
+import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.repository.dto.RepositoryDto;
 import com.hart.overwatch.repository.request.CreateUserRepositoryRequest;
@@ -57,6 +63,12 @@ public class RepositoryServiceTest {
     private RepositoryDto reviewerRepositoryDto;
 
     private RepositoryDto ownerRepositoryDto;
+
+    private PaginationDto<RepositoryDto> reviewerPaginationDto;
+
+    private PaginationDto<RepositoryDto> ownerPaginationDto;
+
+    private Page<RepositoryDto> pageResult;
 
 
     private User createOwner() {
@@ -124,6 +136,22 @@ public class RepositoryServiceTest {
         return repositoryDto;
     }
 
+    private Pageable createPageable(int pageSize) {
+        return PageRequest.of(0, pageSize);
+    }
+
+    private PaginationDto<RepositoryDto> createPaginationDto(RepositoryDto repositoryDto) {
+        int pageSize = 3;
+        String direction = "next";
+        Pageable pageable = createPageable(pageSize);
+
+        pageResult = new PageImpl<>(Collections.singletonList(repositoryDto), pageable, 1);
+        PaginationDto<RepositoryDto> expectedPaginationDto =
+                new PaginationDto<>(pageResult.getContent(), pageResult.getNumber(), pageSize,
+                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
+
+        return expectedPaginationDto;
+    }
 
     @BeforeEach
     public void setUp() {
@@ -133,6 +161,8 @@ public class RepositoryServiceTest {
         reviewerRepositoryDto =
                 createRepositoryDto(owner, reviewer, repository, reviewer.getRole());
         ownerRepositoryDto = createRepositoryDto(owner, reviewer, repository, owner.getRole());
+        reviewerPaginationDto = createPaginationDto(reviewerRepositoryDto);
+        ownerPaginationDto = createPaginationDto(ownerRepositoryDto);
 
     }
 
@@ -208,6 +238,37 @@ public class RepositoryServiceTest {
         Assertions.assertThat(actualLanguages.get(0)).isEqualTo(expectedLanguages.get(0));
         Assertions.assertThat(actualLanguages.get(1)).isEqualTo("All");
     }
+
+    @Test
+    public void RepositoryService_GetAllRepositoriesGetAllReviewerRepositories_ReturnPaginationDtoOfRepositoryDto() {
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(reviewer);
+        Pageable pageable = createPageable(3);
+        when(paginationService.getSortedPageable(reviewerPaginationDto.getPage(), reviewerPaginationDto.getPageSize(), "next", "desc")).thenReturn(pageable);
+        when(repositoryRepository.getAllReviewerRepositories(pageable, reviewer.getId(), RepositoryStatus.INCOMPLETE)).thenReturn(pageResult);
+
+        PaginationDto<RepositoryDto> result = repositoryService.getAllRepositories(0,3,"next", "desc", RepositoryStatus.INCOMPLETE, "all");
+
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getPage()).isEqualTo(0);
+        Assertions.assertThat(result.getPageSize()).isEqualTo(3);
+        Assertions.assertThat(result.getItems().size()).isEqualTo(1);
+    }
+
+    @Test
+    public void RepositoryService_GetAllRepositoriesGetAllReviewerRepositoriesByLanguage_ReturnPaginationDtoOfRepositoryDto() {
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(reviewer);
+        Pageable pageable = createPageable(3);
+        when(paginationService.getSortedPageable(reviewerPaginationDto.getPage(), reviewerPaginationDto.getPageSize(), "next", "desc")).thenReturn(pageable);
+        when(repositoryRepository.getReviewerRepositoriesByLanguage(pageable, reviewer.getId(), "Java", RepositoryStatus.INCOMPLETE)).thenReturn(pageResult);
+
+        PaginationDto<RepositoryDto> result = repositoryService.getAllRepositories(0,3,"next", "desc", RepositoryStatus.INCOMPLETE, "Java");
+
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getPage()).isEqualTo(0);
+        Assertions.assertThat(result.getPageSize()).isEqualTo(3);
+        Assertions.assertThat(result.getItems().size()).isEqualTo(1);
+    }
+
 }
 
 
