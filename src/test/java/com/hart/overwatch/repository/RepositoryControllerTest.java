@@ -2,6 +2,7 @@ package com.hart.overwatch.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.config.JwtService;
+import com.hart.overwatch.connection.RequestStatus;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.repository.dto.RepositoryDto;
@@ -207,7 +208,18 @@ public class RepositoryControllerTest {
         response.andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
             .andExpect(MockMvcResultMatchers.jsonPath("$.data", CoreMatchers.hasItems("Java","Python", "HTML")));
+    }
 
+    @Test
+    public void RepositoryController_GetAllRepositories_ReturnGetAllRepositoriesResponse() throws Exception{
+
+        when(repositoryService.getAllRepositories(0, 3, "next", "desc", RepositoryStatus.INCOMPLETE, "all")).thenReturn(ownerPaginationDto);
+
+        ResultActions response = mockMvc.perform(get("/api/v1/repositories").contentType(MediaType.APPLICATION_JSON).param("page", "0")
+        .param("pageSize", "3").param("direction", "next").param("sort", "desc").param("status", "INCOMPLETE").param("language", "all"));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk());
+        response.andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 }
 
