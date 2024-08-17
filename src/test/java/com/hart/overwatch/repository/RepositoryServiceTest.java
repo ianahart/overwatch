@@ -269,6 +269,36 @@ public class RepositoryServiceTest {
         Assertions.assertThat(result.getItems().size()).isEqualTo(1);
     }
 
+    @Test
+    public void RepositoryService_GetAllRepositoriesGetAllOwnerRepositories_ReturnPaginationDtoOfRepositoryDto() {
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(owner);
+        Pageable pageable = createPageable(3);
+        when(paginationService.getSortedPageable(ownerPaginationDto.getPage(), ownerPaginationDto.getPageSize(), "next", "desc")).thenReturn(pageable);
+        when(repositoryRepository.getAllOwnerRepositories(pageable, owner.getId(), RepositoryStatus.INCOMPLETE)).thenReturn(pageResult);
+
+        PaginationDto<RepositoryDto> result = repositoryService.getAllRepositories(0,3,"next", "desc", RepositoryStatus.INCOMPLETE, "all");
+
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getPage()).isEqualTo(0);
+        Assertions.assertThat(result.getPageSize()).isEqualTo(3);
+        Assertions.assertThat(result.getItems().size()).isEqualTo(1);
+    }
+
+    @Test
+    public void RepositoryService_GetAllRepositoriesGetAllOwnerRepositoriesByLanguage_ReturnPaginationDtoOfRepositoryDto() {
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(owner);
+        Pageable pageable = createPageable(3);
+        when(paginationService.getSortedPageable(ownerPaginationDto.getPage(), ownerPaginationDto.getPageSize(), "next", "desc")).thenReturn(pageable);
+        when(repositoryRepository.getOwnerRepositoriesByLanguage(pageable, owner.getId(), "Java", RepositoryStatus.INCOMPLETE)).thenReturn(pageResult);
+
+        PaginationDto<RepositoryDto> result = repositoryService.getAllRepositories(0,3,"next", "desc", RepositoryStatus.INCOMPLETE, "Java");
+
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getPage()).isEqualTo(0);
+        Assertions.assertThat(result.getPageSize()).isEqualTo(3);
+        Assertions.assertThat(result.getItems().size()).isEqualTo(1);
+    }
+
 }
 
 
