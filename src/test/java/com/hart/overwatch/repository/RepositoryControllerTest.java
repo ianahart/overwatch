@@ -5,7 +5,9 @@ import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.connection.RequestStatus;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
+import com.hart.overwatch.repository.dto.RepositoryContentsDto;
 import com.hart.overwatch.repository.dto.RepositoryDto;
+import com.hart.overwatch.repository.request.CreateRepositoryFileRequest;
 import com.hart.overwatch.repository.request.CreateUserRepositoryRequest;
 import com.hart.overwatch.repository.request.UpdateRepositoryCommentRequest;
 import com.hart.overwatch.setting.Setting;
@@ -29,6 +31,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.Mockito.doNothing;
@@ -265,6 +268,41 @@ public class RepositoryControllerTest {
         response.andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
+
+    @Test
+    public void RepositoryController_GetRepositoryReview_ReturnGetRepositoryReviewResponse()
+            throws Exception {
+        String gitHubAccessToken = "dummy_access_token";
+        when(repositoryService.getRepositoryReview(repository.getId(), gitHubAccessToken, 0, 3))
+                .thenReturn(new RepositoryContentsDto());
+
+        ResultActions response = mockMvc.perform(get("/api/v1/repositories/1")
+                .header("GitHub-Token", gitHubAccessToken).param("page", "0").param("size", "3")
+                .contentType(MediaType.APPLICATION_JSON));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
+    @Test
+    public void RepositoryController_CreateRepositoryFile_ReturnCreateRepositoryFileResponse()
+            throws Exception {
+        String path = "some/github.com/path";
+        String gitHubAccessToken = "dummy_access_token";
+        CreateRepositoryFileRequest request = new CreateRepositoryFileRequest("owner",
+                repository.getRepoName(), path, gitHubAccessToken);
+
+        when(repositoryService.getRepositoryFile(request)).thenReturn("data");
+
+        ResultActions response = mockMvc
+                .perform(post("/api/v1/repositories/file").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
+
 }
 
 
