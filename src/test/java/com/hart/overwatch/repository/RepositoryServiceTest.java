@@ -299,6 +299,27 @@ public class RepositoryServiceTest {
         Assertions.assertThat(result.getItems().size()).isEqualTo(1);
     }
 
+    @Test
+    public void RepositoryService_DeleteRepository_ThrowForbiddenException() {
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(reviewer);
+        when(repositoryRepository.findById(repository.getId())).thenReturn(Optional.of(repository));
+
+        Assertions.assertThatThrownBy(() -> {
+            repositoryService.deleteRepository(repository.getId());
+        }).isInstanceOf(ForbiddenException.class).hasMessage("Cannot delete a repository that is not yours");
+    }
+
+    @Test
+    public void RepositoryService_DeleteRepository_DoNothing() {
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(owner);
+        when(repositoryRepository.findById(repository.getId())).thenReturn(Optional.of(repository));
+        doNothing().when(repositoryRepository).delete(repository);
+
+        repositoryService.deleteRepository(repository.getId());
+
+        verify(userService, times(1)).getCurrentlyLoggedInUser();
+        verify(repositoryRepository, times(1)).delete(repository);;
+    }
 }
 
 
