@@ -237,6 +237,17 @@ public class RepositoryControllerTest {
 
         verify(repositoryService, times(1)).deleteRepository(repository.getId());
     }
+
+    @Test
+    public void RepositoryController_GetRepositoryComment_ReturnGetRepositoryCommentResponse() throws Exception {
+        when(repositoryService.getRepositoryComment(repository.getId())).thenReturn(repository.getComment());
+
+        ResultActions response = mockMvc.perform(get("/api/v1/repositories/1/comment").contentType(MediaType.APPLICATION_JSON));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.data", CoreMatchers.is(repository.getComment())));
+    }
 }
 
 
