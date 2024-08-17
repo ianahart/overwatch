@@ -7,6 +7,7 @@ import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.repository.dto.RepositoryDto;
 import com.hart.overwatch.repository.request.CreateUserRepositoryRequest;
+import com.hart.overwatch.repository.request.UpdateRepositoryCommentRequest;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.user.Role;
@@ -247,6 +248,22 @@ public class RepositoryControllerTest {
         response.andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
             .andExpect(MockMvcResultMatchers.jsonPath("$.data", CoreMatchers.is(repository.getComment())));
+    }
+
+    @Test
+    public void RepositoryController_UpdateRepositoryComment_ReturnUpdateRepositoryCommentResponse()
+            throws Exception {
+        String updatedComment = "updated comment";
+        UpdateRepositoryCommentRequest request = new UpdateRepositoryCommentRequest(updatedComment);
+        doNothing().when(repositoryService).updateRepositoryComment(repository.getId(),
+                request.getComment());
+
+        ResultActions response = mockMvc.perform(
+                patch("/api/v1/repositories/1/comment").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 }
 
