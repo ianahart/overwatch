@@ -36,6 +36,7 @@ import com.hart.overwatch.repository.dto.FullRepositoryDto;
 import com.hart.overwatch.repository.dto.RepositoryContentsDto;
 import com.hart.overwatch.repository.dto.RepositoryDto;
 import com.hart.overwatch.repository.request.CreateUserRepositoryRequest;
+import com.hart.overwatch.repository.request.UpdateRepositoryReviewRequest;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
@@ -392,6 +393,34 @@ public class RepositoryServiceTest {
                 .isEqualTo(repositoryContentsDto.getRepository());
         Assertions.assertThat(result.getContents()).usingRecursiveComparison()
                 .isEqualTo(repositoryContentsDto.getContents());
+    }
+
+    @Test
+    public void RepositoryService_UpdateRepositoryReview_ThrowForbiddenException() {
+        UpdateRepositoryReviewRequest request =
+                new UpdateRepositoryReviewRequest(RepositoryStatus.INPROGRESS, "some feedback");
+        when(repositoryRepository.findById(repository.getId())).thenReturn(Optional.of(repository));
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(owner);
+
+        Assertions.assertThatThrownBy(() -> {
+            repositoryService.updateRepositoryReview(repository.getId(), request);
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("Cannot update a review that is not yours");
+    }
+
+    @Test
+    public void RepositoryService_UpdateRepositoryReview_Return_RepositoryReviewDto() {
+        UpdateRepositoryReviewRequest request =
+                new UpdateRepositoryReviewRequest(RepositoryStatus.INPROGRESS, "some feedback");
+        when(repositoryRepository.findById(repository.getId())).thenReturn(Optional.of(repository));
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(reviewer);
+        when(repositoryRepository.save(any(Repository.class))).thenReturn(repository);
+
+        repositoryService.updateRepositoryReview(repository.getId(), request);
+
+
+        verify(repositoryRepository, times(1)).save(any(Repository.class));
+
     }
 }
 
