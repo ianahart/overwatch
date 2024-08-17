@@ -31,6 +31,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -220,6 +222,20 @@ public class RepositoryControllerTest {
 
         response.andExpect(MockMvcResultMatchers.status().isOk());
         response.andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
+    @Test
+    public void RepositoryController_DeleteRepository_ReturnDeleteRepositoryResponse()
+            throws Exception {
+        doNothing().when(repositoryService).deleteRepository(repository.getId());
+
+        ResultActions response = mockMvc
+                .perform(delete("/api/v1/repositories/1").contentType(MediaType.APPLICATION_JSON));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk());
+        response.andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+
+        verify(repositoryService, times(1)).deleteRepository(repository.getId());
     }
 }
 
