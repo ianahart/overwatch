@@ -17,6 +17,7 @@ import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.connection.ConnectionService;
 import com.hart.overwatch.connection.RequestStatus;
+import com.hart.overwatch.connection.dto.MinConnectionDto;
 import com.hart.overwatch.notification.dto.MinNotificationDto;
 import com.hart.overwatch.notification.dto.NotificationDto;
 import com.hart.overwatch.notification.request.CreateNotificationRequest;
@@ -200,13 +201,13 @@ public class NotificationService {
     public void handleDeleteNotification(NotificationRole notificationRole, Long senderId,
             Long receiverId, Long notificationId) {
         try {
-
-
             if (notificationRole == NotificationRole.RECEIVER) {
-
-                this.connectionService.deleteConnection(senderId, receiverId);
+                MinConnectionDto connectionDto =
+                        this.connectionService.verifyConnection(senderId, receiverId);
+                if (connectionDto.getStatus() == RequestStatus.PENDING) {
+                    this.connectionService.deleteConnection(senderId, receiverId);
+                }
             }
-
             deleteNotification(notificationId);
 
         } catch (DataAccessException ex) {
