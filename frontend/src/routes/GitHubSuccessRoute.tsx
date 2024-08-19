@@ -23,7 +23,8 @@ const GitHubSuccessRoute = () => {
             const { accessToken } = response;
             if (user.role === Role.REVIEWER) {
               Session.setItem(accessToken);
-              navigate(`/dashboard/${user.slug}/reviewer/reviews`);
+              //navigate(`/dashboard/${user.slug}/reviewer/reviews`);
+              navigate(-1);
             } else {
               navigate(`/dashboard/${user.slug}/user/add-review?verified=true`, { state: { accessToken } });
             }
