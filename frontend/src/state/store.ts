@@ -5,6 +5,7 @@ import { signUpReducer, updateSignUpField, updateRole, clearSignUpForm } from '.
 import { updateSignInField, clearSignInForm, signInReducer } from './slices/signinSlice';
 import { userReducer, updateUser, updateTokens, clearUser, updateUserAndTokens } from './slices/userSlice';
 import { settingReducer, updateSetting, clearSetting } from './slices/settingSlice';
+import { updateWorkSpaceProperty, clearWorkSpace, workSpaceReducer } from './slices/workSpaceSlice';
 import {
   setRepositoryNavView,
   setRepositoryLanguages,
@@ -106,6 +107,7 @@ import { repositoriesApi } from './apis/repositoriesApi';
 
 export const store = configureStore({
   reducer: {
+    workSpace: workSpaceReducer,
     repositoryTree: repositoryTreeReducer,
     repositoryReviews: repositoryReviewsReducer,
     addReview: addReviewReducer,
@@ -241,6 +243,8 @@ export {
   setRepositoryLanguages,
   setRepositoryNavView,
   updateRepository,
+  clearWorkSpace,
+  updateWorkSpaceProperty,
 };
 
 export {

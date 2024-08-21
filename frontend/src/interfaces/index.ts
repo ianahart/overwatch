@@ -1,5 +1,15 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 
+export interface IWorkSpace {
+  title: string;
+  backgroundColor: string;
+  todoLists: string[];
+}
+
+export interface IWorkSpaceState {
+  workSpace: IWorkSpace;
+}
+
 export interface IProgressMapper {
   INCOMPLETE: { text: string; background: string };
   INPROGRESS: { text: string; background: string };
