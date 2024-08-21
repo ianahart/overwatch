@@ -1,7 +1,8 @@
-import { BsThreeDots, BsTrash } from 'react-icons/bs';
+import {  BsTrash } from 'react-icons/bs';
 import { useSelector, useDispatch } from 'react-redux';
 import { TRootState, updateWorkSpaceProperty } from '../../../../../state/store';
 import { useState } from 'react';
+import WorkSpaceBackgroundPicker from './WorkSpaceBackgroundPicker';
 
 const WorkSpaceTitle = () => {
   const dispatch = useDispatch();
@@ -34,7 +35,7 @@ const WorkSpaceTitle = () => {
           <BsTrash className="text-gray-400" />
         </div>
         <div className="mx-2">
-          <BsThreeDots className="text-gray-400" />
+          <WorkSpaceBackgroundPicker />
         </div>
       </div>
     </div>
