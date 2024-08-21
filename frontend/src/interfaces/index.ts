@@ -1006,6 +1006,16 @@ export interface IUpdateRepositoryResponse {
   };
 }
 
+export interface ICreateWorkSpaceRequest {
+  token: string;
+  userId: number;
+  workSpace: { title: string; backgroundColor: string };
+}
+
+export interface ICreateWorkSpaceResponse {
+  message: string;
+}
+
 export interface IUpdateRepositoryCommentResponse extends IBaseResponse {}
 
 export interface IDeleteUserRepositoryResponse extends IBaseResponse {}

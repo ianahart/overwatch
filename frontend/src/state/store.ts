@@ -104,6 +104,7 @@ import { favoritesApi } from './apis/favoritesApi';
 import { pinnedConnectionsApi } from './apis/pinnedConnectionsApi';
 import { githubApi } from './apis/githubApi';
 import { repositoriesApi } from './apis/repositoriesApi';
+import { workSpacesApi } from './apis/workSpacesApi';
 
 export const store = configureStore({
   reducer: {
@@ -140,6 +141,7 @@ export const store = configureStore({
     [pinnedConnectionsApi.reducerPath]: pinnedConnectionsApi.reducer,
     [githubApi.reducerPath]: githubApi.reducer,
     [repositoriesApi.reducerPath]: repositoriesApi.reducer,
+    [workSpacesApi.reducerPath]: workSpacesApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -164,7 +166,8 @@ export const store = configureStore({
       .concat(favoritesApi.middleware)
       .concat(pinnedConnectionsApi.middleware)
       .concat(githubApi.middleware)
-      .concat(repositoriesApi.middleware);
+      .concat(repositoriesApi.middleware)
+      .concat(workSpacesApi.middleware);
   },
 });
 
@@ -346,6 +349,8 @@ export {
   useUpdateRepositoryReviewMutation,
 } from './apis/repositoriesApi';
 
+export { useCreateWorkSpaceMutation } from './apis/workSpacesApi';
+
 export {
   testimonialsApi,
   authsApi,
@@ -361,4 +366,5 @@ export {
   pinnedConnectionsApi,
   githubApi,
   repositoriesApi,
+  workSpacesApi,
 };
