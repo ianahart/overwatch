@@ -23,6 +23,7 @@ import com.hart.overwatch.review.Review;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.testimonial.Testimonial;
 import com.hart.overwatch.token.Token;
+import com.hart.overwatch.workspace.WorkSpace;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
@@ -165,6 +166,11 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<Repository> ownerRepositories;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<WorkSpace> workSpaces;
+
+
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "setting_id", referencedColumnName = "id")
@@ -246,6 +252,10 @@ public class User implements UserDetails {
 
     public List<Repository> getReviewerRepositories() {
         return reviewerRepositories;
+    }
+
+    public List<WorkSpace> getWorkSpaces() {
+        return workSpaces;
     }
 
     public List<Connection> getReceiverConnections() {
@@ -350,6 +360,10 @@ public class User implements UserDetails {
 
     public void setPinnedOwnerConnections(List<ConnectionPin> pinnedOwnerConnections) {
         this.pinnedOwnerConnections = pinnedOwnerConnections;
+    }
+
+    public void setWorkSpaces(List<WorkSpace> workSpaces) {
+        this.workSpaces = workSpaces;
     }
 
     public void setLocation(Location location) {

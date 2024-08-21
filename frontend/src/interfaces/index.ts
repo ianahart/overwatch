@@ -1014,6 +1014,10 @@ export interface ICreateWorkSpaceRequest {
 
 export interface ICreateWorkSpaceResponse {
   message: string;
+  data: {
+    title: string;
+    backgroundColor: string;
+  };
 }
 
 export interface IUpdateRepositoryCommentResponse extends IBaseResponse {}

@@ -1,8 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import {
-    ICreateWorkSpaceResponse,
-    ICreateWorkSpaceRequest
-} from '../../interfaces';
+import { ICreateWorkSpaceResponse, ICreateWorkSpaceRequest } from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
 const workSpacesApi = createApi({
