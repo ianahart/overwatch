@@ -1,12 +1,20 @@
-import { BsTrash } from 'react-icons/bs';
+import { BsTrash, BsPlus } from 'react-icons/bs';
 import { useSelector, useDispatch } from 'react-redux';
-import { TRootState, updateWorkSpaceProperty, useCreateWorkSpaceMutation } from '../../../../../state/store';
+import {
+  TRootState,
+  setWorkSpace,
+  updateWorkSpaceProperty,
+  useCreateWorkSpaceMutation,
+  useEditWorkSpaceMutation,
+} from '../../../../../state/store';
 import { useState } from 'react';
 import WorkSpaceBackgroundPicker from './WorkSpaceBackgroundPicker';
+import { ICreateWorkSpaceRequest, IUpdateWorkSpaceRequest } from '../../../../../interfaces';
 
 const WorkSpaceTitle = () => {
   const dispatch = useDispatch();
   const [createWorkSpace] = useCreateWorkSpaceMutation();
+  const [updateWorkSpace] = useEditWorkSpaceMutation();
   const { token, user } = useSelector((store: TRootState) => store.user);
   const { workSpace } = useSelector((store: TRootState) => store.workSpace);
   const [error, setError] = useState('');
@@ -19,9 +27,7 @@ const WorkSpaceTitle = () => {
     }
   };
 
-  const handleOnBlur = () => {
-    setError('');
-    const payload = { token, userId: user.id, workSpace: { title: inputValue, backgroundColor: '' } };
+  const handleCreateWorkSpace = (payload: ICreateWorkSpaceRequest) => {
     createWorkSpace(payload)
       .unwrap()
       .then((res) => {
@@ -31,6 +37,34 @@ const WorkSpaceTitle = () => {
       .catch((err) => {
         applyServerErrors(err.data);
       });
+  };
+
+  const handleUpdateWorkSpace = (payload: IUpdateWorkSpaceRequest) => {
+    updateWorkSpace(payload)
+      .unwrap()
+      .then((res) => {
+        dispatch(setWorkSpace(res.data));
+        setIsActive(false);
+      })
+      .catch((err) => {
+        applyServerErrors(err.data);
+      });
+  };
+
+  const handleOnBlur = () => {
+    if (inputValue.trim().length === 0) return;
+    setError('');
+    const payload = { token, userId: user.id, workSpace: { title: inputValue, backgroundColor: '' } };
+
+    if (workSpace.id === 0) {
+      handleCreateWorkSpace(payload);
+    } else {
+      handleUpdateWorkSpace({ ...payload, id: workSpace.id });
+    }
+  };
+
+  const emptyWorkSpace = () => {
+    dispatch(setWorkSpace({ userId: 0, id: 0, createdAt: '', title: '', backgroundColor: '' }));
   };
 
   return (
@@ -51,6 +85,9 @@ const WorkSpaceTitle = () => {
         )}
         {workSpace.title.length > 0 && (
           <div className="flex items-center">
+            <div className="mx-2" onClick={emptyWorkSpace}>
+              <BsPlus className="text-xl" />
+            </div>
             <div className="mx-2">
               <BsTrash className="text-gray-400" />
             </div>

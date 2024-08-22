@@ -2,10 +2,14 @@ import { useState } from 'react';
 import { BsThreeDots } from 'react-icons/bs';
 import ClickAway from '../../../../Shared/ClickAway';
 import { backgroundColors } from '../../../../../data';
-import { useDispatch } from 'react-redux';
-import { updateWorkSpaceProperty } from '../../../../../state/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { TRootState, setWorkSpace, useEditWorkSpaceMutation } from '../../../../../state/store';
+import { IUpdateWorkSpaceRequest } from '../../../../../interfaces';
 
 const WorkSpaceBackgroundPicker = () => {
+  const { token, user } = useSelector((store: TRootState) => store.user);
+  const { workSpace } = useSelector((store: TRootState) => store.workSpace);
+  const [updateWorkSpace] = useEditWorkSpaceMutation();
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -14,8 +18,23 @@ const WorkSpaceBackgroundPicker = () => {
   };
 
   const handleSelectBackgroundColor = (backgroundColor: string) => {
-    dispatch(updateWorkSpaceProperty({ value: backgroundColor, property: 'backgroundColor' }));
+    const payload = {
+      token,
+      userId: user.id,
+      workSpace: { title: workSpace.title, backgroundColor },
+      id: workSpace.id,
+    };
+    handleUpdateWorkSpace(payload);
+
     setIsOpen(false);
+  };
+
+  const handleUpdateWorkSpace = (payload: IUpdateWorkSpaceRequest) => {
+    updateWorkSpace(payload)
+      .unwrap()
+      .then((res) => {
+        dispatch(setWorkSpace(res.data));
+      });
   };
 
   return (

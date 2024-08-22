@@ -4,6 +4,7 @@ import WorkSpaceTitle from './WorkspaceTitle';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { clearWorkSpace } from '../../../../../state/store';
+import CurrentWorkSpaces from './CurrentWorkSpaces';
 
 const WorkSpaceContainer = () => {
   const dispatch = useDispatch();
@@ -21,6 +22,7 @@ const WorkSpaceContainer = () => {
 
   return (
     <div>
+      <CurrentWorkSpaces />
       <WorkSpaceTitle />
       <button className="btn" onClick={handleOnClick}>
         go to outlet route

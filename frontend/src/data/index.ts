@@ -104,6 +104,14 @@ export const paginationState = {
   totalElements: 0,
 };
 
+export const paginationStateFromZero = {
+  page: -1,
+  pageSize: 3,
+  totalPages: 0,
+  direction: 'next',
+  totalElements: 0,
+};
+
 export const repositoryPaginationState = {
   page: 0,
   pageSize: 5,

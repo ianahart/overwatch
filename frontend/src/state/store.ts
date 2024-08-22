@@ -5,7 +5,7 @@ import { signUpReducer, updateSignUpField, updateRole, clearSignUpForm } from '.
 import { updateSignInField, clearSignInForm, signInReducer } from './slices/signinSlice';
 import { userReducer, updateUser, updateTokens, clearUser, updateUserAndTokens } from './slices/userSlice';
 import { settingReducer, updateSetting, clearSetting } from './slices/settingSlice';
-import { updateWorkSpaceProperty, clearWorkSpace, workSpaceReducer } from './slices/workSpaceSlice';
+import { updateWorkSpaceProperty, clearWorkSpace, workSpaceReducer, setWorkSpace } from './slices/workSpaceSlice';
 import {
   setRepositoryNavView,
   setRepositoryLanguages,
@@ -248,6 +248,7 @@ export {
   updateRepository,
   clearWorkSpace,
   updateWorkSpaceProperty,
+  setWorkSpace,
 };
 
 export {
@@ -349,7 +350,12 @@ export {
   useUpdateRepositoryReviewMutation,
 } from './apis/repositoriesApi';
 
-export { useCreateWorkSpaceMutation } from './apis/workSpacesApi';
+export {
+  useEditWorkSpaceMutation,
+  useCreateWorkSpaceMutation,
+  useFetchWorkspacesQuery,
+  useLazyFetchWorkspacesQuery,
+} from './apis/workSpacesApi';
 
 export {
   testimonialsApi,
