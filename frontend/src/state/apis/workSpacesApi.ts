@@ -1,0 +1,88 @@
+import { createApi } from '@reduxjs/toolkit/query/react';
+import {
+  ICreateWorkSpaceResponse,
+  ICreateWorkSpaceRequest,
+  IFetchWorkSpacesResponse,
+  IFetchWorkSpacesRequest,
+  IUpdateWorkSpaceResponse,
+  IUpdateWorkSpaceRequest,
+} from '../../interfaces';
+import { baseQueryWithReauth } from '../util';
+
+const workSpacesApi = createApi({
+  reducerPath: 'workSpaces',
+  tagTypes: ['WorkSpace'],
+  baseQuery: baseQueryWithReauth,
+  endpoints(builder) {
+    return {
+      editWorkSpace: builder.mutation<IUpdateWorkSpaceResponse, IUpdateWorkSpaceRequest>({
+        query: ({ token, userId, id, workSpace }) => {
+          return {
+            url: `/workspaces/${id}`,
+            method: 'PATCH',
+            body: {
+              title: workSpace.title,
+              backgroundColor: workSpace.backgroundColor,
+              userId,
+            },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+        invalidatesTags: (_, error, { id }) => {
+          console.log(error);
+          return [
+            { type: 'WorkSpace', id: id },
+            { type: 'WorkSpace', id: 'LIST' },
+          ];
+        },
+      }),
+
+      fetchWorkspaces: builder.query<IFetchWorkSpacesResponse, IFetchWorkSpacesRequest>({
+        query: ({ userId, token, page, pageSize, direction }) => {
+          if (userId === 0 || userId === null) {
+            return '';
+          }
+          return {
+            url: `/workspaces?userId=${userId}&page=${page}&pageSize=${pageSize}&direction=${direction}`,
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+        //@ts-ignore
+        providesTags: (result, error, arg) =>
+          result
+            ? [...result.data.items.map(({ id }) => ({ type: 'WorkSpace', id })), { type: 'WorkSpace', id: 'LIST' }]
+            : [{ type: 'WorkSpace', id: 'LIST' }],
+      }),
+
+      createWorkSpace: builder.mutation<ICreateWorkSpaceResponse, ICreateWorkSpaceRequest>({
+        query: ({ userId, token, workSpace }) => {
+          return {
+            url: `/workspaces`,
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: {
+              title: workSpace.title,
+              backgroundColor: workSpace.backgroundColor,
+              userId,
+            },
+          };
+        },
+      }),
+    };
+  },
+});
+
+export const {
+  useEditWorkSpaceMutation,
+  useCreateWorkSpaceMutation,
+  useFetchWorkspacesQuery,
+  useLazyFetchWorkspacesQuery,
+} = workSpacesApi;
+export { workSpacesApi };

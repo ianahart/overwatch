@@ -1,5 +1,18 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 
+export interface IWorkSpaceState {
+  workSpace: IWorkSpaceEntity;
+  todoLists: string[];
+}
+
+export interface IWorkSpaceEntity {
+  id: number;
+  createdAt: string;
+  userId: number;
+  title: string;
+  backgroundColor: string;
+}
+
 export interface IProgressMapper {
   INCOMPLETE: { text: string; background: string };
   INPROGRESS: { text: string; background: string };
@@ -993,6 +1006,52 @@ export interface IUpdateRepositoryResponse {
   data: {
     status: string;
     feedback: string;
+  };
+}
+
+export interface ICreateWorkSpaceRequest {
+  token: string;
+  userId: number;
+  workSpace: { title: string; backgroundColor: string };
+}
+
+export interface IUpdateWorkSpaceRequest {
+  token: string;
+  userId: number;
+  id: number;
+  workSpace: { title: string; backgroundColor: string };
+}
+
+export interface IUpdateWorkSpaceResponse {
+  message: string;
+  data: IWorkSpaceEntity;
+}
+
+export interface ICreateWorkSpaceResponse {
+  message: string;
+  data: {
+    title: string;
+    backgroundColor: string;
+  };
+}
+
+export interface IFetchWorkSpacesRequest {
+  userId: number;
+  token: string;
+  page: number;
+  pageSize: number;
+  direction: string;
+}
+
+export interface IFetchWorkSpacesResponse {
+  message: string;
+  data: {
+    items: IWorkSpaceEntity[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
   };
 }
 

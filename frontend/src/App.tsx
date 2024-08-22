@@ -40,6 +40,9 @@ import ReviewerStatisticRoute from './routes/Dashboard/Reviewer/StatistictRoute'
 import ReviewerReviewsRoute from './routes/Dashboard/Reviewer/ReviewsRoute';
 import RepositoryReviewRoute from './routes/Dashboard/Reviewer/RepositoryReviewRoute';
 import RequireAuthUser from './components/Guard/RequireAuthUser';
+import RequireAuthReviewer from './components/Guard/RequireAuthReviewer';
+import WorkSpaceContainerRoute from './routes/Dashboard/Reviewer/WorkSpaceContainerRoute';
+import WorkSpaceRoute from './routes/Dashboard/Reviewer/WorkSpaceRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -82,19 +85,37 @@ const router = createBrowserRouter(
         <Route
           path="reviewer/reviews"
           element={
-            <RequireAuth>
+            <RequireAuthReviewer>
               <ReviewerReviewsRoute />
-            </RequireAuth>
+            </RequireAuthReviewer>
           }
         />
         <Route
           path="reviewer/stats"
           element={
-            <RequireAuth>
+            <RequireAuthReviewer>
               <ReviewerStatisticRoute />
-            </RequireAuth>
+            </RequireAuthReviewer>
           }
         />
+        <Route
+          path="reviewer/workspaces"
+          element={
+            <RequireAuthReviewer>
+              <WorkSpaceContainerRoute />
+            </RequireAuthReviewer>
+          }
+        >
+          <Route
+            path=":workspaceId"
+            element={
+              <RequireAuthReviewer>
+                <WorkSpaceRoute />
+              </RequireAuthReviewer>
+            }
+          />
+        </Route>
+
         <Route
           path="user/add-review"
           element={

@@ -6,6 +6,7 @@ import { VscGraphLine } from 'react-icons/vsc';
 import DashboardTitle from './DashboardTitle';
 import { TRootState } from '../../state/store';
 import DashboardNavigationLink from './DashboardNavigationLink';
+import { BsKanban } from 'react-icons/bs';
 
 const ReviewerSidebarNavigation = () => {
   const { user } = useSelector((store: TRootState) => store.user);
@@ -13,6 +14,7 @@ const ReviewerSidebarNavigation = () => {
     { path: 'reviewer/reviews', label: 'Your Reviews', id: 2, icon: <GoCodeReview /> },
     { path: `/settings/${user.slug}/connects`, label: 'Connects', id: 3, icon: <GiCheckboxTree /> },
     { path: 'reviewer/stats', label: 'Your statistics', id: 4, icon: <VscGraphLine /> },
+    { path: 'reviewer/workspaces', label: 'Your Workspaces', id: 5, icon: <BsKanban /> },
   ];
 
   return (

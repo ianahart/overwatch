@@ -5,6 +5,7 @@ import { signUpReducer, updateSignUpField, updateRole, clearSignUpForm } from '.
 import { updateSignInField, clearSignInForm, signInReducer } from './slices/signinSlice';
 import { userReducer, updateUser, updateTokens, clearUser, updateUserAndTokens } from './slices/userSlice';
 import { settingReducer, updateSetting, clearSetting } from './slices/settingSlice';
+import { updateWorkSpaceProperty, clearWorkSpace, workSpaceReducer, setWorkSpace } from './slices/workSpaceSlice';
 import {
   setRepositoryNavView,
   setRepositoryLanguages,
@@ -103,9 +104,11 @@ import { favoritesApi } from './apis/favoritesApi';
 import { pinnedConnectionsApi } from './apis/pinnedConnectionsApi';
 import { githubApi } from './apis/githubApi';
 import { repositoriesApi } from './apis/repositoriesApi';
+import { workSpacesApi } from './apis/workSpacesApi';
 
 export const store = configureStore({
   reducer: {
+    workSpace: workSpaceReducer,
     repositoryTree: repositoryTreeReducer,
     repositoryReviews: repositoryReviewsReducer,
     addReview: addReviewReducer,
@@ -138,6 +141,7 @@ export const store = configureStore({
     [pinnedConnectionsApi.reducerPath]: pinnedConnectionsApi.reducer,
     [githubApi.reducerPath]: githubApi.reducer,
     [repositoriesApi.reducerPath]: repositoriesApi.reducer,
+    [workSpacesApi.reducerPath]: workSpacesApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -162,7 +166,8 @@ export const store = configureStore({
       .concat(favoritesApi.middleware)
       .concat(pinnedConnectionsApi.middleware)
       .concat(githubApi.middleware)
-      .concat(repositoriesApi.middleware);
+      .concat(repositoriesApi.middleware)
+      .concat(workSpacesApi.middleware);
   },
 });
 
@@ -241,6 +246,9 @@ export {
   setRepositoryLanguages,
   setRepositoryNavView,
   updateRepository,
+  clearWorkSpace,
+  updateWorkSpaceProperty,
+  setWorkSpace,
 };
 
 export {
@@ -343,6 +351,13 @@ export {
 } from './apis/repositoriesApi';
 
 export {
+  useEditWorkSpaceMutation,
+  useCreateWorkSpaceMutation,
+  useFetchWorkspacesQuery,
+  useLazyFetchWorkspacesQuery,
+} from './apis/workSpacesApi';
+
+export {
   testimonialsApi,
   authsApi,
   heartbeatApi,
@@ -357,4 +372,5 @@ export {
   pinnedConnectionsApi,
   githubApi,
   repositoriesApi,
+  workSpacesApi,
 };

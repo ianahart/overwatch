@@ -7,7 +7,7 @@ interface Props {
   children: JSX.Element;
 }
 
-const RequireAuth: React.FC<Props> = ({ children }): JSX.Element => {
+const RequireAuthReviewer: React.FC<Props> = ({ children }): JSX.Element => {
   const location = useLocation();
   const { user } = useSelector((store: TRootState) => store.user);
 
@@ -22,4 +22,4 @@ const RequireAuth: React.FC<Props> = ({ children }): JSX.Element => {
   }
 };
 
-export default RequireAuth;
+export default RequireAuthReviewer;

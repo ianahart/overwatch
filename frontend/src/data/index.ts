@@ -13,6 +13,24 @@ export const repositoryState = {
   updatedAt: '',
 };
 
+export const backgroundColors = [
+  { id: 1, value: '#fb7185' },
+  { id: 2, value: '#f472b6' },
+  { id: 3, value: '#e879f9' },
+  { id: 4, value: '#c084fc' },
+  { id: 5, value: '#a78bfa' },
+  { id: 6, value: '#818cf8' },
+  { id: 7, value: '#60a5fa' },
+  { id: 8, value: '#22d3ee' },
+  { id: 9, value: '#34d399' },
+  { id: 10, value: '#4ade80' },
+  { id: 11, value: '#facc15' },
+  { id: 12, value: '#fbb524' },
+  { id: 13, value: '#f87171' },
+  { id: 14, value: '#a8e29e' },
+  { id: 15, value: '#9ca3af' },
+];
+
 export const reviewsFilterStatusOptions = [
   { id: 1, value: 'INPROGRESS', name: 'In Progress' },
   { id: 2, value: 'INCOMPLETE', name: 'In Complete' },
@@ -80,6 +98,14 @@ export const connectionState = {
 
 export const paginationState = {
   page: 0,
+  pageSize: 3,
+  totalPages: 0,
+  direction: 'next',
+  totalElements: 0,
+};
+
+export const paginationStateFromZero = {
+  page: -1,
   pageSize: 3,
   totalPages: 0,
   direction: 'next',
