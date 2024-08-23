@@ -22,6 +22,7 @@ import com.hart.overwatch.repository.Repository;
 import com.hart.overwatch.review.Review;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.testimonial.Testimonial;
+import com.hart.overwatch.todolist.TodoList;
 import com.hart.overwatch.token.Token;
 import com.hart.overwatch.workspace.WorkSpace;
 import org.hibernate.annotations.CreationTimestamp;
@@ -170,6 +171,10 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<WorkSpace> workSpaces;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<TodoList> todoLists;
+
 
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -244,6 +249,10 @@ public class User implements UserDetails {
 
     public List<Connection> getSenderConnections() {
         return senderConnections;
+    }
+
+    public List<TodoList> getTodoLists() {
+        return todoLists;
     }
 
     public List<Repository> getOwnerRepositories() {
@@ -356,6 +365,10 @@ public class User implements UserDetails {
 
     public void setPinnedUserConnections(List<ConnectionPin> pinnedUserConnections) {
         this.pinnedUserConnections = pinnedUserConnections;
+    }
+
+    public void setTodoLists(List<TodoList> todoLists) {
+        this.todoLists = todoLists;
     }
 
     public void setPinnedOwnerConnections(List<ConnectionPin> pinnedOwnerConnections) {

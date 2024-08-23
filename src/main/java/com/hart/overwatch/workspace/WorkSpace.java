@@ -1,16 +1,21 @@
 package com.hart.overwatch.workspace;
 
+import java.util.List;
 import java.sql.Timestamp;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import com.hart.overwatch.todolist.TodoList;
 import com.hart.overwatch.user.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
@@ -43,6 +48,11 @@ public class WorkSpace {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
+    @OneToMany(mappedBy = "workSpace", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<TodoList> todoLists;
+
+
     public WorkSpace() {
 
     }
@@ -74,6 +84,10 @@ public class WorkSpace {
         return title;
     }
 
+    public List<TodoList> getTodoLists() {
+        return todoLists;
+    }
+
     public Timestamp getCreatedAt() {
         return createdAt;
     }
@@ -88,6 +102,10 @@ public class WorkSpace {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setTodoLists(List<TodoList> todoLists) {
+        this.todoLists = todoLists;
     }
 
     public void setUser(User user) {

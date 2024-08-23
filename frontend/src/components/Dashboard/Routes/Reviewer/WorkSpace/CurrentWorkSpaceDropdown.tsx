@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import ClickAway from '../../../../Shared/ClickAway';
 import { IPaginationState, IWorkSpaceEntity } from '../../../../../interfaces';
@@ -17,6 +18,7 @@ interface ICurrentWorkSpaceDropdownProps {
 }
 
 const CurrentWorkSpaceDropdown = ({ onClickAway, handleSetOpen }: ICurrentWorkSpaceDropdownProps) => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { token, user } = useSelector((store: TRootState) => store.user);
   const [pagination, setPagination] = useState<IPaginationState>(paginationState);
@@ -73,6 +75,7 @@ const CurrentWorkSpaceDropdown = ({ onClickAway, handleSetOpen }: ICurrentWorkSp
   const selectWorkSpace = (entity: IWorkSpaceEntity) => {
     dispatch(setWorkSpace(entity));
     handleSetOpen(false);
+    navigate(`/dashboard/${user.slug}/reviewer/workspaces/${entity.id}`);
   };
 
   return (

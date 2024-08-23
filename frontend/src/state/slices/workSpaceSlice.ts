@@ -15,7 +15,6 @@ const initialState: IWorkSpaceState = {
     title: '',
     backgroundColor: '',
   },
-  todoLists: [],
 };
 
 const workSpaceSlice = createSlice({
