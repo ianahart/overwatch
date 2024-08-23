@@ -5,6 +5,7 @@ import {
   setWorkSpace,
   updateWorkSpaceProperty,
   useCreateWorkSpaceMutation,
+  useDeleteWorkSpaceMutation,
   useEditWorkSpaceMutation,
 } from '../../../../../state/store';
 import { useState } from 'react';
@@ -13,6 +14,7 @@ import { ICreateWorkSpaceRequest, IUpdateWorkSpaceRequest } from '../../../../..
 
 const WorkSpaceTitle = () => {
   const dispatch = useDispatch();
+  const [deleteWorkSpace] = useDeleteWorkSpaceMutation();
   const [createWorkSpace] = useCreateWorkSpaceMutation();
   const [updateWorkSpace] = useEditWorkSpaceMutation();
   const { token, user } = useSelector((store: TRootState) => store.user);
@@ -67,6 +69,17 @@ const WorkSpaceTitle = () => {
     dispatch(setWorkSpace({ userId: 0, id: 0, createdAt: '', title: '', backgroundColor: '' }));
   };
 
+  const handleDeleteWorkSpace = () => {
+    deleteWorkSpace({ token, id: workSpace.id })
+      .unwrap()
+      .then(() => {
+        emptyWorkSpace();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <>
       {error.length > 0 && <div className="flex my-1 text-red-400 text-sm justify-start">{error}</div>}
@@ -85,10 +98,10 @@ const WorkSpaceTitle = () => {
         )}
         {workSpace.title.length > 0 && (
           <div className="flex items-center">
-            <div className="mx-2" onClick={emptyWorkSpace}>
+            <div className="mx-2 cursor-pointer" onClick={emptyWorkSpace}>
               <BsPlus className="text-xl" />
             </div>
-            <div className="mx-2">
+            <div className="mx-2 cursor-pointer" onClick={handleDeleteWorkSpace}>
               <BsTrash className="text-gray-400" />
             </div>
             <div className="mx-2">

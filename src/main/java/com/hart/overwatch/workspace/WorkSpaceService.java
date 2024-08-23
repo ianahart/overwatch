@@ -13,6 +13,7 @@ import com.hart.overwatch.workspace.dto.WorkSpaceDto;
 import com.hart.overwatch.workspace.request.CreateWorkSpaceRequest;
 import com.hart.overwatch.workspace.request.UpdateWorkSpaceRequest;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.advice.BadRequestException;
@@ -103,5 +104,17 @@ public class WorkSpaceService {
 
         return new WorkSpaceDto(workSpace.getId(), workSpace.getUser().getId(),
                 workSpace.getCreatedAt(), workSpace.getTitle(), workSpace.getBackgroundColor());
+    }
+
+
+    public void deleteWorkSpace(Long workSpaceId) {
+        User currentUser = userService.getCurrentlyLoggedInUser();
+        WorkSpace workSpace = getWorkSpaceById(workSpaceId);
+
+        if (currentUser.getId() != workSpace.getUser().getId()) {
+            throw new ForbiddenException("Cannot delete a workspace that is not yours");
+        }
+
+        workSpaceRepository.delete(workSpace);
     }
 }

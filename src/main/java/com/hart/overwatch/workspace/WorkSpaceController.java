@@ -3,6 +3,7 @@ package com.hart.overwatch.workspace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hart.overwatch.workspace.request.CreateWorkSpaceRequest;
 import com.hart.overwatch.workspace.request.UpdateWorkSpaceRequest;
 import com.hart.overwatch.workspace.response.CreateWorkSpaceResponse;
+import com.hart.overwatch.workspace.response.DeleteWorkSpaceResponse;
 import com.hart.overwatch.workspace.response.GetAllWorkSpaceResponse;
 import com.hart.overwatch.workspace.response.UpdateWorkSpaceResponse;
 import jakarta.validation.Valid;
@@ -51,5 +53,12 @@ public class WorkSpaceController {
 
         return ResponseEntity.status(HttpStatus.OK).body(new UpdateWorkSpaceResponse("success",
                 this.workSpaceService.updateWorkSpace(request, id)));
+    }
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<DeleteWorkSpaceResponse> deleteWorkSpace(@PathVariable("id") Long id) {
+
+        this.workSpaceService.deleteWorkSpace(id);
+        return ResponseEntity.status(HttpStatus.OK).body(new DeleteWorkSpaceResponse("success"));
     }
 }

@@ -1055,6 +1055,13 @@ export interface IFetchWorkSpacesResponse {
   };
 }
 
+export interface IDeleteWorkSpaceRequest {
+  token: string;
+  id: number;
+}
+
+export interface IDeleteWorkSpaceResponse extends IBaseResponse {}
+
 export interface IUpdateRepositoryCommentResponse extends IBaseResponse {}
 
 export interface IDeleteUserRepositoryResponse extends IBaseResponse {}
