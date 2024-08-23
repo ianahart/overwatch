@@ -37,7 +37,7 @@ public class WorkSpaceService {
         this.paginationService = paginationService;
     }
 
-    private WorkSpace getWorkSpaceById(Long workSpaceId) {
+    public WorkSpace getWorkSpaceById(Long workSpaceId) {
         return workSpaceRepository.findById(workSpaceId).orElseThrow(() -> new NotFoundException(
                 String.format("A workspace with the id %d was not found", workSpaceId)));
     }

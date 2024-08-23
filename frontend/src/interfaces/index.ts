@@ -1,8 +1,20 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 
+export interface ITodoList {
+  id: number;
+  userId: number;
+  workSpaceId: number;
+  title: string;
+  index: number;
+  createdAt: string;
+}
+
+export interface ITodoListState {
+  todoList: ITodoList[];
+}
+
 export interface IWorkSpaceState {
   workSpace: IWorkSpaceEntity;
-  todoLists: string[];
 }
 
 export interface IWorkSpaceEntity {
@@ -1058,6 +1070,19 @@ export interface IFetchWorkSpacesResponse {
 export interface IDeleteWorkSpaceRequest {
   token: string;
   id: number;
+}
+
+export interface ICreateTodoListRequest {
+  token: string;
+  userId: number;
+  title: string;
+  workSpaceId: number;
+  index: number;
+}
+
+export interface ICreateTodoListResponse {
+  message: string;
+  data: ITodoList;
 }
 
 export interface IDeleteWorkSpaceResponse extends IBaseResponse {}

@@ -6,6 +6,7 @@ import { updateSignInField, clearSignInForm, signInReducer } from './slices/sign
 import { userReducer, updateUser, updateTokens, clearUser, updateUserAndTokens } from './slices/userSlice';
 import { settingReducer, updateSetting, clearSetting } from './slices/settingSlice';
 import { updateWorkSpaceProperty, clearWorkSpace, workSpaceReducer, setWorkSpace } from './slices/workSpaceSlice';
+import { clearTodoList, addToTodoList, setTodoList, todoListReducer } from './slices/todoListSlice';
 import {
   setRepositoryNavView,
   setRepositoryLanguages,
@@ -105,9 +106,11 @@ import { pinnedConnectionsApi } from './apis/pinnedConnectionsApi';
 import { githubApi } from './apis/githubApi';
 import { repositoriesApi } from './apis/repositoriesApi';
 import { workSpacesApi } from './apis/workSpacesApi';
+import { todoListsApi } from './apis/todoListsApi';
 
 export const store = configureStore({
   reducer: {
+    todoList: todoListReducer,
     workSpace: workSpaceReducer,
     repositoryTree: repositoryTreeReducer,
     repositoryReviews: repositoryReviewsReducer,
@@ -142,6 +145,7 @@ export const store = configureStore({
     [githubApi.reducerPath]: githubApi.reducer,
     [repositoriesApi.reducerPath]: repositoriesApi.reducer,
     [workSpacesApi.reducerPath]: workSpacesApi.reducer,
+    [todoListsApi.reducerPath]: todoListsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -167,7 +171,8 @@ export const store = configureStore({
       .concat(pinnedConnectionsApi.middleware)
       .concat(githubApi.middleware)
       .concat(repositoriesApi.middleware)
-      .concat(workSpacesApi.middleware);
+      .concat(workSpacesApi.middleware)
+      .concat(todoListsApi.middleware);
   },
 });
 
@@ -249,6 +254,9 @@ export {
   clearWorkSpace,
   updateWorkSpaceProperty,
   setWorkSpace,
+  setTodoList,
+  addToTodoList,
+  clearTodoList,
 };
 
 export {
@@ -358,6 +366,8 @@ export {
   useLazyFetchWorkspacesQuery,
 } from './apis/workSpacesApi';
 
+export { useCreateTodoListMutation } from './apis/todoListsApi';
+
 export {
   testimonialsApi,
   authsApi,
@@ -374,4 +384,5 @@ export {
   githubApi,
   repositoriesApi,
   workSpacesApi,
+  todoListsApi,
 };
