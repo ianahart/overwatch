@@ -6,6 +6,8 @@ import {
   IFetchWorkSpacesRequest,
   IUpdateWorkSpaceResponse,
   IUpdateWorkSpaceRequest,
+  IDeleteWorkSpaceRequest,
+  IDeleteWorkSpaceResponse,
 } from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
@@ -15,6 +17,21 @@ const workSpacesApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints(builder) {
     return {
+      deleteWorkSpace: builder.mutation<IDeleteWorkSpaceResponse, IDeleteWorkSpaceRequest>({
+        query: ({ id, token }) => ({
+          url: `workspaces/${id}`,
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }),
+        //@ts-ignore
+        invalidatesTags: (_, error, { id }) => [
+          { type: 'WorkSpace', id },
+          { type: 'WorkSpace', id: 'LIST' },
+        ],
+      }),
+
       editWorkSpace: builder.mutation<IUpdateWorkSpaceResponse, IUpdateWorkSpaceRequest>({
         query: ({ token, userId, id, workSpace }) => {
           return {
@@ -80,6 +97,7 @@ const workSpacesApi = createApi({
 });
 
 export const {
+  useDeleteWorkSpaceMutation,
   useEditWorkSpaceMutation,
   useCreateWorkSpaceMutation,
   useFetchWorkspacesQuery,

@@ -351,6 +351,7 @@ export {
 } from './apis/repositoriesApi';
 
 export {
+  useDeleteWorkSpaceMutation,
   useEditWorkSpaceMutation,
   useCreateWorkSpaceMutation,
   useFetchWorkspacesQuery,
