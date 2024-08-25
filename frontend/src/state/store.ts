@@ -6,7 +6,13 @@ import { updateSignInField, clearSignInForm, signInReducer } from './slices/sign
 import { userReducer, updateUser, updateTokens, clearUser, updateUserAndTokens } from './slices/userSlice';
 import { settingReducer, updateSetting, clearSetting } from './slices/settingSlice';
 import { updateWorkSpaceProperty, clearWorkSpace, workSpaceReducer, setWorkSpace } from './slices/workSpaceSlice';
-import { clearTodoList, addToTodoList, setTodoList, todoListReducer } from './slices/todoListSlice';
+import {
+  updateSingleTodoList,
+  clearTodoLists,
+  addToTodoList,
+  setTodoLists,
+  todoListsReducer,
+} from './slices/todoListSlice';
 import {
   setRepositoryNavView,
   setRepositoryLanguages,
@@ -110,7 +116,7 @@ import { todoListsApi } from './apis/todoListsApi';
 
 export const store = configureStore({
   reducer: {
-    todoList: todoListReducer,
+    todoList: todoListsReducer,
     workSpace: workSpaceReducer,
     repositoryTree: repositoryTreeReducer,
     repositoryReviews: repositoryReviewsReducer,
@@ -254,9 +260,10 @@ export {
   clearWorkSpace,
   updateWorkSpaceProperty,
   setWorkSpace,
-  setTodoList,
+  setTodoLists,
   addToTodoList,
-  clearTodoList,
+  clearTodoLists,
+  updateSingleTodoList,
 };
 
 export {
@@ -366,7 +373,7 @@ export {
   useLazyFetchWorkspacesQuery,
 } from './apis/workSpacesApi';
 
-export { useCreateTodoListMutation } from './apis/todoListsApi';
+export { useCreateTodoListMutation, useLazyFetchTodoListsQuery, useEditTodoListMutation } from './apis/todoListsApi';
 
 export {
   testimonialsApi,

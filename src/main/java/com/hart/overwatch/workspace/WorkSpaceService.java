@@ -1,5 +1,6 @@
 package com.hart.overwatch.workspace;
 
+import java.util.Optional;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,12 +38,18 @@ public class WorkSpaceService {
         this.paginationService = paginationService;
     }
 
+    public boolean workSpaceExists(Long workSpaceId) {
+        Optional<WorkSpace> workSpace = workSpaceRepository.findById(workSpaceId);
+
+        return workSpace.isPresent();
+    }
+
     public WorkSpace getWorkSpaceById(Long workSpaceId) {
         return workSpaceRepository.findById(workSpaceId).orElseThrow(() -> new NotFoundException(
                 String.format("A workspace with the id %d was not found", workSpaceId)));
     }
 
-    private boolean alreadyExists(String title, Long userId) {
+    private boolean alreadyExistsByTitleAndUserId(String title, Long userId) {
         return workSpaceRepository.alreadyExistsByTitleAndUserId(title, userId);
     }
 
@@ -52,7 +59,7 @@ public class WorkSpaceService {
 
     public CreateWorkSpaceDto createWorkSpace(CreateWorkSpaceRequest request) {
 
-        if (alreadyExists(request.getTitle(), request.getUserId())) {
+        if (alreadyExistsByTitleAndUserId(request.getTitle(), request.getUserId())) {
             throw new BadRequestException("You already have a workspace with that title");
         }
 
