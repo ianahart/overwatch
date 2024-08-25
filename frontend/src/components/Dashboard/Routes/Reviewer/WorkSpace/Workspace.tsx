@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { TRootState } from '../../../../../state/store';
-import AddTodoList from './AddTodoList';
+import TodoLists from './TodoLists';
 
 const WorkSpace = () => {
   const { workSpace } = useSelector((store: TRootState) => store.workSpace);
@@ -8,8 +8,8 @@ const WorkSpace = () => {
   const style = { backgroundColor: workSpace.backgroundColor ? workSpace.backgroundColor : 'gray' };
 
   return (
-    <div style={style} className="w-full min-h-[700px] rounded p-2">
-      {workSpace.id !== 0 && <AddTodoList />}
+    <div style={style} className="min-h-[700px] w-full rounded p-2 overflow-x-auto">
+      {workSpace.id !== 0 && <TodoLists />}
     </div>
   );
 };

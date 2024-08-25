@@ -7,6 +7,7 @@ const AddTodoList = () => {
   const dispatch = useDispatch();
   const { user, token } = useSelector((store: TRootState) => store.user);
   const { workSpace } = useSelector((store: TRootState) => store.workSpace);
+  const { todoLists } = useSelector((store: TRootState) => store.todoList);
   const [createTodoList] = useCreateTodoListMutation();
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -36,23 +37,29 @@ const AddTodoList = () => {
     if (inputValue.trim().length === 0) {
       return;
     }
-    const payload = { userId: user.id, title: inputValue, workSpaceId: workSpace.id, token, index: 0 };
+
+    const nextIndex = todoLists.length === 0 ? 0 : todoLists.indexOf(todoLists[todoLists.length - 1]) + 1;
+    const payload = {
+      userId: user.id,
+      title: inputValue,
+      workSpaceId: workSpace.id,
+      token,
+      index: nextIndex,
+    };
     createTodoList(payload)
       .unwrap()
       .then((res) => {
         dispatch(addToTodoList(res.data));
-        console.log(res);
         closeDropDown();
       })
       .catch((err) => {
-        console.log(err);
         applyServerErrors(err.data);
       });
   };
 
   return (
     <>
-      <div className="bg-slate-900 max-w-[225px] rounded p-2 text-gray-400">
+      <div className="bg-slate-900 min-w-[225px] mx-2 w-full max-w-[225px] rounded p-2 text-gray-400">
         {!isDropDownOpen && (
           <div onClick={openDropDown} className="flex items-center cursor-pointer">
             <div className="text-xl mr-2">

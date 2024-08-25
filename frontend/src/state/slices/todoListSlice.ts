@@ -1,24 +1,36 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { ITodoListState, ITodoList } from '../../interfaces';
+import { ITodoListsState, ITodoList } from '../../interfaces';
 import { clearUser, setWorkSpace } from '../store';
 
-const initialState: ITodoListState = {
-  todoList: [],
+const initialState: ITodoListsState = {
+  todoLists: [],
 };
 
-const todoListSlice = createSlice({
+const todoListsSlice = createSlice({
   name: 'todoList',
   initialState,
   reducers: {
-    setTodoList: (state, action: PayloadAction<ITodoList[]>) => {
-      state.todoList = action.payload;
+    setTodoLists: (state, action: PayloadAction<ITodoList[]>) => {
+      state.todoLists = action.payload;
+    },
+
+    updateSingleTodoList: (state, action: PayloadAction<ITodoList>) => {
+      const updatedTodoList = action.payload;
+
+      state.todoLists = state.todoLists.map((todoList) => {
+        if (todoList.id === updatedTodoList.id) {
+          return { ...updatedTodoList };
+        } else {
+          return { ...todoList };
+        }
+      });
     },
 
     addToTodoList: (state, action: PayloadAction<ITodoList>) => {
-      state.todoList.push(action.payload);
+      state.todoLists.push(action.payload);
     },
 
-    clearTodoList: () => {
+    clearTodoLists: () => {
       return initialState;
     },
   },
@@ -32,6 +44,6 @@ const todoListSlice = createSlice({
   },
 });
 
-export const { setTodoList, addToTodoList, clearTodoList } = todoListSlice.actions;
+export const { setTodoLists, addToTodoList, clearTodoLists, updateSingleTodoList } = todoListsSlice.actions;
 
-export const todoListReducer = todoListSlice.reducer;
+export const todoListsReducer = todoListsSlice.reducer;

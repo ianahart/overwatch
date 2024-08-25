@@ -43,6 +43,7 @@ import RequireAuthUser from './components/Guard/RequireAuthUser';
 import RequireAuthReviewer from './components/Guard/RequireAuthReviewer';
 import WorkSpaceContainerRoute from './routes/Dashboard/Reviewer/WorkSpaceContainerRoute';
 import WorkSpaceRoute from './routes/Dashboard/Reviewer/WorkSpaceRoute';
+import NotFoundRoute from './routes/NotFoundRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -313,6 +314,7 @@ const router = createBrowserRouter(
           }
         />
       </Route>
+      <Route path="*" element={<NotFoundRoute />} />
     </Route>
   )
 );

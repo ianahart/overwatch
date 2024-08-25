@@ -1,16 +1,23 @@
 package com.hart.overwatch.todolist;
 
+import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.workspace.WorkSpace;
 import com.hart.overwatch.workspace.WorkSpaceService;
 import com.hart.overwatch.advice.BadRequestException;
+import com.hart.overwatch.advice.ForbiddenException;
+import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.todolist.dto.TodoListDto;
 import com.hart.overwatch.todolist.request.CreateTodoListRequest;
+import com.hart.overwatch.todolist.request.UpdateTodoListRequest;
 
 @Service
 public class TodoListService {
@@ -29,6 +36,11 @@ public class TodoListService {
         this.todoListRepository = todoListRepository;
         this.workSpaceService = workSpaceService;
         this.userService = userService;
+    }
+
+    private TodoList getTodoListById(Long todoListId) {
+        return todoListRepository.findById(todoListId).orElseThrow(() -> new NotFoundException(
+                String.format("A todo list with the id %d was not found", todoListId)));
     }
 
     private boolean canAddTodoListByQuantity(Long workSpaceId, Long userId) {
@@ -68,4 +80,47 @@ public class TodoListService {
                 todoList.getWorkSpace().getId(), todoList.getTitle(), todoList.getIndex(),
                 todoList.getCreatedAt());
     }
+
+    public List<TodoListDto> getTodoListsByWorkSpace(Long workSpaceId) {
+
+        if (!workSpaceService.workSpaceExists(workSpaceId)) {
+            throw new NotFoundException(String.format(
+                    "No workspace exists for id %d. Cannot fetch non existent todo lists",
+                    workSpaceId));
+        }
+
+        Pageable pageable = PageRequest.of(0, MAX_TODO_LISTS);
+
+        Page<TodoListDto> page = todoListRepository.getTodoListsByWorkSpace(pageable, workSpaceId);
+
+        return page.getContent();
+    }
+
+    public TodoListDto updateTodoList(Long todoListId, UpdateTodoListRequest request) {
+        String cleanedTitle = Jsoup.clean(request.getTitle(), Safelist.none());
+        User currentUser = userService.getCurrentlyLoggedInUser();
+
+        if (todoListAlreadyExists(request.getWorkSpaceId(), currentUser.getId(), cleanedTitle)) {
+            throw new BadRequestException(
+                    String.format("You already have a list %s in this workspace", cleanedTitle));
+        }
+
+        TodoList todoList = getTodoListById(todoListId);
+
+        if (currentUser.getId() != todoList.getUser().getId()) {
+            throw new ForbiddenException("Cannot edit a todo list that is not yours");
+        }
+
+        todoList.setTitle(cleanedTitle);
+        todoList.setIndex(request.getIndex());
+
+        todoListRepository.save(todoList);
+
+        return new TodoListDto(todoList.getId(), todoList.getUser().getId(),
+                todoList.getWorkSpace().getId(), todoList.getTitle(), todoList.getIndex(),
+                todoList.getCreatedAt());
+
+    }
+
+
 }

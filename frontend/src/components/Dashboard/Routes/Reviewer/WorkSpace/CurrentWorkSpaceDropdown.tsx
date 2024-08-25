@@ -79,7 +79,7 @@ const CurrentWorkSpaceDropdown = ({ onClickAway, handleSetOpen }: ICurrentWorkSp
   };
 
   return (
-    <div className="absolute min-w-[250px] top-10 left-0 z-10 border border-gray-800 rounded bg-stone-950 p-2  overflow-y-auto h-32">
+    <div className="absolute min-w-[250px] top-10 left-0 z-20 border border-gray-800 rounded bg-stone-950 p-2  overflow-y-auto h-32">
       <ClickAway onClickAway={onClickAway}>
         {workSpaces.map((ws) => {
           return (

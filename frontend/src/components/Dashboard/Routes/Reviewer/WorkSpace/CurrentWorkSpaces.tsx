@@ -18,7 +18,7 @@ const CurrentWorkSpaces = () => {
     setIsOpen(open);
   };
   return (
-    <div className="relative p-2 border rounded border-gray-800 my-2">
+    <div className="relative min-h-full p-2 border rounded border-gray-800 my-2">
       <div onClick={toggleDropdown} className="flex items-center cursor-pointer">
         <h3>Your Workspaces</h3>
         <div className="text-2xl ml-5">{isOpen ? <BiChevronDown /> : <BiChevronUp />}</div>

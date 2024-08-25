@@ -15,10 +15,12 @@ const WorkSpaceContainer = () => {
   }, []);
 
   return (
-    <div>
+    <div className="max-w-full overflow-hidden">
       <CurrentWorkSpaces />
       <WorkSpaceTitle />
-      <Outlet />
+      <div className="min-h-[700px]">
+        <Outlet />
+      </div>
     </div>
   );
 };
