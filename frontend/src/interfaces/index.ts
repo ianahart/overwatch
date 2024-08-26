@@ -1118,6 +1118,17 @@ export interface IDeleteTodoListRequest {
   id: number;
 }
 
+export interface IReorderTodoListRequest {
+  todoLists: ITodoList[];
+  token: string;
+  workSpaceId: number;
+}
+
+export interface IReorderTodoListResponse {
+  message: string;
+  data: ITodoList[];
+}
+
 export interface IDeleteTodoListResponse extends IBaseResponse {}
 
 export interface IDeleteWorkSpaceResponse extends IBaseResponse {}

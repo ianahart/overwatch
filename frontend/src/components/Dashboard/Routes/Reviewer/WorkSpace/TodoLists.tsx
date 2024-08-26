@@ -1,6 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
+import { SerializedError } from '@reduxjs/toolkit';
+import { SortableContext, horizontalListSortingStrategy, verticalListSortingStrategy } from '@dnd-kit/sortable';
 
 export type TServerError = FetchBaseQueryError | SerializedError;
 
@@ -9,8 +12,6 @@ import Spinner from '../../../../Shared/Spinner';
 import TodoList from './TodoList';
 import AddTodoList from './AddTodoList';
 import { retrieveTokens } from '../../../../../util';
-import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
-import { SerializedError } from '@reduxjs/toolkit';
 
 const TodoLists = () => {
   const navigate = useNavigate();
@@ -46,9 +47,11 @@ const TodoLists = () => {
     <div>
       {isLoading && <Spinner message="Loading workspace..." />}
       <div className="flex items-center justify-evenly">
-        {lists.map((list) => {
-          return <TodoList key={list.id} list={list} />;
-        })}
+        <SortableContext items={lists} strategy={horizontalListSortingStrategy}>
+          {lists.map((list) => {
+            return <TodoList key={list.id} list={list} />;
+          })}
+        </SortableContext>
         <AddTodoList />
       </div>
     </div>

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.hart.overwatch.todolist.request.CreateTodoListRequest;
+import com.hart.overwatch.todolist.request.ReorderTodoListRequest;
 import com.hart.overwatch.todolist.request.UpdateTodoListRequest;
 import com.hart.overwatch.todolist.response.CreateTodoListResponse;
 import com.hart.overwatch.todolist.response.DeleteTodoListResponse;
@@ -28,6 +29,14 @@ public class TodoListController {
     @Autowired
     public TodoListController(TodoListService todoListService) {
         this.todoListService = todoListService;
+    }
+
+    @PostMapping(path = "/workspaces/{workSpaceId}/todo-lists/reorder")
+    public ResponseEntity<GetTodoListsResponse> reorderTodoLists(
+            @PathVariable("workSpaceId") Long workSpaceId,
+            @RequestBody ReorderTodoListRequest request) {
+        return ResponseEntity.status(HttpStatus.OK).body(new GetTodoListsResponse("success",
+                todoListService.reorderTodoLists(workSpaceId, request.getTodoLists())));
     }
 
     @PostMapping(path = "/workspaces/{workSpaceId}/todo-lists")
