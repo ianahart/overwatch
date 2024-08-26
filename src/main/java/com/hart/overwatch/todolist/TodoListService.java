@@ -1,6 +1,8 @@
 package com.hart.overwatch.todolist;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +83,12 @@ public class TodoListService {
                 todoList.getCreatedAt());
     }
 
+    private List<TodoListDto> sortTodoLists(Page<TodoListDto> todoLists) {
+        return todoLists.getContent().stream()
+                .sorted(Comparator.comparingInt(TodoListDto::getIndex))
+                .collect(Collectors.toList());
+    }
+
     public List<TodoListDto> getTodoListsByWorkSpace(Long workSpaceId) {
 
         if (!workSpaceService.workSpaceExists(workSpaceId)) {
@@ -93,7 +101,7 @@ public class TodoListService {
 
         Page<TodoListDto> page = todoListRepository.getTodoListsByWorkSpace(pageable, workSpaceId);
 
-        return page.getContent();
+        return sortTodoLists(page);
     }
 
     public TodoListDto updateTodoList(Long todoListId, UpdateTodoListRequest request) {
@@ -122,5 +130,14 @@ public class TodoListService {
 
     }
 
+    public void deleteTodoList(Long todoListId) {
+        TodoList todoList = getTodoListById(todoListId);
+        User currentUser = userService.getCurrentlyLoggedInUser();
+
+        if (todoList.getUser().getId() != currentUser.getId()) {
+            throw new ForbiddenException("Cannot delete a todo list that is not yours");
+        }
+        todoListRepository.delete(todoList);
+    }
 
 }

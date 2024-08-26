@@ -1113,6 +1113,13 @@ export interface IUpdateTodoListRequest {
   id: number;
 }
 
+export interface IDeleteTodoListRequest {
+  token: string;
+  id: number;
+}
+
+export interface IDeleteTodoListResponse extends IBaseResponse {}
+
 export interface IDeleteWorkSpaceResponse extends IBaseResponse {}
 
 export interface IUpdateRepositoryCommentResponse extends IBaseResponse {}

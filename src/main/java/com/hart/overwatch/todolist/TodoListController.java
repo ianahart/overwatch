@@ -3,6 +3,7 @@ package com.hart.overwatch.todolist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hart.overwatch.todolist.request.CreateTodoListRequest;
 import com.hart.overwatch.todolist.request.UpdateTodoListRequest;
 import com.hart.overwatch.todolist.response.CreateTodoListResponse;
+import com.hart.overwatch.todolist.response.DeleteTodoListResponse;
 import com.hart.overwatch.todolist.response.GetTodoListsResponse;
 import com.hart.overwatch.todolist.response.UpdateTodoListResponse;
 import jakarta.validation.Valid;
@@ -49,5 +51,12 @@ public class TodoListController {
             @Valid @RequestBody UpdateTodoListRequest request) {
         return ResponseEntity.status(HttpStatus.OK).body(new UpdateTodoListResponse("success",
                 todoListService.updateTodoList(todoListId, request)));
+    }
+
+    @DeleteMapping(path = "/todo-lists/{todoListId}")
+    public ResponseEntity<DeleteTodoListResponse> deleteTodoList(
+            @PathVariable("todoListId") Long todoListId) {
+        todoListService.deleteTodoList(todoListId);
+        return ResponseEntity.status(HttpStatus.OK).body(new DeleteTodoListResponse("success"));
     }
 }

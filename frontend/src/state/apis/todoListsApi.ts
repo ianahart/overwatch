@@ -6,6 +6,8 @@ import {
   IFetchTodoListsRequest,
   IUpdateTodoListRequest,
   IUpdateTodoListResponse,
+  IDeleteTodoListRequest,
+  IDeleteTodoListResponse,
 } from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
@@ -15,6 +17,20 @@ const todoListsApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints(builder) {
     return {
+      deleteTodoList: builder.mutation<IDeleteTodoListResponse, IDeleteTodoListRequest>({
+        query: ({ id, token }) => ({
+          url: `todo-lists/${id}`,
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }),
+        //@ts-ignore
+        invalidatesTags: (_, error, { id }) => [
+          { type: 'TodoList', id },
+          { type: 'TodoList', id: 'LIST' },
+        ],
+      }),
       editTodoList: builder.mutation<IUpdateTodoListResponse, IUpdateTodoListRequest>({
         query: ({ token, id, title, index, workSpaceId }) => {
           return {
@@ -78,5 +94,11 @@ const todoListsApi = createApi({
   },
 });
 
-export const { useCreateTodoListMutation, useLazyFetchTodoListsQuery, useEditTodoListMutation } = todoListsApi;
+export const {
+  useFetchTodoListsQuery,
+  useDeleteTodoListMutation,
+  useCreateTodoListMutation,
+  useLazyFetchTodoListsQuery,
+  useEditTodoListMutation,
+} = todoListsApi;
 export { todoListsApi };
