@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { AiOutlineClose, AiOutlinePlus } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
-import { TRootState, addToTodoList, reorderTodoLists, useCreateTodoListMutation } from '../../../../../state/store';
+import { TRootState, addToTodoList, useCreateTodoListMutation } from '../../../../../state/store';
 
 const AddTodoList = () => {
   const dispatch = useDispatch();
@@ -38,8 +38,7 @@ const AddTodoList = () => {
       return;
     }
 
-    dispatch(reorderTodoLists());
-    const nextIndex = todoLists.length - 1 === -1 ? 0 : todoLists[todoLists.length - 1].index + 1;
+    const nextIndex = todoLists.length - 1 === -1 ? 0 : todoLists.length;
     const payload = {
       userId: user.id,
       title: inputValue,
@@ -51,6 +50,7 @@ const AddTodoList = () => {
       .unwrap()
       .then((res) => {
         dispatch(addToTodoList(res.data));
+
         closeDropDown();
       })
       .catch((err) => {

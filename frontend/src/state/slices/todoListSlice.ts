@@ -10,19 +10,18 @@ const todoListsSlice = createSlice({
   name: 'todoList',
   initialState,
   reducers: {
-    reorderTodoLists: (state) => {
-      state.todoLists.sort((a, b) => {
-        if (a.index < b.index) {
-          return -1;
-        } else if (b.index > a.index) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
-    },
     setTodoLists: (state, action: PayloadAction<ITodoList[]>) => {
       state.todoLists = action.payload;
+    },
+    deleteSingleTodoList: (state, action: PayloadAction<number>) => {
+      const idToDelete = action.payload;
+      console.log(idToDelete);
+      state.todoLists = state.todoLists.filter((todoList) => todoList.id !== idToDelete);
+
+      state.todoLists = state.todoLists.map((todoList, index) => ({
+        ...todoList,
+        index,
+      }));
     },
 
     updateSingleTodoList: (state, action: PayloadAction<ITodoList>) => {
@@ -55,7 +54,7 @@ const todoListsSlice = createSlice({
   },
 });
 
-export const { reorderTodoLists, setTodoLists, addToTodoList, clearTodoLists, updateSingleTodoList } =
+export const { deleteSingleTodoList, setTodoLists, addToTodoList, clearTodoLists, updateSingleTodoList } =
   todoListsSlice.actions;
 
 export const todoListsReducer = todoListsSlice.reducer;

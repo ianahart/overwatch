@@ -8,6 +8,8 @@ import {
   IUpdateTodoListResponse,
   IDeleteTodoListRequest,
   IDeleteTodoListResponse,
+  IReorderTodoListResponse,
+  IReorderTodoListRequest,
 } from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
@@ -17,6 +19,20 @@ const todoListsApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints(builder) {
     return {
+      reorderTodoLists: builder.mutation<IReorderTodoListResponse, IReorderTodoListRequest>({
+        query: ({ token, todoLists, workSpaceId }) => {
+          return {
+            url: `/workspaces/${workSpaceId}/todo-lists/reorder`,
+            method: 'POST',
+            body: {
+              todoLists,
+            },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+      }),
       deleteTodoList: builder.mutation<IDeleteTodoListResponse, IDeleteTodoListRequest>({
         query: ({ id, token }) => ({
           url: `todo-lists/${id}`,
@@ -25,11 +41,6 @@ const todoListsApi = createApi({
             Authorization: `Bearer ${token}`,
           },
         }),
-        //@ts-ignore
-        invalidatesTags: (_, error, { id }) => [
-          { type: 'TodoList', id },
-          { type: 'TodoList', id: 'LIST' },
-        ],
       }),
       editTodoList: builder.mutation<IUpdateTodoListResponse, IUpdateTodoListRequest>({
         query: ({ token, id, title, index, workSpaceId }) => {
@@ -95,6 +106,7 @@ const todoListsApi = createApi({
 });
 
 export const {
+  useReorderTodoListsMutation,
   useFetchTodoListsQuery,
   useDeleteTodoListMutation,
   useCreateTodoListMutation,

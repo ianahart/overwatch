@@ -7,7 +7,7 @@ import { userReducer, updateUser, updateTokens, clearUser, updateUserAndTokens }
 import { settingReducer, updateSetting, clearSetting } from './slices/settingSlice';
 import { updateWorkSpaceProperty, clearWorkSpace, workSpaceReducer, setWorkSpace } from './slices/workSpaceSlice';
 import {
-  reorderTodoLists,
+  deleteSingleTodoList,
   updateSingleTodoList,
   clearTodoLists,
   addToTodoList,
@@ -265,7 +265,7 @@ export {
   addToTodoList,
   clearTodoLists,
   updateSingleTodoList,
-  reorderTodoLists,
+  deleteSingleTodoList,
 };
 
 export {
@@ -381,6 +381,7 @@ export {
   useLazyFetchTodoListsQuery,
   useFetchTodoListsQuery,
   useEditTodoListMutation,
+  useReorderTodoListsMutation,
 } from './apis/todoListsApi';
 
 export {

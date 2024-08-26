@@ -1,6 +1,7 @@
 package com.hart.overwatch.todolist;
 
 import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.jsoup.Jsoup;
@@ -140,4 +141,19 @@ public class TodoListService {
         todoListRepository.delete(todoList);
     }
 
+    public List<TodoListDto> reorderTodoLists(Long workSpaceId, List<TodoListDto> todoListDtos) {
+        List<TodoList> todoLists = new ArrayList<>();
+
+        for (int i = 0; i < todoListDtos.size(); i++) {
+            Long todoListDtoId = todoListDtos.get(i).getId();
+            TodoList todoList = getTodoListById(todoListDtoId);
+            todoList.setIndex(i);
+            todoLists.add(todoList);
+
+        }
+
+        todoListRepository.saveAll(todoLists);
+
+        return getTodoListsByWorkSpace(workSpaceId);
+    }
 }

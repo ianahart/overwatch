@@ -1,5 +1,7 @@
 import { BsThreeDots } from 'react-icons/bs';
 import { LuGrip } from 'react-icons/lu';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 import { ITodoList } from '../../../../../interfaces';
 import AddCard from './AddCard';
@@ -13,6 +15,7 @@ export interface ITodoListProps {
 }
 
 const TodoList = ({ list }: ITodoListProps) => {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: list.id });
   const [isOpen, setIsOpen] = useState(false);
 
   const onClickAway = () => {
@@ -23,8 +26,20 @@ const TodoList = ({ list }: ITodoListProps) => {
     setIsOpen(true);
   };
 
+  const style = {
+    transition,
+    transform: CSS.Transform.toString(transform),
+  };
+
   return (
-    <div className="bg-slate-900 mx-2 w-full min-w-[225px] max-w-[225px] rounded p-2 text-gray-400">
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      onClick={(e) => e.stopPropagation()}
+      className="bg-slate-900 mx-2 w-full min-w-[225px] max-w-[225px] rounded p-2 text-gray-400"
+    >
       <div className="flex items-center justify-between">
         <TodoListTitle list={list} />
         <div>
