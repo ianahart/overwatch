@@ -22,6 +22,7 @@ import com.hart.overwatch.repository.Repository;
 import com.hart.overwatch.review.Review;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.testimonial.Testimonial;
+import com.hart.overwatch.todocard.TodoCard;
 import com.hart.overwatch.todolist.TodoList;
 import com.hart.overwatch.token.Token;
 import com.hart.overwatch.workspace.WorkSpace;
@@ -175,6 +176,10 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<TodoList> todoLists;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<TodoCard> todocards;
+
 
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -249,6 +254,10 @@ public class User implements UserDetails {
 
     public List<Connection> getSenderConnections() {
         return senderConnections;
+    }
+
+    public List<TodoCard> getTodocards() {
+        return todocards;
     }
 
     public List<TodoList> getTodoLists() {
@@ -493,6 +502,10 @@ public class User implements UserDetails {
 
     public void setAbbreviation(String abbreviation) {
         this.abbreviation = abbreviation;
+    }
+
+    public void setTodocards(List<TodoCard> todocards) {
+        this.todocards = todocards;
     }
 
     public void setSenderConnections(List<Connection> senderConnections) {
