@@ -1170,6 +1170,13 @@ export interface IUpdateTodoCardResponse {
   data: ITodoCard;
 }
 
+export interface IDeleteTodoCardRequest {
+  token: string;
+  todoCardId: number;
+}
+
+export interface IDeleteTodoCardResponse extends IBaseResponse {}
+
 export interface IDeleteTodoListResponse extends IBaseResponse {}
 
 export interface IDeleteWorkSpaceResponse extends IBaseResponse {}

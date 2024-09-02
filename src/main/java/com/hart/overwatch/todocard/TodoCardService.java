@@ -11,6 +11,7 @@ import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.advice.BadRequestException;
+import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.todocard.dto.TodoCardDto;
 import com.hart.overwatch.todocard.request.CreateTodoCardRequest;
 import com.hart.overwatch.todocard.request.UpdateTodoCardRequest;
@@ -130,6 +131,18 @@ public class TodoCardService {
                 todoCard.getTitle(), todoCard.getColor(), todoCard.getIndex(),
                 todoCard.getDetails(), todoCard.getStartDate(), todoCard.getEndDate(),
                 todoCard.getPhoto(), todoCard.getTodoList().getTitle());
+
+    }
+
+    public void deleteTodoCard(Long todoCardId) {
+        TodoCard todoCard = getTodoCardById(todoCardId);
+        User currentUser = userService.getCurrentlyLoggedInUser();
+
+        if (todoCard.getUser().getId() != currentUser.getId()) {
+            throw new ForbiddenException("You cannot delete another user's card");
+        }
+
+        todoCardRepository.delete(todoCard);
 
     }
 

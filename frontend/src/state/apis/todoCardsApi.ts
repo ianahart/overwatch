@@ -2,6 +2,8 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import {
   ICreateTodoCardRequest,
   ICreateTodoCardResponse,
+  IDeleteTodoCardRequest,
+  IDeleteTodoCardResponse,
   IUpdateTodoCardRequest,
   IUpdateTodoCardResponse,
 } from '../../interfaces';
@@ -13,6 +15,17 @@ const todoCardsApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints(builder) {
     return {
+      deleteTodoCard: builder.mutation<IDeleteTodoCardResponse, IDeleteTodoCardRequest>({
+        query: ({ token, todoCardId }) => {
+          return {
+            url: `/todo-cards/${todoCardId}`,
+            method: 'DELETE',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+      }),
       updateTodoCard: builder.mutation<IUpdateTodoCardResponse, IUpdateTodoCardRequest>({
         query: ({ card, token }) => {
           return {
@@ -45,5 +58,5 @@ const todoCardsApi = createApi({
   },
 });
 
-export const { useCreateTodoCardMutation, useUpdateTodoCardMutation } = todoCardsApi;
+export const { useDeleteTodoCardMutation, useCreateTodoCardMutation, useUpdateTodoCardMutation } = todoCardsApi;
 export { todoCardsApi };
