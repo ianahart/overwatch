@@ -69,11 +69,12 @@ public class WorkSpaceService {
         }
 
         String cleanedTitle = Jsoup.clean(request.getTitle(), Safelist.none());
-        String cleanedBackgroundColor = Jsoup.clean(request.getBackgroundColor(), Safelist.none());
 
         User user = userService.getUserById(request.getUserId());
 
-        WorkSpace workSpace = new WorkSpace(cleanedTitle, cleanedBackgroundColor, user);
+        WorkSpace workSpace = new WorkSpace();
+        workSpace.setTitle(cleanedTitle);
+        workSpace.setUser(user);
 
         workSpaceRepository.save(workSpace);
 

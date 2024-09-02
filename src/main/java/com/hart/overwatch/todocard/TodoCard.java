@@ -66,6 +66,10 @@ public class TodoCard {
     @JoinColumn(name = "todo_list_id", referencedColumnName = "id")
     private TodoList todoList;
 
+    public TodoCard() {
+
+    }
+
     public TodoCard(Long id, LocalDateTime createdAt, LocalDateTime updatedAt, String label,
             String title, String color, Integer index, String details, LocalDateTime startDate,
             LocalDateTime endDate, String photo

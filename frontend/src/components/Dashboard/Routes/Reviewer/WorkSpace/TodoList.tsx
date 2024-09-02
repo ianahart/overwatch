@@ -9,6 +9,7 @@ import TodoListTitle from './TodoListTitle';
 import { useState } from 'react';
 import ClickAway from '../../../../Shared/ClickAway';
 import TodoListOptions from './TodoListOptions';
+import CardList from './CardList';
 
 export interface ITodoListProps {
   list: ITodoList;
@@ -54,7 +55,10 @@ const TodoList = ({ list }: ITodoListProps) => {
           </ClickAway>
         )}
       </div>
-      <AddCard />
+      <AddCard todoList={list} />
+      <div className="my-4">
+        <CardList cards={list.cards} />
+      </div>
     </div>
   );
 };

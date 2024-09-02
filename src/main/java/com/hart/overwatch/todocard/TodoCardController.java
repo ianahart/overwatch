@@ -27,8 +27,7 @@ public class TodoCardController {
     ResponseEntity<CreateTodoCardResponse> createTodoCard(
             @PathVariable("todoListId") Long todoListId,
             @Valid @RequestBody CreateTodoCardRequest request) {
-        todoCardService.createTodoCard(todoListId, request);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new CreateTodoCardResponse("success"));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new CreateTodoCardResponse("success",
+                todoCardService.createTodoCard(todoListId, request)));
     }
 }

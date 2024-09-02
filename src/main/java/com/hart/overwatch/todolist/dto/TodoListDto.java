@@ -1,6 +1,8 @@
 package com.hart.overwatch.todolist.dto;
 
 import java.sql.Timestamp;
+import java.util.List;
+import com.hart.overwatch.todocard.dto.TodoCardDto;
 
 public class TodoListDto {
 
@@ -15,6 +17,8 @@ public class TodoListDto {
     private Integer index;
 
     private Timestamp createdAt;
+
+    private List<TodoCardDto> cards;
 
     public TodoListDto() {
 
@@ -54,6 +58,10 @@ public class TodoListDto {
         return workSpaceId;
     }
 
+    public List<TodoCardDto> getCards() {
+        return cards;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -76,5 +84,9 @@ public class TodoListDto {
 
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public void setCards(List<TodoCardDto> cards) {
+        this.cards = cards;
     }
 }

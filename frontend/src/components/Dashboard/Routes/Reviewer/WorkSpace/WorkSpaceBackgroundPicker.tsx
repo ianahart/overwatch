@@ -42,7 +42,7 @@ const WorkSpaceBackgroundPicker = () => {
       <BsThreeDots onClick={() => setIsOpen(!isOpen)} className="text-gray-400 cursor-pointer" />
       {isOpen && (
         <ClickAway onClickAway={handleClickAway}>
-          <div className="absolute top-6 right-0 bg-slate-800 p-1 rounded md:w-52 w-40 shadow-md">
+          <div className="absolute z-20 top-6 right-0 bg-slate-800 p-1 rounded md:w-52 w-40 shadow-md">
             <p className="text-sm text-gray-400">Workspace background color</p>
             <div className="flex flex-wrap">
               {backgroundColors.map(({ id, value }) => {

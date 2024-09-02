@@ -23,6 +23,8 @@ const WorkSpaceTitle = () => {
   const [isActive, setIsActive] = useState(false);
   const [inputValue, setInputValue] = useState(() => (workSpace.title ? workSpace.title : ''));
 
+  const backgroundColor = workSpace.backgroundColor.length ? workSpace.backgroundColor : '';
+
   const applyServerErrors = <T extends object>(data: T) => {
     for (const [_, val] of Object.entries(data)) {
       setError(val);
@@ -56,7 +58,7 @@ const WorkSpaceTitle = () => {
   const handleOnBlur = () => {
     if (inputValue.trim().length === 0) return;
     setError('');
-    const payload = { token, userId: user.id, workSpace: { title: inputValue, backgroundColor: '' } };
+    const payload = { token, userId: user.id, workSpace: { title: inputValue, backgroundColor } };
 
     if (workSpace.id === 0) {
       handleCreateWorkSpace(payload);
