@@ -11,8 +11,10 @@ import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.advice.BadRequestException;
+import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.todocard.dto.TodoCardDto;
 import com.hart.overwatch.todocard.request.CreateTodoCardRequest;
+import com.hart.overwatch.todocard.request.UpdateTodoCardRequest;
 
 @Service
 public class TodoCardService {
@@ -79,7 +81,7 @@ public class TodoCardService {
                 todoCard.getUser().getId(), todoCard.getCreatedAt(), todoCard.getLabel(),
                 todoCard.getTitle(), todoCard.getColor(), todoCard.getIndex(),
                 todoCard.getDetails(), todoCard.getStartDate(), todoCard.getEndDate(),
-                todoCard.getPhoto());
+                todoCard.getPhoto(), todoCard.getTodoList().getTitle());
     }
 
     public List<TodoCardDto> retrieveTodoCards(Long todoListId) {
@@ -92,6 +94,56 @@ public class TodoCardService {
         User currentUser = userService.getCurrentlyLoggedInUser();
 
         return todoCardRepository.retrieveTodoCard(todoListId, currentUser.getId());
+    }
+
+    public TodoCardDto updateTodoCard(Long todoCardId, UpdateTodoCardRequest request) {
+        String cleanedTitle =
+                request.getTitle() != null ? Jsoup.clean(request.getTitle(), Safelist.none()) : "";
+        TodoCard todoCard = getTodoCardById(todoCardId);
+
+
+        if (todoCardAlreadyExistsInList(todoCard.getTodoList().getId(), cleanedTitle)) {
+            throw new BadRequestException(
+                    "You have already added a card with that title to this list");
+        }
+
+
+        String cleanedDetails =
+                request.getDetails() != null ? Jsoup.clean(request.getDetails(), Safelist.none())
+                        : null;
+        String cleanedLabel =
+                request.getLabel() != null ? Jsoup.clean(request.getLabel(), Safelist.none())
+                        : null;
+
+        todoCard.setLabel(cleanedLabel);
+        todoCard.setTitle(cleanedTitle);
+        todoCard.setColor(request.getColor());
+        todoCard.setIndex(request.getIndex());
+        todoCard.setDetails(cleanedDetails);
+        todoCard.setStartDate(request.getStartDate());
+        todoCard.setEndDate(request.getEndDate());
+        todoCard.setPhoto(request.getPhoto());
+
+        todoCardRepository.save(todoCard);
+
+        return new TodoCardDto(todoCard.getId(), todoCard.getTodoList().getId(),
+                todoCard.getUser().getId(), todoCard.getCreatedAt(), todoCard.getLabel(),
+                todoCard.getTitle(), todoCard.getColor(), todoCard.getIndex(),
+                todoCard.getDetails(), todoCard.getStartDate(), todoCard.getEndDate(),
+                todoCard.getPhoto(), todoCard.getTodoList().getTitle());
+
+    }
+
+    public void deleteTodoCard(Long todoCardId) {
+        TodoCard todoCard = getTodoCardById(todoCardId);
+        User currentUser = userService.getCurrentlyLoggedInUser();
+
+        if (todoCard.getUser().getId() != currentUser.getId()) {
+            throw new ForbiddenException("You cannot delete another user's card");
+        }
+
+        todoCardRepository.delete(todoCard);
+
     }
 
 }

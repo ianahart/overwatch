@@ -10,14 +10,14 @@ import com.hart.overwatch.todocard.dto.TodoCardDto;
 @Repository
 public interface TodoCardRepository extends JpaRepository<TodoCard, Long> {
 
-
     @Query(value = """
                 SELECT new com.hart.overwatch.todocard.dto.TodoCardDto(
                 tc.id AS id, tl.id AS todoListId, u.id AS userId,
                 tc.createdAt AS createdAt, tc.label AS label,
                 tc.title AS title, tc.color AS color, tc.index AS index,
                 tc.details AS details, tc.startDate AS startDate,
-                tc.endDate AS endDate
+                tc.endDate AS endDate, tc.photo AS photo,
+                tl.title AS todoListTitle
                 ) FROM TodoCard tc
                 INNER JOIN tc.user u
                 INNER JOIN tc.todoList tl
@@ -34,7 +34,8 @@ public interface TodoCardRepository extends JpaRepository<TodoCard, Long> {
                 tc.createdAt AS createdAt, tc.label AS label,
                 tc.title AS title, tc.color AS color, tc.index AS index,
                 tc.details AS details, tc.startDate AS startDate,
-                tc.endDate AS endDate
+                tc.endDate AS endDate, tc.photo AS photo,
+                tl.title AS todoListTitle
                 ) FROM TodoCard tc
                 INNER JOIN tc.user u
                 INNER JOIN tc.todoList tl

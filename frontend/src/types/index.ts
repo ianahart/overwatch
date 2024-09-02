@@ -1,3 +1,5 @@
+import { ITodoCard } from '../interfaces';
+
 export type TCustomText = {
   text: string;
   bold: boolean;
@@ -24,3 +26,5 @@ export type TCustomElement = TParagraphElement | TCodeElement | TListElement | T
 export function isListElement(element: TCustomElement): element is TListElement {
   return element.type === 'list';
 }
+
+export type TPureTodoCard = Omit<ITodoCard, 'todoListId' | 'userId' | 'todoListTitle'>;

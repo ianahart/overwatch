@@ -1,4 +1,5 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
+import { TPureTodoCard } from '../types';
 
 export interface IServerError {
   status: number;
@@ -18,6 +19,7 @@ export interface ITodoCard {
   startDate: string;
   endDate: string;
   photo: string;
+  todoListTitle: string;
 }
 
 export interface ITodoList {
@@ -1157,6 +1159,23 @@ export interface ICreateTodoCardResponse {
   message: string;
   data: ITodoCard;
 }
+
+export interface IUpdateTodoCardRequest {
+  card: TPureTodoCard;
+  token: string;
+}
+
+export interface IUpdateTodoCardResponse {
+  message: string;
+  data: ITodoCard;
+}
+
+export interface IDeleteTodoCardRequest {
+  token: string;
+  todoCardId: number;
+}
+
+export interface IDeleteTodoCardResponse extends IBaseResponse {}
 
 export interface IDeleteTodoListResponse extends IBaseResponse {}
 

@@ -48,6 +48,23 @@ const todoListsSlice = createSlice({
     clearTodoLists: () => {
       return initialState;
     },
+
+    updateTodoListTodoCard: (state, action: PayloadAction<ITodoCard>) => {
+      const updatedTodoCard = action.payload;
+      const todoListIndex = state.todoLists.findIndex((tl) => tl.id === updatedTodoCard.todoListId);
+      const todoCardIndex = state.todoLists[todoListIndex].cards.findIndex((card) => card.id === updatedTodoCard.id);
+
+      state.todoLists[todoListIndex].cards[todoCardIndex] = updatedTodoCard;
+    },
+
+    removeTodoListTodoCard: (state, action: PayloadAction<{ id: number; todoListId: number }>) => {
+      const { id, todoListId } = action.payload;
+
+      const todoListIndex = state.todoLists.findIndex((tl) => tl.id === todoListId);
+      const todoCardIndex = state.todoLists[todoListIndex].cards.findIndex((card) => card.id === id);
+
+      state.todoLists[todoListIndex].cards.splice(todoCardIndex, 1);
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(clearUser, () => {
@@ -60,6 +77,8 @@ const todoListsSlice = createSlice({
 });
 
 export const {
+  removeTodoListTodoCard,
+  updateTodoListTodoCard,
   addCardToTodoList,
   deleteSingleTodoList,
   setTodoLists,

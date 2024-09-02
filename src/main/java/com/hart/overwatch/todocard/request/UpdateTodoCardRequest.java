@@ -1,24 +1,26 @@
-package com.hart.overwatch.todocard.dto;
+package com.hart.overwatch.todocard.request;
 
 import java.time.LocalDateTime;
+import jakarta.validation.constraints.Size;
 
-public class TodoCardDto {
+
+public class UpdateTodoCardRequest {
     private Long id;
-
-    private Long todoListId;
-
-    private Long userId;
 
     private LocalDateTime createdAt;
 
+    @Size(max = 100, message = "Label must be under 100 characters")
     private String label;
 
+    @Size(max = 100, message = "Title must be under 100 characters")
     private String title;
 
+    @Size(max = 100, message = "Color must be under 100 characters")
     private String color;
 
     private Integer index;
 
+    @Size(max = 1000, message = "Details must be under 1000 characters")
     private String details;
 
     private LocalDateTime startDate;
@@ -27,19 +29,15 @@ public class TodoCardDto {
 
     private String photo;
 
-    private String todoListTitle;
 
-    public TodoCardDto() {
+    public UpdateTodoCardRequest() {
 
     }
 
-    public TodoCardDto(Long id, Long todoListId, Long userId, LocalDateTime createdAt, String label,
-            String title, String color, Integer index, String details, LocalDateTime startDate,
-            LocalDateTime endDate, String photo, String todoListTitle) {
-
+    public UpdateTodoCardRequest(Long id, LocalDateTime createdAt, String label, String title,
+            String color, Integer index, String details, LocalDateTime startDate,
+            LocalDateTime endDate, String photo) {
         this.id = id;
-        this.todoListId = todoListId;
-        this.userId = userId;
         this.createdAt = createdAt;
         this.label = label;
         this.title = title;
@@ -48,15 +46,11 @@ public class TodoCardDto {
         this.details = details;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.todoListTitle = todoListTitle;
+        this.photo = photo;
     }
 
     public Long getId() {
         return id;
-    }
-
-    public Long getUserId() {
-        return userId;
     }
 
     public String getColor() {
@@ -75,24 +69,16 @@ public class TodoCardDto {
         return title;
     }
 
-    public String getDetails() {
-        return details;
-    }
-
     public Integer getIndex() {
         return index;
     }
 
-    public Long getTodoListId() {
-        return todoListId;
+    public String getDetails() {
+        return details;
     }
 
     public LocalDateTime getEndDate() {
         return endDate;
-    }
-
-    public String getTodoListTitle() {
-        return todoListTitle;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -102,7 +88,6 @@ public class TodoCardDto {
     public LocalDateTime getStartDate() {
         return startDate;
     }
-
 
     public void setId(Long id) {
         this.id = id;
@@ -124,20 +109,12 @@ public class TodoCardDto {
         this.title = title;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
     public void setIndex(Integer index) {
         this.index = index;
     }
 
     public void setDetails(String details) {
         this.details = details;
-    }
-
-    public void setTodoListId(Long todoListId) {
-        this.todoListId = todoListId;
     }
 
     public void setEndDate(LocalDateTime endDate) {
@@ -152,7 +129,5 @@ public class TodoCardDto {
         this.startDate = startDate;
     }
 
-    public void setTodoListTitle(String todoListTitle) {
-        this.todoListTitle = todoListTitle;
-    }
+
 }
