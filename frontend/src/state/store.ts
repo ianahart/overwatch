@@ -7,6 +7,7 @@ import { userReducer, updateUser, updateTokens, clearUser, updateUserAndTokens }
 import { settingReducer, updateSetting, clearSetting } from './slices/settingSlice';
 import { updateWorkSpaceProperty, clearWorkSpace, workSpaceReducer, setWorkSpace } from './slices/workSpaceSlice';
 import {
+  addCardToTodoList,
   deleteSingleTodoList,
   updateSingleTodoList,
   clearTodoLists,
@@ -114,6 +115,7 @@ import { githubApi } from './apis/githubApi';
 import { repositoriesApi } from './apis/repositoriesApi';
 import { workSpacesApi } from './apis/workSpacesApi';
 import { todoListsApi } from './apis/todoListsApi';
+import { todoCardsApi } from './apis/todoCardsApi';
 
 export const store = configureStore({
   reducer: {
@@ -153,6 +155,7 @@ export const store = configureStore({
     [repositoriesApi.reducerPath]: repositoriesApi.reducer,
     [workSpacesApi.reducerPath]: workSpacesApi.reducer,
     [todoListsApi.reducerPath]: todoListsApi.reducer,
+    [todoCardsApi.reducerPath]: todoCardsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -179,7 +182,8 @@ export const store = configureStore({
       .concat(githubApi.middleware)
       .concat(repositoriesApi.middleware)
       .concat(workSpacesApi.middleware)
-      .concat(todoListsApi.middleware);
+      .concat(todoListsApi.middleware)
+      .concat(todoCardsApi.middleware);
   },
 });
 
@@ -266,6 +270,7 @@ export {
   clearTodoLists,
   updateSingleTodoList,
   deleteSingleTodoList,
+  addCardToTodoList,
 };
 
 export {
@@ -383,6 +388,8 @@ export {
   useEditTodoListMutation,
   useReorderTodoListsMutation,
 } from './apis/todoListsApi';
+
+export { useCreateTodoCardMutation } from './apis/todoCardsApi';
 
 export {
   testimonialsApi,

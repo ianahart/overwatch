@@ -5,6 +5,21 @@ export interface IServerError {
   data: string;
 }
 
+export interface ITodoCard {
+  todoListId: number;
+  userId: number;
+  id: number;
+  createdAt: string;
+  label: string;
+  title: string;
+  color: string;
+  index: number;
+  details: string;
+  startDate: string;
+  endDate: string;
+  photo: string;
+}
+
 export interface ITodoList {
   id: number;
   userId: number;
@@ -12,6 +27,7 @@ export interface ITodoList {
   title: string;
   index: number;
   createdAt: string;
+  cards: ITodoCard[];
 }
 
 export interface ITodoListsState {
@@ -1127,6 +1143,19 @@ export interface IReorderTodoListRequest {
 export interface IReorderTodoListResponse {
   message: string;
   data: ITodoList[];
+}
+
+export interface ICreateTodoCardRequest {
+  userId: number;
+  todoListId: number;
+  title: string;
+  index: number;
+  token: string;
+}
+
+export interface ICreateTodoCardResponse {
+  message: string;
+  data: ITodoCard;
 }
 
 export interface IDeleteTodoListResponse extends IBaseResponse {}

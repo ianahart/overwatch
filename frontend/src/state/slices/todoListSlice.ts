@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { ITodoListsState, ITodoList } from '../../interfaces';
-import { clearUser, setWorkSpace } from '../store';
+import { ITodoListsState, ITodoList, ITodoCard } from '../../interfaces';
+import { clearUser, clearWorkSpace } from '../store';
 
 const initialState: ITodoListsState = {
   todoLists: [],
@@ -15,7 +15,6 @@ const todoListsSlice = createSlice({
     },
     deleteSingleTodoList: (state, action: PayloadAction<number>) => {
       const idToDelete = action.payload;
-      console.log(idToDelete);
       state.todoLists = state.todoLists.filter((todoList) => todoList.id !== idToDelete);
 
       state.todoLists = state.todoLists.map((todoList, index) => ({
@@ -40,6 +39,12 @@ const todoListsSlice = createSlice({
       state.todoLists.push(action.payload);
     },
 
+    addCardToTodoList: (state, action: PayloadAction<ITodoCard>) => {
+      const todoCard = action.payload;
+      const todoListIndex = state.todoLists.findIndex((tl) => tl.id === todoCard.todoListId);
+      state.todoLists[todoListIndex].cards.push(todoCard);
+    },
+
     clearTodoLists: () => {
       return initialState;
     },
@@ -48,13 +53,19 @@ const todoListsSlice = createSlice({
     builder.addCase(clearUser, () => {
       return initialState;
     });
-    builder.addCase(setWorkSpace, () => {
+    builder.addCase(clearWorkSpace, () => {
       return initialState;
     });
   },
 });
 
-export const { deleteSingleTodoList, setTodoLists, addToTodoList, clearTodoLists, updateSingleTodoList } =
-  todoListsSlice.actions;
+export const {
+  addCardToTodoList,
+  deleteSingleTodoList,
+  setTodoLists,
+  addToTodoList,
+  clearTodoLists,
+  updateSingleTodoList,
+} = todoListsSlice.actions;
 
 export const todoListsReducer = todoListsSlice.reducer;

@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,8 @@ import com.hart.overwatch.workspace.WorkSpaceService;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.todocard.TodoCardService;
+import com.hart.overwatch.todocard.dto.TodoCardDto;
 import com.hart.overwatch.todolist.dto.TodoListDto;
 import com.hart.overwatch.todolist.request.CreateTodoListRequest;
 import com.hart.overwatch.todolist.request.UpdateTodoListRequest;
@@ -33,15 +36,18 @@ public class TodoListService {
 
     private final UserService userService;
 
+    private final TodoCardService todoCardService;
+
     @Autowired
     public TodoListService(TodoListRepository todoListRepository, WorkSpaceService workSpaceService,
-            UserService userService) {
+            UserService userService, @Lazy TodoCardService todoCardService) {
         this.todoListRepository = todoListRepository;
         this.workSpaceService = workSpaceService;
         this.userService = userService;
+        this.todoCardService = todoCardService;
     }
 
-    private TodoList getTodoListById(Long todoListId) {
+    public TodoList getTodoListById(Long todoListId) {
         return todoListRepository.findById(todoListId).orElseThrow(() -> new NotFoundException(
                 String.format("A todo list with the id %d was not found", todoListId)));
     }
@@ -79,15 +85,29 @@ public class TodoListService {
 
         todoListRepository.save(todoList);
 
-        return new TodoListDto(todoList.getId(), todoList.getUser().getId(),
+        TodoListDto todoListDto = new TodoListDto(todoList.getId(), todoList.getUser().getId(),
                 todoList.getWorkSpace().getId(), todoList.getTitle(), todoList.getIndex(),
                 todoList.getCreatedAt());
+
+        List<TodoCardDto> cards = new ArrayList<>();
+        todoListDto.setCards(cards);
+
+        return todoListDto;
     }
 
     private List<TodoListDto> sortTodoLists(Page<TodoListDto> todoLists) {
         return todoLists.getContent().stream()
                 .sorted(Comparator.comparingInt(TodoListDto::getIndex))
                 .collect(Collectors.toList());
+    }
+
+    private List<TodoListDto> attachTodoCards(List<TodoListDto> todoLists) {
+
+        return todoLists.stream().map(tl -> {
+            List<TodoCardDto> cards = todoCardService.retrieveTodoCards(tl.getId());
+            tl.setCards(cards);
+            return tl;
+        }).toList();
     }
 
     public List<TodoListDto> getTodoListsByWorkSpace(Long workSpaceId) {
@@ -102,7 +122,10 @@ public class TodoListService {
 
         Page<TodoListDto> page = todoListRepository.getTodoListsByWorkSpace(pageable, workSpaceId);
 
-        return sortTodoLists(page);
+        List<TodoListDto> sortedTodoLists = sortTodoLists(page);
+        sortedTodoLists = attachTodoCards(sortedTodoLists);
+
+        return sortedTodoLists;
     }
 
     public TodoListDto updateTodoList(Long todoListId, UpdateTodoListRequest request) {
@@ -125,9 +148,14 @@ public class TodoListService {
 
         todoListRepository.save(todoList);
 
-        return new TodoListDto(todoList.getId(), todoList.getUser().getId(),
+        TodoListDto todoListDto = new TodoListDto(todoList.getId(), todoList.getUser().getId(),
                 todoList.getWorkSpace().getId(), todoList.getTitle(), todoList.getIndex(),
                 todoList.getCreatedAt());
+        List<TodoCardDto> cards = todoCardService.retrieveTodoCards(todoList.getId());
+        todoListDto.setCards(cards);
+
+        return todoListDto;
+
 
     }
 
@@ -154,6 +182,9 @@ public class TodoListService {
 
         todoListRepository.saveAll(todoLists);
 
-        return getTodoListsByWorkSpace(workSpaceId);
+        List<TodoListDto> result = getTodoListsByWorkSpace(workSpaceId);
+        result = attachTodoCards(result);
+
+        return result;
     }
 }

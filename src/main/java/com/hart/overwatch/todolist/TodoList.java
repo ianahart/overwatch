@@ -1,17 +1,22 @@
 package com.hart.overwatch.todolist;
 
 import java.sql.Timestamp;
+import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import com.hart.overwatch.todocard.TodoCard;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.workspace.WorkSpace;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
@@ -48,6 +53,11 @@ public class TodoList {
     @JoinColumn(name = "workspace_id", referencedColumnName = "id")
     private WorkSpace workSpace;
 
+    @OneToMany(mappedBy = "todoList", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<TodoCard> todoCards;
+
+
     public TodoList() {
 
     }
@@ -78,6 +88,10 @@ public class TodoList {
 
     public Integer getIndex() {
         return index;
+    }
+
+    public List<TodoCard> getTodoCards() {
+        return todoCards;
     }
 
     public Timestamp getUpdatedAt() {
@@ -122,5 +136,9 @@ public class TodoList {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public void setTodoCards(List<TodoCard> todoCards) {
+        this.todoCards = todoCards;
     }
 }

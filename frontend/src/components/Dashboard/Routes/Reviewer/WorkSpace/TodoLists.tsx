@@ -33,7 +33,6 @@ const TodoLists = () => {
   };
 
   useEffect(() => {
-    console.log('run');
     if (data !== undefined) {
       dispatch(setTodoLists(data.data));
     }

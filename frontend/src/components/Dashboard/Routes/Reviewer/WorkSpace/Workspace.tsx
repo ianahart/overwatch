@@ -56,7 +56,7 @@ const WorkSpace = () => {
     handleReorderTodoLists(newTodoLists, workSpace.id);
   };
 
-  const style = { backgroundColor: workSpace.backgroundColor ? workSpace.backgroundColor : 'gray' };
+  const style = { backgroundColor: workSpace.backgroundColor ? workSpace.backgroundColor : '#030712' };
 
   return (
     <div style={style} className="min-h-[700px] w-full rounded p-2 overflow-x-auto">
@@ -64,6 +64,11 @@ const WorkSpace = () => {
         <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
           <TodoLists />
         </DndContext>
+      )}
+      {workSpace.id === 0 && (
+        <div className="my-4 flex justify-center">
+          <h3>Select existing workspace from dropdown or create a new workspace.</h3>
+        </div>
       )}
     </div>
   );
