@@ -17,6 +17,7 @@ import com.hart.overwatch.workspace.request.UpdateWorkSpaceRequest;
 import com.hart.overwatch.workspace.response.CreateWorkSpaceResponse;
 import com.hart.overwatch.workspace.response.DeleteWorkSpaceResponse;
 import com.hart.overwatch.workspace.response.GetAllWorkSpaceResponse;
+import com.hart.overwatch.workspace.response.GetLatestWorkSpaceResponse;
 import com.hart.overwatch.workspace.response.UpdateWorkSpaceResponse;
 import jakarta.validation.Valid;
 
@@ -60,5 +61,13 @@ public class WorkSpaceController {
 
         this.workSpaceService.deleteWorkSpace(id);
         return ResponseEntity.status(HttpStatus.OK).body(new DeleteWorkSpaceResponse("success"));
+    }
+
+    @GetMapping("/latest")
+    ResponseEntity<GetLatestWorkSpaceResponse> getLatestWorkSpace(
+            @RequestParam("userId") Long userId) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(new GetLatestWorkSpaceResponse("success",
+                workSpaceService.getLatestWorkSpace(userId)));
     }
 }

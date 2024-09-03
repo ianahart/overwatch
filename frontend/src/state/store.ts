@@ -377,6 +377,7 @@ export {
 } from './apis/repositoriesApi';
 
 export {
+  useFetchLatestWorkspaceQuery,
   useDeleteWorkSpaceMutation,
   useEditWorkSpaceMutation,
   useCreateWorkSpaceMutation,

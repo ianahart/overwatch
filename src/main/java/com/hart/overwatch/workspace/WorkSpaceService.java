@@ -5,7 +5,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
@@ -124,5 +126,17 @@ public class WorkSpaceService {
         }
 
         workSpaceRepository.delete(workSpace);
+    }
+
+    public WorkSpaceDto getLatestWorkSpace(Long userId) {
+        Pageable pageable = PageRequest.of(0, 1, Sort.by("createdAt").descending());
+
+        Page<WorkSpaceDto> result =
+                workSpaceRepository.getLatestWorkSpaceByUserId(pageable, userId);
+
+        if (result.getContent().size() > 0) {
+            return result.getContent().get(0);
+        }
+        return null;
     }
 }
