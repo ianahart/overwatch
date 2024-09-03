@@ -1,5 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import {
+  IFetchLatestWorkSpaceRequest,
+  IFetchLatestWorkSpaceResponse,
   ICreateWorkSpaceResponse,
   ICreateWorkSpaceRequest,
   IFetchWorkSpacesResponse,
@@ -55,7 +57,20 @@ const workSpacesApi = createApi({
           ];
         },
       }),
-
+      fetchLatestWorkspace: builder.query<IFetchLatestWorkSpaceResponse, IFetchLatestWorkSpaceRequest>({
+        query: ({ userId, token }) => {
+          if (userId === 0 || userId === null) {
+            return '';
+          }
+          return {
+            url: `/workspaces/latest?userId=${userId}`,
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+      }),
       fetchWorkspaces: builder.query<IFetchWorkSpacesResponse, IFetchWorkSpacesRequest>({
         query: ({ userId, token, page, pageSize, direction }) => {
           if (userId === 0 || userId === null) {
@@ -97,6 +112,7 @@ const workSpacesApi = createApi({
 });
 
 export const {
+  useFetchLatestWorkspaceQuery,
   useDeleteWorkSpaceMutation,
   useEditWorkSpaceMutation,
   useCreateWorkSpaceMutation,

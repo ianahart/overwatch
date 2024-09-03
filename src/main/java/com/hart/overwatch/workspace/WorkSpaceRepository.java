@@ -20,6 +20,19 @@ public interface WorkSpaceRepository extends JpaRepository<WorkSpace, Long> {
             INNER JOIN w.user u
             WHERE u.id = :userId
             """)
+    Page<WorkSpaceDto> getLatestWorkSpaceByUserId(@Param("pageable") Pageable pageable,
+            @Param("userId") Long userId);
+
+
+
+    @Query(value = """
+            SELECT new com.hart.overwatch.workspace.dto.WorkSpaceDto(
+            w.id AS id, u.id AS userId, w.createdAt AS createdAt, w.title AS title,
+            w.backgroundColor AS backgroundColor
+            ) FROM WorkSpace w
+            INNER JOIN w.user u
+            WHERE u.id = :userId
+            """)
     Page<WorkSpaceDto> getWorkSpacesByUserId(@Param("pageable") Pageable pageable,
             @Param("userId") Long userId);
 

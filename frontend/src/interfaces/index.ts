@@ -1175,6 +1175,16 @@ export interface IDeleteTodoCardRequest {
   todoCardId: number;
 }
 
+export interface IFetchLatestWorkSpaceRequest {
+  token: string;
+  userId: number;
+}
+
+export interface IFetchLatestWorkSpaceResponse {
+  message: string;
+  data: IWorkSpaceEntity;
+}
+
 export interface IDeleteTodoCardResponse extends IBaseResponse {}
 
 export interface IDeleteTodoListResponse extends IBaseResponse {}
