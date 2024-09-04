@@ -1,10 +1,13 @@
 package com.hart.overwatch.todocard;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import com.hart.overwatch.todolist.TodoList;
 import com.hart.overwatch.todolist.TodoListService;
 import com.hart.overwatch.user.User;
@@ -14,6 +17,7 @@ import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.todocard.dto.TodoCardDto;
 import com.hart.overwatch.todocard.request.CreateTodoCardRequest;
+import com.hart.overwatch.todocard.request.ReorderTodoCardRequest;
 import com.hart.overwatch.todocard.request.UpdateTodoCardRequest;
 
 @Service
@@ -84,11 +88,20 @@ public class TodoCardService {
                 todoCard.getPhoto(), todoCard.getTodoList().getTitle());
     }
 
+
+
+    private List<TodoCardDto> sortTodoCards(List<TodoCardDto> todoCards) {
+        return todoCards.stream().sorted(Comparator.comparingInt(TodoCardDto::getIndex))
+                .collect(Collectors.toList());
+    }
+
+
     public List<TodoCardDto> retrieveTodoCards(Long todoListId) {
         User currentUser = userService.getCurrentlyLoggedInUser();
 
-        return todoCardRepository.retrieveTodoCards(todoListId, currentUser.getId());
+        return sortTodoCards(todoCardRepository.retrieveTodoCards(todoListId, currentUser.getId()));
     }
+
 
     public TodoCardDto retrieveTodoCard(Long todoListId) {
         User currentUser = userService.getCurrentlyLoggedInUser();
@@ -143,7 +156,39 @@ public class TodoCardService {
         }
 
         todoCardRepository.delete(todoCard);
+    }
 
+    @Transactional
+    public void reorderTodoCards(ReorderTodoCardRequest request, Long todoCardId) {
+
+        TodoList todoList = todoListService.getTodoListById(request.getTodoListId());
+        List<TodoCard> todoCards = todoList.getTodoCards();
+
+        TodoCard targetCard = todoCards.stream().filter(card -> card.getId().equals(todoCardId))
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("TodoCard not found"));
+
+        int oldIndex = targetCard.getIndex();
+        int newIndex = request.getNewIndex();
+
+        if (oldIndex == newIndex) {
+            return;
+        }
+
+        for (TodoCard card : todoCards) {
+            if (oldIndex < newIndex) {
+                if (card.getIndex() > oldIndex && card.getIndex() <= newIndex) {
+                    card.setIndex(card.getIndex() - 1);
+                }
+            } else {
+                if (card.getIndex() < oldIndex && card.getIndex() >= newIndex) {
+                    card.setIndex(card.getIndex() + 1);
+                }
+            }
+        }
+
+        targetCard.setIndex(newIndex);
+
+        todoCardRepository.saveAll(todoCards);
     }
 
 }

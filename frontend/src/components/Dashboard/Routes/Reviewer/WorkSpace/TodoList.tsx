@@ -1,12 +1,13 @@
 import { BsThreeDots } from 'react-icons/bs';
 import { LuGrip } from 'react-icons/lu';
-import { useSortable } from '@dnd-kit/sortable';
+import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+
+import { useState } from 'react';
 
 import { ITodoList } from '../../../../../interfaces';
 import AddCard from './AddCard';
 import TodoListTitle from './TodoListTitle';
-import { useState } from 'react';
 import ClickAway from '../../../../Shared/ClickAway';
 import TodoListOptions from './TodoListOptions';
 import CardList from './CardList';
@@ -16,7 +17,7 @@ export interface ITodoListProps {
 }
 
 const TodoList = ({ list }: ITodoListProps) => {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: list.id });
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: `list-${list.id}` });
   const [isOpen, setIsOpen] = useState(false);
 
   const onClickAway = () => {
@@ -29,7 +30,7 @@ const TodoList = ({ list }: ITodoListProps) => {
 
   const style = {
     transition,
-    transform: CSS.Transform.toString(transform),
+    transform: CSS.Translate.toString(transform),
   };
 
   return (
@@ -39,7 +40,7 @@ const TodoList = ({ list }: ITodoListProps) => {
       {...attributes}
       {...listeners}
       onClick={(e) => e.stopPropagation()}
-      className="bg-slate-900 mx-2 w-full min-w-[225px] max-w-[225px] rounded p-2 text-gray-400"
+      className="bg-slate-900 mx-2 w-full min-h-[500px] mb-auto min-w-[225px] max-w-[225px] rounded p-2 text-gray-400"
     >
       <div className="flex items-center justify-between">
         <TodoListTitle list={list} />
@@ -57,7 +58,14 @@ const TodoList = ({ list }: ITodoListProps) => {
       </div>
       <AddCard todoList={list} />
       <div className="my-4">
-        <CardList cards={list.cards} />
+        <SortableContext
+          key={`list-${list.id.toString()}`}
+          id={`list-${list.id.toString()}`}
+          items={list.cards.map((card) => `card-${card.id}`)}
+          strategy={verticalListSortingStrategy}
+        >
+          {list.cards.length === 0 ? <p className="text-sm">Start a list</p> : <CardList cards={list.cards} />}
+        </SortableContext>
       </div>
     </div>
   );

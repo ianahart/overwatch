@@ -1,5 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import {
+  IReorderTodoCardRequest,
+  IReorderTodoCardResponse,
   ICreateTodoCardRequest,
   ICreateTodoCardResponse,
   IDeleteTodoCardRequest,
@@ -15,6 +17,23 @@ const todoCardsApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints(builder) {
     return {
+      reorderTodoCards: builder.mutation<IReorderTodoCardResponse, IReorderTodoCardRequest>({
+        query: ({ token, listId, oldIndex, newIndex, todoCardId }) => {
+          return {
+            url: `/todo-cards/${todoCardId}/reorder`,
+            method: 'PATCH',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: {
+              todoListId: listId,
+              oldIndex,
+              newIndex,
+            },
+          };
+        },
+      }),
+
       deleteTodoCard: builder.mutation<IDeleteTodoCardResponse, IDeleteTodoCardRequest>({
         query: ({ token, todoCardId }) => {
           return {
@@ -58,5 +77,10 @@ const todoCardsApi = createApi({
   },
 });
 
-export const { useDeleteTodoCardMutation, useCreateTodoCardMutation, useUpdateTodoCardMutation } = todoCardsApi;
+export const {
+  useReorderTodoCardsMutation,
+  useDeleteTodoCardMutation,
+  useCreateTodoCardMutation,
+  useUpdateTodoCardMutation,
+} = todoCardsApi;
 export { todoCardsApi };
