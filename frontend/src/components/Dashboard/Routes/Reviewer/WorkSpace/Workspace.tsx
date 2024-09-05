@@ -22,12 +22,14 @@ import {
   setTodoLists,
   useReorderTodoListsMutation,
   useReorderTodoCardsMutation,
+  useMoveTodoCardsMutation,
 } from '../../../../../state/store';
 import { ITodoList } from '../../../../../interfaces';
 const WorkSpace = () => {
   const dispatch = useDispatch();
   const [reorderTodoLists] = useReorderTodoListsMutation();
   const [reorderTodoCardsMut] = useReorderTodoCardsMutation();
+  const [moveTodoCardsMut] = useMoveTodoCardsMutation();
   const { token } = useSelector((store: TRootState) => store.user);
   const { workSpace } = useSelector((store: TRootState) => store.workSpace);
   const { todoLists } = useSelector((store: TRootState) => store.todoList);
@@ -56,9 +58,32 @@ const WorkSpace = () => {
   const handleReorderTodoCards = (listId: number, oldIndex: number, newIndex: number, todoCardId: number) => {
     reorderTodoCardsMut({ token, listId, oldIndex, newIndex, todoCardId })
       .unwrap()
+      .then(() => {
+        dispatch(reorderTodoCards({ listId, oldIndex, newIndex }));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handleMoveTodoCards = (
+    sourceListId: number,
+    destinationListId: number,
+    todoCardId: number,
+    newIndex: number
+  ) => {
+    moveTodoCardsMut({ token, sourceListId, destinationListId, todoCardId, newIndex })
+      .unwrap()
       .then((res) => {
         console.log(res);
-        dispatch(reorderTodoCards({ listId, oldIndex, newIndex }));
+        dispatch(
+          moveTodoCard({
+            sourceListId,
+            destinationListId,
+            cardId: todoCardId,
+            newIndex,
+          })
+        );
       })
       .catch((err) => {
         console.log(err);
@@ -90,14 +115,8 @@ const WorkSpace = () => {
       const cardId = Number.parseInt(activeId.replace('card-', ''));
 
       if (!destinationList && sourceList) {
-        dispatch(
-          moveTodoCard({
-            sourceListId: sourceList.id,
-            destinationListId: Number.parseInt(overId.replace('list-', '')),
-            cardId,
-            newIndex: 0,
-          })
-        );
+        const destinationListId = Number.parseInt(overId.replace('list-', ''));
+        handleMoveTodoCards(sourceList.id, destinationListId, cardId, 0);
         return;
       }
 
@@ -108,14 +127,7 @@ const WorkSpace = () => {
         if (sourceList.id === destinationList.id) {
           handleReorderTodoCards(sourceList.id, oldIndex, newIndex, cardId);
         } else {
-          dispatch(
-            moveTodoCard({
-              sourceListId: sourceList.id,
-              destinationListId: destinationList.id,
-              cardId,
-              newIndex,
-            })
-          );
+          handleMoveTodoCards(sourceList.id, destinationList.id, cardId, newIndex);
         }
       }
     }

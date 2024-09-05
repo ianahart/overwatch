@@ -90,6 +90,7 @@ const todoListsSlice = createSlice({
         if (cardIndex > -1) {
           const [movedCard] = sourceTodoList.cards.splice(cardIndex, 1);
           destinationList.cards.splice(newIndex, 0, movedCard);
+          destinationList.cards[newIndex].todoListId = destinationList.id;
         }
       }
     },

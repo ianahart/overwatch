@@ -399,6 +399,7 @@ export {
 } from './apis/todoListsApi';
 
 export {
+  useMoveTodoCardsMutation,
   useReorderTodoCardsMutation,
   useDeleteTodoCardMutation,
   useUpdateTodoCardMutation,

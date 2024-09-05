@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.hart.overwatch.todocard.request.CreateTodoCardRequest;
+import com.hart.overwatch.todocard.request.MoveTodoCardRequest;
 import com.hart.overwatch.todocard.request.ReorderTodoCardRequest;
 import com.hart.overwatch.todocard.request.UpdateTodoCardRequest;
 import com.hart.overwatch.todocard.response.CreateTodoCardResponse;
 import com.hart.overwatch.todocard.response.DeleteTodoCardResponse;
+import com.hart.overwatch.todocard.response.MoveTodoCardResponse;
 import com.hart.overwatch.todocard.response.ReorderTodoCardResponse;
 import com.hart.overwatch.todocard.response.UpdateTodoCardResponse;
 import jakarta.validation.Valid;
@@ -60,5 +62,12 @@ public class TodoCardController {
     ResponseEntity<ReorderTodoCardResponse> reorderTodoCard(@PathVariable("todoCardId") Long todoCardId, @RequestBody ReorderTodoCardRequest request) {
         todoCardService.reorderTodoCards(request, todoCardId);
         return ResponseEntity.status(HttpStatus.OK).body(new ReorderTodoCardResponse("success"));
+    }
+
+    @PatchMapping("/todo-cards/{todoCardId}/move")
+    ResponseEntity<MoveTodoCardResponse> moveTodoCard(@PathVariable("todoCardId")Long todoCardId, @RequestBody MoveTodoCardRequest request) {
+        todoCardService.moveTodoCards(todoCardId, request);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new MoveTodoCardResponse("success"));
     }
 }

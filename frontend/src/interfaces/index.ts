@@ -1193,6 +1193,16 @@ export interface IReorderTodoCardRequest {
   todoCardId: number;
 }
 
+export interface IMoveTodoCardRequest {
+  token: string;
+  sourceListId: number;
+  destinationListId: number;
+  newIndex: number;
+  todoCardId: number;
+}
+
+export interface IMoveTodoCardResponse extends IBaseResponse {}
+
 export interface IReorderTodoCardResponse extends IBaseResponse {}
 
 export interface IDeleteTodoCardResponse extends IBaseResponse {}

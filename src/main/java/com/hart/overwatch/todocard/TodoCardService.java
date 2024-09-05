@@ -2,6 +2,7 @@ package com.hart.overwatch.todocard;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.hart.overwatch.todolist.TodoList;
+import com.hart.overwatch.todolist.TodoListRepository;
 import com.hart.overwatch.todolist.TodoListService;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
@@ -17,6 +19,7 @@ import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.todocard.dto.TodoCardDto;
 import com.hart.overwatch.todocard.request.CreateTodoCardRequest;
+import com.hart.overwatch.todocard.request.MoveTodoCardRequest;
 import com.hart.overwatch.todocard.request.ReorderTodoCardRequest;
 import com.hart.overwatch.todocard.request.UpdateTodoCardRequest;
 
@@ -31,12 +34,15 @@ public class TodoCardService {
 
     private final TodoListService todoListService;
 
+    private final TodoListRepository todoListRepository;
+
     @Autowired
     public TodoCardService(TodoCardRepository todoCardRepository, UserService userService,
-            TodoListService todoListService) {
+            TodoListService todoListService, TodoListRepository todoListRepository) {
         this.todoCardRepository = todoCardRepository;
         this.userService = userService;
         this.todoListService = todoListService;
+        this.todoListRepository = todoListRepository;
     }
 
 
@@ -90,7 +96,7 @@ public class TodoCardService {
 
 
 
-    private List<TodoCardDto> sortTodoCards(List<TodoCardDto> todoCards) {
+    private List<TodoCardDto> sortTodoCardDtos(List<TodoCardDto> todoCards) {
         return todoCards.stream().sorted(Comparator.comparingInt(TodoCardDto::getIndex))
                 .collect(Collectors.toList());
     }
@@ -99,7 +105,8 @@ public class TodoCardService {
     public List<TodoCardDto> retrieveTodoCards(Long todoListId) {
         User currentUser = userService.getCurrentlyLoggedInUser();
 
-        return sortTodoCards(todoCardRepository.retrieveTodoCards(todoListId, currentUser.getId()));
+        return sortTodoCardDtos(
+                todoCardRepository.retrieveTodoCards(todoListId, currentUser.getId()));
     }
 
 
@@ -147,6 +154,7 @@ public class TodoCardService {
 
     }
 
+    @Transactional
     public void deleteTodoCard(Long todoCardId) {
         TodoCard todoCard = getTodoCardById(todoCardId);
         User currentUser = userService.getCurrentlyLoggedInUser();
@@ -154,6 +162,17 @@ public class TodoCardService {
         if (todoCard.getUser().getId() != currentUser.getId()) {
             throw new ForbiddenException("You cannot delete another user's card");
         }
+
+        TodoList todoList = todoCard.getTodoList();
+        List<TodoCard> todoCards = sortTodoCards(todoList.getTodoCards());
+
+        if (!todoCards.remove(todoCard)) {
+            throw new NotFoundException("TodoCard not found in the list");
+        }
+        todoList.setTodoCards(todoCards);
+        updateCardIndices(todoCards);
+
+        todoListRepository.save(todoList);
 
         todoCardRepository.delete(todoCard);
     }
@@ -191,4 +210,53 @@ public class TodoCardService {
         todoCardRepository.saveAll(todoCards);
     }
 
+    @Transactional
+    public void moveTodoCards(Long todoCardId, MoveTodoCardRequest request) {
+        TodoList destinationList = todoListService.getTodoListById(request.getDestinationListId());
+        TodoList sourceList = todoListService.getTodoListById(request.getSourceListId());
+
+        if (destinationList == null) {
+            throw new NotFoundException("Missing destination list");
+        }
+        if (sourceList == null) {
+            throw new NotFoundException("Missing source list");
+        }
+
+        TodoCard todoCardToMove = getTodoCardById(todoCardId);
+
+        List<TodoCard> sourceTodoCards = sortTodoCards(new ArrayList<>(sourceList.getTodoCards()));
+        List<TodoCard> destTodoCards =
+                sortTodoCards(new ArrayList<>(destinationList.getTodoCards()));
+
+        if (!sourceTodoCards.remove(todoCardToMove)) {
+            throw new NotFoundException("TodoCard not found in source list");
+        }
+
+        int newIndex = Math.max(0, Math.min(request.getNewIndex(), destTodoCards.size()));
+        todoCardToMove.setTodoList(destinationList);
+        destTodoCards.add(newIndex, todoCardToMove);
+
+        updateCardIndices(sourceTodoCards);
+        updateCardIndices(destTodoCards);
+
+        sourceList.setTodoCards(sourceTodoCards);
+        destinationList.setTodoCards(destTodoCards);
+
+        todoListRepository.save(sourceList);
+        todoListRepository.save(destinationList);
+    }
+
+    private List<TodoCard> sortTodoCards(List<TodoCard> todoCards) {
+        return todoCards.stream().sorted(Comparator.comparingInt(TodoCard::getIndex))
+                .collect(Collectors.toList());
+    }
+
+    private void updateCardIndices(List<TodoCard> todoCards) {
+        for (int i = 0; i < todoCards.size(); i++) {
+            TodoCard card = todoCards.get(i);
+            card.setIndex(i);
+        }
+    }
+
 }
+
