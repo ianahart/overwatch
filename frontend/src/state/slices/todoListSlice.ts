@@ -65,6 +65,35 @@ const todoListsSlice = createSlice({
 
       state.todoLists[todoListIndex].cards.splice(todoCardIndex, 1);
     },
+
+    reorderTodoCards: (state, action: PayloadAction<{ listId: number; oldIndex: number; newIndex: number }>) => {
+      const { listId, oldIndex, newIndex } = action.payload;
+      const todoList = state.todoLists.find((tl) => tl.id === listId);
+
+      if (todoList) {
+        const [movedCard] = todoList.cards.splice(oldIndex, 1);
+        todoList.cards.splice(newIndex, 0, movedCard);
+      }
+    },
+
+    moveTodoCard: (
+      state,
+      action: PayloadAction<{ sourceListId: number; destinationListId: number; cardId: number; newIndex: number }>
+    ) => {
+      const { sourceListId, destinationListId, cardId, newIndex } = action.payload;
+      const sourceTodoList = state.todoLists.find((tl) => tl.id === sourceListId);
+      const destinationList = state.todoLists.find((tl) => tl.id === destinationListId);
+
+      if (sourceTodoList && destinationList) {
+        const cardIndex = sourceTodoList.cards.findIndex((card) => card.id === cardId);
+
+        if (cardIndex > -1) {
+          const [movedCard] = sourceTodoList.cards.splice(cardIndex, 1);
+          destinationList.cards.splice(newIndex, 0, movedCard);
+          destinationList.cards[newIndex].todoListId = destinationList.id;
+        }
+      }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(clearUser, () => {
@@ -77,6 +106,8 @@ const todoListsSlice = createSlice({
 });
 
 export const {
+  reorderTodoCards,
+  moveTodoCard,
   removeTodoListTodoCard,
   updateTodoListTodoCard,
   addCardToTodoList,

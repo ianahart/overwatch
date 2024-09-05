@@ -7,6 +7,8 @@ import { userReducer, updateUser, updateTokens, clearUser, updateUserAndTokens }
 import { settingReducer, updateSetting, clearSetting } from './slices/settingSlice';
 import { updateWorkSpaceProperty, clearWorkSpace, workSpaceReducer, setWorkSpace } from './slices/workSpaceSlice';
 import {
+  moveTodoCard,
+  reorderTodoCards,
   removeTodoListTodoCard,
   updateTodoListTodoCard,
   addCardToTodoList,
@@ -275,6 +277,8 @@ export {
   addCardToTodoList,
   updateTodoListTodoCard,
   removeTodoListTodoCard,
+  moveTodoCard,
+  reorderTodoCards,
 };
 
 export {
@@ -394,7 +398,13 @@ export {
   useReorderTodoListsMutation,
 } from './apis/todoListsApi';
 
-export { useDeleteTodoCardMutation, useUpdateTodoCardMutation, useCreateTodoCardMutation } from './apis/todoCardsApi';
+export {
+  useMoveTodoCardsMutation,
+  useReorderTodoCardsMutation,
+  useDeleteTodoCardMutation,
+  useUpdateTodoCardMutation,
+  useCreateTodoCardMutation,
+} from './apis/todoCardsApi';
 
 export {
   testimonialsApi,

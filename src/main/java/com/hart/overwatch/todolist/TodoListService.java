@@ -19,6 +19,8 @@ import com.hart.overwatch.workspace.WorkSpaceService;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.todocard.TodoCard;
+import com.hart.overwatch.todocard.TodoCardRepository;
 import com.hart.overwatch.todocard.TodoCardService;
 import com.hart.overwatch.todocard.dto.TodoCardDto;
 import com.hart.overwatch.todolist.dto.TodoListDto;
@@ -38,13 +40,17 @@ public class TodoListService {
 
     private final TodoCardService todoCardService;
 
+    private final TodoCardRepository todoCardRepository;
+
     @Autowired
     public TodoListService(TodoListRepository todoListRepository, WorkSpaceService workSpaceService,
-            UserService userService, @Lazy TodoCardService todoCardService) {
+            UserService userService, @Lazy TodoCardService todoCardService,
+            TodoCardRepository todoCardRepository) {
         this.todoListRepository = todoListRepository;
         this.workSpaceService = workSpaceService;
         this.userService = userService;
         this.todoCardService = todoCardService;
+        this.todoCardRepository = todoCardRepository;
     }
 
     public TodoList getTodoListById(Long todoListId) {
@@ -165,6 +171,12 @@ public class TodoListService {
 
         if (todoList.getUser().getId() != currentUser.getId()) {
             throw new ForbiddenException("Cannot delete a todo list that is not yours");
+        }
+
+        List<TodoCard> todoCards = todoList.getTodoCards();
+
+        for (TodoCard todoCard : todoCards) {
+            todoCardRepository.delete(todoCard);
         }
         todoListRepository.delete(todoList);
     }

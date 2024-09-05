@@ -41,6 +41,7 @@ const AddCard = ({ todoList }: IAddCardProps) => {
       .then((res) => {
         dispatch(addCardToTodoList(res.data));
         setIsFormShowing(false);
+        setInputValue('');
       })
       .catch((err) => {
         applyServerErrors(err.data);

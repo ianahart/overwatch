@@ -1,14 +1,20 @@
 import { LuGrip } from 'react-icons/lu';
-import { ITodoCard } from '../../../../../interfaces';
 import { useState } from 'react';
-import CardModal from './CardModal';
+import { CSS } from '@dnd-kit/utilities';
+
 import { AiOutlineEdit } from 'react-icons/ai';
+import { useSortable } from '@dnd-kit/sortable';
+
+import CardModal from './CardModal';
+import { ITodoCard } from '../../../../../interfaces';
 
 export interface ICardProps {
   data: ITodoCard;
 }
 
 const Card = ({ data }: ICardProps) => {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: `card-${data.id}` });
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCardHovered, setIsCardHovered] = useState(false);
 
@@ -28,8 +34,20 @@ const Card = ({ data }: ICardProps) => {
     setIsCardHovered(true);
   };
 
+  const style = {
+    transition,
+    transform: CSS.Translate.toString(transform),
+  };
+
   return (
-    <li onClick={handleOnModalOpen} className="my-6 bg-gray-800 hover:bg-gray-700 p-2 rounded shadow-md cursor-pointer">
+    <li
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      onClick={handleOnModalOpen}
+      className="my-6 bg-gray-800 hover:bg-gray-700 p-2 rounded shadow-md cursor-pointer"
+    >
       <div className="flex justify-end">
         <LuGrip />
       </div>

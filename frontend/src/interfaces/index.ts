@@ -1185,6 +1185,26 @@ export interface IFetchLatestWorkSpaceResponse {
   data: IWorkSpaceEntity;
 }
 
+export interface IReorderTodoCardRequest {
+  token: string;
+  listId: number;
+  oldIndex: number;
+  newIndex: number;
+  todoCardId: number;
+}
+
+export interface IMoveTodoCardRequest {
+  token: string;
+  sourceListId: number;
+  destinationListId: number;
+  newIndex: number;
+  todoCardId: number;
+}
+
+export interface IMoveTodoCardResponse extends IBaseResponse {}
+
+export interface IReorderTodoCardResponse extends IBaseResponse {}
+
 export interface IDeleteTodoCardResponse extends IBaseResponse {}
 
 export interface IDeleteTodoListResponse extends IBaseResponse {}

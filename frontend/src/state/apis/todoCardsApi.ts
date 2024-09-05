@@ -1,11 +1,15 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import {
+  IReorderTodoCardRequest,
+  IReorderTodoCardResponse,
   ICreateTodoCardRequest,
   ICreateTodoCardResponse,
   IDeleteTodoCardRequest,
   IDeleteTodoCardResponse,
   IUpdateTodoCardRequest,
   IUpdateTodoCardResponse,
+  IMoveTodoCardRequest,
+  IMoveTodoCardResponse,
 } from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
@@ -15,6 +19,38 @@ const todoCardsApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints(builder) {
     return {
+      moveTodoCards: builder.mutation<IMoveTodoCardResponse, IMoveTodoCardRequest>({
+        query: ({ token, sourceListId, destinationListId, newIndex, todoCardId }) => {
+          return {
+            url: `/todo-cards/${todoCardId}/move`,
+            method: 'PATCH',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: {
+              sourceListId,
+              destinationListId,
+              newIndex,
+            },
+          };
+        },
+      }),
+      reorderTodoCards: builder.mutation<IReorderTodoCardResponse, IReorderTodoCardRequest>({
+        query: ({ token, listId, oldIndex, newIndex, todoCardId }) => {
+          return {
+            url: `/todo-cards/${todoCardId}/reorder`,
+            method: 'PATCH',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: {
+              todoListId: listId,
+              oldIndex,
+              newIndex,
+            },
+          };
+        },
+      }),
       deleteTodoCard: builder.mutation<IDeleteTodoCardResponse, IDeleteTodoCardRequest>({
         query: ({ token, todoCardId }) => {
           return {
@@ -58,5 +94,11 @@ const todoCardsApi = createApi({
   },
 });
 
-export const { useDeleteTodoCardMutation, useCreateTodoCardMutation, useUpdateTodoCardMutation } = todoCardsApi;
+export const {
+  useMoveTodoCardsMutation,
+  useReorderTodoCardsMutation,
+  useDeleteTodoCardMutation,
+  useCreateTodoCardMutation,
+  useUpdateTodoCardMutation,
+} = todoCardsApi;
 export { todoCardsApi };

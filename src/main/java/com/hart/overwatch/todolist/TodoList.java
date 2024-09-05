@@ -54,7 +54,7 @@ public class TodoList {
     private WorkSpace workSpace;
 
     @OneToMany(mappedBy = "todoList", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
-            orphanRemoval = true)
+            orphanRemoval = false)
     private List<TodoCard> todoCards;
 
 

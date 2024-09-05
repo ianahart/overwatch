@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 import { SerializedError } from '@reduxjs/toolkit';
-import { SortableContext, horizontalListSortingStrategy, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 
 export type TServerError = FetchBaseQueryError | SerializedError;
 
@@ -46,11 +46,16 @@ const TodoLists = () => {
     <div>
       {isLoading && <Spinner message="Loading workspace..." />}
       <div className="flex items-center justify-evenly">
-        <SortableContext items={lists} strategy={horizontalListSortingStrategy}>
-          {lists.map((list) => {
-            return <TodoList key={list.id} list={list} />;
-          })}
-        </SortableContext>
+        {lists.map((list) => (
+          <SortableContext
+            key={`list-context-${list.id}`}
+            id={`list-${list.id}`}
+            items={lists.map((list) => `list-${list.id}`)}
+            strategy={verticalListSortingStrategy}
+          >
+            <TodoList list={list} />
+          </SortableContext>
+        ))}
         <AddTodoList />
       </div>
     </div>

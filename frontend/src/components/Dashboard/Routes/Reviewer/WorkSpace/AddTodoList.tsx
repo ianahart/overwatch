@@ -60,7 +60,7 @@ const AddTodoList = () => {
 
   return (
     <>
-      <div className="bg-slate-900 min-w-[225px] mx-2 w-full max-w-[225px] rounded p-2 text-gray-400">
+      <div className="bg-slate-900 mb-auto min-w-[225px] mx-2 w-full max-w-[225px] rounded p-2 text-gray-400">
         {!isDropDownOpen && (
           <div onClick={openDropDown} className="flex items-center cursor-pointer">
             <div className="text-xl mr-2">
