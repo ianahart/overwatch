@@ -48,6 +48,7 @@ public class TodoCardDto {
         this.details = details;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.photo = photo;
         this.todoListTitle = todoListTitle;
     }
 

@@ -121,13 +121,6 @@ public class TodoCardService {
                 request.getTitle() != null ? Jsoup.clean(request.getTitle(), Safelist.none()) : "";
         TodoCard todoCard = getTodoCardById(todoCardId);
 
-
-        if (todoCardAlreadyExistsInList(todoCard.getTodoList().getId(), cleanedTitle)) {
-            throw new BadRequestException(
-                    "You have already added a card with that title to this list");
-        }
-
-
         String cleanedDetails =
                 request.getDetails() != null ? Jsoup.clean(request.getDetails(), Safelist.none())
                         : null;

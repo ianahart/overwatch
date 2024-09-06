@@ -89,6 +89,9 @@ const CardHeader = ({ card, handleOnModalClose }: ICardHeaderProps) => {
           <p>
             In list <span className="underline">{card.todoListTitle}</span>
           </p>
+          {card.photo !== null && card.photo?.length > 0 && (
+            <img className="h-20 w-[200px] rounded" src={card.photo} alt={card.title} />
+          )}
         </div>
       </div>
       <div onClick={handleOnClick} className="rounded h-9 border border-gray-800 cursor-pointer">
