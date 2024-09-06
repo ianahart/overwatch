@@ -120,6 +120,7 @@ import { repositoriesApi } from './apis/repositoriesApi';
 import { workSpacesApi } from './apis/workSpacesApi';
 import { todoListsApi } from './apis/todoListsApi';
 import { todoCardsApi } from './apis/todoCardsApi';
+import { pexelApi } from './apis/pexelsApi';
 
 export const store = configureStore({
   reducer: {
@@ -160,6 +161,7 @@ export const store = configureStore({
     [workSpacesApi.reducerPath]: workSpacesApi.reducer,
     [todoListsApi.reducerPath]: todoListsApi.reducer,
     [todoCardsApi.reducerPath]: todoCardsApi.reducer,
+    [pexelApi.reducerPath]: pexelApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -187,7 +189,8 @@ export const store = configureStore({
       .concat(repositoriesApi.middleware)
       .concat(workSpacesApi.middleware)
       .concat(todoListsApi.middleware)
-      .concat(todoCardsApi.middleware);
+      .concat(todoCardsApi.middleware)
+      .concat(pexelApi.middleware);
   },
 });
 
@@ -406,6 +409,8 @@ export {
   useCreateTodoCardMutation,
 } from './apis/todoCardsApi';
 
+export { useLazyFetchPexelPhotosQuery, useFetchPexelPhotosQuery } from './apis/pexelsApi';
+
 export {
   testimonialsApi,
   authsApi,
@@ -423,4 +428,5 @@ export {
   repositoriesApi,
   workSpacesApi,
   todoListsApi,
+  pexelApi,
 };

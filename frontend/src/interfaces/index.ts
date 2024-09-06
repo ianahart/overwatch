@@ -1201,6 +1201,16 @@ export interface IMoveTodoCardRequest {
   todoCardId: number;
 }
 
+export interface IFetchPexelPhotosRequest {
+  token: string;
+  query?: string;
+}
+
+export interface IFetchPexelPhotosResponse {
+  message: string;
+  data: string[];
+}
+
 export interface IMoveTodoCardResponse extends IBaseResponse {}
 
 export interface IReorderTodoCardResponse extends IBaseResponse {}

@@ -1,5 +1,5 @@
-import { ITodoCard } from '../../../../../interfaces';
-import CardRemoveBtn from './Actions/CardRemoveBtn';
+import { ITodoCard } from '../../../../../../interfaces';
+import CardRemoveBtn from './CardRemoveBtn';
 
 export interface ICardActionsProps {
   card: ITodoCard;

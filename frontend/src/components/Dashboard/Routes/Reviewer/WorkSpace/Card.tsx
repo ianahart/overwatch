@@ -48,7 +48,12 @@ const Card = ({ data }: ICardProps) => {
       onClick={handleOnModalOpen}
       className="my-6 bg-gray-800 hover:bg-gray-700 p-2 rounded shadow-md cursor-pointer"
     >
-      <div className="flex justify-end">
+      <div className="flex justify-between">
+        {data.photo?.length > 0 ? (
+          <img className="h-9 w-[90%] rounded" src={data.photo} alt={data.title} />
+        ) : (
+          <div></div>
+        )}
         <LuGrip />
       </div>
       <div
