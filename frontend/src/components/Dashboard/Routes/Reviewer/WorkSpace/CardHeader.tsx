@@ -1,6 +1,8 @@
 import { BsWindowDesktop } from 'react-icons/bs';
 import { AiOutlineClose } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
+import dayjs from 'dayjs';
+import { CiClock1 } from 'react-icons/ci';
 
 import { ITodoCard } from '../../../../../interfaces';
 import { useState } from 'react';
@@ -89,6 +91,16 @@ const CardHeader = ({ card, handleOnModalClose }: ICardHeaderProps) => {
           <p>
             In list <span className="underline">{card.todoListTitle}</span>
           </p>
+          {card.startDate !== null && card.endDate !== null && (
+            <div className="my-1 flex items-center">
+              <div className="mr-2">
+                <CiClock1 className="text-xl" />
+              </div>
+              <p>
+                {dayjs(card.startDate).format('MMM D')}-{dayjs(card.endDate).format('MMM D')}
+              </p>
+            </div>
+          )}
           {card.photo !== null && card.photo?.length > 0 && (
             <img className="h-20 w-[200px] rounded" src={card.photo} alt={card.title} />
           )}

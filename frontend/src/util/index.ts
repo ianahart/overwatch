@@ -44,3 +44,15 @@ export const shortenString = (str: string) => {
   }
   return str.split(' ').slice(0, 5).join(' ') + '...';
 };
+
+export const addDays = (date: Date, days: number) => {
+  const newDate = new Date(date);
+  newDate.setDate(date.getDate() + days);
+  return newDate;
+};
+
+export const addMonths = (date: Date, months: number) => {
+  const newDate = new Date(date);
+  newDate.setMonth(date.getMonth() + months);
+  return newDate;
+};

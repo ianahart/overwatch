@@ -19,6 +19,7 @@ const WorkSpaceContainer = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const token = retrieveTokens()?.token;
+  const { workSpace } = useSelector((store: TRootState) => store.workSpace);
   const { user } = useSelector((store: TRootState) => store.user);
   const { data, isLoading } = useFetchLatestWorkspaceQuery({ token, userId: user.id });
   const [fetchTodoLists] = useLazyFetchTodoListsQuery();
@@ -27,15 +28,18 @@ const WorkSpaceContainer = () => {
     if (data !== undefined) {
       if (data.data !== null) {
         dispatch(setWorkSpace(data.data));
-        fetchTodoLists({ token, workSpaceId: data.data.id })
-          .unwrap()
-          .then((res) => {
-            dispatch(setTodoLists(res.data));
-            navigate(`/dashboard/${user.slug}/reviewer/workspaces/${data.data.id}`);
-          });
       }
     }
   }, [data, dispatch]);
+
+  useEffect(() => {
+    fetchTodoLists({ token, workSpaceId: workSpace.id })
+      .unwrap()
+      .then((res) => {
+        dispatch(setTodoLists(res.data));
+        navigate(`/dashboard/${user.slug}/reviewer/workspaces/${workSpace.id}`);
+      });
+  }, [workSpace.id]);
 
   useEffect(() => {
     return () => {
