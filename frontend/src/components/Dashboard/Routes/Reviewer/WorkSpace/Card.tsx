@@ -7,6 +7,8 @@ import { useSortable } from '@dnd-kit/sortable';
 
 import CardModal from './CardModal';
 import { ITodoCard } from '../../../../../interfaces';
+import { CiClock1 } from 'react-icons/ci';
+import dayjs from 'dayjs';
 
 export interface ICardProps {
   data: ITodoCard;
@@ -56,6 +58,18 @@ const Card = ({ data }: ICardProps) => {
         )}
         <LuGrip />
       </div>
+      {data.startDate !== null && data.endDate !== null && (
+        <div className="my-1 flex items-center">
+          <div className="mr-1">
+            <CiClock1 />
+          </div>
+          <div>
+            <p className="text-xs">
+              {dayjs(data.startDate).format('MMM D')}-{dayjs(data.endDate).format('MMM D')}
+            </p>
+          </div>
+        </div>
+      )}
       <div
         onMouseLeave={handleOnMouseLeave}
         onMouseEnter={handleOnMouseEnter}

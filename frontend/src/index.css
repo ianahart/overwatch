@@ -3,6 +3,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.react-datepicker {
+  @apply absolute right-11 z-10;
+}
+
 .chat-grid {
   @apply grid grid-cols-chat;
 }

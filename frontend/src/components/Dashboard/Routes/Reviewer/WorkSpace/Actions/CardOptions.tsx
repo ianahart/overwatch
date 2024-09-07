@@ -1,4 +1,5 @@
 import { ITodoCard } from '../../../../../../interfaces';
+import CardDatesBtn from './CardDatesBtn';
 import CardPhotoBtn from './CardPhotoBtn';
 
 export interface ICardOptionsProps {
@@ -12,6 +13,7 @@ const CardOptions = ({ card }: ICardOptionsProps) => {
         <h3 className="font-bold">Add to card</h3>
       </div>
       <CardPhotoBtn card={card} />
+      <CardDatesBtn card={card} />
     </div>
   );
 };

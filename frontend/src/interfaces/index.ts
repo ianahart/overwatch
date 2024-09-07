@@ -16,8 +16,8 @@ export interface ITodoCard {
   color: string;
   index: number;
   details: string;
-  startDate: string;
-  endDate: string;
+  startDate: string | Date | null;
+  endDate: string | Date | null;
   photo: string;
   todoListTitle: string;
 }
