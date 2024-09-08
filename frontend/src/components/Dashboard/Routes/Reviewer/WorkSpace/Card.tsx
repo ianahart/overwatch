@@ -44,7 +44,7 @@ const Card = ({ data }: ICardProps) => {
   return (
     <li
       ref={setNodeRef}
-      style={style}
+      style={!isModalOpen ? style : {}}
       {...attributes}
       {...listeners}
       onClick={handleOnModalOpen}
