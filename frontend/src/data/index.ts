@@ -13,6 +13,24 @@ export const repositoryState = {
   updatedAt: '',
 };
 
+export const labelColors = [
+  { id: 1, background: '#F1C93B' },
+  { id: 2, background: '#1A5D1A' },
+  { id: 3, background: '#A2FF86' },
+  { id: 4, background: '#B31312' },
+  { id: 5, background: '#E8A9A9' },
+  { id: 6, background: '#068FFF' },
+  { id: 7, background: '#090580' },
+  { id: 8, background: '#E57C23' },
+  { id: 9, background: '#FF55BB' },
+  { id: 10, background: '#a229ec' },
+  { id: 11, background: '#59652a' },
+  { id: 12, background: '#021f27' },
+  { id: 13, background: '#9acbae' },
+  { id: 14, background: '#32bcdf' },
+  { id: 15, background: '#ccc5b9' },
+];
+
 export const backgroundColors = [
   { id: 1, value: '#fb7185' },
   { id: 2, value: '#f472b6' },
