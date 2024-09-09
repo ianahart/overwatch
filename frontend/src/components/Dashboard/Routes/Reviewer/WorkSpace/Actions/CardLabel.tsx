@@ -13,9 +13,10 @@ export interface ICardLabelProps {
   card: ITodoCard;
   label: ILabel;
   handleOnDeleteLabel: (id: number) => Promise<void>;
+  activeLabelIds: number[];
 }
 
-const CardLabel = ({ card, label, handleOnDeleteLabel }: ICardLabelProps) => {
+const CardLabel = ({ card, label, handleOnDeleteLabel, activeLabelIds }: ICardLabelProps) => {
   const { token } = useSelector((store: TRootState) => store.user);
   const [createActiveLabelMut] = useCreateActiveLabelMutation();
   const [deleteActiveLabelMut] = useDeleteActiveLabelMutation();
@@ -24,9 +25,7 @@ const CardLabel = ({ card, label, handleOnDeleteLabel }: ICardLabelProps) => {
   const createActiveLabel = () => {
     createActiveLabelMut({ token, cardId: card.id, labelId: label.id })
       .unwrap()
-      .then((res) => {
-        console.log(res);
-      })
+      .then(() => {})
       .catch((err) => {
         console.log(err);
       });
@@ -64,7 +63,7 @@ const CardLabel = ({ card, label, handleOnDeleteLabel }: ICardLabelProps) => {
 
   return (
     <div key={label.id} className="flex items-center justify-between my-1">
-      <input onChange={handleOnChange} checked={label.isChecked} type="checkbox" />
+      <input onChange={handleOnChange} checked={label.isChecked && activeLabelIds.includes(label.id)} type="checkbox" />
       <div style={{ background: label.color }} className="rounded p-1 w-[80%]">
         <p className="text-sm font-bold text-white">{label.title}</p>
       </div>
