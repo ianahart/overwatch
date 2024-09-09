@@ -1,18 +1,23 @@
 package com.hart.overwatch.todocard;
 
+import java.util.List;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import com.hart.overwatch.activelabel.ActiveLabel;
 import com.hart.overwatch.todolist.TodoList;
 import com.hart.overwatch.user.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Table;
 
 @Entity()
@@ -58,6 +63,11 @@ public class TodoCard {
     @Column(name = "photo", length = 255)
     private String photo;
 
+    @OneToMany(mappedBy = "todoCard", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<ActiveLabel> activeLabels;
+
+
     @ManyToOne()
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
@@ -97,6 +107,10 @@ public class TodoCard {
 
     public Long getId() {
         return id;
+    }
+
+    public List<ActiveLabel> getActiveLabels() {
+        return activeLabels;
     }
 
     public User getUser() {
@@ -197,5 +211,9 @@ public class TodoCard {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public void setActiveLabels(List<ActiveLabel> activeLabels) {
+        this.activeLabels = activeLabels;
     }
 }

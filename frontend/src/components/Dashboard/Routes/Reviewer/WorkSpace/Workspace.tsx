@@ -1,7 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
-import TodoLists from './TodoLists';
 import { DndContext, PointerSensor, useSensor, useSensors, closestCorners, DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, arrayMove, horizontalListSortingStrategy } from '@dnd-kit/sortable';
+
+import TodoLists from './TodoLists';
 import {
   TRootState,
   moveTodoCard,
@@ -10,8 +11,11 @@ import {
   useReorderTodoListsMutation,
   useReorderTodoCardsMutation,
   useMoveTodoCardsMutation,
+  useFetchLabelsQuery,
+  setLabels,
 } from '../../../../../state/store';
 import { ITodoList } from '../../../../../interfaces';
+import { useEffect } from 'react';
 const WorkSpace = () => {
   const dispatch = useDispatch();
   const [reorderTodoLists] = useReorderTodoListsMutation();
@@ -20,6 +24,14 @@ const WorkSpace = () => {
   const { token } = useSelector((store: TRootState) => store.user);
   const { workSpace } = useSelector((store: TRootState) => store.workSpace);
   const { todoLists } = useSelector((store: TRootState) => store.todoList);
+  const { data } = useFetchLabelsQuery({ token, workSpaceId: workSpace.id });
+
+  useEffect(() => {
+    if (data !== undefined) {
+      dispatch(setLabels(data.data));
+    }
+  }, [data]);
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {

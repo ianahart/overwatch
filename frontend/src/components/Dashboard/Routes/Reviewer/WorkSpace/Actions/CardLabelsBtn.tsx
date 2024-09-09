@@ -39,7 +39,7 @@ const CardLabelsBtn = ({ card }: ICardLabelsBtnProps) => {
                 <AiOutlineClose onClick={handleOnClickAwayClose} className="cursor-pointer hover:opacity-70" />
               </div>
               {labelFormShowing ? (
-                <CardLabelForm card={card} handleOnCloseLabelForm={handleOnCloseLabelForm} />
+                <CardLabelForm handleOnCloseLabelForm={handleOnCloseLabelForm} />
               ) : (
                 <CardLabels card={card} handleOnOpenLabelForm={handleOnOpenLabelForm} />
               )}

@@ -4,6 +4,7 @@ import java.util.List;
 import java.sql.Timestamp;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import com.hart.overwatch.label.Label;
 import com.hart.overwatch.todolist.TodoList;
 import com.hart.overwatch.user.User;
 import jakarta.persistence.CascadeType;
@@ -52,6 +53,10 @@ public class WorkSpace {
             orphanRemoval = true)
     private List<TodoList> todoLists;
 
+    @OneToMany(mappedBy = "workSpace", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Label> labels;
+
 
     public WorkSpace() {
 
@@ -88,6 +93,10 @@ public class WorkSpace {
         return todoLists;
     }
 
+    public List<Label> getLabels() {
+        return labels;
+    }
+
     public Timestamp getCreatedAt() {
         return createdAt;
     }
@@ -106,6 +115,10 @@ public class WorkSpace {
 
     public void setTodoLists(List<TodoList> todoLists) {
         this.todoLists = todoLists;
+    }
+
+    public void setLabels(List<Label> labels) {
+        this.labels = labels;
     }
 
     public void setUser(User user) {

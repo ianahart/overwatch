@@ -2,20 +2,25 @@ import { BsChevronLeft } from 'react-icons/bs';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
 
-import { ITodoCard } from '../../../../../../interfaces';
 import { labelColors } from '../../../../../../data';
-import { TRootState } from '../../../../../../state/store';
+import { TRootState, useCreateLabelMutation } from '../../../../../../state/store';
 
 export interface ICardLabelFormProps {
   handleOnCloseLabelForm: () => void;
-  card: ITodoCard;
 }
 
-const CardLabelForm = ({ handleOnCloseLabelForm, card }: ICardLabelFormProps) => {
+interface IServerError {
+  [key: string]: string;
+}
+
+const CardLabelForm = ({ handleOnCloseLabelForm }: ICardLabelFormProps) => {
   const { workSpace } = useSelector((store: TRootState) => store.workSpace);
+  const { user, token } = useSelector((store: TRootState) => store.user);
+  const [createLabelMut] = useCreateLabelMutation();
   const MAX_LABEL_SIZE = 20;
   const [color, setColor] = useState('');
   const [label, setLabel] = useState('');
+  const [error, setError] = useState('');
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -31,13 +36,28 @@ const CardLabelForm = ({ handleOnCloseLabelForm, card }: ICardLabelFormProps) =>
     setLabel('');
   };
 
+  const applyServerError = <T extends IServerError>(data: T) => {
+    for (let prop in data) {
+      setError(data[prop]);
+    }
+  };
+
   const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError('');
     if (color.length === 0 || label.trim().length === 0) {
       return;
     }
-
-    console.log(`Saving label-${label} with background color: ${color}`, workSpace.id);
+    const payload = { userId: user.id, token, title: label, color, workSpaceId: workSpace.id };
+    createLabelMut(payload)
+      .unwrap()
+      .then(() => {
+        handleOnClearLabel();
+        handleOnCloseLabelForm();
+      })
+      .catch((err) => {
+        applyServerError(err.data);
+      });
   };
 
   return (
@@ -50,6 +70,7 @@ const CardLabelForm = ({ handleOnCloseLabelForm, card }: ICardLabelFormProps) =>
         >
           <p className="break-all text-white font-bold">{label}</p>
         </div>
+        {error.length > 0 && <p className="text-xs text-red-300 my-1">{error}</p>}
         <form onSubmit={handleOnSubmit} className="my-2">
           <div>
             <label className="text-xs font-bold" htmlFor="label">

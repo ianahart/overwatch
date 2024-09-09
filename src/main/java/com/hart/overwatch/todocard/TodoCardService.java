@@ -46,7 +46,7 @@ public class TodoCardService {
     }
 
 
-    private TodoCard getTodoCardById(Long todoCardId) {
+    public TodoCard getTodoCardById(Long todoCardId) {
         return todoCardRepository.findById(todoCardId).orElseThrow(() -> new NotFoundException(
                 String.format("A todo card with the id %d was not found", todoCardId)));
     }

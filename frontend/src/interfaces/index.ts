@@ -36,8 +36,27 @@ export interface ITodoListsState {
   todoLists: ITodoList[];
 }
 
+export interface ILabel {
+  id: number;
+  userId: number;
+  workSpaceId: number;
+  createdAt: string | Date | null;
+  isChecked: boolean;
+  title: string;
+  color: string;
+}
+
+export interface IActiveLabel {
+  id: number;
+  todoCardId: number;
+  labelId: number;
+  color: string;
+  title: string;
+}
+
 export interface IWorkSpaceState {
   workSpace: IWorkSpaceEntity;
+  labels: ILabel[];
 }
 
 export interface IWorkSpaceEntity {
@@ -1210,6 +1229,69 @@ export interface IFetchPexelPhotosResponse {
   message: string;
   data: string[];
 }
+
+export interface ICreateLabelRequest {
+  userId: number;
+  workSpaceId: number;
+  token: string;
+  title: string;
+  color: string;
+}
+
+export interface IFetchLabelRequest {
+  token: string;
+  workSpaceId: number;
+}
+
+export interface IFetchLabelResponse {
+  message: string;
+  data: ILabel[];
+}
+
+export interface IDeleteLabelRequest {
+  id: number;
+  token: string;
+}
+
+export interface ICreateActiveLabelRequest {
+  cardId: number;
+  labelId: number;
+  token: string;
+}
+
+export interface IDeleteActiveLabelRequest {
+  id: number;
+  labelId: number;
+  token: string;
+}
+
+export interface IFetchActiveLabelsRequest {
+  token: string;
+  todoCardId: number;
+}
+
+export interface IFetchActiveLabelsResponse {
+  message: string;
+  data: IActiveLabel[];
+}
+
+export interface IUpdateLabelRequest {
+  token: string;
+  label: ILabel;
+}
+
+export interface IUpdateLabelResponse {
+  message: string;
+  data: ILabel;
+}
+
+export interface ICreateActiveLabelResponse extends IBaseResponse {}
+
+export interface IDeleteActiveLabelResponse extends IBaseResponse {}
+
+export interface IDeleteLabelResponse extends IBaseResponse {}
+
+export interface ICreateLabelResponse extends IBaseResponse {}
 
 export interface IMoveTodoCardResponse extends IBaseResponse {}
 

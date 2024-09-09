@@ -4,10 +4,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import dayjs from 'dayjs';
 import { CiClock1 } from 'react-icons/ci';
 
-import { ITodoCard } from '../../../../../interfaces';
-import { useState } from 'react';
+import { IActiveLabel, ITodoCard } from '../../../../../interfaces';
+import { useEffect, useState } from 'react';
 import { TPureTodoCard } from '../../../../../types';
-import { TRootState, updateTodoListTodoCard, useUpdateTodoCardMutation } from '../../../../../state/store';
+import {
+  TRootState,
+  updateTodoListTodoCard,
+  useFetchActiveLabelsQuery,
+  useUpdateTodoCardMutation,
+} from '../../../../../state/store';
 import CardOptions from './Actions/CardOptions';
 import CardActions from './Actions/CardActions';
 
@@ -22,6 +27,14 @@ const CardHeader = ({ card, handleOnModalClose }: ICardHeaderProps) => {
   const [updateTodoCard] = useUpdateTodoCardMutation();
   const [showInput, setShowInput] = useState(false);
   const [title, setTitle] = useState(card.title);
+  const [activeLabels, setActiveLabels] = useState<IActiveLabel[]>([]);
+  const { data } = useFetchActiveLabelsQuery({ token, todoCardId: card.id });
+
+  useEffect(() => {
+    if (data !== undefined) {
+      setActiveLabels(data.data);
+    }
+  }, [data]);
 
   const handleOnClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
@@ -111,6 +124,15 @@ const CardHeader = ({ card, handleOnModalClose }: ICardHeaderProps) => {
           {card.photo !== null && card.photo?.length > 0 && (
             <img className="h-20 w-[200px] rounded" src={card.photo} alt={card.title} />
           )}
+          <div className="flex flex-wrap items-center">
+            {activeLabels.map((activeLabel) => {
+              return (
+                <div className="p-1 rounded m-1" style={{ background: activeLabel.color }} key={activeLabel.id}>
+                  <p className="text-xs font-bold text-white">{activeLabel.title}</p>
+                </div>
+              );
+            })}
+          </div>
         </div>
         <div className="my-8 flex flex-col items-end">
           <div className="my-4">
