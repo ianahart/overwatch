@@ -11,6 +11,7 @@ import com.hart.overwatch.chatmessage.ChatMessage;
 import com.hart.overwatch.connection.Connection;
 import com.hart.overwatch.connectionpin.ConnectionPin;
 import com.hart.overwatch.favorite.Favorite;
+import com.hart.overwatch.label.Label;
 import com.hart.overwatch.location.Location;
 import com.hart.overwatch.notification.Notification;
 import com.hart.overwatch.passwordreset.PasswordReset;
@@ -180,6 +181,10 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<TodoCard> todocards;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Label> labels;
+
 
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -246,6 +251,10 @@ public class User implements UserDetails {
 
     public Location getLocation() {
         return location;
+    }
+
+    public List<Label> getLabels() {
+        return labels;
     }
 
     public List<ChatMessage> getChatMessages() {
@@ -382,6 +391,10 @@ public class User implements UserDetails {
 
     public void setPinnedOwnerConnections(List<ConnectionPin> pinnedOwnerConnections) {
         this.pinnedOwnerConnections = pinnedOwnerConnections;
+    }
+
+    public void setLabels(List<Label> labels) {
+        this.labels = labels;
     }
 
     public void setWorkSpaces(List<WorkSpace> workSpaces) {

@@ -5,7 +5,14 @@ import { signUpReducer, updateSignUpField, updateRole, clearSignUpForm } from '.
 import { updateSignInField, clearSignInForm, signInReducer } from './slices/signinSlice';
 import { userReducer, updateUser, updateTokens, clearUser, updateUserAndTokens } from './slices/userSlice';
 import { settingReducer, updateSetting, clearSetting } from './slices/settingSlice';
-import { updateWorkSpaceProperty, clearWorkSpace, workSpaceReducer, setWorkSpace } from './slices/workSpaceSlice';
+import {
+  toggleLabel,
+  setLabels,
+  updateWorkSpaceProperty,
+  clearWorkSpace,
+  workSpaceReducer,
+  setWorkSpace,
+} from './slices/workSpaceSlice';
 import {
   moveTodoCard,
   reorderTodoCards,
@@ -121,6 +128,8 @@ import { workSpacesApi } from './apis/workSpacesApi';
 import { todoListsApi } from './apis/todoListsApi';
 import { todoCardsApi } from './apis/todoCardsApi';
 import { pexelApi } from './apis/pexelsApi';
+import { labelsApi } from './apis/labelsApi';
+import { activeLabelsApi } from './apis/activeLabelsApi';
 
 export const store = configureStore({
   reducer: {
@@ -162,6 +171,8 @@ export const store = configureStore({
     [todoListsApi.reducerPath]: todoListsApi.reducer,
     [todoCardsApi.reducerPath]: todoCardsApi.reducer,
     [pexelApi.reducerPath]: pexelApi.reducer,
+    [labelsApi.reducerPath]: labelsApi.reducer,
+    [activeLabelsApi.reducerPath]: activeLabelsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -190,7 +201,9 @@ export const store = configureStore({
       .concat(workSpacesApi.middleware)
       .concat(todoListsApi.middleware)
       .concat(todoCardsApi.middleware)
-      .concat(pexelApi.middleware);
+      .concat(pexelApi.middleware)
+      .concat(labelsApi.middleware)
+      .concat(activeLabelsApi.middleware);
   },
 });
 
@@ -282,6 +295,8 @@ export {
   removeTodoListTodoCard,
   moveTodoCard,
   reorderTodoCards,
+  setLabels,
+  toggleLabel,
 };
 
 export {
@@ -412,6 +427,19 @@ export {
 export { useLazyFetchPexelPhotosQuery, useFetchPexelPhotosQuery } from './apis/pexelsApi';
 
 export {
+  useUpdateLabelMutation,
+  useDeleteLabelMutation,
+  useFetchLabelsQuery,
+  useCreateLabelMutation,
+} from './apis/labelsApi';
+
+export {
+  useFetchActiveLabelsQuery,
+  useCreateActiveLabelMutation,
+  useDeleteActiveLabelMutation,
+} from './apis/activeLabelsApi';
+
+export {
   testimonialsApi,
   authsApi,
   heartbeatApi,
@@ -429,4 +457,6 @@ export {
   workSpacesApi,
   todoListsApi,
   pexelApi,
+  labelsApi,
+  activeLabelsApi,
 };

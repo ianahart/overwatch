@@ -33,12 +33,17 @@ const WorkSpaceContainer = () => {
   }, [data, dispatch]);
 
   useEffect(() => {
-    fetchTodoLists({ token, workSpaceId: workSpace.id })
-      .unwrap()
-      .then((res) => {
-        dispatch(setTodoLists(res.data));
-        navigate(`/dashboard/${user.slug}/reviewer/workspaces/${workSpace.id}`);
-      });
+    if (workSpace.id !== 0) {
+      fetchTodoLists({ token, workSpaceId: workSpace.id })
+        .unwrap()
+        .then((res) => {
+          dispatch(setTodoLists(res.data));
+          navigate(`/dashboard/${user.slug}/reviewer/workspaces/${workSpace.id}`);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   }, [workSpace.id]);
 
   useEffect(() => {

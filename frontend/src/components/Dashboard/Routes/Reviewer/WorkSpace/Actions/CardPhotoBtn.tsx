@@ -43,7 +43,7 @@ const CardPhotoBtn = ({ card }: ICardPhotoBtnProps) => {
       <div className="p-1 bg-gray-800 rounded w-32 my-2 hover:bg-gray-700">
         <button onClick={handleOnClickAwayOpen} className="flex items-center text-sm">
           <BsImage className="mr-2" />
-          Add photo
+          Cover photo
         </button>
       </div>
       {clickAwayOpen && (
