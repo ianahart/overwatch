@@ -68,9 +68,13 @@ const CardLabel = ({ card, label, handleOnDeleteLabel }: ICardLabelProps) => {
       <div style={{ background: label.color }} className="rounded p-1 w-[80%]">
         <p className="text-sm font-bold text-white">{label.title}</p>
       </div>
-      <div onClick={() => handleOnDeleteLabel(label.id)} className="cursor-pointer">
-        <BsTrash />
-      </div>
+      {label.isChecked ? (
+        <div></div>
+      ) : (
+        <div onClick={() => handleOnDeleteLabel(label.id)} className="cursor-pointer">
+          <BsTrash />
+        </div>
+      )}
     </div>
   );
 };

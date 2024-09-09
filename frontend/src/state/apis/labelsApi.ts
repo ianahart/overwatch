@@ -13,7 +13,7 @@ import { baseQueryWithReauth } from '../util';
 
 const labelsApi = createApi({
   reducerPath: 'labels',
-  tagTypes: ['Label'],
+  tagTypes: ['Label', 'ActiveLabel'],
   baseQuery: baseQueryWithReauth,
   endpoints(builder) {
     return {
@@ -86,6 +86,7 @@ const labelsApi = createApi({
         invalidatesTags: (_, error, { id }) => [
           { type: 'Label', id: id },
           { type: 'Label', id: 'LIST' },
+          { type: 'ActiveLabel', id: 'LIST' },
         ],
       }),
     };
