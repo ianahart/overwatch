@@ -29,6 +29,8 @@ public class UpdateTodoCardRequest {
 
     private String photo;
 
+    private String uploadPhotoUrl;
+
 
     public UpdateTodoCardRequest() {
 
@@ -36,7 +38,7 @@ public class UpdateTodoCardRequest {
 
     public UpdateTodoCardRequest(Long id, LocalDateTime createdAt, String label, String title,
             String color, Integer index, String details, LocalDateTime startDate,
-            LocalDateTime endDate, String photo) {
+            LocalDateTime endDate, String photo, String uploadPhotoUrl) {
         this.id = id;
         this.createdAt = createdAt;
         this.label = label;
@@ -47,6 +49,7 @@ public class UpdateTodoCardRequest {
         this.startDate = startDate;
         this.endDate = endDate;
         this.photo = photo;
+        this.uploadPhotoUrl = uploadPhotoUrl;
     }
 
     public Long getId() {
@@ -55,6 +58,10 @@ public class UpdateTodoCardRequest {
 
     public String getColor() {
         return color;
+    }
+
+    public String getUploadPhotoUrl() {
+        return uploadPhotoUrl;
     }
 
     public String getLabel() {
@@ -129,5 +136,7 @@ public class UpdateTodoCardRequest {
         this.startDate = startDate;
     }
 
-
+    public void setUploadPhotoUrl(String uploadPhotoUrl) {
+        this.uploadPhotoUrl = uploadPhotoUrl;
+    }
 }

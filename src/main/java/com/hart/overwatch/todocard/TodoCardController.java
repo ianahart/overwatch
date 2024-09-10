@@ -15,11 +15,13 @@ import com.hart.overwatch.todocard.request.CreateTodoCardRequest;
 import com.hart.overwatch.todocard.request.MoveTodoCardRequest;
 import com.hart.overwatch.todocard.request.ReorderTodoCardRequest;
 import com.hart.overwatch.todocard.request.UpdateTodoCardRequest;
+import com.hart.overwatch.todocard.request.UploadTodoCardPhotoRequest;
 import com.hart.overwatch.todocard.response.CreateTodoCardResponse;
 import com.hart.overwatch.todocard.response.DeleteTodoCardResponse;
 import com.hart.overwatch.todocard.response.MoveTodoCardResponse;
 import com.hart.overwatch.todocard.response.ReorderTodoCardResponse;
 import com.hart.overwatch.todocard.response.UpdateTodoCardResponse;
+import com.hart.overwatch.todocard.response.UploadTodoCardPhotoResponse;
 import jakarta.validation.Valid;
 
 @RestController
@@ -59,15 +61,25 @@ public class TodoCardController {
     }
 
     @PatchMapping("/todo-cards/{todoCardId}/reorder")
-    ResponseEntity<ReorderTodoCardResponse> reorderTodoCard(@PathVariable("todoCardId") Long todoCardId, @RequestBody ReorderTodoCardRequest request) {
+    ResponseEntity<ReorderTodoCardResponse> reorderTodoCard(
+            @PathVariable("todoCardId") Long todoCardId,
+            @RequestBody ReorderTodoCardRequest request) {
         todoCardService.reorderTodoCards(request, todoCardId);
         return ResponseEntity.status(HttpStatus.OK).body(new ReorderTodoCardResponse("success"));
     }
 
     @PatchMapping("/todo-cards/{todoCardId}/move")
-    ResponseEntity<MoveTodoCardResponse> moveTodoCard(@PathVariable("todoCardId")Long todoCardId, @RequestBody MoveTodoCardRequest request) {
+    ResponseEntity<MoveTodoCardResponse> moveTodoCard(@PathVariable("todoCardId") Long todoCardId,
+            @RequestBody MoveTodoCardRequest request) {
         todoCardService.moveTodoCards(todoCardId, request);
 
         return ResponseEntity.status(HttpStatus.OK).body(new MoveTodoCardResponse("success"));
+    }
+
+    @PatchMapping("/todo-cards/{todoCardId}/upload")
+    ResponseEntity<UploadTodoCardPhotoResponse> uploadTodoCardPhoto(
+            @PathVariable("todoCardId") Long todoCardId, UploadTodoCardPhotoRequest request) {
+        return ResponseEntity.status(HttpStatus.OK).body(new UploadTodoCardPhotoResponse("success",
+                todoCardService.uploadTodoCardPhoto(todoCardId, request)));
     }
 }

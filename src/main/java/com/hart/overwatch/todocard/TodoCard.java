@@ -63,6 +63,12 @@ public class TodoCard {
     @Column(name = "photo", length = 255)
     private String photo;
 
+    @Column(name = "upload_photo_url", length = 255)
+    private String uploadPhotoUrl;
+
+    @Column(name = "upload_photo_filename", length = 255)
+    private String uploadPhotoFileName;
+
     @OneToMany(mappedBy = "todoCard", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
             orphanRemoval = true)
     private List<ActiveLabel> activeLabels;
@@ -82,7 +88,7 @@ public class TodoCard {
 
     public TodoCard(Long id, LocalDateTime createdAt, LocalDateTime updatedAt, String label,
             String title, String color, Integer index, String details, LocalDateTime startDate,
-            LocalDateTime endDate, String photo
+            LocalDateTime endDate, String photo, String uploadPhotoUrl, String uploadPhotoFileName
 
     ) {
         this.id = id;
@@ -96,6 +102,8 @@ public class TodoCard {
         this.startDate = startDate;
         this.endDate = endDate;
         this.photo = photo;
+        this.uploadPhotoUrl = uploadPhotoUrl;
+        this.uploadPhotoFileName = uploadPhotoFileName;
     }
 
     public TodoCard(String title, Integer index, User user, TodoList todoList) {
@@ -119,6 +127,14 @@ public class TodoCard {
 
     public String getColor() {
         return color;
+    }
+
+    public String getUploadPhotoUrl() {
+        return uploadPhotoUrl;
+    }
+
+    public String getUploadPhotoFileName() {
+        return uploadPhotoFileName;
     }
 
     public String getLabel() {
@@ -215,5 +231,13 @@ public class TodoCard {
 
     public void setActiveLabels(List<ActiveLabel> activeLabels) {
         this.activeLabels = activeLabels;
+    }
+
+    public void setUploadPhotoUrl(String uploadPhotoUrl) {
+        this.uploadPhotoUrl = uploadPhotoUrl;
+    }
+
+    public void setUploadPhotoFileName(String uploadPhotoFileName) {
+        this.uploadPhotoFileName = uploadPhotoFileName;
     }
 }

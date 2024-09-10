@@ -1,5 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import {
+  IUploadTodoCardRequest,
+  IUploadTodoCardResponse,
   IReorderTodoCardRequest,
   IReorderTodoCardResponse,
   ICreateTodoCardRequest,
@@ -19,6 +21,18 @@ const todoCardsApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints(builder) {
     return {
+      uploadTodoCardPhoto: builder.mutation<IUploadTodoCardResponse, IUploadTodoCardRequest>({
+        query: ({ token, todoCardId, formData }) => {
+          return {
+            url: `/todo-cards/${todoCardId}/upload`,
+            method: 'PATCH',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: formData,
+          };
+        },
+      }),
       moveTodoCards: builder.mutation<IMoveTodoCardResponse, IMoveTodoCardRequest>({
         query: ({ token, sourceListId, destinationListId, newIndex, todoCardId }) => {
           return {
@@ -95,6 +109,7 @@ const todoCardsApi = createApi({
 });
 
 export const {
+  useUploadTodoCardPhotoMutation,
   useMoveTodoCardsMutation,
   useReorderTodoCardsMutation,
   useDeleteTodoCardMutation,

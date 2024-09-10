@@ -417,6 +417,7 @@ export {
 } from './apis/todoListsApi';
 
 export {
+  useUploadTodoCardPhotoMutation,
   useMoveTodoCardsMutation,
   useReorderTodoCardsMutation,
   useDeleteTodoCardMutation,

@@ -20,6 +20,7 @@ export interface ITodoCard {
   endDate: string | Date | null;
   photo: string;
   todoListTitle: string;
+  uploadPhotoUrl: string | null;
 }
 
 export interface ITodoList {
@@ -1283,6 +1284,17 @@ export interface IUpdateLabelRequest {
 export interface IUpdateLabelResponse {
   message: string;
   data: ILabel;
+}
+
+export interface IUploadTodoCardRequest {
+  token: string;
+  todoCardId: number;
+  formData: FormData;
+}
+
+export interface IUploadTodoCardResponse {
+  message: string;
+  data: ITodoCard;
 }
 
 export interface ICreateActiveLabelResponse extends IBaseResponse {}

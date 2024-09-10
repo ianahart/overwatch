@@ -17,7 +17,7 @@ public interface TodoCardRepository extends JpaRepository<TodoCard, Long> {
                 tc.title AS title, tc.color AS color, tc.index AS index,
                 tc.details AS details, tc.startDate AS startDate,
                 tc.endDate AS endDate, tc.photo AS photo,
-                tl.title AS todoListTitle
+                tl.title AS todoListTitle, tc.uploadPhotoUrl AS uploadPhotoUrl
                 ) FROM TodoCard tc
                 INNER JOIN tc.user u
                 INNER JOIN tc.todoList tl
@@ -35,7 +35,7 @@ public interface TodoCardRepository extends JpaRepository<TodoCard, Long> {
                 tc.title AS title, tc.color AS color, tc.index AS index,
                 tc.details AS details, tc.startDate AS startDate,
                 tc.endDate AS endDate, tc.photo AS photo,
-                tl.title AS todoListTitle
+                tl.title AS todoListTitle, tc.uploadPhotoUrl AS uploadPhotoUrl
                 ) FROM TodoCard tc
                 INNER JOIN tc.user u
                 INNER JOIN tc.todoList tl

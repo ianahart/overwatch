@@ -29,13 +29,15 @@ public class TodoCardDto {
 
     private String todoListTitle;
 
+    private String uploadPhotoUrl;
+
     public TodoCardDto() {
 
     }
 
     public TodoCardDto(Long id, Long todoListId, Long userId, LocalDateTime createdAt, String label,
             String title, String color, Integer index, String details, LocalDateTime startDate,
-            LocalDateTime endDate, String photo, String todoListTitle) {
+            LocalDateTime endDate, String photo, String todoListTitle, String uploadPhotoUrl) {
 
         this.id = id;
         this.todoListId = todoListId;
@@ -50,6 +52,7 @@ public class TodoCardDto {
         this.endDate = endDate;
         this.photo = photo;
         this.todoListTitle = todoListTitle;
+        this.uploadPhotoUrl = uploadPhotoUrl;
     }
 
     public Long getId() {
@@ -58,6 +61,10 @@ public class TodoCardDto {
 
     public Long getUserId() {
         return userId;
+    }
+
+    public String getUploadPhotoUrl() {
+        return uploadPhotoUrl;
     }
 
     public String getColor() {
@@ -155,5 +162,9 @@ public class TodoCardDto {
 
     public void setTodoListTitle(String todoListTitle) {
         this.todoListTitle = todoListTitle;
+    }
+
+    public void setUploadPhotoUrl(String uploadPhotoUrl) {
+        this.uploadPhotoUrl = uploadPhotoUrl;
     }
 }
