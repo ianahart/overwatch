@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { ITodoCard } from '../../../../../interfaces';
 import ClickAway from '../../../../Shared/ClickAway';
 import CardDetails from './CardDetails';
@@ -10,6 +11,12 @@ export interface ICardModalProps {
 }
 
 const CardModal = ({ handleOnModalClose, card }: ICardModalProps) => {
+  useEffect(() => {
+    return () => {
+      localStorage.removeItem('details');
+    };
+  }, []);
+
   return (
     <div className="absolute cursor-default z-30 top-0 left-0 inset-0 bg-black bg-opacity-75 w-full h-full md:flex md:items-center md:justify-center md:flex-col ">
       <ClickAway onClickAway={handleOnModalClose}>

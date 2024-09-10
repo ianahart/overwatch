@@ -1,9 +1,13 @@
 import { BsTextLeft } from 'react-icons/bs';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
-
+import {  useState } from 'react';
 import { ITodoCard } from '../../../../../interfaces';
 import { TRootState, useUpdateTodoCardMutation, updateTodoListTodoCard } from '../../../../../state/store';
+import DetailsEditor from './DetailsEditor';
+import { BaseEditor } from 'slate';
+import { TCustomElement, TCustomText } from '../../../../../types';
+import {  ReactEditor } from 'slate-react';
+import DisplayEditor from './DisplayEditor';
 
 export interface ICardDetailsProps {
   card: ITodoCard;
@@ -13,26 +17,23 @@ export interface IError {
   [index: string]: string;
 }
 
+declare module 'slate' {
+  interface CustomTypes {
+    Editor: BaseEditor & ReactEditor;
+    Element: TCustomElement;
+    Text: TCustomText;
+  }
+}
+
 const CardDetails = ({ card }: ICardDetailsProps) => {
   const dispatch = useDispatch();
   const { token } = useSelector((store: TRootState) => store.user);
   const [isTextareaShowing, setIsTextareaShowing] = useState(false);
   const [updateTodoCardMut] = useUpdateTodoCardMutation();
-  const [details, setDetails] = useState('');
   const [error, setError] = useState('');
-
-  useEffect(() => {
-    if (card.details !== null) {
-      setDetails(card.details);
-    }
-  }, [card.details]);
 
   const handleOnClick = () => {
     setIsTextareaShowing(true);
-  };
-
-  const handleOnChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setDetails(e.target.value);
   };
 
   const applyServerErrors = <T extends IError>(data: T): void => {
@@ -44,7 +45,8 @@ const CardDetails = ({ card }: ICardDetailsProps) => {
   const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
-    const updatedCard = { ...card, details };
+    const LSdetails = localStorage.getItem('details') ?? '';
+    const updatedCard = { ...card, details: LSdetails };
     updateTodoCardMut({ token, card: updatedCard })
       .unwrap()
       .then((res) => {
@@ -72,23 +74,22 @@ const CardDetails = ({ card }: ICardDetailsProps) => {
       </div>
       {!isTextareaShowing && (
         <p onClick={handleOnClick} className="cursor-pointer">
-          {!card.details ? 'Write some details for your card' : card.details}
+          {!card.details ? 'Write some details for your card' : <DisplayEditor details={card.details} />}
         </p>
       )}
       {isTextareaShowing && (
         <form onSubmit={handleOnSubmit}>
-          <textarea
-            value={details}
-            onChange={handleOnChange}
-            className="w-[80%] min-h-32 rounded bg-transparent border border-gray-800 resize-none"
-          ></textarea>
+          <DetailsEditor details={card.details} />
           {error.length > 0 && <p className="text-sm text-red-300 my-1">{error}</p>}
           <div className="flex">
             <button className="btn mx-2" type="submit">
               Save
             </button>
             <button
-              onClick={() => setIsTextareaShowing(false)}
+              onClick={() => {
+                setIsTextareaShowing(false);
+                localStorage.removeItem('details');
+              }}
               className="outline-btn mx-2 !text-gray-400"
               type="button"
             >

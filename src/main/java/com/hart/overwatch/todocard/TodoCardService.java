@@ -169,7 +169,7 @@ public class TodoCardService {
         todoCard.setEndDate(request.getEndDate());
         todoCard.setPhoto(request.getPhoto());
 
-        if (request.getUploadPhotoUrl() == null) {
+        if (request.getUploadPhotoUrl() == null && todoCard.getUploadPhotoFileName() != null) {
             amazonService.deleteBucketObject("arrow-date", todoCard.getUploadPhotoFileName());
         }
 
