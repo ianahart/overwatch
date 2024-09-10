@@ -2,6 +2,7 @@ package com.hart.overwatch.todocard;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import org.jsoup.Jsoup;
@@ -9,12 +10,14 @@ import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import com.hart.overwatch.todolist.TodoList;
 import com.hart.overwatch.todolist.TodoListRepository;
 import com.hart.overwatch.todolist.TodoListService;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.amazon.AmazonService;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.todocard.dto.TodoCardDto;
@@ -22,6 +25,7 @@ import com.hart.overwatch.todocard.request.CreateTodoCardRequest;
 import com.hart.overwatch.todocard.request.MoveTodoCardRequest;
 import com.hart.overwatch.todocard.request.ReorderTodoCardRequest;
 import com.hart.overwatch.todocard.request.UpdateTodoCardRequest;
+import com.hart.overwatch.todocard.request.UploadTodoCardPhotoRequest;
 
 @Service
 public class TodoCardService {
@@ -36,15 +40,47 @@ public class TodoCardService {
 
     private final TodoListRepository todoListRepository;
 
+    private final AmazonService amazonService;
+
     @Autowired
     public TodoCardService(TodoCardRepository todoCardRepository, UserService userService,
-            TodoListService todoListService, TodoListRepository todoListRepository) {
+            TodoListService todoListService, TodoListRepository todoListRepository,
+            AmazonService amazonService) {
         this.todoCardRepository = todoCardRepository;
         this.userService = userService;
         this.todoListService = todoListService;
         this.todoListRepository = todoListRepository;
+        this.amazonService = amazonService;
     }
 
+    public TodoCardDto uploadTodoCardPhoto(Long todoCardId, UploadTodoCardPhotoRequest request) {
+        TodoCard todoCard = getTodoCardById(todoCardId);
+        MultipartFile file = request.getFile();
+        long MAX_FILE_SIZE = 1000000L;
+
+        if (file.getSize() > MAX_FILE_SIZE) {
+            throw new BadRequestException("File size exceeded. Could not upload.");
+        }
+
+        if (todoCard.getUploadPhotoFileName() != null) {
+            amazonService.deleteBucketObject("arrow-date", todoCard.getUploadPhotoFileName());
+            todoCard.setUploadPhotoUrl(null);
+            todoCard.setUploadPhotoFileName(null);
+        }
+
+        HashMap<String, String> result =
+                amazonService.putS3Object("arrow-date", file.getOriginalFilename(), file);
+
+        String filename = result.get("filename");
+        String objectUrl = result.get("objectUrl");
+
+        todoCard.setUploadPhotoFileName(filename);
+        todoCard.setUploadPhotoUrl(objectUrl);
+
+        todoCardRepository.save(todoCard);
+
+        return entityToDto(todoCard);
+    }
 
     public TodoCard getTodoCardById(Long todoCardId) {
         return todoCardRepository.findById(todoCardId).orElseThrow(() -> new NotFoundException(
@@ -87,11 +123,7 @@ public class TodoCardService {
 
         todoCardRepository.save(todoCard);
 
-        return new TodoCardDto(todoCard.getId(), todoCard.getTodoList().getId(),
-                todoCard.getUser().getId(), todoCard.getCreatedAt(), todoCard.getLabel(),
-                todoCard.getTitle(), todoCard.getColor(), todoCard.getIndex(),
-                todoCard.getDetails(), todoCard.getStartDate(), todoCard.getEndDate(),
-                todoCard.getPhoto(), todoCard.getTodoList().getTitle());
+        return entityToDto(todoCard);
     }
 
 
@@ -137,13 +169,24 @@ public class TodoCardService {
         todoCard.setEndDate(request.getEndDate());
         todoCard.setPhoto(request.getPhoto());
 
+        if (request.getUploadPhotoUrl() == null) {
+            amazonService.deleteBucketObject("arrow-date", todoCard.getUploadPhotoFileName());
+        }
+
+        todoCard.setUploadPhotoUrl(request.getUploadPhotoUrl());
+
         todoCardRepository.save(todoCard);
 
+        return entityToDto(todoCard);
+    }
+
+    private TodoCardDto entityToDto(TodoCard todoCard) {
         return new TodoCardDto(todoCard.getId(), todoCard.getTodoList().getId(),
                 todoCard.getUser().getId(), todoCard.getCreatedAt(), todoCard.getLabel(),
                 todoCard.getTitle(), todoCard.getColor(), todoCard.getIndex(),
                 todoCard.getDetails(), todoCard.getStartDate(), todoCard.getEndDate(),
-                todoCard.getPhoto(), todoCard.getTodoList().getTitle());
+                todoCard.getPhoto(), todoCard.getTodoList().getTitle(),
+                todoCard.getUploadPhotoUrl());
 
     }
 

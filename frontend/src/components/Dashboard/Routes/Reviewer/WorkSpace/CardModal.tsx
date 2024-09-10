@@ -2,6 +2,7 @@ import { ITodoCard } from '../../../../../interfaces';
 import ClickAway from '../../../../Shared/ClickAway';
 import CardDetails from './CardDetails';
 import CardHeader from './CardHeader';
+import CardUploadPhoto from './CardUploadPhoto';
 
 export interface ICardModalProps {
   handleOnModalClose: () => void;
@@ -15,6 +16,7 @@ const CardModal = ({ handleOnModalClose, card }: ICardModalProps) => {
         <div className="bg-gray-900 shadow-lg p-2 min-h-[600px] max-w-[100%] w-[95%] mx-auto md:w-[700px] rounded">
           <CardHeader card={card} handleOnModalClose={handleOnModalClose} />
           <CardDetails card={card} />
+          <CardUploadPhoto card={card} />
         </div>
       </ClickAway>
     </div>
