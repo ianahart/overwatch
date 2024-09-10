@@ -1,12 +1,12 @@
 import { BsTextLeft } from 'react-icons/bs';
 import { useDispatch, useSelector } from 'react-redux';
-import {  useState } from 'react';
+import { useState } from 'react';
 import { ITodoCard } from '../../../../../interfaces';
 import { TRootState, useUpdateTodoCardMutation, updateTodoListTodoCard } from '../../../../../state/store';
 import DetailsEditor from './DetailsEditor';
 import { BaseEditor } from 'slate';
 import { TCustomElement, TCustomText } from '../../../../../types';
-import {  ReactEditor } from 'slate-react';
+import { ReactEditor } from 'slate-react';
 import DisplayEditor from './DisplayEditor';
 
 export interface ICardDetailsProps {
