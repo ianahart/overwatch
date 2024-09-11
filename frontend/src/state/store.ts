@@ -443,7 +443,7 @@ export {
   useDeleteActiveLabelMutation,
 } from './apis/activeLabelsApi';
 
-export { useCreateCheckListMutation } from './apis/checkListApis';
+export { useDeleteCheckListMutation, useFetchCheckListsQuery, useCreateCheckListMutation } from './apis/checkListApis';
 
 export {
   testimonialsApi,

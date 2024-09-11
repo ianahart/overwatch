@@ -1,8 +1,13 @@
 package com.hart.overwatch.checklist;
 
+import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.todocard.TodoCard;
 import com.hart.overwatch.todocard.TodoCardService;
@@ -10,6 +15,8 @@ import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.advice.ForbiddenException;
+import com.hart.overwatch.checklist.dto.CheckListDto;
 import com.hart.overwatch.checklist.request.CreateCheckListRequest;
 
 @Service
@@ -75,5 +82,34 @@ public class CheckListService {
         checkList.setTodoCard(todoCard);
 
         checkListRepository.save(checkList);
+    }
+
+    public List<CheckListDto> getCheckLists(Long todoCardId) {
+        if (todoCardId == null) {
+            throw new BadRequestException("Missing todoCardId parameter");
+        }
+
+        Pageable pageable =
+                PageRequest.of(0, CHECKLISTS_PER_CARD, Sort.by("createdAt").descending());
+
+        Page<CheckListDto> result =
+                checkListRepository.getCheckListsByTodoCardId(todoCardId, pageable);
+
+        return result.getContent();
+    }
+
+    public void deleteCheckList(Long checkListId) {
+        if (checkListId == null) {
+            throw new BadRequestException("Missing checkListId parameter");
+        }
+
+        User user = userService.getCurrentlyLoggedInUser();
+        CheckList checkList = getCheckListById(checkListId);
+
+        if (user.getId() != checkList.getUser().getId()) {
+            throw new ForbiddenException("Cannot delete a checklist that is not yours");
+        }
+
+        checkListRepository.delete(checkList);
     }
 }
