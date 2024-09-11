@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.hart.overwatch.chatmessage.ChatMessage;
 import com.hart.overwatch.checklist.CheckList;
+import com.hart.overwatch.checklistitem.CheckListItem;
 import com.hart.overwatch.connection.Connection;
 import com.hart.overwatch.connectionpin.ConnectionPin;
 import com.hart.overwatch.favorite.Favorite;
@@ -190,6 +191,11 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<CheckList> checkLists;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<CheckListItem> checkListItems;
+
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "setting_id", referencedColumnName = "id")
     private Setting setting;
@@ -246,6 +252,10 @@ public class User implements UserDetails {
 
     public List<CheckList> getCheckLists() {
         return checkLists;
+    }
+
+    public List<CheckListItem> getCheckListItems() {
+        return checkListItems;
     }
 
     public List<Favorite> getFavorites() {
@@ -398,6 +408,10 @@ public class User implements UserDetails {
 
     public void setTodoLists(List<TodoList> todoLists) {
         this.todoLists = todoLists;
+    }
+
+    public void setCheckListItems(List<CheckListItem> checkListItems) {
+        this.checkListItems = checkListItems;
     }
 
     public void setPinnedOwnerConnections(List<ConnectionPin> pinnedOwnerConnections) {

@@ -1,5 +1,6 @@
 package com.hart.overwatch.checklist;
 
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,6 +11,8 @@ import com.hart.overwatch.checklist.dto.CheckListDto;
 
 @Repository
 public interface CheckListRepository extends JpaRepository<CheckList, Long> {
+
+    List<CheckList> findByTodoCardId(Long todoCardId);
 
     @Query(value = """
             SELECT new com.hart.overwatch.checklist.dto.CheckListDto(

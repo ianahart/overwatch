@@ -131,6 +131,7 @@ import { pexelApi } from './apis/pexelsApi';
 import { labelsApi } from './apis/labelsApi';
 import { activeLabelsApi } from './apis/activeLabelsApi';
 import { checkListsApi } from './apis/checkListApis';
+import { checkListItemsApi } from './apis/checkListItemsApi';
 
 export const store = configureStore({
   reducer: {
@@ -175,6 +176,7 @@ export const store = configureStore({
     [labelsApi.reducerPath]: labelsApi.reducer,
     [activeLabelsApi.reducerPath]: activeLabelsApi.reducer,
     [checkListsApi.reducerPath]: checkListsApi.reducer,
+    [checkListItemsApi.reducerPath]: checkListItemsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -206,7 +208,8 @@ export const store = configureStore({
       .concat(pexelApi.middleware)
       .concat(labelsApi.middleware)
       .concat(activeLabelsApi.middleware)
-      .concat(checkListsApi.middleware);
+      .concat(checkListsApi.middleware)
+      .concat(checkListItemsApi.middleware);
   },
 });
 
@@ -444,6 +447,8 @@ export {
 } from './apis/activeLabelsApi';
 
 export { useDeleteCheckListMutation, useFetchCheckListsQuery, useCreateCheckListMutation } from './apis/checkListApis';
+
+export { useCreateCheckListItemMutation } from './apis/checkListItemsApi';
 
 export {
   testimonialsApi,

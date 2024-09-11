@@ -1,34 +1,28 @@
-package com.hart.overwatch.checklist;
+package com.hart.overwatch.checklistitem;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import com.hart.overwatch.checklist.CheckList;
+import com.hart.overwatch.user.User;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import com.hart.overwatch.checklistitem.CheckListItem;
-import com.hart.overwatch.todocard.TodoCard;
-import com.hart.overwatch.user.User;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
 
 @Entity
-@Table(name = "check_list")
-public class CheckList {
+@Table(name = "check_list_item")
+public class CheckListItem {
 
     @Id
-    @SequenceGenerator(name = "check_list_sequence", sequenceName = "check_list_sequence",
-
+    @SequenceGenerator(name = "check_list_item_sequence", sequenceName = "check_list_item_sequence",
             allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "check_list_sequence")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "check_list_item_sequence")
     @Column(name = "id")
     private Long id;
 
@@ -47,23 +41,19 @@ public class CheckList {
     private Boolean isCompleted;
 
     @ManyToOne()
-    @JoinColumn(name = "todo_card_id", referencedColumnName = "id")
-    private TodoCard todoCard;
-
-    @ManyToOne()
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @OneToMany(mappedBy = "checkList", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
-            orphanRemoval = true)
-    private List<CheckListItem> checkListItems;
+    @ManyToOne()
+    @JoinColumn(name = "check_list_id", referencedColumnName = "id")
+    private CheckList checkList;
 
 
-    public CheckList() {
+    public CheckListItem() {
 
     }
 
-    public CheckList(Long id, LocalDateTime createdAt, LocalDateTime updatedAt, String title,
+    public CheckListItem(Long id, LocalDateTime createdAt, LocalDateTime updatedAt, String title,
             Boolean isCompleted) {
         this.id = id;
         this.createdAt = createdAt;
@@ -72,11 +62,11 @@ public class CheckList {
         this.isCompleted = isCompleted;
     }
 
-    public CheckList(String title, Boolean isCompleted, User user, TodoCard todoCard) {
+    public CheckListItem(String title, Boolean isCompleted, User user, CheckList checkList) {
         this.title = title;
         this.isCompleted = isCompleted;
         this.user = user;
-        this.todoCard = todoCard;
+        this.checkList = checkList;
     }
 
     public Long getId() {
@@ -91,16 +81,12 @@ public class CheckList {
         return title;
     }
 
+    public CheckList getCheckList() {
+        return checkList;
+    }
+
     public Boolean getIsCompleted() {
         return isCompleted;
-    }
-
-    public List<CheckListItem> getCheckListItems() {
-        return checkListItems;
-    }
-
-    public TodoCard getTodoCard() {
-        return todoCard;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -123,8 +109,8 @@ public class CheckList {
         this.title = title;
     }
 
-    public void setTodoCard(TodoCard todoCard) {
-        this.todoCard = todoCard;
+    public void setCheckList(CheckList checkList) {
+        this.checkList = checkList;
     }
 
     public void setIsCompleted(Boolean isCompleted) {
@@ -139,7 +125,4 @@ public class CheckList {
         this.updatedAt = updatedAt;
     }
 
-    public void setCheckListItems(List<CheckListItem> checkListItems) {
-        this.checkListItems = checkListItems;
-    }
 }
