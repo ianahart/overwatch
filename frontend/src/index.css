@@ -44,7 +44,7 @@ body {
 }
 
 .custom-editor {
-  @apply max-w-full rounded min-h-[450px] mt-0 bg-gray-900 text-gray-400;
+  @apply max-w-full rounded min-h-[300px] mt-0 bg-gray-900 text-gray-400;
 }
 
 .btn {
