@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import com.hart.overwatch.activelabel.ActiveLabel;
+import com.hart.overwatch.checklist.CheckList;
 import com.hart.overwatch.todolist.TodoList;
 import com.hart.overwatch.user.User;
 import jakarta.persistence.CascadeType;
@@ -73,6 +74,9 @@ public class TodoCard {
             orphanRemoval = true)
     private List<ActiveLabel> activeLabels;
 
+    @OneToMany(mappedBy = "todoCard", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<CheckList> checkLists;
 
     @ManyToOne()
     @JoinColumn(name = "user_id", referencedColumnName = "id")
@@ -115,6 +119,10 @@ public class TodoCard {
 
     public Long getId() {
         return id;
+    }
+
+    public List<CheckList> getCheckLists() {
+        return checkLists;
     }
 
     public List<ActiveLabel> getActiveLabels() {
@@ -239,5 +247,9 @@ public class TodoCard {
 
     public void setUploadPhotoFileName(String uploadPhotoFileName) {
         this.uploadPhotoFileName = uploadPhotoFileName;
+    }
+
+    public void setCheckLists(List<CheckList> checkLists) {
+        this.checkLists = checkLists;
     }
 }

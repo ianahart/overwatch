@@ -130,6 +130,7 @@ import { todoCardsApi } from './apis/todoCardsApi';
 import { pexelApi } from './apis/pexelsApi';
 import { labelsApi } from './apis/labelsApi';
 import { activeLabelsApi } from './apis/activeLabelsApi';
+import { checkListsApi } from './apis/checkListApis';
 
 export const store = configureStore({
   reducer: {
@@ -173,6 +174,7 @@ export const store = configureStore({
     [pexelApi.reducerPath]: pexelApi.reducer,
     [labelsApi.reducerPath]: labelsApi.reducer,
     [activeLabelsApi.reducerPath]: activeLabelsApi.reducer,
+    [checkListsApi.reducerPath]: checkListsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -203,7 +205,8 @@ export const store = configureStore({
       .concat(todoCardsApi.middleware)
       .concat(pexelApi.middleware)
       .concat(labelsApi.middleware)
-      .concat(activeLabelsApi.middleware);
+      .concat(activeLabelsApi.middleware)
+      .concat(checkListsApi.middleware);
   },
 });
 
@@ -439,6 +442,8 @@ export {
   useCreateActiveLabelMutation,
   useDeleteActiveLabelMutation,
 } from './apis/activeLabelsApi';
+
+export { useCreateCheckListMutation } from './apis/checkListApis';
 
 export {
   testimonialsApi,

@@ -73,9 +73,9 @@ const CardDetails = ({ card }: ICardDetailsProps) => {
         )}
       </div>
       {!isTextareaShowing && (
-        <p onClick={handleOnClick} className="cursor-pointer">
+        <div onClick={handleOnClick} className="cursor-pointer">
           {!card.details ? 'Write some details for your card' : <DisplayEditor details={card.details} />}
-        </p>
+        </div>
       )}
       {isTextareaShowing && (
         <form onSubmit={handleOnSubmit}>

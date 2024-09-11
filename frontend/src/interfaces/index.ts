@@ -1297,6 +1297,17 @@ export interface IUploadTodoCardResponse {
   data: ITodoCard;
 }
 
+export interface ICreateCheckListRequest {
+  userId: number;
+  title: string;
+  todoCardId: number;
+  token: string;
+}
+
+export interface ICreateCheckListResponse {
+  message: string;
+}
+
 export interface ICreateActiveLabelResponse extends IBaseResponse {}
 
 export interface IDeleteActiveLabelResponse extends IBaseResponse {}
