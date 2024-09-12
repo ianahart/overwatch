@@ -1,6 +1,8 @@
 package com.hart.overwatch.checklist.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import com.hart.overwatch.checklistitem.dto.CheckListItemDto;
 
 public class CheckListDto {
 
@@ -15,6 +17,8 @@ public class CheckListDto {
     private Boolean isCompleted;
 
     private LocalDateTime createdAt;
+
+    private List<CheckListItemDto> checkListItems;
 
     public CheckListDto() {
 
@@ -36,6 +40,10 @@ public class CheckListDto {
 
     public Long getUserId() {
         return userId;
+    }
+
+    public List<CheckListItemDto> getCheckListItems() {
+        return checkListItems;
     }
 
     public String getTitle() {
@@ -76,5 +84,9 @@ public class CheckListDto {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public void setCheckListItems(List<CheckListItemDto> checkListItems) {
+        this.checkListItems = checkListItems;
     }
 }

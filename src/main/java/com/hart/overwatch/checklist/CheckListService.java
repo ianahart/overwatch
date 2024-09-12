@@ -1,6 +1,7 @@
 package com.hart.overwatch.checklist;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.checklist.dto.CheckListDto;
 import com.hart.overwatch.checklist.request.CreateCheckListRequest;
+import com.hart.overwatch.checklistitem.CheckListItem;
+import com.hart.overwatch.checklistitem.dto.CheckListItemDto;
 
 @Service
 public class CheckListService {
@@ -39,7 +42,7 @@ public class CheckListService {
         this.todoCardService = todoCardService;
     }
 
-    private CheckList getCheckListById(Long checkListId) {
+    public CheckList getCheckListById(Long checkListId) {
         return checkListRepository.findById(checkListId).orElseThrow(() -> new NotFoundException(
                 String.format("CheckList with id %d was not found", checkListId)));
     }
@@ -89,14 +92,34 @@ public class CheckListService {
             throw new BadRequestException("Missing todoCardId parameter");
         }
 
-        Pageable pageable =
-                PageRequest.of(0, CHECKLISTS_PER_CARD, Sort.by("createdAt").descending());
+        List<CheckList> checkLists = checkListRepository.findByTodoCardId(todoCardId);
 
-        Page<CheckListDto> result =
-                checkListRepository.getCheckListsByTodoCardId(todoCardId, pageable);
-
-        return result.getContent();
+        return checkLists.stream().map(this::convertToDto).collect(Collectors.toList());
     }
+
+    private CheckListDto convertToDto(CheckList checkList) {
+        CheckListDto checkListDto = new CheckListDto();
+        checkListDto.setId(checkList.getId());
+        checkListDto.setTitle(checkList.getTitle());
+        checkListDto.setUserId(checkList.getUser().getId());
+        checkListDto.setTodoCardId(checkList.getTodoCard().getId());
+        checkListDto.setIsCompleted(checkList.getIsCompleted());
+        checkListDto.setCreatedAt(checkList.getCreatedAt());
+        checkListDto.setCheckListItems(checkList.getCheckListItems().stream()
+                .map(this::convertToChildDto).collect(Collectors.toList()));
+        return checkListDto;
+    }
+
+    private CheckListItemDto convertToChildDto(CheckListItem checkListItem) {
+        CheckListItemDto checkListItemDto = new CheckListItemDto();
+        checkListItemDto.setId(checkListItem.getId());
+        checkListItemDto.setUserId(checkListItem.getUser().getId());
+        checkListItemDto.setCheckListId(checkListItem.getCheckList().getId());
+        checkListItemDto.setTitle(checkListItem.getTitle());
+        checkListItemDto.setIsCompleted(checkListItem.getIsCompleted());
+        return checkListItemDto;
+    }
+
 
     public void deleteCheckList(Long checkListId) {
         if (checkListId == null) {

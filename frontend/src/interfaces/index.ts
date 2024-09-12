@@ -6,6 +6,15 @@ export interface IServerError {
   data: string;
 }
 
+export interface ICheckListItem {
+  [key: string]: string | number | boolean;
+  id: number;
+  userId: number;
+  checkListId: number;
+  title: string;
+  isCompleted: boolean;
+}
+
 export interface ICheckList {
   id: number;
   userId: number;
@@ -13,6 +22,7 @@ export interface ICheckList {
   createdAt: string | Date | null;
   isCompleted: boolean;
   title: string;
+  checkListItems: ICheckListItem[];
 }
 
 export interface ITodoCard {
@@ -1331,6 +1341,34 @@ export interface IDeleteCheckListRequest {
   id: number;
   token: string;
 }
+
+export interface ICreateCheckListItemRequest {
+  token: string;
+  userId: number;
+  checkListId: number;
+  title: string;
+}
+
+export interface IUpdateCheckListItemRequest {
+  data: ICheckListItem;
+  token: string;
+}
+
+export interface ICreateCheckListItemResponse {
+  message: string;
+  data: ICheckListItem;
+}
+
+export interface IDeleteCheckListItemRequest {
+  id: number;
+  token: string;
+}
+
+export interface IDeleteCheckListItemResponse {
+  message: string;
+}
+
+export interface IUpdateCheckListItemResponse extends IBaseResponse {}
 
 export interface IDeleteCheckListResponse extends IBaseResponse {}
 
