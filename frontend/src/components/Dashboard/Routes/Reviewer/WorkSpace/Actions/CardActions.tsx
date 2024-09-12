@@ -1,4 +1,5 @@
 import { ITodoCard } from '../../../../../../interfaces';
+import CardMoveBtn from './CardMoveBtn';
 import CardRemoveBtn from './CardRemoveBtn';
 
 export interface ICardActionsProps {
@@ -11,6 +12,7 @@ const CardActions = ({ card }: ICardActionsProps) => {
       <div>
         <h3 className="font-bold">Actions</h3>
       </div>
+      <CardMoveBtn card={card} />
       <CardRemoveBtn card={card} />
     </div>
   );

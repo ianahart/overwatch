@@ -71,7 +71,6 @@ const WorkSpace = () => {
     moveTodoCardsMut({ token, sourceListId, destinationListId, todoCardId, newIndex })
       .unwrap()
       .then((res) => {
-        console.log(res);
         dispatch(
           moveTodoCard({
             sourceListId,
