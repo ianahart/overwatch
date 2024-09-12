@@ -6,11 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.checklist.CheckList;
 import com.hart.overwatch.checklist.CheckListService;
+import com.hart.overwatch.checklistitem.dto.CheckListItemDto;
 import com.hart.overwatch.checklistitem.request.CreateCheckListItemRequest;
+import com.hart.overwatch.checklistitem.request.UpdateCheckListItemRequest;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.advice.BadRequestException;
+import com.hart.overwatch.advice.ForbiddenException;
 
 @Service
 public class CheckListItemService {
@@ -49,7 +52,7 @@ public class CheckListItemService {
                 checkListId, title);
     }
 
-    public void createCheckListItem(CreateCheckListItemRequest request) {
+    public CheckListItemDto createCheckListItem(CreateCheckListItemRequest request) {
         Long checkListId = request.getCheckListId();
         Long userId = request.getUserId();
         String title = Jsoup.clean(request.getTitle(), Safelist.none());
@@ -75,5 +78,34 @@ public class CheckListItemService {
         CheckListItem checkListItem = new CheckListItem(title, isCompleted, user, checkList);
 
         checkListItemRepository.save(checkListItem);
+
+        return new CheckListItemDto(checkListItem.getId(), checkListItem.getUser().getId(),
+                checkListItem.getCheckList().getId(), checkListItem.getTitle(),
+                checkListItem.getIsCompleted());
+    }
+
+    public void updateCheckListItem(UpdateCheckListItemRequest request) {
+        String title = Jsoup.clean(request.getTitle(), Safelist.none());
+
+
+
+        CheckListItem checkListItem = getCheckListItemById(request.getId());
+        if (!title.toLowerCase().equals(checkListItem.getTitle())) {
+            checkListItem.setTitle(title);
+        }
+        checkListItem.setIsCompleted(request.getIsCompleted());
+
+        checkListItemRepository.save(checkListItem);
+    }
+
+    public void deleteCheckListItem(Long checkListItemId) {
+        CheckListItem checkListItem = getCheckListItemById(checkListItemId);
+        User user = userService.getCurrentlyLoggedInUser();
+
+        if (checkListItem.getUser().getId() != user.getId()) {
+            throw new ForbiddenException("Cannot deltete a check list item that is not yours");
+        }
+
+        checkListItemRepository.delete(checkListItem);
     }
 }

@@ -7,6 +7,7 @@ export interface IServerError {
 }
 
 export interface ICheckListItem {
+  [key: string]: string | number | boolean;
   id: number;
   userId: number;
   checkListId: number;
@@ -1348,7 +1349,26 @@ export interface ICreateCheckListItemRequest {
   title: string;
 }
 
-export interface ICreateCheckListItemResponse extends IBaseResponse {}
+export interface IUpdateCheckListItemRequest {
+  data: ICheckListItem;
+  token: string;
+}
+
+export interface ICreateCheckListItemResponse {
+  message: string;
+  data: ICheckListItem;
+}
+
+export interface IDeleteCheckListItemRequest {
+  id: number;
+  token: string;
+}
+
+export interface IDeleteCheckListItemResponse {
+  message: string;
+}
+
+export interface IUpdateCheckListItemResponse extends IBaseResponse {}
 
 export interface IDeleteCheckListResponse extends IBaseResponse {}
 

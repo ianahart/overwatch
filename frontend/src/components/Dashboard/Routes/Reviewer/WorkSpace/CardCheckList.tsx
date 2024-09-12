@@ -2,15 +2,24 @@ import { useSelector } from 'react-redux';
 import { GoChecklist } from 'react-icons/go';
 import { useState } from 'react';
 
-import { ICheckList } from '../../../../../interfaces';
+import { ICheckList, ICheckListItem } from '../../../../../interfaces';
 import { TRootState, useDeleteCheckListMutation } from '../../../../../state/store';
 import CardCheckListItemForm from './CardCheckListItemForm';
+import CardCheckListItem from './CardCheckListItem';
 
 export interface ICardCheckListProps {
   checkList: ICheckList;
+  updateCheckListItem: (checkListItem: ICheckListItem, key: string) => void;
+  deleteCheckListItem: (checkListItem: ICheckListItem) => void;
+  addCheckListItem: (checkListItem: ICheckListItem) => void;
 }
 
-const CardCheckList = ({ checkList }: ICardCheckListProps) => {
+const CardCheckList = ({
+  addCheckListItem,
+  checkList,
+  updateCheckListItem,
+  deleteCheckListItem,
+}: ICardCheckListProps) => {
   const { token } = useSelector((store: TRootState) => store.user);
   const [deleteCheckListMut, { isLoading }] = useDeleteCheckListMutation();
   const [formShowing, setFormShowing] = useState(false);
@@ -59,8 +68,20 @@ const CardCheckList = ({ checkList }: ICardCheckListProps) => {
             Add Item
           </button>
         )}
-        {formShowing && <CardCheckListItemForm closeForm={closeForm} checkListId={checkList.id} />}
+        {formShowing && (
+          <CardCheckListItemForm addCheckListItem={addCheckListItem} closeForm={closeForm} checkListId={checkList.id} />
+        )}
       </div>
+      {checkList.checkListItems.map((checkListItem) => {
+        return (
+          <CardCheckListItem
+            deleteCheckListItem={deleteCheckListItem}
+            updateCheckListItem={updateCheckListItem}
+            key={checkListItem.id}
+            checkListItem={checkListItem}
+          />
+        );
+      })}
     </div>
   );
 };

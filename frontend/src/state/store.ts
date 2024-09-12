@@ -448,7 +448,11 @@ export {
 
 export { useDeleteCheckListMutation, useFetchCheckListsQuery, useCreateCheckListMutation } from './apis/checkListApis';
 
-export { useCreateCheckListItemMutation } from './apis/checkListItemsApi';
+export {
+  useDeleteCheckListItemMutation,
+  useUpdateCheckListItemMutation,
+  useCreateCheckListItemMutation,
+} from './apis/checkListItemsApi';
 
 export {
   testimonialsApi,

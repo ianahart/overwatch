@@ -3,17 +3,19 @@ import { useSelector } from 'react-redux';
 
 import ClickAway from '../../../../Shared/ClickAway';
 import { TRootState, useCreateCheckListItemMutation } from '../../../../../state/store';
+import { ICheckListItem } from '../../../../../interfaces';
 
 export interface ICardCheckListItemFormProps {
   closeForm: () => void;
   checkListId: number;
+  addCheckListItem: (checkListItem: ICheckListItem) => void;
 }
 
 export interface IServerError {
   [key: string]: string;
 }
 
-const CardCheckListItemForm = ({ closeForm, checkListId }: ICardCheckListItemFormProps) => {
+const CardCheckListItemForm = ({ addCheckListItem, closeForm, checkListId }: ICardCheckListItemFormProps) => {
   const { token, user } = useSelector((store: TRootState) => store.user);
   const [createCheckListItemMut] = useCreateCheckListItemMutation();
   const [title, setTitle] = useState('');
@@ -40,7 +42,8 @@ const CardCheckListItemForm = ({ closeForm, checkListId }: ICardCheckListItemFor
 
     createCheckListItemMut(payload)
       .unwrap()
-      .then(() => {
+      .then((res) => {
+        addCheckListItem(res.data);
         closeForm();
       })
       .catch((err) => {
