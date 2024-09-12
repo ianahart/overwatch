@@ -10,7 +10,7 @@ public class UpdateCheckListItemRequest {
 
     private Long userId;
 
-    @Size(max = 50, message = "Check List Item must be a maximum of 50 characters")
+    @Size(max = 100, message = "Check List Item must be a maximum of 100 characters")
     private String title;
 
     private Boolean isCompleted;
