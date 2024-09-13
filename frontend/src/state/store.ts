@@ -132,6 +132,7 @@ import { labelsApi } from './apis/labelsApi';
 import { activeLabelsApi } from './apis/activeLabelsApi';
 import { checkListsApi } from './apis/checkListApis';
 import { checkListItemsApi } from './apis/checkListItemsApi';
+import { activitiesApi } from './apis/activitiesApi';
 
 export const store = configureStore({
   reducer: {
@@ -177,6 +178,7 @@ export const store = configureStore({
     [activeLabelsApi.reducerPath]: activeLabelsApi.reducer,
     [checkListsApi.reducerPath]: checkListsApi.reducer,
     [checkListItemsApi.reducerPath]: checkListItemsApi.reducer,
+    [activitiesApi.reducerPath]: activitiesApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -209,7 +211,8 @@ export const store = configureStore({
       .concat(labelsApi.middleware)
       .concat(activeLabelsApi.middleware)
       .concat(checkListsApi.middleware)
-      .concat(checkListItemsApi.middleware);
+      .concat(checkListItemsApi.middleware)
+      .concat(activitiesApi.middleware);
   },
 });
 
@@ -455,6 +458,13 @@ export {
 } from './apis/checkListItemsApi';
 
 export {
+  useDeleteActivityMutation,
+  useLazyFetchActivitiesQuery,
+  useFetchActivitiesQuery,
+  useCreateActivityMutation,
+} from './apis/activitiesApi';
+
+export {
   testimonialsApi,
   authsApi,
   heartbeatApi,
@@ -474,4 +484,5 @@ export {
   pexelApi,
   labelsApi,
   activeLabelsApi,
+  activitiesApi,
 };
