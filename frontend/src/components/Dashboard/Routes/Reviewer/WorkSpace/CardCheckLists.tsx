@@ -9,6 +9,7 @@ import {
 import { useEffect, useState } from 'react';
 import Spinner from '../../../../Shared/Spinner';
 import CardCheckList from './CardCheckList';
+import { BsCardChecklist } from 'react-icons/bs';
 
 export interface ICardCheckListsProps {
   card: ITodoCard;
@@ -98,7 +99,9 @@ const CardCheckLists = ({ card }: ICardCheckListsProps) => {
       )}
       {!isLoading && (
         <>
-          <h3 className="font-bold">Checklists</h3>
+          <h3 className="font-bold flex items-center">
+            <BsCardChecklist className="mr-2" /> Checklists
+          </h3>
           <div className="my-2 max-w-[500px] w-full">
             {checkLists.map((checkList) => {
               return (

@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import com.hart.overwatch.activelabel.ActiveLabel;
+import com.hart.overwatch.activity.Activity;
 import com.hart.overwatch.checklist.CheckList;
 import com.hart.overwatch.todolist.TodoList;
 import com.hart.overwatch.user.User;
@@ -78,6 +79,11 @@ public class TodoCard {
             orphanRemoval = true)
     private List<CheckList> checkLists;
 
+    @OneToMany(mappedBy = "todoCard", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Activity> activities;
+
+
     @ManyToOne()
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
@@ -123,6 +129,10 @@ public class TodoCard {
 
     public List<CheckList> getCheckLists() {
         return checkLists;
+    }
+
+    public List<Activity> getActivities() {
+        return activities;
     }
 
     public List<ActiveLabel> getActiveLabels() {
@@ -191,6 +201,10 @@ public class TodoCard {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public void setActivities(List<Activity> activities) {
+        this.activities = activities;
     }
 
     public void setColor(String color) {

@@ -6,6 +6,15 @@ export interface IServerError {
   data: string;
 }
 
+export interface IActivity {
+  id: number;
+  userId: number;
+  todoCardId: number;
+  text: string;
+  createdAt: string | Date | null;
+  avatarUrl: string;
+}
+
 export interface ICheckListItem {
   [key: string]: string | number | boolean;
   id: number;
@@ -1367,6 +1376,45 @@ export interface IDeleteCheckListItemRequest {
 export interface IDeleteCheckListItemResponse {
   message: string;
 }
+
+export interface ICreateActivityRequest {
+  token: string;
+  todoCardId: number;
+  text: string;
+  userId: number;
+}
+
+export interface ICreateActivityResponse {
+  message: string;
+  data: IActivity;
+}
+
+export interface IFetchActivityResponse {
+  message: string;
+  data: {
+    items: IActivity[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
+}
+
+export interface IFetchActivityRequest {
+  token: string;
+  todoCardId: number;
+  page: number;
+  pageSize: number;
+  direction: string;
+}
+
+export interface IDeleteActivityRequest {
+  activityId: number;
+  token: string;
+}
+
+export interface IDeleteActivityResponse extends IBaseResponse {}
 
 export interface IUpdateCheckListItemResponse extends IBaseResponse {}
 

@@ -5,6 +5,7 @@ import CardDetails from './CardDetails';
 import CardHeader from './CardHeader';
 import CardUploadPhoto from './CardUploadPhoto';
 import CardCheckLists from './CardCheckLists';
+import CardActivity from './CardActivity';
 
 export interface ICardModalProps {
   handleOnModalClose: () => void;
@@ -26,6 +27,7 @@ const CardModal = ({ handleOnModalClose, card }: ICardModalProps) => {
           <CardDetails card={card} />
           <CardUploadPhoto card={card} />
           <CardCheckLists card={card} />
+          <CardActivity card={card} />
         </div>
       </ClickAway>
     </div>

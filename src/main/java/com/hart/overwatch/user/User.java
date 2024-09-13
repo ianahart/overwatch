@@ -7,6 +7,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.hart.overwatch.activity.Activity;
 import com.hart.overwatch.chatmessage.ChatMessage;
 import com.hart.overwatch.checklist.CheckList;
 import com.hart.overwatch.checklistitem.CheckListItem;
@@ -195,6 +196,10 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<CheckListItem> checkListItems;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Activity> activities;
+
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "setting_id", referencedColumnName = "id")
@@ -264,6 +269,10 @@ public class User implements UserDetails {
 
     public List<UserPaymentMethod> getUserPaymentMethods() {
         return userPaymentMethods;
+    }
+
+    public List<Activity> getActivities() {
+        return activities;
     }
 
     public Location getLocation() {
@@ -556,6 +565,10 @@ public class User implements UserDetails {
 
     public void setSlug(String slug) {
         this.slug = slug;
+    }
+
+    public void setActivities(List<Activity> activities) {
+        this.activities = activities;
     }
 
     public String getUsername() {
