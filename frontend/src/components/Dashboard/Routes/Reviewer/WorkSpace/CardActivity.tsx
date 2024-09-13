@@ -13,6 +13,7 @@ import {
 import { BsTrash } from 'react-icons/bs';
 import Avatar from '../../../../Shared/Avatar';
 import Spinner from '../../../../Shared/Spinner';
+import dayjs from 'dayjs';
 
 export interface ICardActivityProps {
   card: ITodoCard;
@@ -107,9 +108,14 @@ const CardActivity = ({ card }: ICardActivityProps) => {
           {activities.map((activity) => {
             return (
               <div className="flex justify-between my-2" key={activity.id}>
-                <div className="mr-2 flex items-center">
-                  <Avatar initials={'?.?'} avatarUrl={activity.avatarUrl} width="w-9" height="h-9" />
-                  <p>{activity.text}</p>
+                <div>
+                  <div className="mr-2 flex items-center">
+                    <Avatar initials={'?.?'} avatarUrl={activity.avatarUrl} width="w-9" height="h-9" />
+                    <p>{activity.text}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs">{dayjs(activity.createdAt).format('MM/DD/YYYY h:m A')}</p>
+                  </div>
                 </div>
                 <div className="cursor-pointer" onClick={() => handleDeleteActivity(activity.id)}>
                   <BsTrash />
