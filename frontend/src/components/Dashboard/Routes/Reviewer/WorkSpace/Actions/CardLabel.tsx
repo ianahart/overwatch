@@ -22,18 +22,24 @@ const CardLabel = ({ card, label, handleOnDeleteLabel, activeLabelIds }: ICardLa
   const [deleteActiveLabelMut] = useDeleteActiveLabelMutation();
   const [updateLabelMut] = useUpdateLabelMutation();
 
-  const createActiveLabel = () => {
+  const createActiveLabel = (checked: boolean) => {
     createActiveLabelMut({ token, cardId: card.id, labelId: label.id })
       .unwrap()
-      .then(() => {})
+      .then(() => {
+        updateLabel(checked);
+      })
       .catch((err) => {
         console.log(err);
       });
   };
 
-  const deleteActiveLabel = async () => {
+  const deleteActiveLabel = async (checked: boolean) => {
     try {
-      await deleteActiveLabelMut({ token, id: card.id, labelId: label.id }).unwrap();
+      deleteActiveLabelMut({ token, id: card.id, labelId: label.id })
+        .unwrap()
+        .then(() => {
+          updateLabel(checked);
+        });
     } catch (err) {
       console.log(err);
     }
@@ -53,12 +59,12 @@ const CardLabel = ({ card, label, handleOnDeleteLabel, activeLabelIds }: ICardLa
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { checked } = e.target;
     if (checked) {
-      createActiveLabel();
+      createActiveLabel(checked);
     } else {
-      deleteActiveLabel();
+      deleteActiveLabel(checked);
     }
 
-    updateLabel(checked);
+    //    updateLabel(checked);
   };
 
   return (

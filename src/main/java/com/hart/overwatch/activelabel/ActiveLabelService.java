@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.activelabel.dto.ActiveLabelDto;
 import com.hart.overwatch.activelabel.request.CreateActiveLabelRequest;
+import com.hart.overwatch.activity.ActivityService;
 import com.hart.overwatch.label.Label;
 import com.hart.overwatch.label.LabelService;
 import com.hart.overwatch.todocard.TodoCard;
@@ -22,14 +23,17 @@ public class ActiveLabelService {
 
     private final ActiveLabelRepository activeLabelRepository;
 
+    private final ActivityService activityService;
+
 
 
     @Autowired
     public ActiveLabelService(TodoCardService todoCardService, LabelService labelService,
-            ActiveLabelRepository activeLabelRepository) {
+            ActiveLabelRepository activeLabelRepository, ActivityService activityService) {
         this.todoCardService = todoCardService;
         this.labelService = labelService;
         this.activeLabelRepository = activeLabelRepository;
+        this.activityService = activityService;
     }
 
 
@@ -56,6 +60,9 @@ public class ActiveLabelService {
 
 
         activeLabelRepository.save(activeLabel);
+        String text = String.format("You added the label %s to your card",
+                activeLabel.getLabel().getTitle());
+        activityService.createActivity(text, todoCardId, todoCard.getUser().getId());
     }
 
 
@@ -64,6 +71,10 @@ public class ActiveLabelService {
                 activeLabelRepository.findByTodoCardIdAndLabelId(todoCardId, labelId);
 
 
+        String text = String.format("You removed the label %s to your card",
+                activeLabel.getLabel().getTitle());
+        activityService.createActivity(text, todoCardId,
+                activeLabel.getTodoCard().getUser().getId());
 
         activeLabelRepository.delete(activeLabel);
     }

@@ -50,12 +50,9 @@ const activitiesApi = createApi({
             },
           };
         },
-        invalidatesTags: (result, error, { todoCardId }) => {
-          console.log(result, error, todoCardId);
-          return [
-            { type: 'Activity', id: 'LIST' },
-            { type: 'Activity', id: todoCardId },
-          ];
+        invalidatesTags: (result, error, {}) => {
+          console.log(result, error);
+          return [{ type: 'Activity', id: 'LIST' }];
         },
       }),
       deleteActivity: builder.mutation<IDeleteActivityResponse, IDeleteActivityRequest>({

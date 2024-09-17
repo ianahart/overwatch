@@ -22,17 +22,19 @@ import com.hart.overwatch.todocard.response.MoveTodoCardResponse;
 import com.hart.overwatch.todocard.response.ReorderTodoCardResponse;
 import com.hart.overwatch.todocard.response.UpdateTodoCardResponse;
 import com.hart.overwatch.todocard.response.UploadTodoCardPhotoResponse;
+import com.hart.overwatch.todocardmanagement.TodoCardManagementService;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/api/v1")
 public class TodoCardController {
 
-    private final TodoCardService todoCardService;
+
+    private final TodoCardManagementService todoCardManagementService;
 
     @Autowired
-    public TodoCardController(TodoCardService todoCardService) {
-        this.todoCardService = todoCardService;
+    public TodoCardController(TodoCardManagementService todoCardManagementService) {
+        this.todoCardManagementService = todoCardManagementService;
     }
 
     @PostMapping("/todo-lists/{todoListId}/todo-cards")
@@ -40,7 +42,7 @@ public class TodoCardController {
             @PathVariable("todoListId") Long todoListId,
             @Valid @RequestBody CreateTodoCardRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(new CreateTodoCardResponse("success",
-                todoCardService.createTodoCard(todoListId, request)));
+                todoCardManagementService.handleCreateTodoCard(todoListId, request)));
     }
 
     @PutMapping("/todo-cards/{todoCardId}")
@@ -49,13 +51,13 @@ public class TodoCardController {
             @Valid @RequestBody UpdateTodoCardRequest request) {
 
         return ResponseEntity.status(HttpStatus.OK).body(new UpdateTodoCardResponse("success",
-                todoCardService.updateTodoCard(todoCardId, request)));
+                todoCardManagementService.handleUpdateTodoCard(todoCardId, request)));
     }
 
     @DeleteMapping("/todo-cards/{todoCardId}")
     ResponseEntity<DeleteTodoCardResponse> deleteTodoCard(
             @PathVariable("todoCardId") Long todoCardId) {
-        todoCardService.deleteTodoCard(todoCardId);
+        todoCardManagementService.handleDeleteTodoCard(todoCardId);
 
         return ResponseEntity.status(HttpStatus.OK).body(new DeleteTodoCardResponse("success"));
     }
@@ -64,14 +66,14 @@ public class TodoCardController {
     ResponseEntity<ReorderTodoCardResponse> reorderTodoCard(
             @PathVariable("todoCardId") Long todoCardId,
             @RequestBody ReorderTodoCardRequest request) {
-        todoCardService.reorderTodoCards(request, todoCardId);
+        todoCardManagementService.handleReorderTodoCards(request, todoCardId);
         return ResponseEntity.status(HttpStatus.OK).body(new ReorderTodoCardResponse("success"));
     }
 
     @PatchMapping("/todo-cards/{todoCardId}/move")
     ResponseEntity<MoveTodoCardResponse> moveTodoCard(@PathVariable("todoCardId") Long todoCardId,
             @RequestBody MoveTodoCardRequest request) {
-        todoCardService.moveTodoCards(todoCardId, request);
+        todoCardManagementService.handleMoveTodoCards(todoCardId, request);
 
         return ResponseEntity.status(HttpStatus.OK).body(new MoveTodoCardResponse("success"));
     }
@@ -80,6 +82,6 @@ public class TodoCardController {
     ResponseEntity<UploadTodoCardPhotoResponse> uploadTodoCardPhoto(
             @PathVariable("todoCardId") Long todoCardId, UploadTodoCardPhotoRequest request) {
         return ResponseEntity.status(HttpStatus.OK).body(new UploadTodoCardPhotoResponse("success",
-                todoCardService.uploadTodoCardPhoto(todoCardId, request)));
+                todoCardManagementService.handleUploadTodoCardPhoto(todoCardId, request)));
     }
 }
