@@ -54,8 +54,7 @@ public class TodoCardService {
         this.amazonService = amazonService;
     }
 
-    public TodoCardDto uploadTodoCardPhoto(Long todoCardId, UploadTodoCardPhotoRequest request) {
-        TodoCard todoCard = getTodoCardById(todoCardId);
+    public TodoCardDto uploadTodoCardPhoto(TodoCard todoCard, UploadTodoCardPhotoRequest request) {
         MultipartFile file = request.getFile();
         long MAX_FILE_SIZE = 1000000L;
 
@@ -149,10 +148,9 @@ public class TodoCardService {
         return todoCardRepository.retrieveTodoCard(todoListId, currentUser.getId());
     }
 
-    public TodoCardDto updateTodoCard(Long todoCardId, UpdateTodoCardRequest request) {
+    public TodoCardDto updateTodoCard(TodoCard todoCard, UpdateTodoCardRequest request) {
         String cleanedTitle =
                 request.getTitle() != null ? Jsoup.clean(request.getTitle(), Safelist.none()) : "";
-        TodoCard todoCard = getTodoCardById(todoCardId);
 
         String cleanedDetails =
                 request.getDetails() != null ? Jsoup.clean(request.getDetails(), Safelist.none())
@@ -248,9 +246,8 @@ public class TodoCardService {
     }
 
     @Transactional
-    public void moveTodoCards(Long todoCardId, MoveTodoCardRequest request) {
-        TodoList destinationList = todoListService.getTodoListById(request.getDestinationListId());
-        TodoList sourceList = todoListService.getTodoListById(request.getSourceListId());
+    public void moveTodoCards(Long todoCardId, MoveTodoCardRequest request,
+            TodoList destinationList, TodoList sourceList) {
 
         if (destinationList == null) {
             throw new NotFoundException("Missing destination list");

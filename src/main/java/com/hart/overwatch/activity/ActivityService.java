@@ -1,5 +1,6 @@
 package com.hart.overwatch.activity;
 
+import java.time.LocalDateTime;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import com.hart.overwatch.activity.request.CreateActivityRequest;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.advice.ForbiddenException;
+import com.hart.overwatch.advice.RateLimitException;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 
@@ -74,6 +76,15 @@ public class ActivityService {
         if (userId == null || todoCardId == null) {
             throw new BadRequestException("Missing either userId or todoCardId parameter");
         }
+
+        int recentActivityCount = activityRepository.countActivitiesByUserIdAndCreatedAtAfter(
+                userId, LocalDateTime.now().minusMinutes(10));
+
+        if (recentActivityCount >= 20) {
+            throw new RateLimitException(
+                    "Rate Limit exceeded: You can only create up to 20 activities in 10 minutes");
+        }
+
         return createActivity(text, todoCardId, userId);
     }
 
@@ -97,6 +108,15 @@ public class ActivityService {
         if (activity.getUser().getId() != user.getId()) {
             throw new ForbiddenException("Cannot delete an activity that is not yours");
         }
+
+        int recentActivityCount = activityRepository.countActivitiesByUserIdAndCreatedAtAfter(
+                user.getId(), LocalDateTime.now().minusMinutes(10));
+
+        if (recentActivityCount >= 20) {
+            throw new RateLimitException(
+                    "Rate Limit exceeded: You can only create up to 20 activities in 10 minutes");
+        }
+
 
         activityRepository.delete(activity);
     }
