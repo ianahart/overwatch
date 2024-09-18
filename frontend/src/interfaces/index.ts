@@ -1,6 +1,19 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface ICustomFieldTypeOption {
+  id: string;
+  value: string;
+}
+
+export interface ICustomFieldType {
+  fieldName: string;
+  fieldType: string;
+  selectedTitle: string;
+  selectedValue?: string | ICustomFieldTypeOption;
+  options?: ICustomFieldTypeOption[];
+}
+
 export interface IServerError {
   status: number;
   data: string;
