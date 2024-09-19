@@ -1,4 +1,6 @@
-import { ITodoCard } from '../interfaces';
+import { ITodoCard, ICustomFieldTypeOption } from '../interfaces';
+
+export type TCustomFieldValue = string | ICustomFieldTypeOption;
 
 export type TCustomText = {
   text: string;

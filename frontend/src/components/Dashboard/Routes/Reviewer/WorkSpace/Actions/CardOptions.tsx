@@ -1,5 +1,6 @@
 import { ITodoCard } from '../../../../../../interfaces';
 import CardCheckListBtn from './CardCheckListBtn';
+import CardCustomFieldBtn from './CardCustomFieldBtn';
 import CardDatesBtn from './CardDatesBtn';
 import CardLabelsBtn from './CardLabelsBtn';
 import CardPhotoBtn from './CardPhotoBtn';
@@ -20,6 +21,7 @@ const CardOptions = ({ card }: ICardOptionsProps) => {
       <CardDatesBtn card={card} />
       <CardUploadBtn card={card} />
       <CardPhotoBtn card={card} />
+      <CardCustomFieldBtn card={card} />
     </div>
   );
 };

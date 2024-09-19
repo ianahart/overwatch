@@ -14,6 +14,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import com.hart.overwatch.activelabel.ActiveLabel;
 import com.hart.overwatch.activity.Activity;
 import com.hart.overwatch.checklist.CheckList;
+import com.hart.overwatch.customfield.CustomField;
 import com.hart.overwatch.todolist.TodoList;
 import com.hart.overwatch.user.User;
 import jakarta.persistence.CascadeType;
@@ -83,6 +84,11 @@ public class TodoCard {
             orphanRemoval = true)
     private List<Activity> activities;
 
+    @OneToMany(mappedBy = "todoCard", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<CustomField> customFields;
+
+
 
     @ManyToOne()
     @JoinColumn(name = "user_id", referencedColumnName = "id")
@@ -129,6 +135,10 @@ public class TodoCard {
 
     public List<CheckList> getCheckLists() {
         return checkLists;
+    }
+
+    public List<CustomField> getCustomFields() {
+        return customFields;
     }
 
     public List<Activity> getActivities() {
@@ -265,5 +275,9 @@ public class TodoCard {
 
     public void setCheckLists(List<CheckList> checkLists) {
         this.checkLists = checkLists;
+    }
+
+    public void setCustomFields(List<CustomField> customFields) {
+        this.customFields = customFields;
     }
 }
