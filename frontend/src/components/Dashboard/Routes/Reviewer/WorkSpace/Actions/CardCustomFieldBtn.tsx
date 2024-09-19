@@ -112,6 +112,7 @@ function CardCustomFieldBtn({ card }: ICardCustomFieldBtnProps) {
             navigatePrevPage={navigatePrevPage}
             handleCloseClickAway={handleCloseClickAway}
             addCustomFieldValue={addCustomFieldValue}
+            todoCardId={card.id}
           />
         );
       default:
@@ -121,14 +122,14 @@ function CardCustomFieldBtn({ card }: ICardCustomFieldBtnProps) {
 
   return (
     <>
-      <div className="p-1 bg-gray-800 rounded w-32 my-2 hover:bg-gray-700 relative">
+      <div className="p-1 bg-gray-800 rounded w-full  my-2 hover:bg-gray-700 relative">
         <button onClick={handleOpenClickAway} className="flex items-center text-sm">
           <BiCustomize className="mr-2" />
           Custom Fields
         </button>
         {isClickAwayOpen && (
           <ClickAway onClickAway={handleCloseClickAway}>
-            <div className="p-2 md:min-h-[400px] rounded bg-gray-700 absolute z-20 right-0 md:w-[325px] w-[90%] top-0">
+            <div className="p-2 md:min-h-[400px] rounded bg-gray-700 absolute z-20 right-0 md:w-[325px] min-w-[290px] w-full top-0">
               {renderCurrentPage()}
             </div>
           </ClickAway>

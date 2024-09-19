@@ -133,6 +133,7 @@ import { activeLabelsApi } from './apis/activeLabelsApi';
 import { checkListsApi } from './apis/checkListApis';
 import { checkListItemsApi } from './apis/checkListItemsApi';
 import { activitiesApi } from './apis/activitiesApi';
+import { customFieldsApi } from './apis/customFieldsApi';
 
 export const store = configureStore({
   reducer: {
@@ -179,6 +180,7 @@ export const store = configureStore({
     [checkListsApi.reducerPath]: checkListsApi.reducer,
     [checkListItemsApi.reducerPath]: checkListItemsApi.reducer,
     [activitiesApi.reducerPath]: activitiesApi.reducer,
+    [customFieldsApi.reducerPath]: customFieldsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -212,7 +214,8 @@ export const store = configureStore({
       .concat(activeLabelsApi.middleware)
       .concat(checkListsApi.middleware)
       .concat(checkListItemsApi.middleware)
-      .concat(activitiesApi.middleware);
+      .concat(activitiesApi.middleware)
+      .concat(customFieldsApi.middleware);
   },
 });
 
@@ -464,6 +467,8 @@ export {
   useCreateActivityMutation,
 } from './apis/activitiesApi';
 
+export { useCreateCustomFieldMutation } from './apis/customFieldsApi';
+
 export {
   testimonialsApi,
   authsApi,
@@ -485,4 +490,5 @@ export {
   labelsApi,
   activeLabelsApi,
   activitiesApi,
+  customFieldsApi,
 };

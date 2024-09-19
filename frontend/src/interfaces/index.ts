@@ -1,6 +1,10 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface IError {
+  [key: string]: string;
+}
+
 export interface ICustomFieldTypeOption {
   id: string;
   value: string;
@@ -1425,6 +1429,20 @@ export interface IFetchActivityRequest {
 export interface IDeleteActivityRequest {
   activityId: number;
   token: string;
+}
+
+export interface ICreateCustomFieldRequest {
+  todoCardId: number;
+  userId: number;
+  token: string;
+  fieldType: string;
+  fieldName: string;
+  selectedValue: string;
+  dropDownOptions: ICustomFieldTypeOption[];
+}
+
+export interface ICreateCustomFieldResponse {
+  message: string;
 }
 
 export interface IDeleteActivityResponse extends IBaseResponse {}

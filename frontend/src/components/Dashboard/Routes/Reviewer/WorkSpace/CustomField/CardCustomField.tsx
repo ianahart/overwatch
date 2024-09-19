@@ -6,6 +6,7 @@ import DropDownInputField from './DropDownInputField';
 import NumberTextInputField from './NumberTextInputField';
 
 export interface ICardCustomFieldProps {
+  todoCardId: number;
   customFieldType: ICustomFieldType;
   page: number;
   navigatePrevPage: () => void;
@@ -15,6 +16,7 @@ export interface ICardCustomFieldProps {
 }
 
 const CardCustomField = ({
+  todoCardId,
   customFieldType,
   page,
   navigatePrevPage,
@@ -27,41 +29,41 @@ const CardCustomField = ({
       case 'NUMBER':
         return (
           <NumberTextInputField
-            selectedTitle={customFieldType.selectedTitle}
-            fieldType={customFieldType.fieldType}
+            customFieldType={customFieldType}
             handleCloseClickAway={handleCloseClickAway}
             addCustomFieldValue={addCustomFieldValue}
+            todoCardId={todoCardId}
           />
         );
       case 'TEXT':
         return (
           <NumberTextInputField
-            selectedTitle={customFieldType.selectedTitle}
-            fieldType={customFieldType.fieldType}
+            customFieldType={customFieldType}
             handleCloseClickAway={handleCloseClickAway}
             addCustomFieldValue={addCustomFieldValue}
+            todoCardId={todoCardId}
           />
         );
       case 'CHECKBOX':
         return (
           <CheckBoxInputField
-            selectedTitle={customFieldType.selectedTitle}
-            fieldType={customFieldType.fieldType}
+            customFieldType={customFieldType}
             options={customFieldType.options || []}
             handleCloseClickAway={handleCloseClickAway}
             addCustomFieldValue={addCustomFieldValue}
             deleteOption={deleteOption}
+            todoCardId={todoCardId}
           />
         );
       case 'DROPDOWN':
         return (
           <DropDownInputField
-            selectedTitle={customFieldType.selectedTitle}
-            fieldType={customFieldType.fieldType}
+            customFieldType={customFieldType}
             options={customFieldType.options || []}
             handleCloseClickAway={handleCloseClickAway}
             addCustomFieldValue={addCustomFieldValue}
             deleteOption={deleteOption}
+            todoCardId={todoCardId}
           />
         );
       default:

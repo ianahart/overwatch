@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { nanoid } from 'nanoid';
-import { TCustomFieldValue } from '../../../../../../types';
-import { ICustomFieldTypeOption } from '../../../../../../interfaces';
 import { BsTrash } from 'react-icons/bs';
+import { useSelector } from 'react-redux';
+
+import { TCustomFieldValue } from '../../../../../../types';
+import { ICustomFieldType, ICustomFieldTypeOption, IError } from '../../../../../../interfaces';
+import { TRootState, useCreateCustomFieldMutation } from '../../../../../../state/store';
 
 export interface IDropDownInputFieldProps {
-  selectedTitle: string;
-  fieldType: string;
+  todoCardId: number;
+  customFieldType: ICustomFieldType;
   options: ICustomFieldTypeOption[];
   handleCloseClickAway: () => void;
   addCustomFieldValue: (value: TCustomFieldValue, fieldType: string) => void;
@@ -14,14 +17,16 @@ export interface IDropDownInputFieldProps {
 }
 
 const DropDownInputField = ({
-  selectedTitle,
-  fieldType,
+  todoCardId,
+  customFieldType,
   options,
   handleCloseClickAway,
   addCustomFieldValue,
   deleteOption,
 }: IDropDownInputFieldProps) => {
   const MAX_OPTIONS = 10;
+  const { user, token } = useSelector((store: TRootState) => store.user);
+  const [createCustomFieldMut] = useCreateCustomFieldMutation();
   const [error, setError] = useState('');
   const [inputValue, setInputValue] = useState('');
 
@@ -30,16 +35,42 @@ const DropDownInputField = ({
     setError('');
     const newOption = { id: nanoid(), value: inputValue };
     if (options.length < MAX_OPTIONS) {
-      addCustomFieldValue(newOption, fieldType);
+      addCustomFieldValue(newOption, customFieldType.fieldType);
     } else {
       setError(`You have added the maximum amount of options (${MAX_OPTIONS})`);
     }
     setInputValue('');
   };
 
+  const applyServerError = (res: IError) => {
+    for (let prop in res) {
+      setError(res[prop]);
+    }
+  };
+
   const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     setError('');
+    if (options.length === 0) return;
+    const payload = {
+      token,
+      todoCardId,
+      userId: user.id,
+      fieldType: customFieldType.fieldType,
+      fieldName: customFieldType.selectedTitle,
+      selectedValue: '',
+      dropDownOptions: customFieldType.options || [],
+    };
+
+    createCustomFieldMut(payload)
+      .unwrap()
+      .then(() => {
+        handleCloseClickAway();
+      })
+      .catch((err) => {
+        applyServerError(err.data);
+      });
+
     console.log('DropDownInputField.tsx submit () =>');
   };
 
@@ -51,7 +82,7 @@ const DropDownInputField = ({
         </div>
       )}
       <div className="mb-4">
-        <h3 className="text-xl">{selectedTitle}</h3>
+        <h3 className="text-xl">{customFieldType.selectedTitle}</h3>
       </div>
       <div>
         <div className="flex justify-between">

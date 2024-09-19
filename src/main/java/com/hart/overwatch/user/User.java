@@ -13,6 +13,7 @@ import com.hart.overwatch.checklist.CheckList;
 import com.hart.overwatch.checklistitem.CheckListItem;
 import com.hart.overwatch.connection.Connection;
 import com.hart.overwatch.connectionpin.ConnectionPin;
+import com.hart.overwatch.customfield.CustomField;
 import com.hart.overwatch.favorite.Favorite;
 import com.hart.overwatch.label.Label;
 import com.hart.overwatch.location.Location;
@@ -200,6 +201,11 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<Activity> activities;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<CustomField> customFields;
+
+
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "setting_id", referencedColumnName = "id")
@@ -273,6 +279,10 @@ public class User implements UserDetails {
 
     public List<Activity> getActivities() {
         return activities;
+    }
+
+    public List<CustomField> getCustomFields() {
+        return customFields;
     }
 
     public Location getLocation() {
@@ -425,6 +435,10 @@ public class User implements UserDetails {
 
     public void setPinnedOwnerConnections(List<ConnectionPin> pinnedOwnerConnections) {
         this.pinnedOwnerConnections = pinnedOwnerConnections;
+    }
+
+    public void setCustomFields(List<CustomField> customFields) {
+        this.customFields = customFields;
     }
 
     public void setLabels(List<Label> labels) {
