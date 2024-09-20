@@ -1,5 +1,7 @@
 package com.hart.overwatch.customfield;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +10,11 @@ import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.advice.BadRequestException;
+import com.hart.overwatch.advice.ForbiddenException;
+import com.hart.overwatch.customfield.dto.CustomFieldDto;
 import com.hart.overwatch.customfield.request.CreateCustomFieldRequest;
+import com.hart.overwatch.dropdownoption.DropDownOption;
+import com.hart.overwatch.dropdownoption.dto.DropDownOptionDto;
 import com.hart.overwatch.todocard.TodoCard;
 import com.hart.overwatch.todocard.TodoCardService;
 
@@ -46,6 +52,47 @@ public class CustomFieldService {
             String fieldType) {
         return customFieldRepository.alreadyExistsByFieldNameNotType(todoCard, fieldName,
                 fieldType);
+    }
+
+
+    private DropDownOptionDto convertToChildDto(DropDownOption dropDownOption) {
+        DropDownOptionDto dropDownOptionDto = new DropDownOptionDto();
+
+        dropDownOptionDto.setId(dropDownOption.getId());
+        dropDownOptionDto.setCustomFieldId(dropDownOption.getCustomField().getId());
+        dropDownOptionDto.setOptionValue(dropDownOption.getOptionValue());
+
+        return dropDownOptionDto;
+    }
+
+    private CustomFieldDto convertToDto(CustomField customField) {
+        CustomFieldDto customFieldDto = new CustomFieldDto();
+        customFieldDto.setId(customField.getId());
+        customFieldDto.setUserId(customField.getUser().getId());
+        customFieldDto.setTodoCardId(customField.getTodoCard().getId());
+        customFieldDto.setFieldType(customField.getFieldType());
+        customFieldDto.setFieldName(customField.getFieldName());
+        customFieldDto.setSelectedValue(customField.getSelectedValue());
+
+        if (customFieldDto.getFieldType().toUpperCase().equals("CHECKBOX")
+                || customFieldDto.getFieldType().toUpperCase().equals("DROPDOWN")) {
+
+            customFieldDto.setDropDownOptions(customField.getDropDownOptions().stream()
+                    .map(this::convertToChildDto).collect(Collectors.toList()));
+        }
+        return customFieldDto;
+    }
+
+    public List<CustomFieldDto> getCustomFields(Long todoCardId) {
+        if (todoCardId == null) {
+            throw new BadRequestException("Missing todo card id parameter");
+        }
+
+        List<CustomField> customFields = customFieldRepository.findByTodoCardId(todoCardId);
+
+        return customFields.stream().collect(Collectors.groupingBy(CustomField::getFieldType))
+                .values().stream().flatMap(List::stream).map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
     public CustomField createCustomField(CreateCustomFieldRequest request) {
@@ -86,4 +133,13 @@ public class CustomFieldService {
         return customField;
     }
 
+    public void deleteCustomField(Long customFieldId) {
+        CustomField customField = getCustomFieldById(customFieldId);
+        User currentUser = userService.getCurrentlyLoggedInUser();
+
+        if (!customField.getUser().getId().equals(currentUser.getId())) {
+            throw new ForbiddenException("Cannot delete a custom field that is not yours");
+        }
+        customFieldRepository.delete(customField);
+    }
 }

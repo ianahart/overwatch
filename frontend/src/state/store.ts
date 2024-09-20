@@ -134,6 +134,7 @@ import { checkListsApi } from './apis/checkListApis';
 import { checkListItemsApi } from './apis/checkListItemsApi';
 import { activitiesApi } from './apis/activitiesApi';
 import { customFieldsApi } from './apis/customFieldsApi';
+import { dropDownOptionsApi } from './apis/dropDownOptionsApi';
 
 export const store = configureStore({
   reducer: {
@@ -181,6 +182,7 @@ export const store = configureStore({
     [checkListItemsApi.reducerPath]: checkListItemsApi.reducer,
     [activitiesApi.reducerPath]: activitiesApi.reducer,
     [customFieldsApi.reducerPath]: customFieldsApi.reducer,
+    [dropDownOptionsApi.reducerPath]: dropDownOptionsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -215,7 +217,8 @@ export const store = configureStore({
       .concat(checkListsApi.middleware)
       .concat(checkListItemsApi.middleware)
       .concat(activitiesApi.middleware)
-      .concat(customFieldsApi.middleware);
+      .concat(customFieldsApi.middleware)
+      .concat(dropDownOptionsApi.middleware);
   },
 });
 
@@ -467,7 +470,13 @@ export {
   useCreateActivityMutation,
 } from './apis/activitiesApi';
 
-export { useCreateCustomFieldMutation } from './apis/customFieldsApi';
+export {
+  useCreateCustomFieldMutation,
+  useFetchCustomFieldsQuery,
+  useDeleteCustomFieldMutation,
+} from './apis/customFieldsApi';
+
+export { useDeleteDropDownOptionMutation } from './apis/dropDownOptionsApi';
 
 export {
   testimonialsApi,
@@ -491,4 +500,5 @@ export {
   activeLabelsApi,
   activitiesApi,
   customFieldsApi,
+  dropDownOptionsApi,
 };

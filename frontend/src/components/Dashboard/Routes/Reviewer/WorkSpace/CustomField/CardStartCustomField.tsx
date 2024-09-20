@@ -1,8 +1,21 @@
 import { AiOutlinePlus } from 'react-icons/ai';
+import { useSelector } from 'react-redux';
+
 import CardHeaderCustomField from './CardHeaderCustomField';
+import {
+  TRootState,
+  useDeleteCustomFieldMutation,
+  useDeleteDropDownOptionMutation,
+  useFetchCustomFieldsQuery,
+} from '../../../../../../state/store';
+import { useEffect, useState } from 'react';
+import { ICustomField } from '../../../../../../interfaces';
+import Spinner from '../../../../../Shared/Spinner';
+import CustomFieldList from './CustomFieldList';
 
 export interface ICardStartCustomFieldProps {
   page: number;
+  todoCardId: number;
   navigateNextPage: () => void;
   navigatePrevPage: () => void;
   handleCloseClickAway: () => void;
@@ -10,10 +23,52 @@ export interface ICardStartCustomFieldProps {
 
 const CardStartCustomField = ({
   page,
+  todoCardId,
   navigatePrevPage,
   navigateNextPage,
   handleCloseClickAway,
 }: ICardStartCustomFieldProps) => {
+  const { token } = useSelector((store: TRootState) => store.user);
+  const { data, isLoading } = useFetchCustomFieldsQuery({ token, todoCardId });
+  const [deleteDropDownOptionMut] = useDeleteDropDownOptionMutation();
+  const [deleteCustomFieldMut] = useDeleteCustomFieldMutation();
+  const [customFields, setCustomFields] = useState<ICustomField[]>([]);
+
+  useEffect(() => {
+    if (data !== undefined) {
+      setCustomFields(data.data);
+    }
+  }, [data]);
+
+  const deleteCustomField = (id: number): void => {
+    deleteCustomFieldMut({ token, id })
+      .unwrap()
+      .then(() => {})
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const deleteDropDownOption = (id: number, customFieldId: number): void => {
+    deleteDropDownOptionMut({ token, id })
+      .unwrap()
+      .then(() => {
+        const updatedCustomFields = customFields.map((customField) => {
+          if (customField.id === customFieldId) {
+            return {
+              ...customField,
+              dropDownOptions: [...customField.dropDownOptions].filter((dropDownOption) => dropDownOption.id !== id),
+            };
+          }
+          return { ...customField };
+        });
+        setCustomFields(updatedCustomFields);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div className="min-h-[400px] flex flex-col">
       <CardHeaderCustomField
@@ -22,7 +77,22 @@ const CardStartCustomField = ({
         navigatePrevPage={navigatePrevPage}
       />
       <div className="flex flex-col flex-grow justify-between my-6">
-        <div>List of existing custom fields</div>
+        <div className="overflow-y-auto h-[275px] my-2">
+          {isLoading ? (
+            <div className="flex justify-center">
+              <Spinner message="Loading custom fields..." />
+            </div>
+          ) : (
+            <div>
+              <h3 className="font-bold">Your custom fields ({customFields.length})</h3>
+              <CustomFieldList
+                customFields={customFields}
+                deleteCustomField={deleteCustomField}
+                deleteDropDownOption={deleteDropDownOption}
+              />
+            </div>
+          )}
+        </div>
         <div>Suggested fields</div>
       </div>
       <div className="mt-auto">
