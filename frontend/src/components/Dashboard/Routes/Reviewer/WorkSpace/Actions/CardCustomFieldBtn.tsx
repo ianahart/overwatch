@@ -88,6 +88,7 @@ function CardCustomFieldBtn({ card }: ICardCustomFieldBtnProps) {
         return (
           <CardStartCustomField
             page={1}
+            todoCardId={card.id}
             handleCloseClickAway={handleCloseClickAway}
             navigatePrevPage={navigatePrevPage}
             navigateNextPage={navigateNextPage}

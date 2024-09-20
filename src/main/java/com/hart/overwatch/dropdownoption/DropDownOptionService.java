@@ -36,4 +36,10 @@ public class DropDownOptionService {
             dropDownOptionRepository.save(dropDownOption);
         }
     }
+
+    public void deleteDropDownOption(Long dropDownOptionId) {
+        DropDownOption dropDownOption = getDropDownOptionById(dropDownOptionId);
+
+        dropDownOptionRepository.delete(dropDownOption);
+    }
 }

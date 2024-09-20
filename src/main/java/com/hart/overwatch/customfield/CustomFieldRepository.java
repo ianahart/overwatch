@@ -1,5 +1,6 @@
 package com.hart.overwatch.customfield;
 
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -7,6 +8,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CustomFieldRepository extends JpaRepository<CustomField, Long> {
+
+    List<CustomField> findByTodoCardId(Long todoCardId);
 
     @Query(value = """
              SELECT EXISTS(SELECT 1 FROM CustomField cf

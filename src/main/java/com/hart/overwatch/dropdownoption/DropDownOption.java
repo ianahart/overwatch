@@ -40,6 +40,10 @@ public class DropDownOption {
     @JoinColumn(name = "custom_field_id", referencedColumnName = "id")
     private CustomField customField;
 
+    public DropDownOption() {
+
+    }
+
     public DropDownOption(Long id, LocalDateTime createdAt, LocalDateTime updatedAt,
             String optionValue) {
         this.id = id;

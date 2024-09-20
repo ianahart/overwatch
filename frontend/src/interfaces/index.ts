@@ -5,6 +5,22 @@ export interface IError {
   [key: string]: string;
 }
 
+export interface IDropDownOption {
+  id: number;
+  customFieldId: number;
+  optionValue: string;
+}
+
+export interface ICustomField {
+  id: number;
+  userId: number;
+  todoCardId: number;
+  fieldType: string;
+  fieldName: string;
+  selectedValue: string;
+  dropDownOptions: IDropDownOption[];
+}
+
 export interface ICustomFieldTypeOption {
   id: string;
   value: string;
@@ -1444,6 +1460,30 @@ export interface ICreateCustomFieldRequest {
 export interface ICreateCustomFieldResponse {
   message: string;
 }
+
+export interface IFetchCustomFieldsRequest {
+  token: string;
+  todoCardId: number;
+}
+
+export interface IFetchCustomFieldsResponse {
+  message: string;
+  data: ICustomField[];
+}
+
+export interface IDeleteCustomFieldRequest {
+  token: string;
+  id: number;
+}
+
+export interface IDeleteDropDownOptionRequest {
+  token: string;
+  id: number;
+}
+
+export interface IDeleteDropDownOptionResponse extends IBaseResponse {}
+
+export interface IDeleteCustomFieldResponse extends IBaseResponse {}
 
 export interface IDeleteActivityResponse extends IBaseResponse {}
 
