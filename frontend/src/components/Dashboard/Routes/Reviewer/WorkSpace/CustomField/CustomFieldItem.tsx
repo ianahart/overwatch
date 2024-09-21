@@ -11,9 +11,15 @@ export interface ICustomFieldItemProps {
   customField: ICustomField;
   deleteCustomField: (id: number) => void;
   deleteDropDownOption: (id: number, customFieldId: number) => void;
+  updateCustomFieldActive: (id: number, isActive: boolean) => void;
 }
 
-const CustomFieldItem = ({ customField, deleteCustomField, deleteDropDownOption }: ICustomFieldItemProps) => {
+const CustomFieldItem = ({
+  customField,
+  deleteCustomField,
+  deleteDropDownOption,
+  updateCustomFieldActive,
+}: ICustomFieldItemProps) => {
   const [isValueOpen, setIsValueOpen] = useState(false);
 
   const renderFieldIcon = (fieldType: string): JSX.Element => {
@@ -37,6 +43,11 @@ const CustomFieldItem = ({ customField, deleteCustomField, deleteDropDownOption 
 
   const handleOnDeleteDropDownOption = (id: number): void => {
     deleteDropDownOption(id, customField.id);
+  };
+
+  const handleOnUpdateCustomFieldActive = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const { checked } = e.target;
+    updateCustomFieldActive(customField.id, checked);
   };
 
   return (
@@ -75,6 +86,11 @@ const CustomFieldItem = ({ customField, deleteCustomField, deleteDropDownOption 
           )}
         </div>
         <div className="flex items-center justify-end flex-[1]">
+          {!isValueOpen && (
+            <div className="mx-2">
+              <input onChange={handleOnUpdateCustomFieldActive} checked={customField.isActive} type="checkbox" />
+            </div>
+          )}
           <div onClick={() => setIsValueOpen((prevState) => !prevState)} className="mr-2 cursor-pointer">
             {isValueOpen ? <BsChevronUp /> : <BsChevronDown />}
           </div>

@@ -3,7 +3,7 @@ import ClickAway from '../../../../../Shared/ClickAway';
 import CardStartCustomField from '../CustomField/CardStartCustomField';
 import CardCreateCustomField from '../CustomField/CardCreateCustomField';
 import { ICustomFieldType, ICustomFieldTypeOption, ITodoCard } from '../../../../../../interfaces';
-import CardCustomField from '../CustomField/CardCustomField';
+import CardCustomFieldForm from '../CustomField/CardCustomFieldForm';
 import { TCustomFieldValue } from '../../../../../../types';
 import { BiCustomize } from 'react-icons/bi';
 
@@ -106,7 +106,7 @@ function CardCustomFieldBtn({ card }: ICardCustomFieldBtnProps) {
         );
       case 3:
         return (
-          <CardCustomField
+          <CardCustomFieldForm
             page={3}
             customFieldType={customFieldType}
             deleteOption={deleteOption}

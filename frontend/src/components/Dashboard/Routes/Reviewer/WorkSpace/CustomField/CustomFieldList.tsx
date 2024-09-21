@@ -5,9 +5,15 @@ export interface ICustomFieldListProps {
   customFields: ICustomField[];
   deleteCustomField: (id: number) => void;
   deleteDropDownOption: (id: number, customFieldId: number) => void;
+  updateCustomFieldActive: (id: number, isActive: boolean) => void;
 }
 
-const CustomFieldList = ({ customFields, deleteCustomField, deleteDropDownOption }: ICustomFieldListProps) => {
+const CustomFieldList = ({
+  customFields,
+  deleteCustomField,
+  deleteDropDownOption,
+  updateCustomFieldActive,
+}: ICustomFieldListProps) => {
   return (
     <div>
       {customFields.map((customField) => {
@@ -17,6 +23,7 @@ const CustomFieldList = ({ customFields, deleteCustomField, deleteDropDownOption
             customField={customField}
             deleteCustomField={deleteCustomField}
             deleteDropDownOption={deleteDropDownOption}
+            updateCustomFieldActive={updateCustomFieldActive}
           />
         );
       })}

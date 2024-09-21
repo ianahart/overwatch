@@ -18,6 +18,7 @@ export interface ICustomField {
   fieldType: string;
   fieldName: string;
   selectedValue: string;
+  isActive: boolean;
   dropDownOptions: IDropDownOption[];
 }
 
@@ -1464,6 +1465,7 @@ export interface ICreateCustomFieldResponse {
 export interface IFetchCustomFieldsRequest {
   token: string;
   todoCardId: number;
+  isActive: string;
 }
 
 export interface IFetchCustomFieldsResponse {
@@ -1480,6 +1482,14 @@ export interface IDeleteDropDownOptionRequest {
   token: string;
   id: number;
 }
+
+export interface IUpdateCustomFieldRequest {
+  token: string;
+  id: number;
+  isActive: boolean;
+}
+
+export interface IUpdateCustomFieldResponse extends IBaseResponse {}
 
 export interface IDeleteDropDownOptionResponse extends IBaseResponse {}
 

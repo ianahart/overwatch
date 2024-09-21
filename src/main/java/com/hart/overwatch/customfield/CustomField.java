@@ -48,6 +48,9 @@ public class CustomField {
     @Column(name = "field_type", length = 50)
     private String fieldType;
 
+    @Column(name = "is_active")
+    private Boolean isActive;
+
     @ManyToOne()
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
@@ -66,17 +69,19 @@ public class CustomField {
     }
 
     public CustomField(Long id, LocalDateTime createdAt, LocalDateTime updatedAt, String fieldType,
-            String fieldName, String selectedValue) {
+            String fieldName, String selectedValue, Boolean isActive) {
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.fieldType = fieldType;
         this.fieldName = fieldName;
         this.selectedValue = selectedValue;
+        this.isActive = isActive;
     }
 
-    public CustomField(String fieldType, String fieldName, String selectedValue, User user,
-            TodoCard todoCard) {
+    public CustomField(Boolean isActive, String fieldType, String fieldName, String selectedValue,
+            User user, TodoCard todoCard) {
+        this.isActive = isActive;
         this.fieldType = fieldType;
         this.fieldName = fieldName;
         this.selectedValue = selectedValue;
@@ -102,6 +107,10 @@ public class CustomField {
 
     public List<DropDownOption> getDropDownOptions() {
         return dropDownOptions;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -154,5 +163,9 @@ public class CustomField {
 
     public void setSelectedValue(String selectedValue) {
         this.selectedValue = selectedValue;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
     }
 }

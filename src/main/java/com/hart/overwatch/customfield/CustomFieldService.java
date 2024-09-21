@@ -1,6 +1,7 @@
 package com.hart.overwatch.customfield;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
@@ -13,6 +14,7 @@ import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.customfield.dto.CustomFieldDto;
 import com.hart.overwatch.customfield.request.CreateCustomFieldRequest;
+import com.hart.overwatch.customfield.request.UpdateCustomFieldRequest;
 import com.hart.overwatch.dropdownoption.DropDownOption;
 import com.hart.overwatch.dropdownoption.dto.DropDownOptionDto;
 import com.hart.overwatch.todocard.TodoCard;
@@ -73,6 +75,7 @@ public class CustomFieldService {
         customFieldDto.setFieldType(customField.getFieldType());
         customFieldDto.setFieldName(customField.getFieldName());
         customFieldDto.setSelectedValue(customField.getSelectedValue());
+        customFieldDto.setIsActive(customField.getIsActive());
 
         if (customFieldDto.getFieldType().toUpperCase().equals("CHECKBOX")
                 || customFieldDto.getFieldType().toUpperCase().equals("DROPDOWN")) {
@@ -83,12 +86,20 @@ public class CustomFieldService {
         return customFieldDto;
     }
 
-    public List<CustomFieldDto> getCustomFields(Long todoCardId) {
+    public List<CustomFieldDto> getCustomFields(Long todoCardId, String isActiveParam) {
         if (todoCardId == null) {
             throw new BadRequestException("Missing todo card id parameter");
         }
 
-        List<CustomField> customFields = customFieldRepository.findByTodoCardId(todoCardId);
+        Boolean isActive = isActiveParam.equals("true") ? true : false;
+        List<CustomField> customFields = new ArrayList<>();
+
+        if (isActive) {
+            customFields = customFieldRepository.findByTodoCardIdAndIsActive(todoCardId, isActive);
+        } else {
+            customFields = customFieldRepository.findByTodoCardId(todoCardId);
+        }
+
 
         return customFields.stream().collect(Collectors.groupingBy(CustomField::getFieldType))
                 .values().stream().flatMap(List::stream).map(this::convertToDto)
@@ -122,6 +133,7 @@ public class CustomFieldService {
 
         CustomField customField = new CustomField();
 
+        customField.setIsActive(false);
         customField.setFieldType(fieldType);
         customField.setFieldName(fieldName);
         customField.setSelectedValue(selectedValue);
@@ -141,5 +153,18 @@ public class CustomFieldService {
             throw new ForbiddenException("Cannot delete a custom field that is not yours");
         }
         customFieldRepository.delete(customField);
+    }
+
+    public void updateCustomField(Long customFieldId, UpdateCustomFieldRequest request) {
+        CustomField customField = getCustomFieldById(customFieldId);
+        User currentUser = userService.getCurrentlyLoggedInUser();
+
+        if (!currentUser.getId().equals(customField.getUser().getId())) {
+            throw new ForbiddenException("Cannot update a custom field that is not yours");
+        }
+
+        customField.setIsActive(request.getIsActive());
+
+        customFieldRepository.save(customField);
     }
 }
