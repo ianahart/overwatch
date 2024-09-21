@@ -7,6 +7,7 @@ import {
   useDeleteCustomFieldMutation,
   useDeleteDropDownOptionMutation,
   useFetchCustomFieldsQuery,
+  useUpdateCustomFieldMutation,
 } from '../../../../../../state/store';
 import { useEffect, useState } from 'react';
 import { ICustomField } from '../../../../../../interfaces';
@@ -29,9 +30,11 @@ const CardStartCustomField = ({
   handleCloseClickAway,
 }: ICardStartCustomFieldProps) => {
   const { token } = useSelector((store: TRootState) => store.user);
-  const { data, isLoading } = useFetchCustomFieldsQuery({ token, todoCardId });
+  const isActive = 'false';
+  const { data, isLoading } = useFetchCustomFieldsQuery({ token, todoCardId, isActive });
   const [deleteDropDownOptionMut] = useDeleteDropDownOptionMutation();
   const [deleteCustomFieldMut] = useDeleteCustomFieldMutation();
+  const [updateCustomFieldMut] = useUpdateCustomFieldMutation();
   const [customFields, setCustomFields] = useState<ICustomField[]>([]);
 
   useEffect(() => {
@@ -69,6 +72,15 @@ const CardStartCustomField = ({
       });
   };
 
+  const updateCustomFieldActive = (id: number, isActive: boolean): void => {
+    updateCustomFieldMut({ token, id, isActive })
+      .unwrap()
+      .then(() => {})
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div className="min-h-[400px] flex flex-col">
       <CardHeaderCustomField
@@ -89,6 +101,7 @@ const CardStartCustomField = ({
                 customFields={customFields}
                 deleteCustomField={deleteCustomField}
                 deleteDropDownOption={deleteDropDownOption}
+                updateCustomFieldActive={updateCustomFieldActive}
               />
             </div>
           )}

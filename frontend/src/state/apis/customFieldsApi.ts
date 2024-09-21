@@ -6,6 +6,8 @@ import {
   IFetchCustomFieldsResponse,
   IDeleteCustomFieldRequest,
   IDeleteCustomFieldResponse,
+  IUpdateCustomFieldResponse,
+  IUpdateCustomFieldRequest,
 } from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
@@ -16,12 +18,12 @@ const customFieldsApi = createApi({
   endpoints(builder) {
     return {
       fetchCustomFields: builder.query<IFetchCustomFieldsResponse, IFetchCustomFieldsRequest>({
-        query: ({ token, todoCardId }) => {
+        query: ({ token, todoCardId, isActive }) => {
           if (todoCardId === 0 || todoCardId === null) {
             return '';
           }
           return {
-            url: `/todo-cards/${todoCardId}/custom-fields`,
+            url: `/todo-cards/${todoCardId}/custom-fields?isActive=${isActive}`,
             method: 'GET',
             headers: {
               Authorization: `Bearer ${token}`,
@@ -75,10 +77,29 @@ const customFieldsApi = createApi({
           { type: 'CustomField', id: 'LIST' },
         ],
       }),
+      updateCustomField: builder.mutation<IUpdateCustomFieldResponse, IUpdateCustomFieldRequest>({
+        query: ({ id, token, isActive }) => ({
+          url: `custom-fields/${id}`,
+          method: 'PATCH',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: { isActive },
+        }),
+        //@ts-ignore
+        invalidatesTags: (_, error, { id }) => [
+          { type: 'CustomField', id: id },
+          { type: 'CustomField', id: 'LIST' },
+        ],
+      }),
     };
   },
 });
 
-export const { useCreateCustomFieldMutation, useFetchCustomFieldsQuery, useDeleteCustomFieldMutation } =
-  customFieldsApi;
+export const {
+  useUpdateCustomFieldMutation,
+  useCreateCustomFieldMutation,
+  useFetchCustomFieldsQuery,
+  useDeleteCustomFieldMutation,
+} = customFieldsApi;
 export { customFieldsApi };

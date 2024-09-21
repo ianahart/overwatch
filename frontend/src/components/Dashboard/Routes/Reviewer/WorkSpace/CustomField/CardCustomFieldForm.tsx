@@ -5,7 +5,7 @@ import CheckBoxInputField from './CheckBoxInputField';
 import DropDownInputField from './DropDownInputField';
 import NumberTextInputField from './NumberTextInputField';
 
-export interface ICardCustomFieldProps {
+export interface ICardCustomFieldFormProps {
   todoCardId: number;
   customFieldType: ICustomFieldType;
   page: number;
@@ -15,7 +15,7 @@ export interface ICardCustomFieldProps {
   deleteOption: (id: string) => void;
 }
 
-const CardCustomField = ({
+const CardCustomFieldForm = ({
   todoCardId,
   customFieldType,
   page,
@@ -23,7 +23,7 @@ const CardCustomField = ({
   handleCloseClickAway,
   addCustomFieldValue,
   deleteOption,
-}: ICardCustomFieldProps) => {
+}: ICardCustomFieldFormProps) => {
   const renderCustomField = (): JSX.Element => {
     switch (customFieldType.fieldType) {
       case 'NUMBER':
@@ -83,4 +83,4 @@ const CardCustomField = ({
   );
 };
 
-export default CardCustomField;
+export default CardCustomFieldForm;

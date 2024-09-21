@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CustomFieldRepository extends JpaRepository<CustomField, Long> {
 
+    List<CustomField> findByTodoCardIdAndIsActive(Long todoCardId, Boolean isActive);
+
     List<CustomField> findByTodoCardId(Long todoCardId);
 
     @Query(value = """

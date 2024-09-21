@@ -471,6 +471,7 @@ export {
 } from './apis/activitiesApi';
 
 export {
+  useUpdateCustomFieldMutation,
   useCreateCustomFieldMutation,
   useFetchCustomFieldsQuery,
   useDeleteCustomFieldMutation,
