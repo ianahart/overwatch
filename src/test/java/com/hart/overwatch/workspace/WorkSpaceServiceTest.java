@@ -8,8 +8,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 import org.assertj.core.api.Assertions;
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Safelist;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,8 +15,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
@@ -253,6 +253,22 @@ public class WorkSpaceServiceTest {
         verify(workSpaceRepository, times(1)).delete(workSpace);
     }
 
+    @Test
+    public void WorkSpaceService_GetLatestWorkSpace_ReturnWorkSpaceDto() {
+        Pageable pageable = PageRequest.of(0, 1, Sort.by("createdAt").descending());
+        WorkSpaceDto workSpaceDto = new WorkSpaceDto();
+        workSpaceDto.setId(1L);
+        Page<WorkSpaceDto> pageResult =
+                new PageImpl<>(Collections.singletonList(workSpaceDto), pageable, 1);
+
+        when(workSpaceRepository.getLatestWorkSpaceByUserId(pageable, user.getId()))
+                .thenReturn(pageResult);
+
+        WorkSpaceDto returnedWorkSpaceDto = workSpaceService.getLatestWorkSpace(user.getId());
+
+        Assertions.assertThat(returnedWorkSpaceDto).isNotNull();
+        Assertions.assertThat(returnedWorkSpaceDto.getId()).isEqualTo(workSpace.getId());
+    }
 }
 
 
