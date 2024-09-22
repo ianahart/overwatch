@@ -224,7 +224,33 @@ public class WorkSpaceServiceTest {
         Assertions.assertThat(workSpaceDto).isNotNull();
 
         verify(workSpaceRepository, times(1)).save(any(WorkSpace.class));
+    }
 
+    @Test
+    public void WorkSpaceService_DeleteWorkSpace_ThrowForbiddenException() {
+        User forbiddenUser = new User();
+        forbiddenUser.setId(999L);
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(forbiddenUser);
+        when(workSpaceRepository.findById(workSpace.getId())).thenReturn(Optional.of(workSpace));
+
+        Assertions.assertThatThrownBy(() -> {
+            workSpaceService.deleteWorkSpace(workSpace.getId());
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("Cannot delete a workspace that is not yours");
+
+        verify(workSpaceRepository, times(0)).delete(workSpace);
+    }
+
+    @Test
+    public void WorkSpaceService_DeleteWorkSpace_ReturnNothing() {
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+        when(workSpaceRepository.findById(workSpace.getId())).thenReturn(Optional.of(workSpace));
+
+        doNothing().when(workSpaceRepository).delete(workSpace);
+
+        workSpaceService.deleteWorkSpace(workSpace.getId());
+
+        verify(workSpaceRepository, times(1)).delete(workSpace);
     }
 
 }
