@@ -121,7 +121,7 @@ public class WorkSpaceService {
         User currentUser = userService.getCurrentlyLoggedInUser();
         WorkSpace workSpace = getWorkSpaceById(workSpaceId);
 
-        if (currentUser.getId() != workSpace.getUser().getId()) {
+        if (!currentUser.getId().equals(workSpace.getUser().getId())) {
             throw new ForbiddenException("Cannot delete a workspace that is not yours");
         }
 
