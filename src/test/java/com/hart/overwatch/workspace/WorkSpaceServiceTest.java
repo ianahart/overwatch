@@ -208,6 +208,24 @@ public class WorkSpaceServiceTest {
                 .hasMessage("Cannot edit another user's workspace title");
     }
 
+    @Test
+    public void WorkSpaceService_UpdateWorkSpace_ReturnWorkSpaceDto() {
+        when(workSpaceRepository.findById(workSpace.getId())).thenReturn(Optional.of(workSpace));
+
+        UpdateWorkSpaceRequest request = new UpdateWorkSpaceRequest();
+        request.setTitle("main updated");
+        request.setUserId(user.getId());
+        request.setBackgroundColor("#0000FF");
+
+        when(workSpaceRepository.save(any(WorkSpace.class))).thenReturn(workSpace);
+
+        WorkSpaceDto workSpaceDto = workSpaceService.updateWorkSpace(request, workSpace.getId());
+
+        Assertions.assertThat(workSpaceDto).isNotNull();
+
+        verify(workSpaceRepository, times(1)).save(any(WorkSpace.class));
+
+    }
 
 }
 
