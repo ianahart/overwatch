@@ -97,6 +97,19 @@ public class TodoListRepositoryTest {
 
         Assertions.assertThat(count).isEqualTo(1);
     }
+
+    @Test
+    public void TodoListRepository_FindTodoListByWorkSpaceAndUserAndTitle_ReturnBoolean() {
+        Long workSpaceId = workSpace.getId();
+        String title = "todo list title";
+        Long userId = user.getId();
+
+
+        boolean exists = todoListRepository.findTodoListByWorkSpaceAndUserAndTitle(workSpaceId,
+                userId, title);
+
+        Assertions.assertThat(exists).isTrue();
+    }
 }
 
 
