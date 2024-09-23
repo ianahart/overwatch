@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import java.util.Optional;
 import java.util.Collections;
 import java.util.List;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,8 +27,11 @@ import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
+import com.hart.overwatch.todocard.TodoCard;
 import com.hart.overwatch.todocard.TodoCardRepository;
 import com.hart.overwatch.todocard.TodoCardService;
+import com.hart.overwatch.todocard.dto.TodoCardDto;
+import com.hart.overwatch.todolist.dto.TodoListDto;
 import com.hart.overwatch.todolist.request.CreateTodoListRequest;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
@@ -69,6 +73,8 @@ public class TodoListServiceTest {
 
     private TodoList todoList;
 
+    private List<TodoCard> cards;
+
 
     @BeforeEach
     void setUp() {
@@ -84,6 +90,12 @@ public class TodoListServiceTest {
         todoList = new TodoList(user, workSpace, "todo list title", 0);
 
         todoList.setId(1L);
+
+        TodoCard todoCard = new TodoCard();
+        todoCard.setId(1L);
+        cards = List.of(todoCard);
+
+        todoList.setTodoCards(cards);
     }
 
     @Test
@@ -141,6 +153,39 @@ public class TodoListServiceTest {
                 String.format("You already have a list %s in this workspace", request.getTitle()));
     }
 
+    private TodoCardDto converChildToDto(TodoCard todoCard) {
+        TodoCardDto todoCardDto = new TodoCardDto();
+        todoCardDto.setId(todoCard.getId());
+
+        return todoCardDto;
+    }
+
+    @Test
+    public void TodoListService_CreateTodoList_ReturnTodoListDto() {
+        CreateTodoListRequest request = new CreateTodoListRequest();
+        request.setTitle("todo list title");
+        request.setUserId(user.getId());
+        request.setIndex(1);
+
+        when(todoListRepository.countTodoListsInWorkSpace(workSpace.getId(), user.getId()))
+                .thenReturn(1L);
+        when(todoListRepository.findTodoListByWorkSpaceAndUserAndTitle(workSpace.getId(),
+                user.getId(), request.getTitle())).thenReturn(false);
+        when(userService.getUserById(request.getUserId())).thenReturn(user);
+        when(workSpaceService.getWorkSpaceById(workSpace.getId())).thenReturn(workSpace);
+
+        when(todoListRepository.save(any(TodoList.class))).thenAnswer(invocation -> {
+            TodoList savedTodoList = invocation.getArgument(0);
+            savedTodoList.setId(1L);
+            return savedTodoList;
+        });
+
+        TodoListDto returnedTodoListDto =
+                todoListService.createTodoList(request, workSpace.getId());
+
+        Assertions.assertThat(returnedTodoListDto).isNotNull();
+        Assertions.assertThat(returnedTodoListDto.getId()).isEqualTo(todoList.getId());
+    }
 }
 
 
