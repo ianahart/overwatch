@@ -108,7 +108,7 @@ public class TodoListServiceTest {
     }
 
     @Test
-    public void TodoListService_CreateTodoList_ReturnTodoListDto() {
+    public void TodoListService_CreateTodoList_ThrowBadRequestExceptionMax() {
         CreateTodoListRequest request = new CreateTodoListRequest(null, null, null);
         request.setTitle("todo list title");
         request.setUserId(user.getId());
@@ -121,6 +121,24 @@ public class TodoListServiceTest {
             todoListService.createTodoList(request, workSpace.getId());
         }).isInstanceOf(BadRequestException.class)
                 .hasMessage("You have reached the maximum amount of lists for this workspace");
+    }
+
+    @Test
+    public void TodoListService_CreateTodoList_ThrowBadRequestExceptionExists() {
+        CreateTodoListRequest request = new CreateTodoListRequest();
+        request.setTitle("todo list title");
+        request.setUserId(user.getId());
+        request.setIndex(0);
+
+        when(todoListRepository.countTodoListsInWorkSpace(workSpace.getId(), user.getId()))
+                .thenReturn(1L);
+        when(todoListRepository.findTodoListByWorkSpaceAndUserAndTitle(workSpace.getId(),
+                user.getId(), request.getTitle())).thenReturn(true);
+
+        Assertions.assertThatThrownBy(() -> {
+            todoListService.createTodoList(request, workSpace.getId());
+        }).isInstanceOf(BadRequestException.class).hasMessage(
+                String.format("You already have a list %s in this workspace", request.getTitle()));
     }
 
 }
