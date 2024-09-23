@@ -18,6 +18,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
+import com.hart.overwatch.todolist.dto.TodoListDto;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserRepository;
@@ -76,6 +77,18 @@ public class TodoListRepositoryTest {
         userRepository.deleteAll();
         entityManager.flush();
         entityManager.clear();
+    }
+
+    @Test
+    public void TodoListRepository_GetTodoListsByWorkSpace_ReturnPageOfTodoListDto() {
+        Pageable pageable = PageRequest.of(0, 1);
+        Long workSpaceId = workSpace.getId();
+
+        Page<TodoListDto> result =
+                todoListRepository.getTodoListsByWorkSpace(pageable, workSpaceId);
+
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getContent().size()).isEqualTo(1);
     }
 }
 
