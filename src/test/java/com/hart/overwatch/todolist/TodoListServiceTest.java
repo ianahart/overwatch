@@ -28,6 +28,7 @@ import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.todocard.TodoCardRepository;
 import com.hart.overwatch.todocard.TodoCardService;
+import com.hart.overwatch.todolist.request.CreateTodoListRequest;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserRepository;
@@ -106,6 +107,21 @@ public class TodoListServiceTest {
         Assertions.assertThat(returnedTodoList.getId()).isEqualTo(todoList.getId());
     }
 
+    @Test
+    public void TodoListService_CreateTodoList_ReturnTodoListDto() {
+        CreateTodoListRequest request = new CreateTodoListRequest(null, null, null);
+        request.setTitle("todo list title");
+        request.setUserId(user.getId());
+        request.setIndex(0);
+
+        when(todoListRepository.countTodoListsInWorkSpace(workSpace.getId(), user.getId()))
+                .thenReturn(11L);
+
+        Assertions.assertThatThrownBy(() -> {
+            todoListService.createTodoList(request, workSpace.getId());
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage("You have reached the maximum amount of lists for this workspace");
+    }
 
 }
 
