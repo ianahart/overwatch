@@ -90,6 +90,13 @@ public class TodoListRepositoryTest {
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result.getContent().size()).isEqualTo(1);
     }
+
+    @Test
+    public void TodoListRepository_CountTodoListsInWorkSpace_ReturnCountLong() {
+        long count = todoListRepository.countTodoListsInWorkSpace(workSpace.getId(), user.getId());
+
+        Assertions.assertThat(count).isEqualTo(1);
+    }
 }
 
 
