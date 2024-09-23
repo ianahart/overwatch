@@ -5,9 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import java.util.Optional;
 import java.util.Collections;
-import java.util.List;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,15 +14,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import com.hart.overwatch.activity.dto.ActivityDto;
 import com.hart.overwatch.activity.request.CreateActivityRequest;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
-import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.advice.RateLimitException;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
@@ -159,31 +154,31 @@ public class ActivityServiceTest {
                 .isEqualTo(expectedPaginationDto.getTotalElements());
     }
 
-    // @Test
-    // public void WorkSpaceService_GetWorkSpaces_ReturnPaginationDtoOfWorkSpaceDto() {
-    // int page = 0;
-    // int pageSize = 3;
-    // String direction = "next";
-    // Pageable pageable = Pageable.ofSize(pageSize);
-    // WorkSpaceDto workSpaceDto = new WorkSpaceDto();
-    // Page<WorkSpaceDto> pageResult =
-    // new PageImpl<>(Collections.singletonList(workSpaceDto), pageable, 1);
-    // PaginationDto<WorkSpaceDto> expectedPaginationDto =
-    // new PaginationDto<>(pageResult.getContent(), pageResult.getNumber(), pageSize,
-    // pageResult.getTotalPages(), direction, pageResult.getTotalElements());
-    //
-    // when(paginationService.getPageable(page, pageSize, direction)).thenReturn(pageable);
-    // when(workSpaceRepository.getWorkSpacesByUserId(pageable, user.getId()))
-    // .thenReturn(pageResult);
-    // PaginationDto<WorkSpaceDto> actualPaginationDto =
-    // workSpaceService.getWorkSpaces(user.getId(), page, pageSize, direction);
-    //
-    // Assertions.assertThat(actualPaginationDto.getItems())
-    // .isEqualTo(expectedPaginationDto.getItems());
-    // Assertions.assertThat(actualPaginationDto.getTotalElements())
-    // .isEqualTo(expectedPaginationDto.getTotalElements());
-    // }
-    //
+    public void ActivityService_DeleteActivity_ThrowForbiddenException() {
+        User forbiddenUser = new User();
+        forbiddenUser.setId(2L);
+
+        when(activityRepository.findById(activity.getId())).thenReturn(Optional.of(activity));
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(forbiddenUser);
+
+        Assertions.assertThatThrownBy(() -> {
+            activityService.deleteActivity(activity.getId());
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("Cannot delete an activity that is not yours");
+    }
+
+    public void ActivityService_DeleteActivity_ReturnNothing() {
+        when(activityRepository.findById(activity.getId())).thenReturn(Optional.of(activity));
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+        when(activityRepository.countActivitiesByUserIdAndCreatedAtAfter(anyLong(), any(LocalDateTime.class))).thenReturn(1);
+
+        doNothing().when(activityRepository).delete(activity);
+
+        activityService.deleteActivity(activity.getId());
+
+        verify(activityRepository, times(1)).delete(activity);
+    }
+
 }
 
 

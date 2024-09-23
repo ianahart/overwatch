@@ -105,7 +105,7 @@ public class ActivityService {
         Activity activity = getActivityById(activityId);
         User user = userService.getCurrentlyLoggedInUser();
 
-        if (activity.getUser().getId() != user.getId()) {
+        if (!activity.getUser().getId().equals(user.getId())) {
             throw new ForbiddenException("Cannot delete an activity that is not yours");
         }
 
