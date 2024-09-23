@@ -24,7 +24,6 @@ import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserRepository;
 import com.hart.overwatch.workspace.WorkSpace;
 import com.hart.overwatch.workspace.WorkSpaceRepository;
-import com.hart.overwatch.workspace.dto.WorkSpaceDto;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -103,7 +102,6 @@ public class TodoListRepositoryTest {
         Long workSpaceId = workSpace.getId();
         String title = "todo list title";
         Long userId = user.getId();
-
 
         boolean exists = todoListRepository.findTodoListByWorkSpaceAndUserAndTitle(workSpaceId,
                 userId, title);
