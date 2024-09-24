@@ -360,4 +360,16 @@ public class TodoListServiceTest {
         verify(todoListRepository, times(1)).save(any(TodoList.class));
     }
 
+    @Test
+    public void TodoListService_DeleteTodoList_ThrowForbiddenException() {
+        when(todoListRepository.findById(todoList.getId())).thenReturn(Optional.of(todoList));
+        User forbiddenUser = new User();
+        forbiddenUser.setId(999L);
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(forbiddenUser);
+
+        Assertions.assertThatThrownBy(() -> {
+            todoListService.deleteTodoList(todoList.getId());
+        }).isInstanceOf(ForbiddenException.class).hasMessage("Cannot delete a todo list that is not yours");
+    }
+
 }
