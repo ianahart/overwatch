@@ -372,4 +372,28 @@ public class TodoListServiceTest {
         }).isInstanceOf(ForbiddenException.class).hasMessage("Cannot delete a todo list that is not yours");
     }
 
+
+    private TodoCard createTodoCard(Long id) {
+        TodoCard todoCard = new TodoCard();
+        todoCard.setId(id);
+
+        return todoCard;
+    }
+
+    @Test
+    public void TodoListService_DeleteTodoList_ReturnNothing() {
+        todoList.setTodoCards(List.of(createTodoCard(1L), createTodoCard(2L)));
+
+        when(todoListRepository.findById(todoList.getId())).thenReturn(Optional.of(todoList));
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+
+        doNothing().when(todoListRepository).delete(todoList);
+
+        todoListService.deleteTodoList(todoList.getId());
+
+        verify(todoListRepository, times(1)).delete(todoList);
+        verify(todoCardRepository, times(1)).delete(todoList.getTodoCards().get(0));
+        verify(todoCardRepository, times(1)).delete(todoList.getTodoCards().get(1));
+    }
+
 }
