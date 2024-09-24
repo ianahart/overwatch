@@ -320,7 +320,7 @@ public class TodoListServiceTest {
     }
 
     @Test
-    public void TodoListService_UpdateTodoList_ReturnTodoListDto() {
+    public void TodoListService_UpdateTodoList_ThrowForbiddenException() {
         UpdateTodoListRequest request =
                 new UpdateTodoListRequest(1, "updated title", workSpace.getId());
         User forbiddenUser = new User();
@@ -336,6 +336,28 @@ public class TodoListServiceTest {
         }).isInstanceOf(ForbiddenException.class)
                 .hasMessage("Cannot edit a todo list that is not yours");
 
+    }
+
+    @Test
+    public void TodoListService_UpdateTodoList_ReturnTodoListDto() {
+        UpdateTodoListRequest request =
+                new UpdateTodoListRequest(1, "updated title", workSpace.getId());
+
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+        when(todoListRepository.findTodoListByWorkSpaceAndUserAndTitle(workSpace.getId(),
+                user.getId(), request.getTitle())).thenReturn(false);
+        when(todoListRepository.findById(todoList.getId())).thenReturn(Optional.of(todoList));
+
+        when(todoListRepository.save(any(TodoList.class))).thenReturn(todoList);
+        when(todoCardService.retrieveTodoCards(todoList.getId()))
+                .thenReturn(List.of(new TodoCardDto()));
+        TodoListDto todoListDto = todoListService.updateTodoList(todoList.getId(), request);
+
+        Assertions.assertThat(todoListDto).isNotNull();
+        Assertions.assertThat(todoListDto.getTitle()).isEqualTo(request.getTitle());
+        Assertions.assertThat(todoListDto.getCards().size()).isEqualTo(1);
+
+        verify(todoListRepository, times(1)).save(any(TodoList.class));
     }
 
 }
