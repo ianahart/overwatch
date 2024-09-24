@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import java.util.Optional;
 import java.util.Collections;
 import java.util.List;
+import java.util.Arrays;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -266,5 +267,57 @@ public class TodoListServiceTest {
         return todoListDto;
     }
 
+
+    @Test
+    public void TodoListService_ReorderTodoLists_ReturnListOfTodoListDto() {
+        Long workSpaceId = 1L;
+
+        TodoListDto todoListDto1 = new TodoListDto(1L, 1L, workSpaceId, "List 1", 0, null);
+        TodoListDto todoListDto2 = new TodoListDto(2L, 1L, workSpaceId, "List 2", 1, null);
+        TodoListDto todoListDto3 = new TodoListDto(3L, 1L, workSpaceId, "List 3", 2, null);
+
+        List<TodoListDto> todoListDtos = Arrays.asList(todoListDto2, todoListDto3, todoListDto1);
+
+        TodoList todoList1 = new TodoList();
+        todoList1.setId(1L);
+        todoList1.setIndex(0);
+
+        TodoList todoList2 = new TodoList();
+        todoList2.setId(2L);
+        todoList2.setIndex(1);
+
+        TodoList todoList3 = new TodoList();
+        todoList3.setId(3L);
+        todoList3.setIndex(2);
+
+        when(todoListRepository.findById(1L)).thenReturn(Optional.of(todoList1));
+        when(todoListRepository.findById(2L)).thenReturn(Optional.of(todoList2));
+        when(todoListRepository.findById(3L)).thenReturn(Optional.of(todoList3));
+
+        when(todoListRepository.saveAll(anyList()))
+                .thenReturn(Arrays.asList(todoList1, todoList2, todoList3));
+
+        when(workSpaceService.workSpaceExists(workSpaceId)).thenReturn(true);
+
+        when(todoListRepository.getTodoListsByWorkSpace(any(PageRequest.class), eq(workSpaceId)))
+                .thenReturn(new PageImpl<>(todoListDtos));
+
+        when(todoCardService.retrieveTodoCards(anyLong())).thenReturn(Arrays.asList());
+
+        List<TodoListDto> reorderedTodoLists =
+                todoListService.reorderTodoLists(workSpaceId, todoListDtos);
+
+        assertNotNull(reorderedTodoLists);
+        assertEquals(3, reorderedTodoLists.size());
+
+        assertEquals(0, reorderedTodoLists.get(0).getIndex());
+        assertEquals(1, reorderedTodoLists.get(1).getIndex());
+        assertEquals(2, reorderedTodoLists.get(2).getIndex());
+
+        verify(todoListRepository, times(1)).saveAll(anyList());
+        verify(todoListRepository, times(3)).findById(anyLong());
+
+
+    }
 
 }
