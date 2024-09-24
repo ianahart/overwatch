@@ -1,14 +1,12 @@
 package com.hart.overwatch.todolist;
 
 import java.util.List;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import com.hart.overwatch.config.JwtService;
-import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.todocard.TodoCard;
@@ -21,10 +19,6 @@ import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.workspace.WorkSpace;
-import com.hart.overwatch.workspace.dto.CreateWorkSpaceDto;
-import com.hart.overwatch.workspace.dto.WorkSpaceDto;
-import com.hart.overwatch.workspace.request.CreateWorkSpaceRequest;
-import com.hart.overwatch.workspace.request.UpdateWorkSpaceRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,15 +27,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.data.domain.PageImpl;
 
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -49,11 +40,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import java.util.Collections;
 import org.hamcrest.CoreMatchers;
 
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Safelist;
 
 @ActiveProfiles("test")
 @WebMvcTest(controllers = TodoListController.class)
@@ -238,48 +226,16 @@ public class TodoListControllerTest {
     }
 
 
-    // @Test
-    // public void WorkSpaceController_GetWorkSpaces_ReturnGetAllWorkSpaceResponse() throws
-    // Exception {
-    // Long userId = user.getId();
-    // int page = 0;
-    // int pageSize = 3;
-    // String direction = "next";
-    // Pageable pageable = Pageable.ofSize(pageSize);
-    // WorkSpaceDto reviewDto = new WorkSpaceDto();
-    // Page<WorkSpaceDto> pageResult =
-    // new PageImpl<>(Collections.singletonList(reviewDto), pageable, 1);
-    // PaginationDto<WorkSpaceDto> paginationDto =
-    // new PaginationDto<>(pageResult.getContent(), pageResult.getNumber(), pageSize,
-    // pageResult.getTotalPages(), direction, pageResult.getTotalElements());
-    //
-    //
-    // when(workSpaceService.getWorkSpaces(userId, page, pageSize, direction))
-    // .thenReturn(paginationDto);
-    //
-    // ResultActions response =
-    // mockMvc.perform(get("/api/v1/workspaces").contentType(MediaType.APPLICATION_JSON)
-    // .param("userId", String.valueOf(userId)).param("page", String.valueOf(page))
-    // .param("pageSize", String.valueOf(pageSize)).param("direction", direction));
-    //
-    // response.andExpect(MockMvcResultMatchers.status().isOk())
-    // .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
-    // .andExpect(MockMvcResultMatchers.jsonPath("$.data.items[0]").exists())
-    // .andExpect(MockMvcResultMatchers.jsonPath("$.data.items[0].id",
-    // CoreMatchers.is(reviewDto.getId())))
-    // .andExpect(MockMvcResultMatchers.jsonPath("$.data.page",
-    // CoreMatchers.is(pageResult.getNumber())))
-    // .andExpect(MockMvcResultMatchers.jsonPath("$.data.pageSize",
-    // CoreMatchers.is(pageSize)))
-    // .andExpect(MockMvcResultMatchers.jsonPath("$.data.totalPages",
-    // CoreMatchers.is(pageResult.getTotalPages())))
-    // .andExpect(MockMvcResultMatchers.jsonPath("$.data.direction",
-    // CoreMatchers.is(direction)))
-    // .andExpect(MockMvcResultMatchers.jsonPath("$.data.totalElements",
-    // CoreMatchers.is((int) pageResult.getTotalElements())));
-    // }
-    //
+    @Test
+    public void TodoListController_DeleteTodoList_ReturnDeleteTodoListResponse() throws Exception {
 
+        doNothing().when(todoListService).deleteTodoList(todoList.getId());
 
+        ResultActions response =
+                mockMvc.perform(delete(String.format("/api/v1/todo-lists/%d", todoList.getId())));
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+
+    }
 }
 
