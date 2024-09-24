@@ -14,6 +14,7 @@ import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.todocard.TodoCard;
 import com.hart.overwatch.todocard.dto.TodoCardDto;
 import com.hart.overwatch.todolist.dto.TodoListDto;
+import com.hart.overwatch.todolist.request.CreateTodoListRequest;
 import com.hart.overwatch.todolist.request.ReorderTodoListRequest;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.user.Role;
@@ -179,6 +180,23 @@ public class TodoListControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].id",
                         CoreMatchers.is(todoListDtos.get(0).getId().intValue())));
+    }
+
+    @Test
+    public void TodoListController_CreateTodoList_ReturnCreateTodoListResponse() throws Exception {
+        CreateTodoListRequest request =
+                new CreateTodoListRequest("new todo list title", user.getId(), 1);
+        TodoListDto todoListDto = createTodoListDtos(todoList).get(0);
+        when(todoListService.createTodoList(any(CreateTodoListRequest.class), anyLong()))
+                .thenReturn(todoListDto);
+
+        ResultActions response = mockMvc
+                .perform(post(String.format("/api/v1/workspaces/%d/todo-lists", workSpace.getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 
 
