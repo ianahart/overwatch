@@ -145,7 +145,7 @@ public class TodoListService {
 
         TodoList todoList = getTodoListById(todoListId);
 
-        if (currentUser.getId() != todoList.getUser().getId()) {
+        if (!currentUser.getId().equals(todoList.getUser().getId())) {
             throw new ForbiddenException("Cannot edit a todo list that is not yours");
         }
 
@@ -169,7 +169,7 @@ public class TodoListService {
         TodoList todoList = getTodoListById(todoListId);
         User currentUser = userService.getCurrentlyLoggedInUser();
 
-        if (todoList.getUser().getId() != currentUser.getId()) {
+        if (!todoList.getUser().getId().equals(currentUser.getId())) {
             throw new ForbiddenException("Cannot delete a todo list that is not yours");
         }
 

@@ -35,6 +35,7 @@ import com.hart.overwatch.todocard.TodoCardService;
 import com.hart.overwatch.todocard.dto.TodoCardDto;
 import com.hart.overwatch.todolist.dto.TodoListDto;
 import com.hart.overwatch.todolist.request.CreateTodoListRequest;
+import com.hart.overwatch.todolist.request.UpdateTodoListRequest;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserRepository;
@@ -316,7 +317,24 @@ public class TodoListServiceTest {
 
         verify(todoListRepository, times(1)).saveAll(anyList());
         verify(todoListRepository, times(3)).findById(anyLong());
+    }
 
+    @Test
+    public void TodoListService_UpdateTodoList_ReturnTodoListDto() {
+        UpdateTodoListRequest request =
+                new UpdateTodoListRequest(1, "updated title", workSpace.getId());
+        User forbiddenUser = new User();
+        forbiddenUser.setId(999L);
+
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(forbiddenUser);
+        when(todoListRepository.findTodoListByWorkSpaceAndUserAndTitle(workSpace.getId(),
+                forbiddenUser.getId(), "updated title")).thenReturn(false);
+        when(todoListRepository.findById(todoList.getId())).thenReturn(Optional.of(todoList));
+
+        Assertions.assertThatThrownBy(() -> {
+            todoListService.updateTodoList(todoList.getId(), request);
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("Cannot edit a todo list that is not yours");
 
     }
 
