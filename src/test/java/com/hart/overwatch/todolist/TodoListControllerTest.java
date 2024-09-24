@@ -199,6 +199,22 @@ public class TodoListControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 
+    @Test
+    public void TodoListController_GetTodoLists_ReturnGetTodoListsResponse() throws Exception {
+        List<TodoListDto> todoListDtos = createTodoListDtos(todoList);
+
+        when(todoListService.getTodoListsByWorkSpace(workSpace.getId())).thenReturn(todoListDtos);
+
+        ResultActions response = mockMvc
+                .perform(get(String.format("/api/v1/workspaces/%d/todo-lists", workSpace.getId())));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].id",
+                        CoreMatchers.is(todoListDtos.get(0).getId().intValue())));
+
+    }
+
 
     // @Test
     // public void WorkSpaceController_GetWorkSpaces_ReturnGetAllWorkSpaceResponse() throws
