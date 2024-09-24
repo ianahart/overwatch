@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.Collections;
 import java.util.List;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -153,13 +154,6 @@ public class TodoListServiceTest {
                 String.format("You already have a list %s in this workspace", request.getTitle()));
     }
 
-    private TodoCardDto converChildToDto(TodoCard todoCard) {
-        TodoCardDto todoCardDto = new TodoCardDto();
-        todoCardDto.setId(todoCard.getId());
-
-        return todoCardDto;
-    }
-
     @Test
     public void TodoListService_CreateTodoList_ReturnTodoListDto() {
         CreateTodoListRequest request = new CreateTodoListRequest();
@@ -186,6 +180,91 @@ public class TodoListServiceTest {
         Assertions.assertThat(returnedTodoListDto).isNotNull();
         Assertions.assertThat(returnedTodoListDto.getId()).isEqualTo(todoList.getId());
     }
+
+    @Test
+    public void TodoListService_GetTodoListsByWorkSpace_ThrowNotFoundException() {
+        Long nonExistentWorkSpaceId = 999L;
+        when(workSpaceService.workSpaceExists(nonExistentWorkSpaceId)).thenReturn(false);
+
+        Assertions.assertThatThrownBy(() -> {
+            todoListService.getTodoListsByWorkSpace(nonExistentWorkSpaceId);
+        }).isInstanceOf(NotFoundException.class)
+                .hasMessage(String.format(
+                        "No workspace exists for id %d. Cannot fetch non existent todo lists",
+                        nonExistentWorkSpaceId));
+    }
+
+    @Test
+    public void TodoListService_GetTodoListsByWorkSpace_ReturnTodoListsWithCards() {
+        Long workSpaceId = 1L;
+        int MAX_TODO_LISTS = 10;
+        Pageable pageable = PageRequest.of(0, MAX_TODO_LISTS);
+
+        when(workSpaceService.workSpaceExists(workSpaceId)).thenReturn(true);
+
+        TodoList todoList1 = new TodoList(user, workSpace, "Todo list 1", 0);
+        TodoList todoList2 = new TodoList(user, workSpace, "Todo list 2", 1);
+
+        todoList1.setId(1L);
+        todoList2.setId(2L);
+
+        TodoCardDto todoCardDto1 = createTodoCardDto(1L, todoList1);
+        TodoCardDto todoCardDto2 = createTodoCardDto(2L, todoList2);
+
+        List<TodoListDto> todoListDtos =
+                List.of(createTodoListDto(todoList1), createTodoListDto(todoList2));
+        Page<TodoListDto> todoListPage = new PageImpl<>(todoListDtos);
+
+        when(todoListRepository.getTodoListsByWorkSpace(pageable, workSpaceId))
+                .thenReturn(todoListPage);
+        when(todoCardService.retrieveTodoCards(1L)).thenReturn(List.of(todoCardDto1));
+        when(todoCardService.retrieveTodoCards(2L)).thenReturn(List.of(todoCardDto2));
+
+        List<TodoListDto> returnedTodoLists = todoListService.getTodoListsByWorkSpace(workSpaceId);
+
+        Assertions.assertThat(returnedTodoLists).isNotNull();
+        Assertions.assertThat(returnedTodoLists).hasSize(2);
+        Assertions.assertThat(returnedTodoLists.get(0).getCards().size()).isEqualTo(1);
+        Assertions.assertThat(returnedTodoLists.get(1).getCards().size()).isEqualTo(1);
+    }
+
+
+
+    private TodoCardDto createTodoCardDto(Long id, TodoList todoList) {
+        LocalDateTime createdAt = LocalDateTime.now();
+        String title = String.format("%d-title", id);
+        Integer index = id.intValue();
+
+        TodoCardDto todoCardDto = new TodoCardDto();
+
+        todoCardDto.setId(id);
+        todoCardDto.setColor("#000000");
+        todoCardDto.setLabel("label");
+        todoCardDto.setPhoto("https://imgur.com/photo");
+        todoCardDto.setTitle(title);
+        todoCardDto.setIndex(index);
+        todoCardDto.setDetails("some details");
+        todoCardDto.setTodoListId(todoList.getId());
+        todoCardDto.setUserId(user.getId());
+        todoCardDto.setEndDate(createdAt);
+        todoCardDto.setStartDate(createdAt);
+        todoCardDto.setCreatedAt(createdAt);
+        todoCardDto.setUploadPhotoUrl("https://imgur.com/photo");
+        return todoCardDto;
+    }
+
+
+    private TodoListDto createTodoListDto(TodoList todoList) {
+        TodoListDto todoListDto = new TodoListDto();
+        todoListDto.setId(todoList.getId());
+        todoListDto.setIndex(todoList.getId().intValue());
+        todoListDto.setTitle(todoList.getTitle());
+        todoListDto.setUserId(todoList.getUser().getId());
+        todoListDto.setWorkSpaceId(todoList.getWorkSpace().getId());
+        todoListDto.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+
+        return todoListDto;
+    }
+
+
 }
-
-
