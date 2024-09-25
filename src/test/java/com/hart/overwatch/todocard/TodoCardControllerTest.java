@@ -12,6 +12,7 @@ import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.todocard.dto.TodoCardDto;
 import com.hart.overwatch.todocard.request.CreateTodoCardRequest;
+import com.hart.overwatch.todocard.request.MoveTodoCardRequest;
 import com.hart.overwatch.todocard.request.ReorderTodoCardRequest;
 import com.hart.overwatch.todocard.request.UpdateTodoCardRequest;
 import com.hart.overwatch.todocardmanagement.TodoCardManagementService;
@@ -225,7 +226,22 @@ public class TodoCardControllerTest {
                         .content(objectMapper.writeValueAsString(request)));
 
         response.andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
+    @Test
+    public void TodoCardController_MoveTodoCard_ReturnMoveTodoCardResponse() throws Exception {
+        Long todoCardId = todoList.getTodoCards().get(0).getId();
+        MoveTodoCardRequest request = new MoveTodoCardRequest(1L, 2L, 2);
+        doNothing().when(todoCardManagementService).handleMoveTodoCards(todoCardId, request);
+
+        ResultActions response =
+                mockMvc.perform(patch(String.format("/api/v1/todo-cards/%d/move", todoCardId))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 
 
