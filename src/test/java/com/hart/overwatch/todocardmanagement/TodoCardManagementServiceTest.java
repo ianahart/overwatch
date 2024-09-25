@@ -222,6 +222,34 @@ public class TodoCardManagementServiceTest {
 
         verify(todoCardService, times(1)).reorderTodoCards(request, todoCard.getId());
     }
+
+    @Test
+    public void TodoCardManagementService_HandleMoveTodoCards_ReturnNothing() {
+        LocalDateTime timestamp = LocalDateTime.now();
+        TodoList destinationList = new TodoList(user, workSpace, "title-4", 1);
+        destinationList.setId(2L);
+
+        MoveTodoCardRequest request =
+                new MoveTodoCardRequest(todoList.getId(), destinationList.getId(), 2);
+
+        when(todoListService.getTodoListById(destinationList.getId())).thenReturn(destinationList);
+        when(todoListService.getTodoListById(todoList.getId())).thenReturn(todoList);
+
+        TodoCard todoCard = todoList.getTodoCards().get(0);
+        when(todoCardService.getTodoCardById(todoCard.getId())).thenReturn(todoCard);
+
+        String text = String.format("Moved card from %s list to %s list", todoList.getTitle(),
+                destinationList.getTitle());
+        when(activityService.createActivity(text, todoCard.getId(), todoCard.getUser().getId()))
+                .thenReturn(new ActivityDto(1L, 1L, 1L, timestamp, text, "avatar_url"));
+        doNothing().when(todoCardService).moveTodoCards(todoCard.getId(), request, destinationList,
+                todoList);
+
+        todoCardManagementService.handleMoveTodoCards(todoCard.getId(), request);
+
+        verify(todoCardService, times(1)).moveTodoCards(todoCard.getId(), request, destinationList,
+                todoList);
+    }
 }
 
 
