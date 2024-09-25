@@ -202,7 +202,25 @@ public class TodoCardManagementServiceTest {
             todoCardManagementService.handleReorderTodoCards(request, todoCard.getId());
         }).isInstanceOf(BadRequestException.class)
                 .hasMessage("Todo card is missing reordering cards");
+    }
 
+    @Test
+    public void TodoCardManagementService_HandleReorderTodoCards_ReturnNothing() {
+        TodoCard todoCard = todoList.getTodoCards().get(0);
+        LocalDateTime timestamp = LocalDateTime.now();
+        when(todoCardService.getTodoCardById(todoCard.getId())).thenReturn(todoCard);
+
+        ReorderTodoCardRequest request = new ReorderTodoCardRequest(todoList.getId(), 2, 1);
+        String text = String.format("You moved %s from position %d to position %d",
+                todoCard.getTitle(), request.getOldIndex(), request.getNewIndex());
+        when(activityService.createActivity(text, todoCard.getId(), user.getId()))
+                .thenReturn(new ActivityDto(1L, 1L, 1L, timestamp, text, "avatar_url"));
+
+        doNothing().when(todoCardService).reorderTodoCards(request, todoCard.getId());
+
+        todoCardManagementService.handleReorderTodoCards(request, todoCard.getId());
+
+        verify(todoCardService, times(1)).reorderTodoCards(request, todoCard.getId());
     }
 }
 
