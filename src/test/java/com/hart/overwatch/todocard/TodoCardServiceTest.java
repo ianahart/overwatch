@@ -242,5 +242,16 @@ public class TodoCardServiceTest {
                 String.format("A todo card with the id %d was not found", nonExistentTodoCardId));
     }
 
+    @Test
+    public void TodoCardService_GetTodoCardById_ReturnTodoCard() {
+        TodoCard todoCard = todoList.getTodoCards().get(0);
+        when(todoCardRepository.findById(todoCard.getId())).thenReturn(Optional.of(todoCard));
+
+        TodoCard returnedTodoCard = todoCardService.getTodoCardById(todoCard.getId());
+
+        Assertions.assertThat(returnedTodoCard).isNotNull();
+        Assertions.assertThat(returnedTodoCard.getId()).isEqualTo(todoCard.getId());
+    }
+
 }
 
