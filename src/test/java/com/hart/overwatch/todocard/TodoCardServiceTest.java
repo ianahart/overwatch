@@ -27,6 +27,7 @@ import com.hart.overwatch.amazon.AmazonService;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.todocard.dto.TodoCardDto;
+import com.hart.overwatch.todocard.request.CreateTodoCardRequest;
 import com.hart.overwatch.todocard.request.UploadTodoCardPhotoRequest;
 import com.hart.overwatch.todolist.TodoList;
 import com.hart.overwatch.todolist.TodoListRepository;
@@ -253,5 +254,18 @@ public class TodoCardServiceTest {
         Assertions.assertThat(returnedTodoCard.getId()).isEqualTo(todoCard.getId());
     }
 
+    @Test
+    public void TodoCardService_CreateTodoCard_ThrowBadRequestExceptionMax() {
+        Long todoListId = todoList.getId();
+        Long userId = user.getId();
+        long MAX_TODO_CARDS_QUANTITY = 10L;
+        CreateTodoCardRequest request = new CreateTodoCardRequest("card title", 0, userId);
+
+        when(todoCardRepository.countTodoCardsInTodoList(todoListId, userId)).thenReturn(MAX_TODO_CARDS_QUANTITY + 1);
+
+        Assertions.assertThatThrownBy(() -> {
+          todoCardService.createTodoCard(todoListId, request); 
+        }).isInstanceOf(BadRequestException.class).hasMessage(String.format("You have added the maximum amount of cards (%d) for this list",MAX_TODO_CARDS_QUANTITY));
+    }
 }
 
