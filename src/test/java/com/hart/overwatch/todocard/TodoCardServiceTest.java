@@ -6,8 +6,7 @@ import static org.mockito.Mockito.*;
 import java.util.Optional;
 import java.util.List;
 import java.util.Arrays;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.util.Collections;
 import org.assertj.core.api.Assertions;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
@@ -17,11 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
@@ -30,18 +25,17 @@ import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.todocard.dto.TodoCardDto;
 import com.hart.overwatch.todocard.request.CreateTodoCardRequest;
+import com.hart.overwatch.todocard.request.MoveTodoCardRequest;
 import com.hart.overwatch.todocard.request.ReorderTodoCardRequest;
 import com.hart.overwatch.todocard.request.UploadTodoCardPhotoRequest;
 import com.hart.overwatch.todolist.TodoList;
 import com.hart.overwatch.todolist.TodoListRepository;
 import com.hart.overwatch.todolist.TodoListService;
-import com.hart.overwatch.todolist.dto.TodoListDto;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.workspace.WorkSpace;
 import org.springframework.test.context.ActiveProfiles;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -296,7 +290,54 @@ public class TodoCardServiceTest {
         todoCardService.reorderTodoCards(request, 1L);
 
         verify(todoCardRepository, times(1)).saveAll(anyList());
+    }
 
+    @Test
+    public void TodoCardService_moveTodoCards_ReturnNothing() {
+        Long todoCardId = 1L;
+        Long destinationListId = 2L;
+        Long sourceListId = 3L;
+
+        MoveTodoCardRequest request = new MoveTodoCardRequest();
+        request.setDestinationListId(destinationListId);
+        request.setNewIndex(1);
+
+        TodoList sourceList = new TodoList();
+        sourceList.setId(sourceListId);
+
+        TodoList destinationList = new TodoList();
+        destinationList.setId(destinationListId);
+
+        TodoCard todoCardToMove = new TodoCard("Card to move", 0, user, sourceList);
+        todoCardToMove.setId(todoCardId);
+
+        TodoCard anotherSourceCard = new TodoCard("Another source card", 1, user, sourceList);
+
+        sourceList.setTodoCards(Arrays.asList(todoCardToMove, anotherSourceCard));
+
+        TodoCard existingDestCard =
+                new TodoCard("Existing card in destination", 0, user, destinationList);
+        destinationList.setTodoCards(Collections.singletonList(existingDestCard));
+
+        when(todoCardRepository.findById(todoCardId)).thenReturn(Optional.of(todoCardToMove));
+
+        todoCardService.moveTodoCards(todoCardId, request, destinationList, sourceList);
+
+        Assertions.assertThat(todoCardToMove.getTodoList().getId()).isEqualTo(destinationListId);
+
+        Assertions.assertThat(sourceList.getTodoCards()).doesNotContain(todoCardToMove);
+        Assertions.assertThat(sourceList.getTodoCards()).hasSize(1);
+
+        Assertions.assertThat(destinationList.getTodoCards()).contains(todoCardToMove);
+        Assertions.assertThat(destinationList.getTodoCards()).hasSize(2);
+
+
+        Assertions.assertThat(existingDestCard.getIndex()).isEqualTo(0);
+
+        Assertions.assertThat(todoCardToMove.getIndex()).isEqualTo(1);
+
+        verify(todoListRepository).save(sourceList);
+        verify(todoListRepository).save(destinationList);
     }
 }
 
