@@ -191,6 +191,19 @@ public class TodoCardManagementServiceTest {
         verify(todoCardService, times(1)).deleteTodoCard(todoCardId);
 
     }
+
+    @Test
+    public void TodoCardManagementService_HandleReorderTodoCards_ThrowBadRequestException() {
+        TodoCard todoCard = todoList.getTodoCards().get(0);
+        when(todoCardService.getTodoCardById(todoCard.getId())).thenReturn(null);
+        ReorderTodoCardRequest request = new ReorderTodoCardRequest(todoList.getId(), 2, 1);
+
+        Assertions.assertThatThrownBy(() -> {
+            todoCardManagementService.handleReorderTodoCards(request, todoCard.getId());
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage("Todo card is missing reordering cards");
+
+    }
 }
 
 
