@@ -182,6 +182,15 @@ public class TodoCardManagementServiceTest {
         Assertions.assertThat(returnedTodoCardDto).isNotNull();
     }
 
+    @Test
+    public void TodoCardManagementService_HandleDeleteTodoCard_ReturnNothing() {
+        Long todoCardId = todoList.getTodoCards().get(0).getId();
+        doNothing().when(todoCardService).deleteTodoCard(todoCardId);
+        todoCardManagementService.handleDeleteTodoCard(todoCardId);
+
+        verify(todoCardService, times(1)).deleteTodoCard(todoCardId);
+
+    }
 }
 
 
