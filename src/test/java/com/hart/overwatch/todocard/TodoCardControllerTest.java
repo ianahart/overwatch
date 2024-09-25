@@ -2,23 +2,19 @@ package com.hart.overwatch.todocard;
 
 
 import java.util.List;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
-import com.hart.overwatch.todocard.TodoCard;
 import com.hart.overwatch.todocard.dto.TodoCardDto;
 import com.hart.overwatch.todocard.request.CreateTodoCardRequest;
+import com.hart.overwatch.todocard.request.UpdateTodoCardRequest;
 import com.hart.overwatch.todocardmanagement.TodoCardManagementService;
 import com.hart.overwatch.todolist.TodoList;
-import com.hart.overwatch.todolist.dto.TodoListDto;
-import com.hart.overwatch.todolist.request.CreateTodoListRequest;
-import com.hart.overwatch.todolist.request.ReorderTodoListRequest;
-import com.hart.overwatch.todolist.request.UpdateTodoListRequest;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
@@ -42,6 +38,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import org.hamcrest.CoreMatchers;
@@ -162,25 +159,49 @@ public class TodoCardControllerTest {
                         CoreMatchers.is(todoCardDto.getTitle())));
     }
 
+    @Test
+    public void TodoCardController_UpdateTodoCard_ReturnUpdateTodoCardResponse() throws Exception {
+        Long todoCardId = todoList.getTodoCards().get(0).getId();
+        LocalDateTime timestamp = LocalDateTime.now();
+        UpdateTodoCardRequest request = new UpdateTodoCardRequest();
+        request.setId(1L);
+        request.setColor("#000000");
+        request.setLabel("label");
+        request.setPhoto("photo");
+        request.setTitle("title");
+        request.setIndex(1);
+        request.setDetails("details");
+        request.setUploadPhotoUrl("photo_url");
+        request.setEndDate(timestamp);
+        request.setStartDate(timestamp);
+        request.setCreatedAt(timestamp);
+
+        TodoCardDto todoCardDto = new TodoCardDto();
+        todoCardDto.setId(1L);
+        todoCardDto.setIndex(request.getIndex());
+        todoCardDto.setTitle(request.getTitle());
+
+        when(todoCardManagementService.handleUpdateTodoCard(anyLong(),
+                any(UpdateTodoCardRequest.class))).thenReturn(todoCardDto);
+
+        ResultActions response =
+                mockMvc.perform(put(String.format("/api/v1/todo-cards/%d", todoCardId))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.id",
+                        CoreMatchers.is(todoCardDto.getId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.index",
+                        CoreMatchers.is(todoCardDto.getIndex())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.title",
+                        CoreMatchers.is(todoCardDto.getTitle())));
 
 
-    // @Test
-    // public void TodoListController_ReorderTodoLists_Return_GetTodoListsResponse() throws
-    // Exception {
-    // List<TodoListDto> todoListDtos = createTodoListDtos(todoList);
-    // ReorderTodoListRequest request = new ReorderTodoListRequest(todoListDtos);
-    //
-    // when(todoListService.reorderTodoLists(anyLong(), anyList())).thenReturn(todoListDtos);
-    //
-    // ResultActions response = mockMvc.perform(
-    // post(String.format("/api/v1/workspaces/%d/todo-lists/reorder", workSpace.getId()))
-    // .content(objectMapper.writeValueAsString(request))
-    // .contentType(MediaType.APPLICATION_JSON));
-    // response.andExpect(MockMvcResultMatchers.status().isOk())
-    // .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
-    // .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].id",
-    // CoreMatchers.is(todoListDtos.get(0).getId().intValue())));
-    // }
+    }
+
+
 
 }
 
