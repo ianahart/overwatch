@@ -197,8 +197,18 @@ public class TodoCardControllerTest {
                         CoreMatchers.is(todoCardDto.getIndex())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.title",
                         CoreMatchers.is(todoCardDto.getTitle())));
+    }
 
+    @Test
+    public void TodoCardController_DeleteTodoCard_ReturnDeleteTodoCardResponse() throws Exception {
+        Long todoCardId = todoList.getTodoCards().get(0).getId();
 
+        doNothing().when(todoCardManagementService).handleDeleteTodoCard(todoCardId);
+
+        ResultActions response =
+                mockMvc.perform(delete(String.format("/api/v1/todo-cards/%d", todoCardId)));
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 
 
