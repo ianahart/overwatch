@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 import com.hart.overwatch.activity.ActivityService;
+import com.hart.overwatch.activity.dto.ActivityDto;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
@@ -30,6 +31,7 @@ import com.hart.overwatch.todocard.dto.TodoCardDto;
 import com.hart.overwatch.todocard.request.CreateTodoCardRequest;
 import com.hart.overwatch.todocard.request.MoveTodoCardRequest;
 import com.hart.overwatch.todocard.request.ReorderTodoCardRequest;
+import com.hart.overwatch.todocard.request.UpdateTodoCardRequest;
 import com.hart.overwatch.todocard.request.UploadTodoCardPhotoRequest;
 import com.hart.overwatch.todolist.TodoList;
 import com.hart.overwatch.todolist.TodoListRepository;
@@ -39,6 +41,7 @@ import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.workspace.WorkSpace;
 import org.springframework.test.context.ActiveProfiles;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -139,6 +142,46 @@ public class TodoCardManagementServiceTest {
         Assertions.assertThat(returnedTodoCardDto.getTitle()).isEqualTo(todoCardDto.getTitle());
         Assertions.assertThat(returnedTodoCardDto.getIndex()).isEqualTo(todoCardDto.getIndex());
     }
+
+
+    @Test
+    public void TodoCardManagementService_HandleUpdateTodoCard_ReturnTodoCardDto()
+            throws Exception {
+        TodoCard todoCard = todoList.getTodoCards().get(0);
+        LocalDateTime timestamp = LocalDateTime.now();
+        when(todoCardService.getTodoCardById(todoCard.getId())).thenReturn(todoCard);
+
+        UpdateTodoCardRequest request = new UpdateTodoCardRequest();
+        request.setId(1L);
+        request.setColor("#000000");
+        request.setLabel("label");
+        request.setPhoto("photo");
+        request.setTitle("title");
+        request.setIndex(1);
+        request.setDetails("details");
+        request.setUploadPhotoUrl("photo_url");
+        request.setEndDate(timestamp);
+        request.setStartDate(timestamp);
+        request.setCreatedAt(timestamp);
+
+        TodoCardDto todoCardDto = new TodoCardDto();
+        todoCardDto.setId(1L);
+        todoCardDto.setIndex(request.getIndex());
+        todoCardDto.setTitle(request.getTitle());
+
+
+        String text =
+                "You updated the following properties: Title, Details, Label, Color, Start Date, End Date, Photo, Uploaded photo to card title-1";
+        when(activityService.createActivity(text, todoCard.getId(), user.getId()))
+                .thenReturn(new ActivityDto(1L, 1L, 1L, timestamp, text, "avatar_url"));
+        when(todoCardService.updateTodoCard(todoCard, request)).thenReturn(todoCardDto);
+
+        TodoCardDto returnedTodoCardDto =
+                todoCardManagementService.handleUpdateTodoCard(todoCard.getId(), request);
+
+        Assertions.assertThat(returnedTodoCardDto).isNotNull();
+    }
+
 }
 
 
