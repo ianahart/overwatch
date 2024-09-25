@@ -12,6 +12,7 @@ import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.todocard.dto.TodoCardDto;
 import com.hart.overwatch.todocard.request.CreateTodoCardRequest;
+import com.hart.overwatch.todocard.request.ReorderTodoCardRequest;
 import com.hart.overwatch.todocard.request.UpdateTodoCardRequest;
 import com.hart.overwatch.todocardmanagement.TodoCardManagementService;
 import com.hart.overwatch.todolist.TodoList;
@@ -211,6 +212,21 @@ public class TodoCardControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 
+    @Test
+    public void TodoCardController_ReorderTodoCard_ReturnReorderTodoCardResponse()
+            throws Exception {
+        Long todoCardId = todoList.getTodoCards().get(0).getId();
+        ReorderTodoCardRequest request = new ReorderTodoCardRequest(todoList.getId(), 2, 1);
+        doNothing().when(todoCardManagementService).handleReorderTodoCards(request, todoCardId);
+
+        ResultActions response =
+                mockMvc.perform(patch(String.format("/api/v1/todo-cards/%d/reorder", todoCardId))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
 
 
 }
