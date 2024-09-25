@@ -44,7 +44,8 @@ import com.hart.overwatch.workspace.WorkSpace;
 import com.hart.overwatch.workspace.WorkSpaceService;
 import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
-import java.util.ArrayList;;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
@@ -204,6 +205,35 @@ public class TodoCardServiceTest {
             todoCardService.uploadTodoCardPhoto(todoCardToUpdate, request);
         }).isInstanceOf(BadRequestException.class)
                 .hasMessage("File size exceeded. Could not upload.");
+
+    }
+
+    @Test
+    public void TodoCardService_UploadTodoCardPhoto_ReturnTodoCardDto() {
+        TodoCard todoCardToUpdate = todoList.getTodoCards().get(0);
+        byte[] fileContent = new byte[1024 * 256];
+        MockMultipartFile mockFile =
+                new MockMultipartFile("file", "photo.jpg", "image/jpeg", fileContent);
+        UploadTodoCardPhotoRequest request = new UploadTodoCardPhotoRequest(mockFile);
+
+        doNothing().when(amazonService).deleteBucketObject("arrow-date",
+                todoCardToUpdate.getUploadPhotoFileName());
+
+        HashMap<String, String> result = new HashMap<String, String>();
+        result.put("filename", mockFile.getOriginalFilename());
+        result.put("objectUrl", "https://www.someurl.com/photo.jpeg");
+
+        when(amazonService.putS3Object("arrow-date", mockFile.getOriginalFilename(), mockFile))
+                .thenReturn(result);
+
+        when(todoCardRepository.save(any(TodoCard.class))).thenReturn(todoCardToUpdate);
+
+        TodoCardDto returnedTodoCardDto =
+                todoCardService.uploadTodoCardPhoto(todoCardToUpdate, request);
+
+        Assertions.assertThat(returnedTodoCardDto).isNotNull();
+
+        verify(todoCardRepository, times(1)).save(any(TodoCard.class));
 
     }
 
