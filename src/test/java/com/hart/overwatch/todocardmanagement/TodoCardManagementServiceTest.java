@@ -250,6 +250,33 @@ public class TodoCardManagementServiceTest {
         verify(todoCardService, times(1)).moveTodoCards(todoCard.getId(), request, destinationList,
                 todoList);
     }
+
+
+    @Test
+    public void TodoCardManagementService_HandleUploadTodoCardPhoto_ReturnTodoCardDto() {
+        LocalDateTime timestamp = LocalDateTime.now();
+        TodoCard todoCard = todoList.getTodoCards().get(0);
+        when(todoCardService.getTodoCardById(todoCard.getId())).thenReturn(todoCard);
+        byte[] fileContent = new byte[1024 * 1024 + 1024];
+        MockMultipartFile mockFile =
+                new MockMultipartFile("file", "photo.jpg", "image/jpeg", fileContent);
+        UploadTodoCardPhotoRequest request = new UploadTodoCardPhotoRequest(mockFile);
+        String text = String.format("You uploaded the a photo called %s to this card",
+                request.getFile().getOriginalFilename());
+        when(activityService.createActivity(text, todoCard.getId(), user.getId()))
+                .thenReturn(new ActivityDto(1L, 1L, 1L, timestamp, text, "avatar_url"));
+
+        TodoCardDto todoCardDto = new TodoCardDto();
+        when(todoCardService.uploadTodoCardPhoto(todoCard, request)).thenReturn(todoCardDto);
+
+        todoCardManagementService.handleUploadTodoCardPhoto(todoCard.getId(), request);
+
+        verify(activityService, times(1)).createActivity(text, todoCard.getId(), user.getId());
+        verify(todoCardService, times(1)).uploadTodoCardPhoto(todoCard, request);
+
+
+
+    }
 }
 
 
