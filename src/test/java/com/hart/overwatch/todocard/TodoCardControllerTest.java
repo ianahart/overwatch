@@ -16,7 +16,6 @@ import com.hart.overwatch.todocard.request.MoveTodoCardRequest;
 import com.hart.overwatch.todocard.request.ReorderTodoCardRequest;
 import com.hart.overwatch.todocard.request.UpdateTodoCardRequest;
 import com.hart.overwatch.todocard.request.UploadTodoCardPhotoRequest;
-import com.hart.overwatch.todocard.response.UploadTodoCardPhotoResponse;
 import com.hart.overwatch.todocardmanagement.TodoCardManagementService;
 import com.hart.overwatch.todolist.TodoList;
 import com.hart.overwatch.token.TokenRepository;
@@ -46,7 +45,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 
@@ -256,7 +254,6 @@ public class TodoCardControllerTest {
         byte[] fileContent = new byte[1024 * 1024 - 10000];
         MockMultipartFile mockFile =
                 new MockMultipartFile("file", "photo.jpg", "image/jpeg", fileContent);
-        UploadTodoCardPhotoRequest request = new UploadTodoCardPhotoRequest(mockFile);
 
         TodoCardDto todoCardDto = new TodoCardDto();
         todoCardDto.setId(3L);
