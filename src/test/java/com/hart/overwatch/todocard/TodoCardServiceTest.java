@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import org.assertj.core.api.Assertions;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -287,6 +289,34 @@ public class TodoCardServiceTest {
             todoCardService.createTodoCard(todoListId, request);
         }).isInstanceOf(BadRequestException.class)
                 .hasMessage("You have already added a card with that title to this list");
+    }
+
+    @Test
+    public void TodoCardService_CreateTodoCard_ReturnTodoCardDto() {
+        Long todoListId = todoList.getId();
+        Long userId = user.getId();
+        long MAX_TODO_CARDS_QUANTITY = 10L;
+        CreateTodoCardRequest request = new CreateTodoCardRequest("title-4", 2, userId);
+
+        when(todoCardRepository.countTodoCardsInTodoList(todoListId, userId))
+                .thenReturn(MAX_TODO_CARDS_QUANTITY - 1);
+        when(todoListService.getTodoListById(todoListId)).thenReturn(todoList);
+        when(userService.getUserById(request.getUserId())).thenReturn(user);
+        when(todoListService.getTodoListById(todoListId)).thenReturn(todoList);
+
+        TodoCard newTodoCard = new TodoCard(Jsoup.clean(request.getTitle(), Safelist.none()),
+                request.getIndex(), user, todoList);
+
+        when(todoCardRepository.save(any(TodoCard.class))).thenReturn(newTodoCard);
+
+        TodoCardDto todoCardDto = todoCardService.createTodoCard(todoListId, request);
+        System.out.println(todoCardDto.getId());
+        System.out.println(todoCardDto.getIndex());
+        System.out.println(todoCardDto.getTitle());
+
+        Assertions.assertThat(todoCardDto).isNotNull();
+        Assertions.assertThat(todoCardDto.getIndex()).isEqualTo(newTodoCard.getIndex());
+        Assertions.assertThat(todoCardDto.getTitle()).isEqualTo(newTodoCard.getTitle());
     }
 }
 
