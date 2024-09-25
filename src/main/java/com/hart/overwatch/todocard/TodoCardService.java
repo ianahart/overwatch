@@ -194,7 +194,7 @@ public class TodoCardService {
         TodoCard todoCard = getTodoCardById(todoCardId);
         User currentUser = userService.getCurrentlyLoggedInUser();
 
-        if (todoCard.getUser().getId() != currentUser.getId()) {
+        if (!todoCard.getUser().getId().equals(currentUser.getId())) {
             throw new ForbiddenException("You cannot delete another user's card");
         }
 

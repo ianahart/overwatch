@@ -326,9 +326,25 @@ public class TodoCardServiceTest {
         when(userService.getCurrentlyLoggedInUser()).thenReturn(forbiddenUser);
 
         Assertions.assertThatThrownBy(() -> {
-          todoCardService.deleteTodoCard(todoCard.getId());
-        }).isInstanceOf(ForbiddenException.class).hasMessage("You cannot delete another user's card");
+            todoCardService.deleteTodoCard(todoCard.getId());
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("You cannot delete another user's card");
+    }
 
+    @Test
+    public void TodoCardService_DeleteTodoCard_ReturnNothing() {
+        TodoCard todoCard = todoList.getTodoCards().get(0);
+        when(todoCardRepository.findById(todoCard.getId())).thenReturn(Optional.of(todoCard));
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+
+        when(todoListRepository.save(any(TodoList.class))).thenReturn(todoList);
+        doNothing().when(todoCardRepository).delete(todoCard);
+
+        todoCardService.deleteTodoCard(todoCard.getId());
+
+        verify(todoListRepository, times(1)).save(any(TodoList.class));
+        verify(todoCardRepository, times(1)).delete(todoCard);
     }
 }
+
 
