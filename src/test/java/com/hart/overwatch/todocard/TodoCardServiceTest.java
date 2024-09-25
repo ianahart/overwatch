@@ -30,6 +30,7 @@ import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.todocard.dto.TodoCardDto;
 import com.hart.overwatch.todocard.request.CreateTodoCardRequest;
+import com.hart.overwatch.todocard.request.ReorderTodoCardRequest;
 import com.hart.overwatch.todocard.request.UploadTodoCardPhotoRequest;
 import com.hart.overwatch.todolist.TodoList;
 import com.hart.overwatch.todolist.TodoListRepository;
@@ -91,6 +92,7 @@ public class TodoCardServiceTest {
         for (int i = 1; i < cardsToGenerate; i++) {
             TodoCard todoCard = new TodoCard();
             todoCard.setId(Long.valueOf(i));
+            todoCard.setIndex(i);
             todoCard.setUser(user);
             todoCard.setTodoList(todoList);
             todoCard.setTitle(String.format("title-%d", i));
@@ -127,68 +129,7 @@ public class TodoCardServiceTest {
         return workSpace;
     }
 
-    private List<TodoCardDto> createTodoCardDtos(TodoList todoList) {
-        List<TodoCardDto> todoCardDtos = new ArrayList<>();
-        for (TodoCard todoCard : todoList.getTodoCards()) {
-            TodoCardDto todoCardDto = new TodoCardDto();
-            todoCardDto.setId(todoCard.getId());
-            todoCardDto.setIndex(todoCard.getIndex());
-            todoCardDto.setUserId(todoCard.getUser().getId());
-            todoCardDto.setTodoListId(todoCard.getTodoList().getId());
-            todoCardDto.setTitle(todoCard.getTitle());
-            todoCardDtos.add(todoCardDto);
-        }
-        return todoCardDtos;
-    }
 
-    private List<TodoListDto> createTodoListDtos(TodoList todoList) {
-        TodoListDto todoListDto = new TodoListDto();
-        todoListDto.setId(todoList.getId());
-        todoListDto.setTitle(todoList.getTitle());
-        todoListDto.setIndex(todoList.getIndex());
-        todoListDto.setWorkSpaceId(todoList.getWorkSpace().getId());
-        todoListDto.setUserId(todoList.getUser().getId());
-        todoListDto.setCards(createTodoCardDtos(todoList));
-
-        return List.of(todoListDto);
-
-    }
-
-    private TodoCardDto createTodoCardDto(Long id, TodoList todoList) {
-        LocalDateTime createdAt = LocalDateTime.now();
-        String title = String.format("%d-title", id);
-        Integer index = id.intValue();
-
-        TodoCardDto todoCardDto = new TodoCardDto();
-
-        todoCardDto.setId(id);
-        todoCardDto.setColor("#000000");
-        todoCardDto.setLabel("label");
-        todoCardDto.setPhoto("https://imgur.com/photo");
-        todoCardDto.setTitle(title);
-        todoCardDto.setIndex(index);
-        todoCardDto.setDetails("some details");
-        todoCardDto.setTodoListId(todoList.getId());
-        todoCardDto.setUserId(user.getId());
-        todoCardDto.setEndDate(createdAt);
-        todoCardDto.setStartDate(createdAt);
-        todoCardDto.setCreatedAt(createdAt);
-        todoCardDto.setUploadPhotoUrl("https://imgur.com/photo");
-        return todoCardDto;
-    }
-
-
-    private TodoListDto createTodoListDto(TodoList todoList) {
-        TodoListDto todoListDto = new TodoListDto();
-        todoListDto.setId(todoList.getId());
-        todoListDto.setIndex(todoList.getId().intValue());
-        todoListDto.setTitle(todoList.getTitle());
-        todoListDto.setUserId(todoList.getUser().getId());
-        todoListDto.setWorkSpaceId(todoList.getWorkSpace().getId());
-        todoListDto.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-
-        return todoListDto;
-    }
 
     @Test
     public void TodoCardService_UploadTodoCardPhoto_ThrowBadRequestException() {
@@ -344,6 +285,18 @@ public class TodoCardServiceTest {
 
         verify(todoListRepository, times(1)).save(any(TodoList.class));
         verify(todoCardRepository, times(1)).delete(todoCard);
+    }
+
+    @Test
+    public void TodoCardService_ReorderTodoCards_ReturnNothing() {
+        when(todoListService.getTodoListById(todoList.getId())).thenReturn(todoList);
+        ReorderTodoCardRequest request = new ReorderTodoCardRequest(todoList.getId(), 2, 1);
+        when(todoCardRepository.saveAll(anyList())).thenReturn(todoList.getTodoCards());
+
+        todoCardService.reorderTodoCards(request, 1L);
+
+        verify(todoCardRepository, times(1)).saveAll(anyList());
+
     }
 }
 
