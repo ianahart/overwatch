@@ -310,13 +310,25 @@ public class TodoCardServiceTest {
         when(todoCardRepository.save(any(TodoCard.class))).thenReturn(newTodoCard);
 
         TodoCardDto todoCardDto = todoCardService.createTodoCard(todoListId, request);
-        System.out.println(todoCardDto.getId());
-        System.out.println(todoCardDto.getIndex());
-        System.out.println(todoCardDto.getTitle());
 
         Assertions.assertThat(todoCardDto).isNotNull();
         Assertions.assertThat(todoCardDto.getIndex()).isEqualTo(newTodoCard.getIndex());
         Assertions.assertThat(todoCardDto.getTitle()).isEqualTo(newTodoCard.getTitle());
+    }
+
+    @Test
+    public void TodoCardService_DeleteTodoCard_ThrowForbiddenException() {
+        TodoCard todoCard = todoList.getTodoCards().get(0);
+        User forbiddenUser = new User();
+        forbiddenUser.setId(999L);
+
+        when(todoCardRepository.findById(todoCard.getId())).thenReturn(Optional.of(todoCard));
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(forbiddenUser);
+
+        Assertions.assertThatThrownBy(() -> {
+          todoCardService.deleteTodoCard(todoCard.getId());
+        }).isInstanceOf(ForbiddenException.class).hasMessage("You cannot delete another user's card");
+
     }
 }
 
