@@ -28,6 +28,7 @@ import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserRepository;
 import com.hart.overwatch.workspace.WorkSpace;
 import java.util.List;
+import java.util.ArrayList;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -65,22 +66,28 @@ public class TodoCardRepositoryTest {
 
         todoList = new TodoList(user, workSpace, "todo list title", 0);
         todoListRepository.save(todoList);
+        List<TodoCard> todoCards = createTodoCards(user, todoList);
+        todoList.setTodoCards(todoCards);
+        todoListRepository.save(todoList);
+        todoCardRepository.saveAll(todoCards);
 
-        createTodoCards(user, todoList);
+
 
     }
 
 
-    private void createTodoCards(User user, TodoList todoList) {
+    private List<TodoCard> createTodoCards(User user, TodoList todoList) {
         int numOfCards = 3;
+        List<TodoCard> todoCards = new ArrayList<>();
         for (int i = 1; i <= numOfCards; i++) {
             TodoCard todoCard = new TodoCard();
             todoCard.setId(Long.valueOf(i));
             todoCard.setUser(user);
             todoCard.setTodoList(todoList);
             todoCard.setTitle(String.format("Card-%d", i));
-            todoCardRepository.save(todoCard);
+            todoCards.add(todoCard);
         }
+        return todoCards;
     }
 
     @AfterEach
@@ -103,6 +110,13 @@ public class TodoCardRepositoryTest {
         Assertions.assertThat(todoCardDtos.get(0).getId()).isEqualTo(1L);
         Assertions.assertThat(todoCardDtos.get(1).getId()).isEqualTo(2L);
         Assertions.assertThat(todoCardDtos.get(2).getId()).isEqualTo(3L);
+    }
+
+    @Test
+    public void TodoCardRepository_CountTodoCardsInTodoLIst_ReturnLongCount() {
+        long count = todoCardRepository.countTodoCardsInTodoList(todoList.getId(), user.getId());
+
+        Assertions.assertThat(count).isEqualTo(todoList.getTodoCards().size());
     }
 }
 
