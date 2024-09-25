@@ -15,6 +15,8 @@ import com.hart.overwatch.todocard.request.CreateTodoCardRequest;
 import com.hart.overwatch.todocard.request.MoveTodoCardRequest;
 import com.hart.overwatch.todocard.request.ReorderTodoCardRequest;
 import com.hart.overwatch.todocard.request.UpdateTodoCardRequest;
+import com.hart.overwatch.todocard.request.UploadTodoCardPhotoRequest;
+import com.hart.overwatch.todocard.response.UploadTodoCardPhotoResponse;
 import com.hart.overwatch.todocardmanagement.TodoCardManagementService;
 import com.hart.overwatch.todolist.TodoList;
 import com.hart.overwatch.token.TokenRepository;
@@ -30,6 +32,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -39,6 +42,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -242,6 +246,36 @@ public class TodoCardControllerTest {
 
         response.andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+
+    }
+
+    @Test
+    public void TodoCardController_UploadTodoCardPhoto_ReturnUploadTodoCardPhotoResponse()
+            throws Exception {
+        Long todoCardId = todoList.getTodoCards().get(0).getId();
+        byte[] fileContent = new byte[1024 * 1024 - 10000];
+        MockMultipartFile mockFile =
+                new MockMultipartFile("file", "photo.jpg", "image/jpeg", fileContent);
+        UploadTodoCardPhotoRequest request = new UploadTodoCardPhotoRequest(mockFile);
+
+        TodoCardDto todoCardDto = new TodoCardDto();
+        todoCardDto.setId(3L);
+        todoCardDto.setUploadPhotoUrl("photo_url");
+
+        when(todoCardManagementService.handleUploadTodoCardPhoto(anyLong(),
+                any(UploadTodoCardPhotoRequest.class))).thenReturn(todoCardDto);
+
+        ResultActions response =
+                mockMvc.perform(multipart(String.format("/api/v1/todo-cards/%d/upload", todoCardId))
+                        .file(mockFile).contentType(MediaType.MULTIPART_FORM_DATA).with(req -> {
+                            req.setMethod("PATCH");
+                            return req;
+                        }));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.uploadPhotoUrl",
+                        CoreMatchers.is("photo_url")));
     }
 
 
