@@ -261,11 +261,32 @@ public class TodoCardServiceTest {
         long MAX_TODO_CARDS_QUANTITY = 10L;
         CreateTodoCardRequest request = new CreateTodoCardRequest("card title", 0, userId);
 
-        when(todoCardRepository.countTodoCardsInTodoList(todoListId, userId)).thenReturn(MAX_TODO_CARDS_QUANTITY + 1);
+        when(todoCardRepository.countTodoCardsInTodoList(todoListId, userId))
+                .thenReturn(MAX_TODO_CARDS_QUANTITY + 1);
 
         Assertions.assertThatThrownBy(() -> {
-          todoCardService.createTodoCard(todoListId, request); 
-        }).isInstanceOf(BadRequestException.class).hasMessage(String.format("You have added the maximum amount of cards (%d) for this list",MAX_TODO_CARDS_QUANTITY));
+            todoCardService.createTodoCard(todoListId, request);
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage(String.format(
+                        "You have added the maximum amount of cards (%d) for this list",
+                        MAX_TODO_CARDS_QUANTITY));
+    }
+
+    @Test
+    public void TodoCardService_CreateTodoCard_ThrowBadRequestExceptionExists() {
+        Long todoListId = todoList.getId();
+        Long userId = user.getId();
+        long MAX_TODO_CARDS_QUANTITY = 10L;
+        CreateTodoCardRequest request = new CreateTodoCardRequest("title-1", 0, userId);
+
+        when(todoCardRepository.countTodoCardsInTodoList(todoListId, userId))
+                .thenReturn(MAX_TODO_CARDS_QUANTITY - 1);
+        when(todoListService.getTodoListById(todoListId)).thenReturn(todoList);
+
+        Assertions.assertThatThrownBy(() -> {
+            todoCardService.createTodoCard(todoListId, request);
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage("You have already added a card with that title to this list");
     }
 }
 
