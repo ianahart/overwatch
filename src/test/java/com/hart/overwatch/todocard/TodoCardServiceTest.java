@@ -26,22 +26,16 @@ import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.amazon.AmazonService;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
-import com.hart.overwatch.todocard.TodoCard;
-import com.hart.overwatch.todocard.TodoCardRepository;
-import com.hart.overwatch.todocard.TodoCardService;
 import com.hart.overwatch.todocard.dto.TodoCardDto;
 import com.hart.overwatch.todocard.request.UploadTodoCardPhotoRequest;
 import com.hart.overwatch.todolist.TodoList;
 import com.hart.overwatch.todolist.TodoListRepository;
 import com.hart.overwatch.todolist.TodoListService;
 import com.hart.overwatch.todolist.dto.TodoListDto;
-import com.hart.overwatch.todolist.request.CreateTodoListRequest;
-import com.hart.overwatch.todolist.request.UpdateTodoListRequest;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.workspace.WorkSpace;
-import com.hart.overwatch.workspace.WorkSpaceService;
 import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 import java.util.ArrayList;
@@ -234,7 +228,18 @@ public class TodoCardServiceTest {
         Assertions.assertThat(returnedTodoCardDto).isNotNull();
 
         verify(todoCardRepository, times(1)).save(any(TodoCard.class));
+    }
 
+    @Test
+    public void TodoCardService_GetTodoCardById_ThrowNotFoundException() {
+        Long nonExistentTodoCardId = 999L;
+        when(todoCardRepository.findById(nonExistentTodoCardId))
+                .thenReturn(Optional.ofNullable(null));
+
+        Assertions.assertThatThrownBy(() -> {
+            todoCardService.getTodoCardById(nonExistentTodoCardId);
+        }).isInstanceOf(NotFoundException.class).hasMessage(
+                String.format("A todo card with the id %d was not found", nonExistentTodoCardId));
     }
 
 }
