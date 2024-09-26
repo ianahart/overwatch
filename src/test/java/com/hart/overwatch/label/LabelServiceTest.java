@@ -135,6 +135,19 @@ public class LabelServiceTest {
                 .hasMessage(String.format("Label with id %d was not found", nonExistentLabelId));
     }
 
+    @Test
+    public void LabelService_GetLabelById_ReturnLabel() {
+        Label label = labels.get(0);
+        when(labelRepository.findById(label.getId())).thenReturn(Optional.of(label));
+
+        Label returnedLabel = labelService.getLabelById(label.getId());
+
+        Assertions.assertThat(returnedLabel).isNotNull();
+        Assertions.assertThat(returnedLabel.getId()).isEqualTo(label.getId());
+        Assertions.assertThat(returnedLabel.getIsChecked()).isEqualTo(label.getIsChecked());
+        Assertions.assertThat(returnedLabel.getColor()).isEqualTo(label.getColor());
+        Assertions.assertThat(returnedLabel.getTitle()).isEqualTo(label.getTitle());
+    }
 
 }
 
