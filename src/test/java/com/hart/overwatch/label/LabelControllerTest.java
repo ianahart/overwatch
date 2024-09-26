@@ -1,7 +1,6 @@
 package com.hart.overwatch.label;
 
 import java.util.List;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,6 +10,7 @@ import com.hart.overwatch.activelabel.ActiveLabel;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.label.dto.LabelDto;
 import com.hart.overwatch.label.request.CreateLabelRequest;
+import com.hart.overwatch.label.request.UpdateLabelRequest;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.token.TokenRepository;
@@ -25,15 +25,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.data.domain.PageImpl;
 
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -41,11 +38,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import java.util.Collections;
 import org.hamcrest.CoreMatchers;
 
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Safelist;
 
 @ActiveProfiles("test")
 @WebMvcTest(controllers = LabelController.class)
@@ -194,6 +188,30 @@ public class LabelControllerTest {
 
         response.andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
+    @Test
+    public void LabelController_UpdateLabel_ReturnUpdateLabelResponse() throws Exception {
+        Label label = labels.get(0);
+        UpdateLabelRequest request = new UpdateLabelRequest(true);
+        LabelDto labelDto = new LabelDto();
+        labelDto.setId(label.getId());
+        labelDto.setIsChecked(request.getIsChecked());
+
+        when(labelService.updateLabel(anyLong(), any(UpdateLabelRequest.class)))
+                .thenReturn(labelDto);
+
+        ResultActions response =
+                mockMvc.perform(patch(String.format("/api/v1/labels/%d", label.getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.isChecked",
+                        CoreMatchers.is(labelDto.getIsChecked())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.id",
+                        CoreMatchers.is(labelDto.getId().intValue())));
     }
 
 }
