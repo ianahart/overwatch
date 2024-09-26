@@ -1,0 +1,153 @@
+package com.hart.overwatch.label;
+
+import java.util.List;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import com.hart.overwatch.activelabel.ActiveLabel;
+import com.hart.overwatch.config.JwtService;
+import com.hart.overwatch.label.request.CreateLabelRequest;
+import com.hart.overwatch.profile.Profile;
+import com.hart.overwatch.setting.Setting;
+import com.hart.overwatch.token.TokenRepository;
+import com.hart.overwatch.user.Role;
+import com.hart.overwatch.user.User;
+import com.hart.overwatch.workspace.WorkSpace;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.data.domain.PageImpl;
+
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import java.util.Collections;
+import org.hamcrest.CoreMatchers;
+
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
+
+@ActiveProfiles("test")
+@WebMvcTest(controllers = LabelController.class)
+@AutoConfigureMockMvc(addFilters = false)
+@ExtendWith(MockitoExtension.class)
+public class LabelControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private LabelService labelService;
+
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private UserDetailsService userDetailsService;
+
+    @MockBean
+    private TokenRepository tokenRepository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    private User user;
+
+    private WorkSpace workSpace;
+
+    private List<Label> labels;
+
+    @BeforeEach
+    public void setUp() {
+        user = generateUser();
+        workSpace = generatedWorkSpace(user);
+        labels = generateLabels(user, workSpace);
+    }
+
+    private WorkSpace generatedWorkSpace(User user) {
+        WorkSpace workSpace = new WorkSpace();
+        workSpace.setId(1L);
+        workSpace.setTitle("main");
+        workSpace.setBackgroundColor("#000000");
+        workSpace.setUser(user);
+
+        return workSpace;
+    }
+
+    private User generateUser() {
+        User user = new User();
+        user.setId(1L);
+        user.setFirstName("John");
+        user.setLastName("Doe");
+        user.setFullName("John Doe");
+        user.setEmail("john@mail.com");
+        user.setRole(Role.USER);
+        user.setLoggedIn(true);
+        user.setProfile(new Profile());
+        user.setPassword("Test12345%");
+        user.setSetting(new Setting());
+
+        return user;
+    }
+
+    private List<Label> generateLabels(User user, WorkSpace workSpace) {
+        LocalDateTime timestamp = LocalDateTime.now();
+        String[] titles = new String[] {"priority", "warning"};
+        List<Label> labels = new ArrayList<>();
+        int toGenerate = 2;
+        for (int i = 1; i <= toGenerate; i++) {
+            Label label = new Label();
+            label.setId(Long.valueOf(i));
+            label.setUser(user);
+            label.setWorkSpace(workSpace);
+            label.setColor("#000000");
+            label.setTitle(titles[i - 1]);
+            label.setIsChecked(false);
+            label.setCreatedAt(timestamp);
+            label.setUpdatedAt(timestamp);
+            List<ActiveLabel> activeLabels = new ArrayList<>();
+            ActiveLabel activeLabel = new ActiveLabel();
+            activeLabel.setId(1L);
+            activeLabels.add(activeLabel);
+            label.setActiveLabels(activeLabels);
+            labels.add(label);
+        }
+        return labels;
+    }
+
+    @Test
+    public void LabelController_CreateLabel_ReturnCreateLabelResponse() throws Exception {
+        CreateLabelRequest request =
+                new CreateLabelRequest(user.getId(), workSpace.getId(), "important", "#0000FF");
+
+        doNothing().when(labelService).createLabel(request);
+
+        ResultActions response =
+                mockMvc.perform(post("/api/v1/labels").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
+}
+
