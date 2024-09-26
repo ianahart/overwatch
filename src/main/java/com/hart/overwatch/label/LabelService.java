@@ -100,7 +100,7 @@ public class LabelService {
         Label label = getLabelById(labelId);
         Long currentUserId = userService.getCurrentlyLoggedInUser().getId();
 
-        if (label.getUser().getId() != currentUserId) {
+        if (!label.getUser().getId().equals(currentUserId)) {
             throw new ForbiddenException("Cannot delete a label that is not yours");
         }
 
