@@ -142,6 +142,17 @@ public class LabelRepositoryTest {
 
         Assertions.assertThat(count).isEqualTo(2);
     }
+
+    @Test
+    public void LabelRepository_LabelExistsInWorkSpace_ReturnBooleanTrue() {
+        Long workSpaceId = workSpace.getId();
+        String color = "#000000";
+        String title = "priority";
+
+        boolean exists = labelRepository.labelExistsInWorkSpace(color, title, workSpaceId);
+
+        Assertions.assertThat(exists).isTrue();
+    }
 }
 
 
