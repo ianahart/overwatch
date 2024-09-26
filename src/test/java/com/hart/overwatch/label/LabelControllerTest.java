@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import com.hart.overwatch.activelabel.ActiveLabel;
 import com.hart.overwatch.config.JwtService;
+import com.hart.overwatch.label.dto.LabelDto;
 import com.hart.overwatch.label.request.CreateLabelRequest;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
@@ -147,6 +148,40 @@ public class LabelControllerTest {
 
         response.andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
+    @Test
+    public void LabelController_GetLabels_ReturnGetLabelsResponse() throws Exception {
+        Label label = labels.get(0);
+        List<LabelDto> labelDtos = new ArrayList<>();
+        LabelDto labelDto = new LabelDto();
+        labelDto.setId(label.getId());
+        labelDto.setColor(label.getColor());
+        labelDto.setTitle(label.getTitle());
+        labelDto.setIsChecked(label.getIsChecked());
+        labelDto.setUserId(label.getUser().getId());
+        labelDto.setCreatedAt(label.getCreatedAt());
+        labelDto.setWorkSpaceId(label.getWorkSpace().getId());
+        labelDtos.add(labelDto);
+
+        when(labelService.getLabels(workSpace.getId())).thenReturn(labelDtos);
+
+        ResultActions response = mockMvc.perform(get("/api/v1/labels").param("workSpaceId", "1"));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].id",
+                        CoreMatchers.is(labelDto.getId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].color",
+                        CoreMatchers.is(labelDto.getColor())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].title",
+                        CoreMatchers.is(labelDto.getTitle())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].isChecked",
+                        CoreMatchers.is(labelDto.getIsChecked())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].userId",
+                        CoreMatchers.is(labelDto.getUserId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].workSpaceId",
+                        CoreMatchers.is(labelDto.getWorkSpaceId().intValue())));
     }
 
 }
