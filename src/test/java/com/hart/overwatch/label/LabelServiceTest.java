@@ -246,5 +246,20 @@ public class LabelServiceTest {
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result.size()).isEqualTo(1);
     }
+
+    @Test
+    public void LabelService_DeleteLabel_ThrowForbiddenException() {
+        User forbiddenUser = new User();
+        forbiddenUser.setId(3L);
+        Label label = labels.get(0);
+
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(forbiddenUser);
+        when(labelRepository.findById(label.getId())).thenReturn(Optional.of(label));
+
+        Assertions.assertThatThrownBy(() -> {
+            labelService.deleteLabel(label.getId());
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("Cannot delete a label that is not yours");
+    }
 }
 
