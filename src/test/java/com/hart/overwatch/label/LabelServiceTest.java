@@ -124,6 +124,17 @@ public class LabelServiceTest {
         return labels;
     }
 
+    @Test
+    public void LabelService_GetLabelById_ThrowNotFoundException() {
+        Long nonExistentLabelId = 999L;
+        when(labelRepository.findById(nonExistentLabelId)).thenReturn(Optional.ofNullable(null));
+
+        Assertions.assertThatThrownBy(() -> {
+            labelService.getLabelById(nonExistentLabelId);
+        }).isInstanceOf(NotFoundException.class)
+                .hasMessage(String.format("Label with id %d was not found", nonExistentLabelId));
+    }
+
 
 }
 
