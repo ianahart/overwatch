@@ -184,5 +184,17 @@ public class LabelControllerTest {
                         CoreMatchers.is(labelDto.getWorkSpaceId().intValue())));
     }
 
+    @Test
+    public void LabelController_DeleteLabel_ReturnDeleteLabelResponse() throws Exception {
+        Label label = labels.get(0);
+        doNothing().when(labelService).deleteLabel(label.getId());
+
+        ResultActions response =
+                mockMvc.perform(delete(String.format("/api/v1/labels/%d", label.getId())));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
 }
 
