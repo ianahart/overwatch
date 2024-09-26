@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import java.util.Optional;
-import java.util.Collections;
 import java.util.List;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -25,20 +24,14 @@ import com.hart.overwatch.activelabel.ActiveLabelRepository;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
-import com.hart.overwatch.pagination.PaginationService;
-import com.hart.overwatch.pagination.dto.PaginationDto;
+import com.hart.overwatch.label.request.CreateLabelRequest;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
-import com.hart.overwatch.user.UserRepository;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.workspace.WorkSpace;
 import com.hart.overwatch.workspace.WorkSpaceService;
-import com.hart.overwatch.workspace.dto.CreateWorkSpaceDto;
-import com.hart.overwatch.workspace.dto.WorkSpaceDto;
-import com.hart.overwatch.workspace.request.CreateWorkSpaceRequest;
-import com.hart.overwatch.workspace.request.UpdateWorkSpaceRequest;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
@@ -149,6 +142,22 @@ public class LabelServiceTest {
         Assertions.assertThat(returnedLabel.getTitle()).isEqualTo(label.getTitle());
     }
 
+    @Test
+    public void LabelService_CreateLabel_ThrowForbiddenException() {
+        User forbiddenUser = new User();
+        forbiddenUser.setId(2L);
+        CreateLabelRequest request = new CreateLabelRequest(forbiddenUser.getId(),
+                workSpace.getId(), "priority", "#000000");
+
+        when(workSpaceService.getWorkSpaceById(request.getWorkSpaceId())).thenReturn(workSpace);
+        when(userService.getUserById(request.getUserId())).thenReturn(forbiddenUser);
+
+        Assertions.assertThatThrownBy(() -> {
+            labelService.createLabel(request);
+
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("Cannot add a label to another user's workspace");
+    }
 }
 
 
