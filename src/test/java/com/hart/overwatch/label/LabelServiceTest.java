@@ -198,5 +198,34 @@ public class LabelServiceTest {
                         "You have added the maximum amount of labels of (%d) for this workspace",
                         LABEL_QUANTITY_PER_WORKSPACE));
     }
+
+    @Test
+    public void LabelService_CreateLabel_ReturnNothing() {
+        int LABEL_QUANTITY_PER_WORKSPACE = 8;
+        CreateLabelRequest request =
+                new CreateLabelRequest(user.getId(), workSpace.getId(), "important", "#0000FF");
+
+        when(workSpaceService.getWorkSpaceById(workSpace.getId())).thenReturn(workSpace);
+        when(userService.getUserById(user.getId())).thenReturn(user);
+
+        when(labelRepository.labelExistsInWorkSpace(request.getColor(), request.getTitle(),
+                workSpace.getId())).thenReturn(false);
+
+        when(labelRepository.countLabelsInWorkSpace(workSpace.getId()))
+                .thenReturn(Long.valueOf(LABEL_QUANTITY_PER_WORKSPACE - 1));
+
+        Label newLabel = new Label();
+        newLabel.setId(3L);
+        newLabel.setTitle(request.getTitle());
+        newLabel.setColor(request.getColor());
+        newLabel.setIsChecked(false);
+        newLabel.setUser(user);
+        newLabel.setWorkSpace(workSpace);
+        when(labelRepository.save(any(Label.class))).thenReturn(newLabel);
+
+        labelService.createLabel(request);
+
+        verify(labelRepository, times(1)).save(any(Label.class));
+    }
 }
 
