@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.List;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,7 @@ import com.hart.overwatch.activelabel.ActiveLabelRepository;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.label.dto.LabelDto;
 import com.hart.overwatch.label.request.CreateLabelRequest;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
@@ -226,6 +228,23 @@ public class LabelServiceTest {
         labelService.createLabel(request);
 
         verify(labelRepository, times(1)).save(any(Label.class));
+    }
+
+    public void LabelService_GetLabels_ReturnListOfLabelDtos() {
+        int LABEL_QUANTITY_PER_WORKSPACE = 8;
+        Pageable pageable = PageRequest.of(0, LABEL_QUANTITY_PER_WORKSPACE);
+
+        LabelDto labelDto = new LabelDto();
+        Page<LabelDto> pageResult =
+                new PageImpl<>(Collections.singletonList(labelDto), pageable, 1);
+
+        when(labelRepository.getLabelsByWorkSpaceId(workSpace.getId(), pageable))
+                .thenReturn(pageResult);
+
+        List<LabelDto> result = labelService.getLabels(workSpace.getId());
+
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.size()).isEqualTo(1);
     }
 }
 
