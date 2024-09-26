@@ -158,6 +158,22 @@ public class LabelServiceTest {
         }).isInstanceOf(ForbiddenException.class)
                 .hasMessage("Cannot add a label to another user's workspace");
     }
-}
 
+    @Test
+    public void LabelService_CreateLabel_ThrowBadRequestExceptionExists() {
+        CreateLabelRequest request =
+                new CreateLabelRequest(user.getId(), workSpace.getId(), "priority", "#000000");
+
+        when(workSpaceService.getWorkSpaceById(request.getWorkSpaceId())).thenReturn(workSpace);
+        when(userService.getUserById(request.getUserId())).thenReturn(user);
+
+        when(labelRepository.labelExistsInWorkSpace(request.getColor(), request.getTitle(),
+                workSpace.getId())).thenReturn(true);
+
+        Assertions.assertThatThrownBy(() -> {
+            labelService.createLabel(request);
+        }).isInstanceOf(BadRequestException.class).hasMessage(
+                "You have already added a label with that title or color in this workspace");
+    }
+}
 
