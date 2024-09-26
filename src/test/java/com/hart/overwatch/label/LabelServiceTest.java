@@ -27,6 +27,7 @@ import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.label.dto.LabelDto;
 import com.hart.overwatch.label.request.CreateLabelRequest;
+import com.hart.overwatch.label.request.UpdateLabelRequest;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.user.Role;
@@ -276,6 +277,24 @@ public class LabelServiceTest {
 
         verify(activeLabelRepository, times(1)).delete(label.getActiveLabels().get(0));
         verify(labelRepository, times(1)).delete(label);
+    }
+
+    @Test
+    public void LabelService_UpdateLabel_ReturnLabelDto() {
+        Label label = labels.get(0);
+        UpdateLabelRequest request = new UpdateLabelRequest(true);
+
+        when(labelRepository.findById(label.getId())).thenReturn(Optional.of(label));
+        when(labelRepository.save(any(Label.class))).thenReturn(label);
+
+        LabelDto labelDto = labelService.updateLabel(label.getId(), request);
+
+        Assertions.assertThat(labelDto).isNotNull();
+        Assertions.assertThat(labelDto.getId()).isEqualTo(label.getId());
+
+        verify(labelRepository, times(1)).save(any(Label.class));
+
+        Assertions.assertThat(labelDto.getIsChecked()).isTrue();
     }
 }
 
