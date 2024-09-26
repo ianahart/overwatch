@@ -133,6 +133,15 @@ public class LabelRepositoryTest {
         Assertions.assertThat(labelDtos.get(0).getTitle()).isEqualTo("priority");
         Assertions.assertThat(labelDtos.get(1).getTitle()).isEqualTo("warning");
     }
+
+    @Test
+    public void LabelRepository_CountLabelsInWorkSpace_ReturnLongCount() {
+        Long workSpaceId = workSpace.getId();
+
+        long count = labelRepository.countLabelsInWorkSpace(workSpaceId);
+
+        Assertions.assertThat(count).isEqualTo(2);
+    }
 }
 
 
