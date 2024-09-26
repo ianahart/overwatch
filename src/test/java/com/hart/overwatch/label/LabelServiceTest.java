@@ -175,5 +175,28 @@ public class LabelServiceTest {
         }).isInstanceOf(BadRequestException.class).hasMessage(
                 "You have already added a label with that title or color in this workspace");
     }
+
+    @Test
+    public void LabelService_CreateLabel_ThrowBadRequestExceptionMaxLabels() {
+        int LABEL_QUANTITY_PER_WORKSPACE = 8;
+        CreateLabelRequest request =
+                new CreateLabelRequest(user.getId(), workSpace.getId(), "important", "#0000FF");
+
+        when(workSpaceService.getWorkSpaceById(request.getWorkSpaceId())).thenReturn(workSpace);
+        when(userService.getUserById(request.getUserId())).thenReturn(user);
+
+        when(labelRepository.labelExistsInWorkSpace(request.getColor(), request.getTitle(),
+                workSpace.getId())).thenReturn(false);
+
+        when(labelRepository.countLabelsInWorkSpace(workSpace.getId()))
+                .thenReturn(Long.valueOf(LABEL_QUANTITY_PER_WORKSPACE + 1));
+
+        Assertions.assertThatThrownBy(() -> {
+            labelService.createLabel(request);
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage(String.format(
+                        "You have added the maximum amount of labels of (%d) for this workspace",
+                        LABEL_QUANTITY_PER_WORKSPACE));
+    }
 }
 
