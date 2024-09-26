@@ -261,5 +261,21 @@ public class LabelServiceTest {
         }).isInstanceOf(ForbiddenException.class)
                 .hasMessage("Cannot delete a label that is not yours");
     }
+
+    @Test
+    public void LabelService_DeleteLabel_ReturnNothing() {
+        Label label = labels.get(0);
+
+        when(labelRepository.findById(label.getId())).thenReturn(Optional.of(label));
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+
+        doNothing().when(activeLabelRepository).delete(label.getActiveLabels().get(0));
+        doNothing().when(labelRepository).delete(label);
+
+        labelService.deleteLabel(label.getId());
+
+        verify(activeLabelRepository, times(1)).delete(label.getActiveLabels().get(0));
+        verify(labelRepository, times(1)).delete(label);
+    }
 }
 
