@@ -197,6 +197,23 @@ public class CheckListServiceTest {
                         MAX_CHECKLISTS));
     }
 
+    @Test
+    public void CheckListService_CreateCheckList_ThrowBadRequestExceptionExists() {
+        CreateCheckListRequest request = new CreateCheckListRequest();
+        request.setUserId(user.getId());
+        request.setTitle("checklist-1");
+        request.settodoCardId(todoCard.getId());
+
+        when(checkListRepository.countCheckListsInTodoCard(todoCard.getId())).thenReturn(0L);
+        when(checkListRepository.checkListExistsByTitleAndUserIdAndTodoCardId(request.getUserId(),
+                request.gettodoCardId(), request.getTitle())).thenReturn(true);
+
+        Assertions.assertThatThrownBy(() -> {
+            checkListService.createCheckList(request);
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage(String.format("You have already added a checklist with that title"));
+    }
+
 }
 
 
