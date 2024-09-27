@@ -182,6 +182,14 @@ public class CheckListRepositoryTest {
         Assertions.assertThat(page.getContent().size()).isEqualTo(2);
     }
 
+    @Test
+    public void CheckListRepository_CountCheckListsInTodoCard_ReturnLongCount() {
+        Long todoCardId = todoCard.getId();
+
+        long count = checkListRepository.countCheckListsInTodoCard(todoCardId);
+
+        Assertions.assertThat(count).isEqualTo(checkLists.size());
+    }
 }
 
 
