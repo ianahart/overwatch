@@ -7,7 +7,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import com.hart.overwatch.activelabel.ActiveLabel;
+import com.hart.overwatch.activelabel.dto.ActiveLabelDto;
 import com.hart.overwatch.activelabel.request.CreateActiveLabelRequest;
+import com.hart.overwatch.activity.dto.ActivityDto;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.label.Label;
 import com.hart.overwatch.profile.Profile;
@@ -29,6 +31,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -198,10 +201,40 @@ public class ActiveLabelControllerTest {
         doNothing().when(activeLabelService).deleteActiveLabel(todoCardId, labelId);
 
         ResultActions response =
-                mockMvc.perform(delete(String.format("/api/v1/active-labels/%d", todoCardId)).param("labelId", "1"));
+                mockMvc.perform(delete(String.format("/api/v1/active-labels/%d", todoCardId))
+                        .param("labelId", "1"));
 
         response.andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
+    @Test
+    public void ActiveLabelController_GetActiveLabels_ReturnGetActiveLabelResponse()
+            throws Exception {
+        ActiveLabelDto activeLabelDto = new ActiveLabelDto();
+        activeLabelDto.setId(activeLabel.getId());
+        activeLabelDto.setColor(activeLabel.getLabel().getColor());
+        activeLabelDto.setTitle(activeLabel.getLabel().getTitle());
+        activeLabelDto.setLabelId(activeLabel.getLabel().getId());
+        activeLabelDto.setTodoCardId(activeLabel.getTodoCard().getId());
+
+        when(activeLabelService.getActiveLabels(todoCard.getId()))
+                .thenReturn(List.of(activeLabelDto));
+
+        ResultActions response =
+                mockMvc.perform(get("/api/v1/active-labels").param("todoCardId", "1"));
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].id",
+                        CoreMatchers.is(activeLabelDto.getId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].color",
+                        CoreMatchers.is(activeLabelDto.getColor())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].title",
+                        CoreMatchers.is(activeLabelDto.getTitle())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].labelId",
+                        CoreMatchers.is(activeLabelDto.getLabelId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].todoCardId",
+                        CoreMatchers.is(activeLabelDto.getTodoCardId().intValue())));
     }
 }
 
