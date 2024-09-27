@@ -151,6 +151,18 @@ public class CheckListServiceTest {
                 .hasMessage(String.format("CheckList with id %d was not found", checkList.getId()));
     }
 
+    @Test
+    public void CheckListService_GetCheckListById_ReturnCheckList() {
+        CheckList checkList = checkLists.getFirst();
+
+        when(checkListRepository.findById(checkList.getId())).thenReturn(Optional.of(checkList));
+
+        CheckList returnedCheckList = checkListService.getCheckListById(checkList.getId());
+
+        Assertions.assertThat(returnedCheckList).isNotNull();
+        Assertions.assertThat(returnedCheckList.getId()).isEqualTo(checkList.getId());
+    }
+
 }
 
 
