@@ -193,6 +193,24 @@ public class ActiveLabelServiceTest {
         verify(activeLabelRepository, times(1)).save(any(ActiveLabel.class));
     }
 
+    @Test
+    public void ActiveLabelService_DeleteActiveLabel_ReturnNothing() {
+        Long todoCardId = todoCard.getId();
+        Long labelId = labels.get(0).getId();
+
+        when(activeLabelRepository.findByTodoCardIdAndLabelId(todoCardId, labelId))
+                .thenReturn(activeLabel);
+
+        String text = String.format("You removed the label %s to your card",
+                activeLabel.getLabel().getTitle());
+        when(activityService.createActivity(text, todoCardId,
+                activeLabel.getTodoCard().getUser().getId())).thenReturn(new ActivityDto());
+        doNothing().when(activeLabelRepository).delete(activeLabel);
+
+        activeLabelService.deleteActiveLabel(todoCardId, labelId);
+
+        verify(activeLabelRepository, times(1)).delete(activeLabel);
+    }
 }
 
 
