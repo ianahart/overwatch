@@ -214,6 +214,29 @@ public class CheckListServiceTest {
                 .hasMessage(String.format("You have already added a checklist with that title"));
     }
 
+    @Test
+    public void CheckListService_CreateCheckList_ReturnNothing() {
+        CreateCheckListRequest request = new CreateCheckListRequest();
+        request.setUserId(user.getId());
+        request.setTitle("checklist-3");
+        request.settodoCardId(todoCard.getId());
+
+        when(checkListRepository.countCheckListsInTodoCard(todoCard.getId())).thenReturn(0L);
+        when(checkListRepository.checkListExistsByTitleAndUserIdAndTodoCardId(request.getUserId(),
+                request.gettodoCardId(), request.getTitle())).thenReturn(false);
+        when(todoCardService.getTodoCardById(request.gettodoCardId())).thenReturn(todoCard);
+        when(userService.getUserById(request.getUserId())).thenReturn(user);
+
+        CheckList newCheckList = new CheckList();
+        newCheckList.setTitle(request.getTitle());
+
+        when(checkListRepository.save(any(CheckList.class))).thenReturn(newCheckList);
+
+        checkListService.createCheckList(request);
+
+        verify(checkListRepository, times(1)).save(any(CheckList.class));
+    }
+
 }
 
 
