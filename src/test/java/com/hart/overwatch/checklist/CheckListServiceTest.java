@@ -271,6 +271,17 @@ public class CheckListServiceTest {
 
     }
 
+    @Test
+    public void CheckListService_DeleteCheckList_ThrowBadRequestExceptionMissingParams() {
+        Long checkListId = null;
+
+        Assertions.assertThatThrownBy(() -> {
+            checkListService.deleteCheckList(checkListId);
+
+        }).isInstanceOf(BadRequestException.class).hasMessage("Missing checkListId parameter");
+
+    }
+
 }
 
 
