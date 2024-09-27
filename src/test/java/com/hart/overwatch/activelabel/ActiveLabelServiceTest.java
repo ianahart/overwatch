@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import com.hart.overwatch.activelabel.dto.ActiveLabelDto;
 import com.hart.overwatch.activelabel.request.CreateActiveLabelRequest;
 import com.hart.overwatch.activity.ActivityService;
 import com.hart.overwatch.activity.dto.ActivityDto;
@@ -210,6 +211,24 @@ public class ActiveLabelServiceTest {
         activeLabelService.deleteActiveLabel(todoCardId, labelId);
 
         verify(activeLabelRepository, times(1)).delete(activeLabel);
+    }
+
+    @Test
+    public void ActiveLabelService_GetActiveLabels_ReturnListOfActiveLabelDtos() {
+        ActiveLabelDto activeLabelDto = new ActiveLabelDto();
+        activeLabelDto.setId(activeLabel.getId());
+        activeLabelDto.setColor(activeLabel.getLabel().getColor());
+        activeLabelDto.setTitle(activeLabel.getLabel().getTitle());
+        activeLabelDto.setLabelId(labels.get(0).getId());
+        activeLabelDto.setTodoCardId(todoCard.getId());
+
+        when(activeLabelRepository.getActiveLabels(todoCard.getId()))
+                .thenReturn(List.of(activeLabelDto));
+
+        List<ActiveLabelDto> activeLabelDtos = activeLabelService.getActiveLabels(todoCard.getId());
+
+        Assertions.assertThat(activeLabelDtos).isNotNull();
+        Assertions.assertThat(activeLabelDtos.size()).isEqualTo(1);
     }
 }
 
