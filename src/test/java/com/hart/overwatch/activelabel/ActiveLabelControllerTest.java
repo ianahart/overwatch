@@ -189,6 +189,20 @@ public class ActiveLabelControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 
+    @Test
+    public void ActiveLabelController_DeleteActiveLabel_ReturnDeleteActiveLabelResponse()
+            throws Exception {
+        Long todoCardId = todoCard.getId();
+        Long labelId = labels.get(0).getId();
+
+        doNothing().when(activeLabelService).deleteActiveLabel(todoCardId, labelId);
+
+        ResultActions response =
+                mockMvc.perform(delete(String.format("/api/v1/active-labels/%d", todoCardId)).param("labelId", "1"));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
 }
 
 
