@@ -237,6 +237,15 @@ public class CheckListServiceTest {
         verify(checkListRepository, times(1)).save(any(CheckList.class));
     }
 
+    @Test
+    public void CheckListService_GetCheckLists_ReturnListOfCheckListDtos() {
+        Long todoCardId = null;
+
+        Assertions.assertThatThrownBy(() -> {
+            checkListService.getCheckLists(todoCardId);
+        }).isInstanceOf(BadRequestException.class).hasMessage("Missing todoCardId parameter");
+    }
+
 }
 
 
