@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.activelabel.dto.ActiveLabelDto;
 import com.hart.overwatch.activelabel.request.CreateActiveLabelRequest;
+import com.hart.overwatch.checklist.dto.CheckListDto;
 import com.hart.overwatch.checklist.request.CreateCheckListRequest;
 import com.hart.overwatch.checklistitem.CheckListItem;
 import com.hart.overwatch.config.JwtService;
@@ -175,7 +176,40 @@ public class CheckListControllerTest {
                         .content(objectMapper.writeValueAsString(request)));
 
         response.andExpect(MockMvcResultMatchers.status().isCreated())
-            .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
+    @Test
+    public void CheckListController_GetCheckLists_ReturnGetCheckListsResponse() throws Exception {
+        LocalDateTime timestamp = LocalDateTime.now();
+        Long todoCardId = todoCard.getId();
+        CheckListDto checkListDto = new CheckListDto();
+        CheckList checkList = checkLists.getFirst();
+        checkListDto.setId(checkList.getId());
+        checkListDto.setTitle(checkList.getTitle());
+        checkListDto.setUserId(user.getId());
+        checkListDto.setTodoCardId(todoCardId);
+        checkListDto.setIsCompleted(false);
+        checkListDto.setCreatedAt(timestamp);
+        when(checkListService.getCheckLists(todoCardId)).thenReturn(List.of(checkListDto));
+
+        ResultActions response =
+                mockMvc.perform(get(String.format("/api/v1/todo-cards/%d/checklists", todoCardId)));
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
+    @Test
+    public void CheckListController_DeleteCheckList_ReturnDeleteCheckListResponse()
+            throws Exception {
+        Long checkListId = checkLists.getFirst().getId();
+        doNothing().when(checkListService).deleteCheckList(checkListId);
+
+        ResultActions response =
+                mockMvc.perform(delete(String.format("/api/v1/checklists/%d", checkListId)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 
 }
