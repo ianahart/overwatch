@@ -178,6 +178,25 @@ public class CheckListServiceTest {
                 .hasMessage("Missing todoCardId or userId parameter");
     }
 
+    @Test
+    public void CheckListService_CreateCheckList_ThrowBadRequestExceptionMax() {
+        CreateCheckListRequest request = new CreateCheckListRequest();
+        int MAX_CHECKLISTS = 5;
+        request.setUserId(user.getId());
+        request.setTitle("checklist-3");
+        request.settodoCardId(todoCard.getId());
+
+        when(checkListRepository.countCheckListsInTodoCard(todoCard.getId()))
+                .thenReturn(Long.valueOf(MAX_CHECKLISTS + 1));
+
+        Assertions.assertThatThrownBy(() -> {
+            checkListService.createCheckList(request);
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage(String.format(
+                        "You have added the maximum (%d) amount of checklists for this card",
+                        MAX_CHECKLISTS));
+    }
+
 }
 
 
