@@ -14,17 +14,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.hart.overwatch.activelabel.dto.ActiveLabelDto;
-import com.hart.overwatch.activelabel.request.CreateActiveLabelRequest;
-import com.hart.overwatch.activity.ActivityService;
-import com.hart.overwatch.activity.dto.ActivityDto;
 import com.hart.overwatch.advice.BadRequestException;
+import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.checklist.dto.CheckListDto;
 import com.hart.overwatch.checklist.request.CreateCheckListRequest;
 import com.hart.overwatch.checklistitem.CheckListItem;
-import com.hart.overwatch.label.Label;
-import com.hart.overwatch.label.LabelService;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.todocard.TodoCard;
@@ -281,6 +276,40 @@ public class CheckListServiceTest {
         }).isInstanceOf(BadRequestException.class).hasMessage("Missing checkListId parameter");
 
     }
+
+    @Test
+    public void CheckListService_DeleteCheckList_ThrowForbiddenExceptionNotOwner() {
+        Long checkListId = checkLists.getFirst().getId();
+        User forbiddenUser = new User();
+        forbiddenUser.setId(999L);
+
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(forbiddenUser);
+        when(checkListRepository.findById(checkListId))
+                .thenReturn(Optional.of(checkLists.getFirst()));
+
+        Assertions.assertThatThrownBy(() -> {
+            checkListService.deleteCheckList(checkListId);
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("Cannot delete a checklist that is not yours");
+
+    }
+
+    @Test
+    public void CheckListService_DeleteCheckList_ReturnNothing() {
+        Long checkListId = checkLists.getFirst().getId();
+
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+        when(checkListRepository.findById(checkListId))
+                .thenReturn(Optional.of(checkLists.getFirst()));
+
+        doNothing().when(checkListRepository).delete(checkLists.getFirst());
+
+        checkListService.deleteCheckList(checkListId);
+
+        verify(checkListRepository, times(1)).delete(checkLists.getFirst());
+
+    }
+
 
 }
 
