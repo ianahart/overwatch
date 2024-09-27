@@ -170,6 +170,28 @@ public class ActiveLabelServiceTest {
                 .hasMessage("Either todo card id is missing or label id is missing");
     }
 
+    @Test
+    public void ActiveLabelService_CreateActiveLabel_ReturnNothing() {
+        CreateActiveLabelRequest request = new CreateActiveLabelRequest();
+        Label label = labels.get(0);
+        request.setLabelId(label.getId());
+        request.setTodoCardId(todoCard.getId());
+
+        when(labelService.getLabelById(label.getId())).thenReturn(label);
+        when(todoCardService.getTodoCardById(todoCard.getId())).thenReturn(todoCard);
+
+        when(activeLabelRepository.save(any(ActiveLabel.class))).thenReturn(activeLabel);
+
+        String text = String.format("You added the label %s to your card",
+                activeLabel.getLabel().getTitle());
+
+        when(activityService.createActivity(text, todoCard.getId(), todoCard.getUser().getId()))
+                .thenReturn(new ActivityDto());
+
+        activeLabelService.createActiveLabel(request);
+
+        verify(activeLabelRepository, times(1)).save(any(ActiveLabel.class));
+    }
 
 }
 
