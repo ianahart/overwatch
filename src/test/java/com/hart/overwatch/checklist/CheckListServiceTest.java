@@ -20,7 +20,9 @@ import com.hart.overwatch.activity.ActivityService;
 import com.hart.overwatch.activity.dto.ActivityDto;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.checklist.dto.CheckListDto;
 import com.hart.overwatch.checklist.request.CreateCheckListRequest;
+import com.hart.overwatch.checklistitem.CheckListItem;
 import com.hart.overwatch.label.Label;
 import com.hart.overwatch.label.LabelService;
 import com.hart.overwatch.profile.Profile;
@@ -85,6 +87,13 @@ public class CheckListServiceTest {
             checkList.setTitle(String.format("checklist-%d", i));
             checkList.setCreatedAt(timestamp);
             checkList.setUpdatedAt(timestamp);
+            List<CheckListItem> checkListItems = new ArrayList<>();
+            CheckListItem checkListItem = new CheckListItem();
+            checkListItem.setUser(user);
+            checkListItem.setCheckList(checkList);
+            checkListItem.setTitle("checklistitem title");
+            checkListItems.add(checkListItem);
+            checkList.setCheckListItems(checkListItems);
 
             checkLists.add(checkList);
         }
@@ -238,12 +247,28 @@ public class CheckListServiceTest {
     }
 
     @Test
-    public void CheckListService_GetCheckLists_ReturnListOfCheckListDtos() {
+    public void CheckListService_GetCheckLists_ThrowsBadRequestException() {
         Long todoCardId = null;
 
         Assertions.assertThatThrownBy(() -> {
             checkListService.getCheckLists(todoCardId);
         }).isInstanceOf(BadRequestException.class).hasMessage("Missing todoCardId parameter");
+    }
+
+    @Test
+    public void CheckListService_GetCheckLists_ReturnListOfCheckListDtos() {
+        Long todoCardId = todoCard.getId();
+        when(checkListRepository.findByTodoCardId(todoCardId)).thenReturn(checkLists);
+
+        List<CheckListDto> checkListDtos = checkListService.getCheckLists(todoCardId);
+
+        Assertions.assertThat(checkListDtos).isNotNull();
+        Assertions.assertThat(checkListDtos.size()).isEqualTo(2);
+        Assertions.assertThat(checkListDtos.getFirst().getId())
+                .isEqualTo(checkLists.getFirst().getId());
+        Assertions.assertThat(checkListDtos.getLast().getId())
+                .isEqualTo(checkLists.getLast().getId());
+
     }
 
 }
