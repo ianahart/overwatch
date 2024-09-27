@@ -129,7 +129,7 @@ public class CheckListService {
         User user = userService.getCurrentlyLoggedInUser();
         CheckList checkList = getCheckListById(checkListId);
 
-        if (user.getId() != checkList.getUser().getId()) {
+        if (!user.getId().equals(checkList.getUser().getId())) {
             throw new ForbiddenException("Cannot delete a checklist that is not yours");
         }
 
