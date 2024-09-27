@@ -19,10 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import com.hart.overwatch.activelabel.dto.ActiveLabelDto;
 import com.hart.overwatch.checklist.dto.CheckListDto;
-import com.hart.overwatch.label.Label;
-import com.hart.overwatch.label.LabelRepository;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.todolist.TodoList;
 import com.hart.overwatch.todolist.TodoListRepository;
@@ -68,10 +65,6 @@ public class CheckListRepositoryTest {
     private TodoCard todoCard;
 
     private List<CheckList> checkLists;
-
-    private TodoList todoList;
-
-
 
     @BeforeEach
     public void setUp() {
@@ -189,6 +182,18 @@ public class CheckListRepositoryTest {
         long count = checkListRepository.countCheckListsInTodoCard(todoCardId);
 
         Assertions.assertThat(count).isEqualTo(checkLists.size());
+    }
+
+    @Test
+    public void CheckListRepository_CheckListsExistsByTitleAndUserIdAndTodoCardId_ReturnBooleanTrue() {
+        Long userId = user.getId();
+        Long todoCardId = todoCard.getId();
+        String title = checkLists.get(0).getTitle();
+
+        boolean exists = checkListRepository.checkListExistsByTitleAndUserIdAndTodoCardId(userId,
+                todoCardId, title);
+
+        Assertions.assertThat(exists).isTrue();
     }
 }
 
