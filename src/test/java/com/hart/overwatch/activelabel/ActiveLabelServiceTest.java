@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import com.hart.overwatch.activelabel.request.CreateActiveLabelRequest;
 import com.hart.overwatch.activity.ActivityService;
 import com.hart.overwatch.activity.dto.ActivityDto;
 import com.hart.overwatch.advice.BadRequestException;
@@ -156,6 +157,18 @@ public class ActiveLabelServiceTest {
         return labels;
     }
 
+    @Test
+    public void ActiveLabelService_CreateActiveLabel_Throw_BadRequestException() {
+        CreateActiveLabelRequest request = new CreateActiveLabelRequest();
+        Label label = labels.get(0);
+        request.setLabelId(label.getId());
+        request.setTodoCardId(null);
+
+        Assertions.assertThatThrownBy(() -> {
+            activeLabelService.createActiveLabel(request);
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage("Either todo card id is missing or label id is missing");
+    }
 
 
 }
