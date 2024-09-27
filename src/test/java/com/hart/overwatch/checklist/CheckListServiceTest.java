@@ -20,6 +20,7 @@ import com.hart.overwatch.activity.ActivityService;
 import com.hart.overwatch.activity.dto.ActivityDto;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.checklist.request.CreateCheckListRequest;
 import com.hart.overwatch.label.Label;
 import com.hart.overwatch.label.LabelService;
 import com.hart.overwatch.profile.Profile;
@@ -161,6 +162,20 @@ public class CheckListServiceTest {
 
         Assertions.assertThat(returnedCheckList).isNotNull();
         Assertions.assertThat(returnedCheckList.getId()).isEqualTo(checkList.getId());
+    }
+
+    @Test
+    public void CheckListService_CreateCheckList_ThrowBadRequestExceptionMissingParams() {
+        CreateCheckListRequest request = new CreateCheckListRequest();
+        request.setUserId(user.getId());
+        request.setTitle("checklist-3");
+        request.settodoCardId(null);
+
+
+        Assertions.assertThatThrownBy(() -> {
+            checkListService.createCheckList(request);
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage("Missing todoCardId or userId parameter");
     }
 
 }
