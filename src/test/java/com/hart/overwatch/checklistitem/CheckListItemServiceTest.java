@@ -39,6 +39,9 @@ public class CheckListItemServiceTest {
     private CheckListItemService checkListItemService;
 
     @Mock
+    CheckListItemRepository checkListItemRepository;
+
+    @Mock
     CheckListService checkListService;
 
     @Mock
@@ -159,6 +162,21 @@ public class CheckListItemServiceTest {
             checkListItemService.createCheckListItem(request);
         }).isInstanceOf(BadRequestException.class)
                 .hasMessage("Could not complete your request. Please contact support.");
+    }
+
+    @Test
+    public void CheckListItemService_CreateCheckListItem_ThrowBadRequestExceptionMax() {
+       int ITEMS_PER_LIST = 10;
+       CreateCheckListItemRequest request = new CreateCheckListItemRequest();
+        request.setUserId(user.getId());
+        request.setCheckListId(checkList.getId());
+        request.setTitle("checklistitem-3");
+
+        when(checkListItemRepository.countCheckListItemsInCheckList(request.getCheckListId())).thenReturn(Long.valueOf(ITEMS_PER_LIST));
+
+        Assertions.assertThatThrownBy(() -> {
+             checkListItemService.createCheckListItem(request);
+        }).isInstanceOf(BadRequestException.class).hasMessage(String.format("You have reached the maximum amount of list items (%d)", ITEMS_PER_LIST));
     }
 
 }
