@@ -16,10 +16,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
-import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.checklist.CheckList;
 import com.hart.overwatch.checklist.CheckListService;
-import com.hart.overwatch.checklist.request.CreateCheckListRequest;
 import com.hart.overwatch.checklistitem.dto.CheckListItemDto;
 import com.hart.overwatch.checklistitem.request.CreateCheckListItemRequest;
 import com.hart.overwatch.checklistitem.request.UpdateCheckListItemRequest;
@@ -261,13 +259,26 @@ public class CheckListItemServiceTest {
         CheckListItem checkListItem = checkListItems.getFirst();
         User forbiddenUser = new User();
         forbiddenUser.setId(999L);
-        when(checkListItemRepository.findById(checkListItem.getId())).thenReturn(Optional.of(checkListItem));
+        when(checkListItemRepository.findById(checkListItem.getId()))
+                .thenReturn(Optional.of(checkListItem));
         when(userService.getCurrentlyLoggedInUser()).thenReturn(forbiddenUser);
 
         Assertions.assertThatThrownBy(() -> {
-           checkListItemService.deleteCheckListItem(checkListItem.getId());
-        }).isInstanceOf(ForbiddenException.class).hasMessage("Cannot delete a check list item that is not yours");
+            checkListItemService.deleteCheckListItem(checkListItem.getId());
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("Cannot delete a check list item that is not yours");
+    }
 
+    @Test
+    public void CheckListItemService_DeleteCheckListItem_ReturnNothing() {
+        CheckListItem checkListItem = checkListItems.getFirst();
+        when(checkListItemRepository.findById(checkListItem.getId()))
+                .thenReturn(Optional.of(checkListItem));
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+
+        doNothing().when(checkListItemRepository).delete(checkListItem);
+
+        checkListItemService.deleteCheckListItem(checkListItem.getId());
     }
 }
 
