@@ -102,8 +102,8 @@ public class CheckListItemService {
         CheckListItem checkListItem = getCheckListItemById(checkListItemId);
         User user = userService.getCurrentlyLoggedInUser();
 
-        if (checkListItem.getUser().getId() != user.getId()) {
-            throw new ForbiddenException("Cannot deltete a check list item that is not yours");
+        if (!checkListItem.getUser().getId().equals(user.getId())) {
+            throw new ForbiddenException("Cannot delete a check list item that is not yours");
         }
 
         checkListItemRepository.delete(checkListItem);
