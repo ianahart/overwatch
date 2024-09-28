@@ -3,11 +3,16 @@ package com.hart.overwatch.checklistitem;
 import java.util.List;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import com.ctc.wstx.shaded.msv_core.datatype.xsd.AnyURIType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import com.hart.overwatch.checklist.CheckList;
 import com.hart.overwatch.checklist.dto.CheckListDto;
 import com.hart.overwatch.checklist.request.CreateCheckListRequest;
 import com.hart.overwatch.checklistitem.CheckListItem;
+import com.hart.overwatch.checklistitem.dto.CheckListItemDto;
+import com.hart.overwatch.checklistitem.request.CreateCheckListItemRequest;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
@@ -64,7 +69,7 @@ public class CheckListItemControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    ate User user;
+    private User user;
 
     private WorkSpace workSpace;
 
@@ -167,6 +172,35 @@ public class CheckListItemControllerTest {
         return user;
     }
 
+    @Test
+    public void CheckListItemController_CreateCheckListItem_ReturnCreateCheckListItemResponse()
+            throws Exception {
+        CreateCheckListItemRequest request = new CreateCheckListItemRequest();
+        request.setTitle("checklistitem-3");
+        request.setUserId(user.getId());
+        request.setCheckListId(checkList.getId());
+
+        CheckListItemDto checkListItemDto = new CheckListItemDto();
+        checkListItemDto.setTitle(request.getTitle());
+        checkListItemDto.setUserId(request.getUserId());
+        checkListItemDto.setCheckListId(request.getCheckListId());
+
+        when(checkListItemService.createCheckListItem(any(CreateCheckListItemRequest.class)))
+                .thenReturn(checkListItemDto);
+
+        ResultActions response = mockMvc
+                .perform(post("/api/v1/checklist-items").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.title",
+                        CoreMatchers.is(checkListItemDto.getTitle())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.userId",
+                        CoreMatchers.is(checkListItemDto.getUserId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.checkListId",
+                        CoreMatchers.is(checkListItemDto.getCheckListId().intValue())));
+    }
 }
 
 
