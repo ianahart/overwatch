@@ -13,6 +13,7 @@ import com.hart.overwatch.checklist.request.CreateCheckListRequest;
 import com.hart.overwatch.checklistitem.CheckListItem;
 import com.hart.overwatch.checklistitem.dto.CheckListItemDto;
 import com.hart.overwatch.checklistitem.request.CreateCheckListItemRequest;
+import com.hart.overwatch.checklistitem.request.UpdateCheckListItemRequest;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
@@ -40,6 +41,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import org.hamcrest.CoreMatchers;
@@ -200,6 +202,28 @@ public class CheckListItemControllerTest {
                         CoreMatchers.is(checkListItemDto.getUserId().intValue())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.checkListId",
                         CoreMatchers.is(checkListItemDto.getCheckListId().intValue())));
+    }
+
+    @Test
+    public void CheckListItemController_UpdateCheckListItem_ReturnUpdateCheckListItemResponse()
+            throws Exception {
+        UpdateCheckListItemRequest request = new UpdateCheckListItemRequest();
+        CheckListItem checkListItem = checkListItems.getFirst();
+        request.setId(checkListItem.getId());
+        request.setTitle("checklistitem-updated");
+        request.setUserId(user.getId());
+        request.setIsCompleted(true);
+        request.setCheckListId(checkList.getId());
+
+        doNothing().when(checkListItemService).updateCheckListItem(request);
+
+        ResultActions response = mockMvc
+                .perform(put(String.format("/api/v1/checklist-items/%d", checkListItem.getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 }
 
