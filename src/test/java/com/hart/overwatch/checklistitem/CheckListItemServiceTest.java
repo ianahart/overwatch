@@ -255,6 +255,20 @@ public class CheckListItemServiceTest {
 
         verify(checkListItemRepository, times(1)).save(any(CheckListItem.class));
     }
+
+    @Test
+    public void CheckListItemService_DeleteCheckListItem_ThrowForbiddenException() {
+        CheckListItem checkListItem = checkListItems.getFirst();
+        User forbiddenUser = new User();
+        forbiddenUser.setId(999L);
+        when(checkListItemRepository.findById(checkListItem.getId())).thenReturn(Optional.of(checkListItem));
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(forbiddenUser);
+
+        Assertions.assertThatThrownBy(() -> {
+           checkListItemService.deleteCheckListItem(checkListItem.getId());
+        }).isInstanceOf(ForbiddenException.class).hasMessage("Cannot delete a check list item that is not yours");
+
+    }
 }
 
 
