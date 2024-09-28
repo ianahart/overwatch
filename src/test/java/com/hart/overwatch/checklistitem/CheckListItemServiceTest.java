@@ -20,6 +20,7 @@ import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.checklist.CheckList;
 import com.hart.overwatch.checklist.CheckListService;
 import com.hart.overwatch.checklist.request.CreateCheckListRequest;
+import com.hart.overwatch.checklistitem.dto.CheckListItemDto;
 import com.hart.overwatch.checklistitem.request.CreateCheckListItemRequest;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
@@ -198,6 +199,39 @@ public class CheckListItemServiceTest {
             checkListItemService.createCheckListItem(request);
         }).isInstanceOf(BadRequestException.class).hasMessage(
                 String.format("You have already added %s in this list", request.getTitle()));
+    }
+
+    public void CheckListItemService_CreateCheckListItem_ReturnCheckListItemDto() {
+        CreateCheckListItemRequest request = new CreateCheckListItemRequest();
+        request.setTitle("checklistitem-3");
+        request.setUserId(user.getId());
+        request.setCheckListId(checkList.getId());
+
+        when(checkListItemRepository.countCheckListItemsInCheckList(request.getCheckListId()))
+                .thenReturn(Long.valueOf(0));
+        when(checkListItemRepository.checkListItemExistsByUserIdAndCheckListIdAndTitle(
+                request.getUserId(), request.getCheckListId(), request.getTitle()))
+                        .thenReturn(false);
+        when(checkListService.getCheckListById(request.getCheckListId())).thenReturn(checkList);
+        when(userService.getUserById(user.getId())).thenReturn(user);
+
+        CheckListItem newCheckListItem = new CheckListItem();
+        newCheckListItem.setId(3L);
+        newCheckListItem.setUser(user);
+        newCheckListItem.setCheckList(checkList);
+        newCheckListItem.setTitle(request.getTitle());
+        newCheckListItem.setIsCompleted(false);
+
+        when(checkListItemRepository.save(any(CheckListItem.class))).thenReturn(newCheckListItem);
+
+        CheckListItemDto checkListItemDto = checkListItemService.createCheckListItem(request);
+
+        Assertions.assertThat(checkListItemDto).isNotNull();
+        Assertions.assertThat(checkListItemDto.getTitle()).isEqualTo(newCheckListItem.getTitle());
+        Assertions.assertThat(checkListItemDto.getUserId())
+                .isEqualTo(newCheckListItem.getUser().getId());
+        Assertions.assertThat(checkListItemDto.getCheckListId())
+                .isEqualTo(newCheckListItem.getCheckList().getId());
     }
 }
 
