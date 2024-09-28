@@ -166,19 +166,39 @@ public class CheckListItemServiceTest {
 
     @Test
     public void CheckListItemService_CreateCheckListItem_ThrowBadRequestExceptionMax() {
-       int ITEMS_PER_LIST = 10;
-       CreateCheckListItemRequest request = new CreateCheckListItemRequest();
+        int ITEMS_PER_LIST = 10;
+        CreateCheckListItemRequest request = new CreateCheckListItemRequest();
         request.setUserId(user.getId());
         request.setCheckListId(checkList.getId());
         request.setTitle("checklistitem-3");
 
-        when(checkListItemRepository.countCheckListItemsInCheckList(request.getCheckListId())).thenReturn(Long.valueOf(ITEMS_PER_LIST));
+        when(checkListItemRepository.countCheckListItemsInCheckList(request.getCheckListId()))
+                .thenReturn(Long.valueOf(ITEMS_PER_LIST));
 
         Assertions.assertThatThrownBy(() -> {
-             checkListItemService.createCheckListItem(request);
-        }).isInstanceOf(BadRequestException.class).hasMessage(String.format("You have reached the maximum amount of list items (%d)", ITEMS_PER_LIST));
+            checkListItemService.createCheckListItem(request);
+        }).isInstanceOf(BadRequestException.class).hasMessage(String
+                .format("You have reached the maximum amount of list items (%d)", ITEMS_PER_LIST));
     }
 
+    @Test
+    public void CheckListItemService_CreateCheckListItem_ThrowBadRequstExceptionExists() {
+        CreateCheckListItemRequest request = new CreateCheckListItemRequest();
+        request.setUserId(user.getId());
+        request.setCheckListId(checkList.getId());
+        request.setTitle("checklistitem-3");
+
+        when(checkListItemRepository.countCheckListItemsInCheckList(checkList.getId()))
+                .thenReturn(Long.valueOf(0));
+        when(checkListItemRepository.checkListItemExistsByUserIdAndCheckListIdAndTitle(
+                request.getUserId(), request.getCheckListId(), request.getTitle()))
+                        .thenReturn(true);
+
+        Assertions.assertThatThrownBy(() -> {
+            checkListItemService.createCheckListItem(request);
+        }).isInstanceOf(BadRequestException.class).hasMessage(
+                String.format("You have already added %s in this list", request.getTitle()));
+    }
 }
 
 
