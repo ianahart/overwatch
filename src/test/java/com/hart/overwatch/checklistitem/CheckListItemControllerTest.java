@@ -3,14 +3,9 @@ package com.hart.overwatch.checklistitem;
 import java.util.List;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import com.ctc.wstx.shaded.msv_core.datatype.xsd.AnyURIType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import com.hart.overwatch.checklist.CheckList;
-import com.hart.overwatch.checklist.dto.CheckListDto;
-import com.hart.overwatch.checklist.request.CreateCheckListRequest;
-import com.hart.overwatch.checklistitem.CheckListItem;
 import com.hart.overwatch.checklistitem.dto.CheckListItemDto;
 import com.hart.overwatch.checklistitem.request.CreateCheckListItemRequest;
 import com.hart.overwatch.checklistitem.request.UpdateCheckListItemRequest;
@@ -43,7 +38,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import org.hamcrest.CoreMatchers;
 
 
@@ -222,6 +216,19 @@ public class CheckListItemControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)));
 
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
+    @Test
+    public void CheckListItemController_DeleteCheckListItem_ReturnDeleteCheckListItemResponse()
+            throws Exception {
+        Long checkListItemId = checkListItems.getFirst().getId();
+
+        doNothing().when(checkListItemService).deleteCheckListItem(checkListItemId);
+
+        ResultActions response = mockMvc
+                .perform(delete(String.format("/api/v1/checklist-items/%d", checkListItemId)));
         response.andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
