@@ -185,6 +185,18 @@ public class CheckListItemRepositoryTest {
 
         Assertions.assertThat(count).isEqualTo(2);
     }
+
+    @Test
+    public void CheckListItemRepository_CheckListItemExistsByUserIdAndCheckListIdAndTitle_ReturnBooleanTrue() {
+        String title = "checklistitem-1";
+        Long userId = user.getId();
+        Long checkListId = checkList.getId();
+
+        boolean checkListItemExists = checkListItemRepository
+                .checkListItemExistsByUserIdAndCheckListIdAndTitle(userId, checkListId, title);
+
+        Assertions.assertThat(checkListItemExists).isTrue();
+    }
 }
 
 
