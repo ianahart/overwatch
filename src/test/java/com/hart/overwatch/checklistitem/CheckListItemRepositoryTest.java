@@ -167,6 +167,7 @@ public class CheckListItemRepositoryTest {
     @AfterEach
     public void tearDown() {
         System.out.println("Tearing down the test data...");
+        checkListItemRepository.deleteAll();
         checkListRepository.deleteAll();
         todoCardRepository.deleteAll();
         todoListRepository.deleteAll();
@@ -176,6 +177,14 @@ public class CheckListItemRepositoryTest {
         entityManager.clear();
     }
 
+    @Test
+    public void CheckListItemRepository_CountCheckListItemsInCheckList_ReturnLongCount() {
+        Long checkListId = checkList.getId();
+
+        long count = checkListItemRepository.countCheckListItemsInCheckList(checkListId);
+
+        Assertions.assertThat(count).isEqualTo(2);
+    }
 }
 
 
