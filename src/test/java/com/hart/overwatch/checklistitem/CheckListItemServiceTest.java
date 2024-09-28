@@ -22,6 +22,7 @@ import com.hart.overwatch.checklist.CheckListService;
 import com.hart.overwatch.checklist.request.CreateCheckListRequest;
 import com.hart.overwatch.checklistitem.dto.CheckListItemDto;
 import com.hart.overwatch.checklistitem.request.CreateCheckListItemRequest;
+import com.hart.overwatch.checklistitem.request.UpdateCheckListItemRequest;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.todocard.TodoCard;
@@ -232,6 +233,27 @@ public class CheckListItemServiceTest {
                 .isEqualTo(newCheckListItem.getUser().getId());
         Assertions.assertThat(checkListItemDto.getCheckListId())
                 .isEqualTo(newCheckListItem.getCheckList().getId());
+    }
+
+    @Test
+    public void CheckListItemService_UpdateCheckListItem_ReturnNothing() {
+        UpdateCheckListItemRequest request = new UpdateCheckListItemRequest();
+        request.setId(checkListItems.getFirst().getId());
+        request.setTitle("checklistitem-updated");
+        request.setUserId(user.getId());
+        request.setCheckListId(checkList.getId());
+        request.setIsCompleted(true);
+
+        when(checkListItemRepository.findById(checkListItems.getFirst().getId()))
+                .thenReturn(Optional.of(checkListItems.getFirst()));
+        checkListItems.getFirst().setIsCompleted(request.getIsCompleted());
+        checkListItems.getFirst().setTitle(request.getTitle());
+        when(checkListItemRepository.save(any(CheckListItem.class)))
+                .thenReturn(checkListItems.getFirst());
+
+        checkListItemService.updateCheckListItem(request);
+
+        verify(checkListItemRepository, times(1)).save(any(CheckListItem.class));
     }
 }
 
