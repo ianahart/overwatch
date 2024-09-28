@@ -19,6 +19,8 @@ import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.checklist.CheckList;
 import com.hart.overwatch.checklist.CheckListService;
+import com.hart.overwatch.checklist.request.CreateCheckListRequest;
+import com.hart.overwatch.checklistitem.request.CreateCheckListItemRequest;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.todocard.TodoCard;
@@ -145,6 +147,19 @@ public class CheckListItemServiceTest {
         return user;
     }
 
+    @Test
+    public void CheckListItemService_CreateCheckListItem_ThrowBadRequestExceptionMissingParams() {
+        CreateCheckListItemRequest request = new CreateCheckListItemRequest();
+        request.setCheckListId(null);
+        request.setUserId(user.getId());
+        request.setTitle("checklistitem-3");
+
+
+        Assertions.assertThatThrownBy(() -> {
+            checkListItemService.createCheckListItem(request);
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage("Could not complete your request. Please contact support.");
+    }
 
 }
 
