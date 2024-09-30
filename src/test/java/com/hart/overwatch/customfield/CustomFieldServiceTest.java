@@ -193,6 +193,20 @@ public class CustomFieldServiceTest {
         Assertions.assertThat(customFieldDtos.size()).isEqualTo(2);
     }
 
+    @Test
+    public void CustomFieldService_GetCustomFields_ReturnListOfAllCustomFieldDto() {
+        Long todoCardId = todoCard.getId();
+        String isActiveParam = "false";
+
+        when(customFieldRepository.findByTodoCardId(todoCardId)).thenReturn(customFields);
+
+        List<CustomFieldDto> customFieldDtos =
+                customFieldService.getCustomFields(todoCardId, isActiveParam);
+
+        Assertions.assertThat(customFieldDtos).isNotNull();
+        Assertions.assertThat(customFieldDtos.size()).isEqualTo(todoCard.getCustomFields().size());
+    }
+
 }
 
 
