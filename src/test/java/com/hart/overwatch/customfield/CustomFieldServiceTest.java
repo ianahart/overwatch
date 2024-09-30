@@ -148,6 +148,20 @@ public class CustomFieldServiceTest {
                 String.format("Could not find custom field with id %d", nonExistentCustomFieldId));
     }
 
+    @Test
+    public void CustomService_GetCustomFieldById_ReturnCustomField() {
+        CustomField customField = customFields.getFirst();
+
+        when(customFieldRepository.findById(customField.getId()))
+                .thenReturn(Optional.of(customField));
+
+        CustomField returnedCustomField =
+                customFieldService.getCustomFieldById(customField.getId());
+
+        Assertions.assertThat(returnedCustomField).isNotNull();
+        Assertions.assertThat(returnedCustomField.getId()).isEqualTo(customField.getId());
+    }
+
 }
 
 
