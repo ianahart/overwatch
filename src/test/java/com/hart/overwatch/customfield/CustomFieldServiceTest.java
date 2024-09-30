@@ -323,6 +323,18 @@ public class CustomFieldServiceTest {
 
     }
 
+    @Test
+    public void CustomFieldService_DeleteCustomField_ReturnNothing() {
+        CustomField customField = customFields.getFirst();
+
+        when(customFieldRepository.findById(customField.getId()))
+                .thenReturn(Optional.of(customField));
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+        doNothing().when(customFieldRepository).delete(customField);
+
+        customFieldService.deleteCustomField(customField.getId());
+    }
+
 
 }
 
