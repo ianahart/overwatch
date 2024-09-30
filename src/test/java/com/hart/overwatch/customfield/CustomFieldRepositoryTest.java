@@ -1,7 +1,6 @@
 package com.hart.overwatch.customfield;
 
 import java.util.List;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -10,16 +9,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import com.hart.overwatch.checklist.dto.CheckListDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.todolist.TodoList;
 import com.hart.overwatch.todolist.TodoListRepository;
