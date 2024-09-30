@@ -19,6 +19,7 @@ import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.customfield.dto.CustomFieldDto;
 import com.hart.overwatch.customfield.request.CreateCustomFieldRequest;
+import com.hart.overwatch.customfield.request.UpdateCustomFieldRequest;
 import com.hart.overwatch.dropdownoption.DropDownOption;
 import com.hart.overwatch.dropdownoption.dto.DropDownOptionPayloadDto;
 import com.hart.overwatch.profile.Profile;
@@ -334,6 +335,40 @@ public class CustomFieldServiceTest {
 
         customFieldService.deleteCustomField(customField.getId());
     }
+
+    @Test
+    public void CustomFieldService_UpdateCustomField_ThrowForbiddenException() {
+        CustomField customField = customFields.getFirst();
+        UpdateCustomFieldRequest request = new UpdateCustomFieldRequest();
+        User forbiddenUser = new User();
+        forbiddenUser.setId(999L);
+        request.setIsActive(true);
+        when(customFieldRepository.findById(customField.getId()))
+                .thenReturn(Optional.of(customField));
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(forbiddenUser);
+
+        Assertions.assertThatThrownBy(() -> {
+            customFieldService.updateCustomField(customField.getId(), request);
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("Cannot update a custom field that is not yours");
+
+    }
+
+    @Test
+    public void CustomFieldService_UpdateCustomField_ReturnNothing() {
+        UpdateCustomFieldRequest request = new UpdateCustomFieldRequest(true);
+        CustomField customField = customFields.getFirst();
+        when(customFieldRepository.findById(customField.getId()))
+                .thenReturn(Optional.of(customField));
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+
+        when(customFieldRepository.save(any(CustomField.class))).thenReturn(customField);
+
+        customFieldService.updateCustomField(customField.getId(), request);
+
+        verify(customFieldRepository, times(1)).save(any(CustomField.class));
+    }
+
 
 
 }
