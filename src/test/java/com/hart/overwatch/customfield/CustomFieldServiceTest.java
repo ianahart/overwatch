@@ -307,6 +307,21 @@ public class CustomFieldServiceTest {
                 .isEqualTo(newCustomField.getFieldName());
     }
 
+    @Test
+    public void CustomFieldService_DeleteCustomField_ThrowForbiddenException() {
+        CustomField customField = customFields.getFirst();
+        User forbiddenUser = new User();
+        forbiddenUser.setId(999L);
+        when(customFieldRepository.findById(customField.getId()))
+                .thenReturn(Optional.of(customField));
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(forbiddenUser);
+
+        Assertions.assertThatThrownBy(() -> {
+            customFieldService.deleteCustomField(customField.getId());
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("Cannot delete a custom field that is not yours");
+
+    }
 
 
 }
