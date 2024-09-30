@@ -83,7 +83,7 @@ public class CustomFieldRepositoryTest {
         todoCardRepository.save(todoCard);
 
         customFields = generateCustomFields(user, todoCard);
-         customFieldRepository.saveAll(customFields);
+        customFieldRepository.saveAll(customFields);
 
 
     }
@@ -162,6 +162,16 @@ public class CustomFieldRepositoryTest {
         entityManager.clear();
     }
 
+    @Test
+    public void CustomFieldRepository_FindByTodoCardIdAndIsActive_ReturnListOfCustomField() {
+        Long todoCardId = todoCard.getId();
+        Boolean isActive = true;
+
+        List<CustomField> customFields = customFieldRepository.findByTodoCardIdAndIsActive(todoCardId, isActive);
+        
+        Assertions.assertThat(customFields).isNotNull();
+        Assertions.assertThat(customFields.size()).isEqualTo(2);
+    }
 }
 
 
