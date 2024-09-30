@@ -135,7 +135,19 @@ public class CustomFieldServiceTest {
         return user;
     }
 
-}
+    @Test
+    public void CustomFieldService_GetCustomFieldById_ThrowNotFoundException() {
+        Long nonExistentCustomFieldId = 999L;
 
+        when(customFieldRepository.findById(nonExistentCustomFieldId))
+                .thenReturn(Optional.ofNullable(null));
+
+        Assertions.assertThatThrownBy(() -> {
+            customFieldService.getCustomFieldById(nonExistentCustomFieldId);
+        }).isInstanceOf(NotFoundException.class).hasMessage(
+                String.format("Could not find custom field with id %d", nonExistentCustomFieldId));
+    }
+
+}
 
 
