@@ -113,9 +113,9 @@ public class CustomFieldService {
 
         if (countCustomFieldsPerTodoCard(request.getUserId(),
                 request.getTodoCardId()) >= MAX_CUSTOM_FIELDS) {
-            throw new BadRequestException(String.format(
-                    "You have alreadya added the maximum amount of custom fields (%d)",
-                    MAX_CUSTOM_FIELDS));
+            throw new BadRequestException(
+                    String.format("You have already added the maximum amount of custom fields (%d)",
+                            MAX_CUSTOM_FIELDS));
         }
         String fieldType = Jsoup.clean(request.getFieldType(), Safelist.none());
         String fieldName = Jsoup.clean(request.getFieldName(), Safelist.none());
