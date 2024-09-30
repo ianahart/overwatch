@@ -276,6 +276,37 @@ public class CustomFieldServiceTest {
         }).isInstanceOf(BadRequestException.class);
     }
 
+    @Test
+    public void CustomFieldService_CreateCustomField_CreateCustomField_ReturnCustomField() {
+        CreateCustomFieldRequest request =
+                createCustomFieldRequest("fieldname-6", user.getId(), todoCard.getId());
+
+        when(customFieldRepository.countCustomFieldsPerTodoCard(user.getId(), todoCard.getId()))
+                .thenReturn(0L);
+        when(customFieldRepository.alreadyExistsByFieldNameNotType(todoCard.getId(),
+                request.getFieldName(), request.getFieldType())).thenReturn(false);
+        when(userService.getUserById(request.getUserId())).thenReturn(user);
+        when(todoCardService.getTodoCardById(request.getTodoCardId())).thenReturn(todoCard);
+
+        CustomField newCustomField = new CustomField();
+        newCustomField.setUser(user);
+        newCustomField.setTodoCard(todoCard);
+        newCustomField.setIsActive(false);
+        newCustomField.setFieldType(request.getFieldType());
+        newCustomField.setFieldName(request.getFieldName());
+        newCustomField.setSelectedValue(request.getSelectedValue());
+
+        when(customFieldRepository.save(any(CustomField.class))).thenReturn(newCustomField);
+
+        CustomField returnedCustomField = customFieldService.createCustomField(request);
+
+        Assertions.assertThat(returnedCustomField).isNotNull();
+        Assertions.assertThat(returnedCustomField.getFieldType())
+                .isEqualTo(newCustomField.getFieldType());
+        Assertions.assertThat(returnedCustomField.getFieldName())
+                .isEqualTo(newCustomField.getFieldName());
+    }
+
 
 
 }
