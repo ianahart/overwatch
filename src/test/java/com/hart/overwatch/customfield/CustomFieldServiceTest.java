@@ -149,7 +149,7 @@ public class CustomFieldServiceTest {
     }
 
     @Test
-    public void CustomService_GetCustomFieldById_ReturnCustomField() {
+    public void CustomFieldService_GetCustomFieldById_ReturnCustomField() {
         CustomField customField = customFields.getFirst();
 
         when(customFieldRepository.findById(customField.getId()))
@@ -160,6 +160,15 @@ public class CustomFieldServiceTest {
 
         Assertions.assertThat(returnedCustomField).isNotNull();
         Assertions.assertThat(returnedCustomField.getId()).isEqualTo(customField.getId());
+    }
+
+    @Test
+    public void CustomFieldService_GetCustomFields_ThrowBadRequestExceptionMissingParams() {
+        Long todoCardId = null;
+
+        Assertions.assertThatThrownBy(() -> {
+            customFieldService.getCustomFields(todoCardId, "true");
+        }).isInstanceOf(BadRequestException.class).hasMessage("Missing todo card id parameter");
     }
 
 }
