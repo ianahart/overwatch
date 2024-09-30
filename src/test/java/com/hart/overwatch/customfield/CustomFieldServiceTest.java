@@ -17,6 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.customfield.dto.CustomFieldDto;
+import com.hart.overwatch.dropdownoption.DropDownOption;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.todocard.TodoCard;
@@ -81,6 +83,8 @@ public class CustomFieldServiceTest {
             customField.setSelectedValue(i % 2 == 0 ? "value" : "");
             customField.setUser(user);
             customField.setTodoCard(todoCard);
+            List<DropDownOption> dropDownOptions = new ArrayList<>();
+            customField.setDropDownOptions(dropDownOptions);
             customFields.add(customField);
         }
         return customFields;
@@ -169,6 +173,24 @@ public class CustomFieldServiceTest {
         Assertions.assertThatThrownBy(() -> {
             customFieldService.getCustomFields(todoCardId, "true");
         }).isInstanceOf(BadRequestException.class).hasMessage("Missing todo card id parameter");
+    }
+
+    @Test
+    public void CustomFieldService_GetCustomFields_ReturnListOfCustomFieldDtoActive() {
+        Long todoCardId = todoCard.getId();
+        String isActiveParam = "true";
+
+        List<CustomField> activeCustomFields =
+                customFields.stream().filter(v -> v.getIsActive()).toList();
+
+        when(customFieldRepository.findByTodoCardIdAndIsActive(todoCardId, true))
+                .thenReturn(activeCustomFields);
+
+        List<CustomFieldDto> customFieldDtos =
+                customFieldService.getCustomFields(todoCardId, isActiveParam);
+
+        Assertions.assertThat(customFieldDtos).isNotNull();
+        Assertions.assertThat(customFieldDtos.size()).isEqualTo(2);
     }
 
 }
