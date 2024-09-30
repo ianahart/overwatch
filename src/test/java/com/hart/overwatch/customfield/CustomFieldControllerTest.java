@@ -8,6 +8,7 @@ import com.hart.overwatch.checklist.dto.CheckListDto;
 import com.hart.overwatch.checklist.request.CreateCheckListRequest;
 import com.hart.overwatch.checklistitem.CheckListItem;
 import com.hart.overwatch.config.JwtService;
+import com.hart.overwatch.customfield.dto.CustomFieldDto;
 import com.hart.overwatch.customfield.request.CreateCustomFieldRequest;
 import com.hart.overwatch.customfieldmanagement.CustomFieldManagementService;
 import com.hart.overwatch.dropdownoption.DropDownOption;
@@ -187,6 +188,19 @@ public class CustomFieldControllerTest {
 
     }
 
+    private List<CustomFieldDto> generateCustomFieldDtos(List<CustomField> customFields) {
+        return customFields.stream().map(customField -> {
+            CustomFieldDto customFieldDto = new CustomFieldDto();
+            customFieldDto.setId(customField.getId());
+            customFieldDto.setUserId(customField.getUser().getId());
+            customFieldDto.setTodoCardId(customField.getTodoCard().getId());
+            customFieldDto.setIsActive(customField.getIsActive());
+            customFieldDto.setFieldName(customField.getFieldName());
+            customFieldDto.setFieldType(customField.getFieldType());
+            return customFieldDto;
+        }).filter(customField -> customField.getIsActive()).toList();
+    }
+
     @Test
     public void CustomFieldController_CreateCustomField_ReturnCreateCustomFieldResponse()
             throws Exception {
@@ -200,6 +214,25 @@ public class CustomFieldControllerTest {
 
         response.andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
+    @Test
+    public void CustomFieldController_GetCustomFields_ReturnGetCustomFieldsResponse()
+            throws Exception {
+        List<CustomFieldDto> customFieldDtos = generateCustomFieldDtos(customFields);
+        when(customFieldService.getCustomFields(todoCard.getId(), "true"))
+                .thenReturn(customFieldDtos);
+
+        ResultActions response = mockMvc
+                .perform(get(String.format("/api/v1/todo-cards/%d/custom-fields", todoCard.getId()))
+                        .param("isActive", "true"));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].id",
+                        CoreMatchers.is(customFieldDtos.getFirst().getId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[1].id",
+                        CoreMatchers.is(customFieldDtos.getLast().getId().intValue())));
     }
 
 }
