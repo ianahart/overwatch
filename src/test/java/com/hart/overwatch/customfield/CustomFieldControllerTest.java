@@ -235,6 +235,20 @@ public class CustomFieldControllerTest {
                         CoreMatchers.is(customFieldDtos.getLast().getId().intValue())));
     }
 
+    @Test
+    public void CustomFieldController_DeleteCustomField_ReturnDeleteCustomFieldResponse()
+
+            throws Exception {
+        Long customFieldId = customFields.getFirst().getId();
+        doNothing().when(customFieldService).deleteCustomField(customFieldId);
+
+        ResultActions response =
+                mockMvc.perform(delete(String.format("/api/v1/custom-fields/%d", customFieldId)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
 }
 
 
