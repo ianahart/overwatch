@@ -150,6 +150,21 @@ public class CustomFieldServiceTest {
         return dropDownOptionPayloadDtos;
     }
 
+    private CreateCustomFieldRequest createCustomFieldRequest(String fieldName, Long userId,
+            Long todoCardId) {
+        CreateCustomFieldRequest request = new CreateCustomFieldRequest();
+        request.setUserId(userId);
+        request.setTodoCardId(todoCardId);
+        request.setFieldName(fieldName);
+        request.setFieldType("DROPDOWN");
+        request.setSelectedValue(null);
+        request.setDropDownOptions(generatedDropDownOptionPayloadDtos());
+        request.setDropDownOptions(null);
+
+        return request;
+
+    }
+
     @Test
     public void CustomFieldService_GetCustomFieldById_ThrowNotFoundException() {
         Long nonExistentCustomFieldId = 999L;
@@ -220,20 +235,33 @@ public class CustomFieldServiceTest {
 
     @Test
     public void CustomFieldService_CreateCustomField_ThrowBadRequestExceptionMissingParams() {
-        CreateCustomFieldRequest request = new CreateCustomFieldRequest();
-        request.setUserId(null);
-        request.setTodoCardId(todoCard.getId());
-        request.setFieldName("fieldname-5");
-        request.setFieldType("DROPDOWN");
-        request.setSelectedValue(null);
-        request.setDropDownOptions(generatedDropDownOptionPayloadDtos());
-        request.setDropDownOptions(null);
+        CreateCustomFieldRequest request =
+                createCustomFieldRequest("fieldname-5", null, todoCard.getId());
 
         Assertions.assertThatThrownBy(() -> {
             customFieldService.createCustomField(request);
         }).isInstanceOf(BadRequestException.class)
                 .hasMessage("Missing either userId or todoCardId in payload");
     }
+
+    @Test
+    public void CustomFieldService_CreateCustomField_ThrowBadRequestExceptionMaxFields() {
+        int MAX_CUSTOM_FIELDS = 10;
+        CreateCustomFieldRequest request =
+                createCustomFieldRequest("fieldname-5", user.getId(), todoCard.getId());
+
+        when(customFieldRepository.countCustomFieldsPerTodoCard(user.getId(), todoCard.getId()))
+                .thenReturn(Long.valueOf(MAX_CUSTOM_FIELDS + 1));
+
+        Assertions.assertThatThrownBy(() -> {
+            customFieldService.createCustomField(request);
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage(String.format(
+                        "You have already added the maximum amount of custom fields (%d)",
+                        MAX_CUSTOM_FIELDS));
+    }
+
+
 
 }
 
