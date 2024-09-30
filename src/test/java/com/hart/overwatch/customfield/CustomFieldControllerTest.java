@@ -1,15 +1,12 @@
 package com.hart.overwatch.customfield;
 
 import java.util.List;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hart.overwatch.checklist.dto.CheckListDto;
-import com.hart.overwatch.checklist.request.CreateCheckListRequest;
-import com.hart.overwatch.checklistitem.CheckListItem;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.customfield.dto.CustomFieldDto;
 import com.hart.overwatch.customfield.request.CreateCustomFieldRequest;
+import com.hart.overwatch.customfield.request.UpdateCustomFieldRequest;
 import com.hart.overwatch.customfieldmanagement.CustomFieldManagementService;
 import com.hart.overwatch.dropdownoption.DropDownOption;
 import com.hart.overwatch.dropdownoption.dto.DropDownOptionPayloadDto;
@@ -39,6 +36,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import org.hamcrest.CoreMatchers;
@@ -249,6 +247,20 @@ public class CustomFieldControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 
+    @Test
+    public void CustomFieldController_UpdateCustomField_ReturnUpdateCustomFieldResponse()
+            throws Exception {
+        CustomField customField = customFields.getFirst();
+        UpdateCustomFieldRequest request = new UpdateCustomFieldRequest(true);
+        doNothing().when(customFieldService).updateCustomField(customField.getId(), request);
+
+        ResultActions response = mockMvc
+                .perform(patch(String.format("/api/v1/custom-fields/%d", customField.getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
 }
 
 
