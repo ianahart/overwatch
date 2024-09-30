@@ -184,6 +184,18 @@ public class CustomFieldRepositoryTest {
         Assertions.assertThat(customFields).isNotNull();
         Assertions.assertThat(customFields.size()).isEqualTo(todoCard.getCustomFields().size());
     }
+
+    @Test
+    public void CustomFieldRepository_AlreadyExistsByFieldNameNotType_ReturnBooleanFalse() {
+        Long todoCardId = todoCard.getId();
+        String fieldName = "fieldname-1";
+        String fieldType = "CHECKBOX";
+
+        boolean alreadyExists = customFieldRepository.alreadyExistsByFieldNameNotType(todoCardId,
+                fieldName, fieldType);
+
+        Assertions.assertThat(alreadyExists).isFalse();
+    }
 }
 
 
