@@ -18,7 +18,9 @@ import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.customfield.dto.CustomFieldDto;
+import com.hart.overwatch.customfield.request.CreateCustomFieldRequest;
 import com.hart.overwatch.dropdownoption.DropDownOption;
+import com.hart.overwatch.dropdownoption.dto.DropDownOptionPayloadDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.todocard.TodoCard;
@@ -139,6 +141,15 @@ public class CustomFieldServiceTest {
         return user;
     }
 
+    private List<DropDownOptionPayloadDto> generatedDropDownOptionPayloadDtos() {
+        List<DropDownOptionPayloadDto> dropDownOptionPayloadDtos = new ArrayList<>();
+        dropDownOptionPayloadDtos.add(new DropDownOptionPayloadDto("1", "option 1"));
+        dropDownOptionPayloadDtos.add(new DropDownOptionPayloadDto("2", "option 2"));
+        dropDownOptionPayloadDtos.add(new DropDownOptionPayloadDto("3", "option 3"));
+
+        return dropDownOptionPayloadDtos;
+    }
+
     @Test
     public void CustomFieldService_GetCustomFieldById_ThrowNotFoundException() {
         Long nonExistentCustomFieldId = 999L;
@@ -205,6 +216,23 @@ public class CustomFieldServiceTest {
 
         Assertions.assertThat(customFieldDtos).isNotNull();
         Assertions.assertThat(customFieldDtos.size()).isEqualTo(todoCard.getCustomFields().size());
+    }
+
+    @Test
+    public void CustomFieldService_CreateCustomField_ThrowBadRequestExceptionMissingParams() {
+        CreateCustomFieldRequest request = new CreateCustomFieldRequest();
+        request.setUserId(null);
+        request.setTodoCardId(todoCard.getId());
+        request.setFieldName("fieldname-5");
+        request.setFieldType("DROPDOWN");
+        request.setSelectedValue(null);
+        request.setDropDownOptions(generatedDropDownOptionPayloadDtos());
+        request.setDropDownOptions(null);
+
+        Assertions.assertThatThrownBy(() -> {
+            customFieldService.createCustomField(request);
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage("Missing either userId or todoCardId in payload");
     }
 
 }
