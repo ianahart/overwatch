@@ -157,7 +157,7 @@ public class CustomFieldServiceTest {
         request.setTodoCardId(todoCardId);
         request.setFieldName(fieldName);
         request.setFieldType("DROPDOWN");
-        request.setSelectedValue(null);
+        request.setSelectedValue("");
         request.setDropDownOptions(generatedDropDownOptionPayloadDtos());
         request.setDropDownOptions(null);
 
@@ -259,6 +259,21 @@ public class CustomFieldServiceTest {
                 .hasMessage(String.format(
                         "You have already added the maximum amount of custom fields (%d)",
                         MAX_CUSTOM_FIELDS));
+    }
+
+    @Test
+    public void CustomFieldService_CreateCustomField_ThrowBadRequestExceptionAlreadyExists() {
+        CreateCustomFieldRequest request =
+                createCustomFieldRequest("fieldname-2", user.getId(), todoCard.getId());
+
+        when(customFieldRepository.countCustomFieldsPerTodoCard(user.getId(), todoCard.getId()))
+                .thenReturn(0L);
+        when(customFieldRepository.alreadyExistsByFieldNameNotType(todoCard.getId(),
+                request.getFieldName(), request.getFieldType())).thenReturn(true);
+
+        Assertions.assertThatThrownBy(() -> {
+            customFieldService.createCustomField(request);
+        }).isInstanceOf(BadRequestException.class);
     }
 
 
