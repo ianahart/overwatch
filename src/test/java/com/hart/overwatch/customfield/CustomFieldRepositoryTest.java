@@ -196,6 +196,16 @@ public class CustomFieldRepositoryTest {
 
         Assertions.assertThat(alreadyExists).isFalse();
     }
+
+    @Test
+    public void CustomFieldRepository_CountCustomFieldsPerTodoCard_ReturnLongCount() {
+        Long userId = user.getId();
+        Long todoCardId = todoCard.getId();
+
+        long count = customFieldRepository.countCustomFieldsPerTodoCard(userId, todoCardId);
+
+        Assertions.assertThat(count).isEqualTo(todoCard.getCustomFields().size());
+    }
 }
 
 
