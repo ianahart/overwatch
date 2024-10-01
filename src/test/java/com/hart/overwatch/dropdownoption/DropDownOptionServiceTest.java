@@ -153,8 +153,19 @@ public class DropDownOptionServiceTest {
         dropDownOptionService.createDropDownOptions(dropDownOptions, customField);
 
         verify(dropDownOptionRepository, times(3)).save(any(DropDownOption.class));
+    }
 
+    @Test
+    public void DropDownOptionService_DeleteDropDownOption_ReturnNothing() {
+        DropDownOption dropDownOption = new DropDownOption("option 1", customFields.getFirst());
+        dropDownOption.setId(1L);
+        when(dropDownOptionRepository.findById(dropDownOption.getId()))
+                .thenReturn(Optional.of(dropDownOption));
+        doNothing().when(dropDownOptionRepository).delete(dropDownOption);
 
+        dropDownOptionService.deleteDropDownOption(dropDownOption.getId());
+
+        verify(dropDownOptionRepository, times(1)).delete(dropDownOption);
     }
 }
 
