@@ -166,6 +166,9 @@ export interface IGitHubRepository {
   reviewerId: number;
   status: string;
   updatedAt: string;
+  reviewStartTime: string;
+  reviewEndTime: string;
+  reviewDuration: string;
 }
 
 export interface IGitHubTree {
@@ -189,6 +192,8 @@ export interface IRepositoryReview {
   repoUrl: string;
   reviewerId: number;
   status: string;
+  reviewStartTime: string;
+  reviewEndTime: string;
 }
 
 export interface IGitHubRepositoryPreview {
@@ -1488,6 +1493,15 @@ export interface IUpdateCustomFieldRequest {
   id: number;
   isActive: boolean;
 }
+
+export interface IUpdateRepositoryReviewStartTimeRequest {
+  reviewStartTime: string;
+  repositoryId: number;
+  status: string;
+  token: string;
+}
+
+export interface IUpdateRepositoryReviewStartTimeResponse extends IBaseResponse {}
 
 export interface IUpdateCustomFieldResponse extends IBaseResponse {}
 

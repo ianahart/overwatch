@@ -29,13 +29,18 @@ public class RepositoryDto {
 
     private RepositoryStatus status;
 
+    private LocalDateTime reviewStartTime;
+
+    private LocalDateTime reviewEndTime;
+
     public RepositoryDto() {
 
     }
 
     public RepositoryDto(Long id, Long ownerId, Long reviewerId, String firstName, String lastName,
             String profileUrl, String repoName, String language, String repoUrl, String avatarUrl,
-            LocalDateTime createdAt, RepositoryStatus status) {
+            LocalDateTime createdAt, RepositoryStatus status, LocalDateTime reviewStartTime,
+            LocalDateTime reviewEndTime) {
 
         this.id = id;
         this.ownerId = ownerId;
@@ -49,10 +54,20 @@ public class RepositoryDto {
         this.avatarUrl = avatarUrl;
         this.createdAt = createdAt;
         this.status = status;
+        this.reviewStartTime = reviewStartTime;
+        this.reviewEndTime = reviewEndTime;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public LocalDateTime getReviewEndTime() {
+        return reviewEndTime;
+    }
+
+    public LocalDateTime getReviewStartTime() {
+        return reviewStartTime;
     }
 
     public Long getOwnerId() {
@@ -145,5 +160,13 @@ public class RepositoryDto {
 
     public void setStatus(RepositoryStatus status) {
         this.status = status;
+    }
+
+    public void setReviewEndTime(LocalDateTime reviewEndTime) {
+        this.reviewEndTime = reviewEndTime;
+    }
+
+    public void setReviewStartTime(LocalDateTime reviewStartTime) {
+        this.reviewStartTime = reviewStartTime;
     }
 }

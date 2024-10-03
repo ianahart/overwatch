@@ -1,5 +1,6 @@
 package com.hart.overwatch.repository.dto;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import com.hart.overwatch.repository.RepositoryStatus;
 
@@ -29,13 +30,20 @@ public class FullRepositoryDto {
 
     private LocalDateTime updatedAt;
 
+    private LocalDateTime reviewStartTime;
+
+    private LocalDateTime reviewEndTime;
+
+    private String reviewDuration;
+
     public FullRepositoryDto() {
 
     }
 
     public FullRepositoryDto(Long id, Long ownerId, Long reviewerId, String comment, String repoUrl,
             String feedback, String language, String repoName, String avatarUrl,
-            RepositoryStatus status, LocalDateTime createdAt, LocalDateTime updatedAt) {
+            RepositoryStatus status, LocalDateTime createdAt, LocalDateTime updatedAt,
+            LocalDateTime reviewStartTime, LocalDateTime reviewEndTime, String reviewDuration) {
         this.id = id;
         this.ownerId = ownerId;
         this.reviewerId = reviewerId;
@@ -48,10 +56,17 @@ public class FullRepositoryDto {
         this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.reviewStartTime = reviewStartTime;
+        this.reviewEndTime = reviewEndTime;
+        this.reviewDuration = reviewDuration;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public String getReviewDuration() {
+        return reviewDuration;
     }
 
     public Long getOwnerId() {
@@ -60,6 +75,14 @@ public class FullRepositoryDto {
 
     public Long getReviewerId() {
         return reviewerId;
+    }
+
+    public LocalDateTime getReviewEndTime() {
+        return reviewEndTime;
+    }
+
+    public LocalDateTime getReviewStartTime() {
+        return reviewStartTime;
     }
 
     public String getFeedback() {
@@ -145,4 +168,17 @@ public class FullRepositoryDto {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    public void setReviewEndTime(LocalDateTime reviewEndTime) {
+        this.reviewEndTime = reviewEndTime;
+    }
+
+    public void setReviewDuration(String reviewDuration) {
+        this.reviewDuration = reviewDuration;
+    }
+
+    public void setReviewStartTime(LocalDateTime reviewStartTime) {
+        this.reviewStartTime = reviewStartTime;
+    }
+
 }

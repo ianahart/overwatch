@@ -1,5 +1,6 @@
 package com.hart.overwatch.repository;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -54,6 +55,12 @@ public class Repository {
     @Column(name = "language", length = 100)
     private String language;
 
+    @Column(name = "review_start_time")
+    private LocalDateTime reviewStartTime;
+
+    @Column(name = "review_end_time")
+    private LocalDateTime reviewEndTime;
+
     @Enumerated(EnumType.STRING)
     private RepositoryStatus status;
 
@@ -72,7 +79,7 @@ public class Repository {
 
     public Repository(Long id, LocalDateTime createdAt, LocalDateTime updatedAt, String feedback,
             String comment, String avatarUrl, String repoUrl, String repoName, String language,
-            RepositoryStatus status) {
+            RepositoryStatus status, LocalDateTime reviewStartTime, LocalDateTime reviewEndTime) {
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -83,6 +90,8 @@ public class Repository {
         this.repoName = repoName;
         this.language = language;
         this.status = status;
+        this.reviewStartTime = reviewStartTime;
+        this.reviewEndTime = reviewEndTime;
 
     }
 
@@ -101,6 +110,21 @@ public class Repository {
 
     public Long getId() {
         return id;
+    }
+
+    public Duration getReviewDuration() {
+        if (reviewStartTime != null && reviewEndTime != null) {
+            return Duration.between(reviewStartTime, reviewEndTime);
+        }
+        return Duration.ZERO;
+    }
+
+    public LocalDateTime getReviewEndTime() {
+        return reviewEndTime;
+    }
+
+    public LocalDateTime getReviewStartTime() {
+        return reviewStartTime;
     }
 
     public User getOwner() {
@@ -193,6 +217,14 @@ public class Repository {
 
     public void setLanguage(String language) {
         this.language = language;
+    }
+
+    public void setReviewStartTime(LocalDateTime reviewStartTime) {
+        this.reviewStartTime = reviewStartTime;
+    }
+
+    public void setReviewEndTime(LocalDateTime reviewEndTime) {
+        this.reviewEndTime = reviewEndTime;
     }
 
 }

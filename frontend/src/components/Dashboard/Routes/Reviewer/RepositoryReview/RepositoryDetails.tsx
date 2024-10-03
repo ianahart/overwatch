@@ -1,14 +1,16 @@
 import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
 import { nanoid } from 'nanoid';
 import { IoLink } from 'react-icons/io5';
 
-import { TRootState } from '../../../../../state/store';
+import { TRootState, useUpdateRepositoryReviewStartTimeMutation } from '../../../../../state/store';
 import { IProgressMapper } from '../../../../../interfaces';
 import ReviewEditor from './ReviewEditor';
 
 const RepositoryDetails = () => {
+  const { token } = useSelector((store: TRootState) => store.user);
   const { repository, repositoryLanguages } = useSelector((store: TRootState) => store.repositoryTree);
-
+  const [updateRepositoryReviewStartTime] = useUpdateRepositoryReviewStartTimeMutation();
   const progressMapper: IProgressMapper = {
     INCOMPLETE: { text: 'Incomplete', background: 'bg-gray-400' },
     INPROGRESS: { text: 'In progress', background: 'bg-blue-400' },
@@ -28,6 +30,23 @@ const RepositoryDetails = () => {
     return repositoryLanguage.toLowerCase();
   };
 
+  useEffect(() => {
+    if (repository.reviewStartTime === null && repository.status === 'INCOMPLETE') {
+      const payload = {
+        reviewStartTime: repository.reviewStartTime,
+        repositoryId: repository.id,
+        status: repository.status,
+        token,
+      };
+      updateRepositoryReviewStartTime(payload)
+        .unwrap()
+        .then(() => {})
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [repository]);
+
   return (
     <div className="bg-gray-950 w-full p-4 text-gray-400">
       <div className="flex items-center">
@@ -38,10 +57,15 @@ const RepositoryDetails = () => {
         </a>
       </div>
       <div className="my-8">
-        <div
-          className={`my-2 text-gray-800 text-center rounded-lg shadow-md w-28 font-bold ${progressMapper[progressStatus]?.background}`}
-        >
-          {progressMapper[progressStatus]?.text}
+        <div className="flex items-center">
+          <div
+            className={`my-2 text-gray-800 text-center rounded-lg shadow-md w-28 font-bold ${progressMapper[progressStatus]?.background}`}
+          >
+            {progressMapper[progressStatus]?.text}
+          </div>
+          <p className="ml-2">
+            Time spent reviewing: <span className="text-green-400 text-sm font-obold">{repository.reviewDuration}</span>
+          </p>
         </div>
         <p>
           Main language is{' '}
