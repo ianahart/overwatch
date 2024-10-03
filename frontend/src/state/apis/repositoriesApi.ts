@@ -18,6 +18,8 @@ import {
   ICreateRepositoryFileRequest,
   IUpdateRepositoryResponse,
   IUpdateRepositoryRequest,
+  IUpdateRepositoryReviewStartTimeResponse,
+  IUpdateRepositoryReviewStartTimeRequest,
 } from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
@@ -27,6 +29,24 @@ const repositoriesApi = createApi({
   tagTypes: ['Repository'],
   endpoints(builder) {
     return {
+      updateRepositoryReviewStartTime: builder.mutation<
+        IUpdateRepositoryReviewStartTimeResponse,
+        IUpdateRepositoryReviewStartTimeRequest
+      >({
+        query: ({ reviewStartTime, repositoryId, status, token }) => {
+          if (repositoryId == undefined || token === null || token === '') {
+            return '';
+          }
+          return {
+            url: `/repositories/${repositoryId}/starttime`,
+            method: 'PATCH',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: { reviewStartTime, status },
+          };
+        },
+      }),
       updateRepositoryReview: builder.mutation<IUpdateRepositoryResponse, IUpdateRepositoryRequest>({
         query: ({ feedback, repositoryId, status, token }) => {
           return {
@@ -129,6 +149,8 @@ const repositoriesApi = createApi({
             body: payload,
           };
         },
+        // @ts-ignore
+        invalidatesTags: [{ type: 'Repository', id: 'LIST' }],
       }),
       deleteUserRepository: builder.mutation<IDeleteUserRepositoryResponse, IDeleteUserRepositoryRequest>({
         query: ({ repositoryId, token }) => {
@@ -170,6 +192,7 @@ const repositoriesApi = createApi({
 });
 
 export const {
+  useUpdateRepositoryReviewStartTimeMutation,
   useUpdateRepositoryReviewMutation,
   useCreateRepositoryFileMutation,
   useLazyFetchRepositoryQuery,

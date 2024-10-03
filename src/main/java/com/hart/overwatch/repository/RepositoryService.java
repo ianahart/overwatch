@@ -1,6 +1,8 @@
 package com.hart.overwatch.repository;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
@@ -13,7 +15,6 @@ import org.springframework.stereotype.Service;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.github.GitHubService;
 import com.hart.overwatch.github.dto.GitHubTreeDto;
-import com.hart.overwatch.notification.NotificationService;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.advice.BadRequestException;
@@ -25,6 +26,7 @@ import com.hart.overwatch.repository.dto.RepositoryReviewDto;
 import com.hart.overwatch.repository.request.CreateRepositoryFileRequest;
 import com.hart.overwatch.repository.request.CreateUserRepositoryRequest;
 import com.hart.overwatch.repository.request.UpdateRepositoryReviewRequest;
+import com.hart.overwatch.repository.request.UpdateRepositoryReviewStartTimeRequest;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
@@ -188,12 +190,30 @@ public class RepositoryService {
         }
     }
 
+    private String createReviewDuration(Repository repository) {
+        LocalDateTime reviewEndTime = repository.getReviewEndTime() == null ? LocalDateTime.now()
+                : repository.getReviewEndTime();
+
+        if (repository.getReviewStartTime() == null || reviewEndTime == null) {
+            return String.format("%dh%dm%ds", 0, 0, 0);
+        }
+        Duration duration = Duration.between(repository.getReviewStartTime(), reviewEndTime);
+
+        long hours = duration.toHours();
+        long minutes = duration.toMinutes() % 60;
+        long seconds = duration.getSeconds() % 60;
+
+        return String.format("%dh%dm%ds", hours, minutes, seconds);
+    }
+
     private FullRepositoryDto constructRepository(Repository entity) {
+        String formattedReviewDuration = createReviewDuration(entity);
         return new FullRepositoryDto(entity.getId(), entity.getOwner().getId(),
                 entity.getReviewer().getId(), entity.getComment(), entity.getRepoUrl(),
                 entity.getFeedback(), entity.getLanguage(), entity.getRepoName(),
                 entity.getAvatarUrl(), entity.getStatus(), entity.getCreatedAt(),
-                entity.getUpdatedAt());
+                entity.getUpdatedAt(), entity.getReviewStartTime(), entity.getReviewEndTime(),
+                formattedReviewDuration);
     }
 
     public RepositoryContentsDto getRepositoryReview(Long repositoryId, String accessToken,
@@ -230,6 +250,11 @@ public class RepositoryService {
             repository.setFeedback(request.getFeedback());
             repository.setStatus(request.getStatus());
 
+            if (request.getStatus() == RepositoryStatus.COMPLETED) {
+                LocalDateTime reviewEndTime = LocalDateTime.now();
+                repository.setReviewEndTime(reviewEndTime);
+            }
+
             this.repositoryRepository.save(repository);
 
             return new RepositoryReviewDto(repository.getStatus(), repository.getFeedback());
@@ -238,6 +263,21 @@ public class RepositoryService {
             ex.printStackTrace();
             throw ex;
         }
+    }
+
+    public void updateRepositoryReviewStartTime(Long repositoryId,
+            UpdateRepositoryReviewStartTimeRequest request) {
+        Repository repository = getRepositoryById(repositoryId);
+
+        if (request.getReviewStartTime() != null
+                && repository.getStatus() != RepositoryStatus.INCOMPLETE) {
+            return;
+        }
+
+        LocalDateTime reviewStartTime = LocalDateTime.now();
+        repository.setReviewStartTime(reviewStartTime);
+
+        repositoryRepository.save(repository);
     }
 }
 
