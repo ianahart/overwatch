@@ -76,10 +76,10 @@ public class RepositoryService {
 
         String feedback = "";
 
-        Repository repository =
-                new Repository(feedback, Jsoup.clean(request.getComment(), Safelist.none()),
-                        request.getAvatarUrl(), request.getRepoUrl(), request.getRepoName(),
-                        request.getLanguage(), RepositoryStatus.INCOMPLETE, reviewer, owner);
+        Repository repository = new Repository(feedback,
+                Jsoup.clean(request.getComment(), Safelist.none()), request.getAvatarUrl(),
+                request.getRepoUrl(), request.getRepoName(), request.getLanguage(),
+                RepositoryStatus.INCOMPLETE, reviewer, owner, request.getReviewType());
 
         this.repositoryRepository.save(repository);
 
@@ -213,7 +213,7 @@ public class RepositoryService {
                 entity.getFeedback(), entity.getLanguage(), entity.getRepoName(),
                 entity.getAvatarUrl(), entity.getStatus(), entity.getCreatedAt(),
                 entity.getUpdatedAt(), entity.getReviewStartTime(), entity.getReviewEndTime(),
-                formattedReviewDuration);
+                entity.getReviewType(), formattedReviewDuration);
     }
 
     public RepositoryContentsDto getRepositoryReview(Long repositoryId, String accessToken,
@@ -223,7 +223,6 @@ public class RepositoryService {
             FullRepositoryDto repository = constructRepository(entity);
             GitHubTreeDto contents = this.gitHubService.getRepository(repository.getRepoName(),
                     accessToken, page, size);
-
             return new RepositoryContentsDto(repository, contents);
 
         } catch (DataAccessException ex) {

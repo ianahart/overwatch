@@ -1,8 +1,6 @@
 package com.hart.overwatch.repository.dto;
 
-import java.util.List;
 import com.hart.overwatch.github.dto.GitHubTreeDto;
-import com.hart.overwatch.github.dto.GitHubTreeNodeDto;
 
 public class RepositoryContentsDto {
 

@@ -62,6 +62,9 @@ public class Repository {
     private LocalDateTime reviewEndTime;
 
     @Enumerated(EnumType.STRING)
+    private ReviewType reviewType;
+
+    @Enumerated(EnumType.STRING)
     private RepositoryStatus status;
 
     @ManyToOne()
@@ -79,7 +82,8 @@ public class Repository {
 
     public Repository(Long id, LocalDateTime createdAt, LocalDateTime updatedAt, String feedback,
             String comment, String avatarUrl, String repoUrl, String repoName, String language,
-            RepositoryStatus status, LocalDateTime reviewStartTime, LocalDateTime reviewEndTime) {
+            RepositoryStatus status, LocalDateTime reviewStartTime, LocalDateTime reviewEndTime,
+            ReviewType reviewType) {
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -92,11 +96,13 @@ public class Repository {
         this.status = status;
         this.reviewStartTime = reviewStartTime;
         this.reviewEndTime = reviewEndTime;
+        this.reviewType = reviewType;
 
     }
 
     public Repository(String feedback, String comment, String avatarUrl, String repoUrl,
-            String repoName, String language, RepositoryStatus status, User reviewer, User owner) {
+            String repoName, String language, RepositoryStatus status, User reviewer, User owner,
+            ReviewType reviewType) {
         this.feedback = feedback;
         this.comment = comment;
         this.avatarUrl = avatarUrl;
@@ -106,10 +112,15 @@ public class Repository {
         this.status = status;
         this.reviewer = reviewer;
         this.owner = owner;
+        this.reviewType = reviewType;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public ReviewType getReviewType() {
+        return reviewType;
     }
 
     public Duration getReviewDuration() {
@@ -225,6 +236,10 @@ public class Repository {
 
     public void setReviewEndTime(LocalDateTime reviewEndTime) {
         this.reviewEndTime = reviewEndTime;
+    }
+
+    public void setReviewType(ReviewType reviewType) {
+        this.reviewType = reviewType;
     }
 
 }

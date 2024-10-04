@@ -136,6 +136,12 @@ export interface IProgressMapper {
   COMPLETED: { text: string; background: string };
 }
 
+export interface IReviewTypeMapper {
+  BUG: { text: string; backgroundColor: string };
+  FEATURE: { text: string; backgroundColor: string };
+  OPTIMIZATION: { text: string; backgroundColor: string };
+}
+
 export interface ILanguageMap {
   [key: string]: string;
   js: string;
@@ -169,6 +175,7 @@ export interface IGitHubRepository {
   reviewStartTime: string;
   reviewEndTime: string;
   reviewDuration: string;
+  reviewType: string;
 }
 
 export interface IGitHubTree {
@@ -1030,6 +1037,7 @@ export interface ICreateUserRepositoryRequest {
     avatarUrl: string;
     comment: string;
     language: string;
+    reviewType: string;
   };
 }
 

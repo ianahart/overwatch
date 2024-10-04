@@ -139,7 +139,9 @@ const AddReview = () => {
           </div>
         )}
         <div className="md:w-[40%] w-full p-4">
-          {Session.getItem('github_access_token') && localStorage.getItem('selected_reviewer') && <RepositoryList />}
+          {Session.getItem('github_access_token') &&
+            localStorage.getItem('selected_reviewer') &&
+            selectedReviewer.id !== 0 && <RepositoryList />}
         </div>
         <div className="min-w-[200px]">{!Session.getItem('github_access_token') && <GitHubLogin />}</div>
       </div>
