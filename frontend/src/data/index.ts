@@ -11,6 +11,10 @@ export const repositoryState = {
   reviewerId: 0,
   status: '',
   updatedAt: '',
+  reviewStartTime: '',
+  reviewEndTime: '',
+  reviewDuration: '',
+  reviewType: '',
 };
 
 export const labelColors = [

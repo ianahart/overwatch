@@ -1,8 +1,8 @@
 package com.hart.overwatch.repository.dto;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import com.hart.overwatch.repository.RepositoryStatus;
+import com.hart.overwatch.repository.ReviewType;
 
 public class FullRepositoryDto {
 
@@ -34,6 +34,8 @@ public class FullRepositoryDto {
 
     private LocalDateTime reviewEndTime;
 
+    private ReviewType reviewType;
+
     private String reviewDuration;
 
     public FullRepositoryDto() {
@@ -43,7 +45,8 @@ public class FullRepositoryDto {
     public FullRepositoryDto(Long id, Long ownerId, Long reviewerId, String comment, String repoUrl,
             String feedback, String language, String repoName, String avatarUrl,
             RepositoryStatus status, LocalDateTime createdAt, LocalDateTime updatedAt,
-            LocalDateTime reviewStartTime, LocalDateTime reviewEndTime, String reviewDuration) {
+            LocalDateTime reviewStartTime, LocalDateTime reviewEndTime, ReviewType reviewType,
+            String reviewDuration) {
         this.id = id;
         this.ownerId = ownerId;
         this.reviewerId = reviewerId;
@@ -58,6 +61,7 @@ public class FullRepositoryDto {
         this.updatedAt = updatedAt;
         this.reviewStartTime = reviewStartTime;
         this.reviewEndTime = reviewEndTime;
+        this.reviewType = reviewType;
         this.reviewDuration = reviewDuration;
     }
 
@@ -67,6 +71,10 @@ public class FullRepositoryDto {
 
     public String getReviewDuration() {
         return reviewDuration;
+    }
+
+    public ReviewType getReviewType() {
+        return reviewType;
     }
 
     public Long getOwnerId() {
@@ -79,6 +87,10 @@ public class FullRepositoryDto {
 
     public LocalDateTime getReviewEndTime() {
         return reviewEndTime;
+    }
+
+    public void setReviewType(ReviewType reviewType) {
+        this.reviewType = reviewType;
     }
 
     public LocalDateTime getReviewStartTime() {
@@ -180,5 +192,6 @@ public class FullRepositoryDto {
     public void setReviewStartTime(LocalDateTime reviewStartTime) {
         this.reviewStartTime = reviewStartTime;
     }
+
 
 }

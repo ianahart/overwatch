@@ -4,8 +4,9 @@ import { nanoid } from 'nanoid';
 import { IoLink } from 'react-icons/io5';
 
 import { TRootState, useUpdateRepositoryReviewStartTimeMutation } from '../../../../../state/store';
-import { IProgressMapper } from '../../../../../interfaces';
+import { IProgressMapper, IReviewTypeMapper } from '../../../../../interfaces';
 import ReviewEditor from './ReviewEditor';
+import { BsTools } from 'react-icons/bs';
 
 const RepositoryDetails = () => {
   const { token } = useSelector((store: TRootState) => store.user);
@@ -17,7 +18,14 @@ const RepositoryDetails = () => {
     COMPLETED: { text: 'Completed', background: 'bg-green-400' },
   };
 
+  const reviewTypeMapper: IReviewTypeMapper = {
+    BUG: { text: 'Bug-fixes', backgroundColor: 'bg-orange-400' },
+    FEATURE: { text: 'Feature-additions', backgroundColor: 'bg-blue-400' },
+    OPTIMIZATION: { text: 'Optimization', backgroundColor: 'bg-green-400' },
+  };
+
   const progressStatus = repository.status as keyof IProgressMapper;
+  const reviewType = repository.reviewType as keyof IReviewTypeMapper;
 
   const languageIcon = (repositoryLanguage: string) => {
     if (repositoryLanguage.toLowerCase().includes('css')) {
@@ -67,7 +75,17 @@ const RepositoryDetails = () => {
             Time spent reviewing: <span className="text-green-400 text-sm font-obold">{repository.reviewDuration}</span>
           </p>
         </div>
-        <p>
+        <div className="my-4">
+          <div
+            className={`inline-flex items-center p-1 text-white text-center rounded-lg shadow-md ${reviewTypeMapper[reviewType]?.backgroundColor}`}
+          >
+            <div className="ml-2">
+              <BsTools />
+            </div>
+            <p>{reviewTypeMapper[reviewType]?.text}</p>
+          </div>
+        </div>
+        <p className="my-2">
           Main language is{' '}
           <span>
             <i className={`mr-1 text-green-400 devicon-${languageIcon(repository.language)}-plain`}></i>
@@ -75,7 +93,10 @@ const RepositoryDetails = () => {
           <span className="font-bold">{repository.language}</span>
         </p>
         <div className="my-4">
-          <p>Other languages include:</p>
+          <p>
+            Other languages include:{' '}
+            <span className="ml-2">{repositoryLanguages.length > 1 ? '' : 'No other languages'}</span>
+          </p>
           <ul className="flex flex-wrap w-[180px]">
             {repositoryLanguages.map((repositoryLanguage) => {
               return repositoryLanguage !== repository.language ? (
