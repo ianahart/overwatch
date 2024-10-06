@@ -135,6 +135,7 @@ import { checkListItemsApi } from './apis/checkListItemsApi';
 import { activitiesApi } from './apis/activitiesApi';
 import { customFieldsApi } from './apis/customFieldsApi';
 import { dropDownOptionsApi } from './apis/dropDownOptionsApi';
+import { reviewFeedbacksApi } from './apis/reviewFeedbacksApi';
 
 export const store = configureStore({
   reducer: {
@@ -183,6 +184,7 @@ export const store = configureStore({
     [activitiesApi.reducerPath]: activitiesApi.reducer,
     [customFieldsApi.reducerPath]: customFieldsApi.reducer,
     [dropDownOptionsApi.reducerPath]: dropDownOptionsApi.reducer,
+    [reviewFeedbacksApi.reducerPath]: reviewFeedbacksApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -218,7 +220,8 @@ export const store = configureStore({
       .concat(checkListItemsApi.middleware)
       .concat(activitiesApi.middleware)
       .concat(customFieldsApi.middleware)
-      .concat(dropDownOptionsApi.middleware);
+      .concat(dropDownOptionsApi.middleware)
+      .concat(reviewFeedbacksApi.middleware);
   },
 });
 
@@ -480,6 +483,8 @@ export {
 
 export { useDeleteDropDownOptionMutation } from './apis/dropDownOptionsApi';
 
+export { useCreateReviewFeedbackMutation } from './apis/reviewFeedbacksApi';
+
 export {
   testimonialsApi,
   authsApi,
@@ -503,4 +508,5 @@ export {
   activitiesApi,
   customFieldsApi,
   dropDownOptionsApi,
+  reviewFeedbacksApi,
 };

@@ -4,18 +4,19 @@ import { FaCode, FaPen } from 'react-icons/fa';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { BsTrash } from 'react-icons/bs';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { TRootState, clearRepositoryReviews, useDeleteUserRepositoryMutation } from '../../../../../state/store';
 import { IRepositoryReview, IProgressMapper } from '../../../../../interfaces';
 import { Role } from '../../../../../enums';
 import DashboardAvatar from '../../../DashboardAvatar';
-import { Link } from 'react-router-dom';
 
 export interface IRepositoryReviewListItemProps {
   data: IRepositoryReview;
 }
 
 const RepositoryReviewListItem = ({ data }: IRepositoryReviewListItemProps) => {
+  const navigate = useNavigate();
   const [deleteRepository] = useDeleteUserRepositoryMutation();
   const { user, token } = useSelector((store: TRootState) => store.user);
   const dispatch = useDispatch();
@@ -40,6 +41,10 @@ const RepositoryReviewListItem = ({ data }: IRepositoryReviewListItemProps) => {
   };
 
   const progressStatus = data.status as keyof IProgressMapper;
+
+  const goToReviewFeedbackRoute = () => {
+    navigate(`/dashboard/${user.slug}/user/reviews/feedback`, { state: { data } });
+  };
 
   return (
     <li className="my-4 border p-1 rounded border-gray-800">
@@ -74,17 +79,28 @@ const RepositoryReviewListItem = ({ data }: IRepositoryReviewListItemProps) => {
           </div>
         </div>
         {user.role === Role.USER && user.id === data.ownerId && (
-          <div className="md:flex hidden items-end justify-between">
-            <div className="text-xs mx-2">
-              <p>Sent in for review on:</p>
-              <p>{dayjs(data.createdAt).format('MM/DD/YYYY')}</p>
+          <div>
+            <div className="md:flex hidden items-end justify-between">
+              <div className="text-xs mx-2">
+                <p>Sent in for review on:</p>
+                <p>{dayjs(data.createdAt).format('MM/DD/YYYY')}</p>
+              </div>
+              <div className="flex items-center">
+                <Link to={`/dashboard/${user.slug}/user/reviews/${data.id}/edit`}>
+                  <AiOutlineEdit className="mx-2 text-lg cursor-pointer" />
+                </Link>
+                <BsTrash onClick={handleOnDeleteRepository} className="max-2 text-lg cursor-pointer" />
+              </div>
             </div>
-            <div className="flex items-center">
-              <Link to={`/dashboard/${user.slug}/user/reviews/${data.id}/edit`}>
-                <AiOutlineEdit className="mx-2 text-lg cursor-pointer" />
-              </Link>
-              <BsTrash onClick={handleOnDeleteRepository} className="max-2 text-lg cursor-pointer" />
-            </div>
+            {data.status === 'COMPLETED' && (
+              <div
+                onClick={goToReviewFeedbackRoute}
+                role="button"
+                className="border border-blue-400 text-blue-400 m-1 inline-flex p-1 font-bold text-sm rounded-lg"
+              >
+                <p>Your feedback</p>
+              </div>
+            )}
           </div>
         )}
         {user.role === Role.REVIEWER && user.id === data.reviewerId && (

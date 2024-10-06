@@ -33,6 +33,8 @@ public class RepositoryDto {
 
     private LocalDateTime reviewEndTime;
 
+    private String feedback;
+
     public RepositoryDto() {
 
     }
@@ -40,7 +42,7 @@ public class RepositoryDto {
     public RepositoryDto(Long id, Long ownerId, Long reviewerId, String firstName, String lastName,
             String profileUrl, String repoName, String language, String repoUrl, String avatarUrl,
             LocalDateTime createdAt, RepositoryStatus status, LocalDateTime reviewStartTime,
-            LocalDateTime reviewEndTime) {
+            LocalDateTime reviewEndTime, String feedback) {
 
         this.id = id;
         this.ownerId = ownerId;
@@ -56,14 +58,23 @@ public class RepositoryDto {
         this.status = status;
         this.reviewStartTime = reviewStartTime;
         this.reviewEndTime = reviewEndTime;
+        this.feedback = feedback;
     }
 
     public Long getId() {
         return id;
     }
 
+    public String getFeedback() {
+        return feedback;
+    }
+
     public LocalDateTime getReviewEndTime() {
         return reviewEndTime;
+    }
+
+    public void setFeedback(String feedback) {
+        this.feedback = feedback;
     }
 
     public LocalDateTime getReviewStartTime() {
