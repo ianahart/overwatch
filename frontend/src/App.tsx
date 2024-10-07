@@ -43,6 +43,7 @@ import RequireAuthUser from './components/Guard/RequireAuthUser';
 import RequireAuthReviewer from './components/Guard/RequireAuthReviewer';
 import WorkSpaceContainerRoute from './routes/Dashboard/Reviewer/WorkSpaceContainerRoute';
 import WorkSpaceRoute from './routes/Dashboard/Reviewer/WorkSpaceRoute';
+import ReviewFeedbackRoute from './components/Dashboard/Routes/User/Reviews/ReviewFeedbackRoute';
 import NotFoundRoute from './routes/NotFoundRoute';
 
 const router = createBrowserRouter(
@@ -134,6 +135,14 @@ const router = createBrowserRouter(
           }
         />
         <Route
+          path="user/reviews/feedback"
+          element={
+            <RequireAuthUser>
+              <ReviewFeedbackRoute />
+            </RequireAuthUser>
+          }
+        />
+        <Route
           path="user/reviews/:repositoryId/edit"
           element={
             <RequireAuthUser>
@@ -141,7 +150,6 @@ const router = createBrowserRouter(
             </RequireAuthUser>
           }
         />
-
         <Route
           path="user/stats"
           element={

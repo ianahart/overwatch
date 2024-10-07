@@ -1,19 +1,24 @@
 package com.hart.overwatch.repository;
 
+import java.util.List;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import com.hart.overwatch.reviewfeedback.ReviewFeedback;
 import com.hart.overwatch.user.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
@@ -74,6 +79,10 @@ public class Repository {
     @ManyToOne()
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private User owner;
+
+    @OneToMany(mappedBy = "repository", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<ReviewFeedback> reviewFeedbacks;
 
 
     public Repository() {
@@ -170,6 +179,10 @@ public class Repository {
         return avatarUrl;
     }
 
+    public List<ReviewFeedback> getReviewFeedbacks() {
+        return reviewFeedbacks;
+    }
+
     public RepositoryStatus getStatus() {
         return status;
     }
@@ -240,6 +253,10 @@ public class Repository {
 
     public void setReviewType(ReviewType reviewType) {
         this.reviewType = reviewType;
+    }
+
+    public void setReviewFeedbacks(List<ReviewFeedback> reviewFeedbacks) {
+        this.reviewFeedbacks = reviewFeedbacks;
     }
 
 }

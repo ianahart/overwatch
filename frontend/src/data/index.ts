@@ -153,6 +153,18 @@ export const savePaymentFormState = {
   postalCode: { name: 'postalCode', value: '', error: '', type: 'text' },
 };
 
+export const reviewFeedbackState = {
+  helpfulness: { title: 'Helpfulness', name: 'helpfulness', value: 0, desc: 'How helpful was this feedback?' },
+  clarity: { title: 'Clarity', name: 'clarity', value: 0, desc: 'How clear and understandable was this feedback?' },
+  responseTime: { title: 'Response Time', name: 'responseTime', value: 0, desc: 'How fast was this feedback?' },
+  thoroughness: {
+    title: 'Thoroughness',
+    name: 'thoroughness',
+    value: 0,
+    desc: 'How detailed and thorough was this feedback?',
+  },
+};
+
 export const countryCodes = [
   { id: 1, name: 'AF', value: 'AF' },
   { id: 2, name: 'AX', value: 'AX' },
