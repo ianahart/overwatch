@@ -25,6 +25,7 @@ import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.refreshtoken.RefreshToken;
 import com.hart.overwatch.repository.Repository;
 import com.hart.overwatch.review.Review;
+import com.hart.overwatch.reviewfeedback.ReviewFeedback;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.testimonial.Testimonial;
 import com.hart.overwatch.todocard.TodoCard;
@@ -205,6 +206,14 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<CustomField> customFields;
 
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<ReviewFeedback> ownerReviewFeedbacks;
+
+    @OneToMany(mappedBy = "reviewer", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<ReviewFeedback> ReviewerReviewFeedbacks;
+
 
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -267,6 +276,14 @@ public class User implements UserDetails {
 
     public List<CheckListItem> getCheckListItems() {
         return checkListItems;
+    }
+
+    public List<ReviewFeedback> getOwnerReviewFeedbacks() {
+        return ownerReviewFeedbacks;
+    }
+
+    public List<ReviewFeedback> getReviewerReviewFeedbacks() {
+        return ReviewerReviewFeedbacks;
     }
 
     public List<Favorite> getFavorites() {
@@ -435,6 +452,14 @@ public class User implements UserDetails {
 
     public void setPinnedOwnerConnections(List<ConnectionPin> pinnedOwnerConnections) {
         this.pinnedOwnerConnections = pinnedOwnerConnections;
+    }
+
+    public void setOwnerReviewFeedbacks(List<ReviewFeedback> ownerReviewFeedbacks) {
+        this.ownerReviewFeedbacks = ownerReviewFeedbacks;
+    }
+
+    public void setReviewerReviewFeedbacks(List<ReviewFeedback> reviewerReviewFeedbacks) {
+        ReviewerReviewFeedbacks = reviewerReviewFeedbacks;
     }
 
     public void setCustomFields(List<CustomField> customFields) {

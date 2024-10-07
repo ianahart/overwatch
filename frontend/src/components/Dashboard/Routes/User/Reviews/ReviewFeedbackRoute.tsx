@@ -3,18 +3,25 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import ReviewFeedback from './ReviewFeedback';
-import { IRepositoryReview, IReviewFeedbackForm } from '../../../../../interfaces';
+import { IError, IRepositoryReview, IReviewFeedbackForm } from '../../../../../interfaces';
 import { reviewFeedbackState } from '../../../../../data';
 import ReviewFeedbackRating from './ReviewFeedbackRating';
-import { TRootState, useCreateReviewFeedbackMutation } from '../../../../../state/store';
+import {
+  TRootState,
+  useCreateReviewFeedbackMutation,
+  useLazyGetSingleReviewFeedbackQuery,
+} from '../../../../../state/store';
+import { nanoid } from 'nanoid';
 
 const ReviewFeedbackRoute = () => {
   const { user, token } = useSelector((store: TRootState) => store.user);
   const location = useLocation();
   const navigate = useNavigate();
-  const [error, setError] = useState('');
+  const [errors, setErrors] = useState<string[]>([]);
   const [reviewFeedbackForm, setReviewFeedbackForm] = useState<IReviewFeedbackForm>(reviewFeedbackState);
   const [createReviewFeedbackMut] = useCreateReviewFeedbackMutation();
+  const [getSingleReviewFeedback] = useLazyGetSingleReviewFeedbackQuery();
+  const [isAlreadyReviewed, setIsAlreadyReviewed] = useState(false);
 
   const { data }: { data: IRepositoryReview } = location.state || {};
   const { reviewerId, ownerId, id } = data;
@@ -22,8 +29,26 @@ const ReviewFeedbackRoute = () => {
   useEffect(() => {
     if (!reviewerId || !ownerId || !id) {
       navigate(-1);
+    } else {
+      getSingleReviewFeedback({ reviewerId, ownerId, repositoryId: id, token })
+        .unwrap()
+        .then((res) => {
+          if (res.data !== null) {
+            const { data: reviewFeedbackData } = res;
+            for (let prop in reviewFeedbackData) {
+              if (Object.keys(reviewFeedbackForm).includes(prop)) {
+                const rating = reviewFeedbackData[prop] as number;
+                addRating(prop, rating);
+              }
+            }
+            setIsAlreadyReviewed(true);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
-  }, [reviewerId, ownerId, id, navigate]);
+  }, [reviewerId, ownerId, id, navigate, token]);
 
   const addRating = (name: string, rating: number): void => {
     setReviewFeedbackForm((prevState) => ({
@@ -36,10 +61,16 @@ const ReviewFeedbackRoute = () => {
     return Object.values(reviewFeedbackForm).every((field) => field.value > 0);
   };
 
+  const applyServerErrors = <T extends IError>(data: T): void => {
+    for (let prop in data) {
+      setErrors((prevState) => [...prevState, data[prop]]);
+    }
+  };
+
   const submitFeedback = (): void => {
-    setError('');
+    setErrors([]);
     if (!feedbackFilled()) {
-      setError('Please make sure to fill out all ratings');
+      setErrors((prevState) => [...prevState, 'Please make sure to fill out all ratings']);
       return;
     }
 
@@ -61,6 +92,7 @@ const ReviewFeedbackRoute = () => {
         navigate(`/dashboard/${user.slug}/user/reviews`);
       })
       .catch((err) => {
+        applyServerErrors(err.data);
         console.log(err);
       });
   };
@@ -75,23 +107,46 @@ const ReviewFeedbackRoute = () => {
       <div className="my-4">
         <ReviewFeedback feedback={data.feedback} />
         <div className="my-4">
-          <h3>Please take a few moments and give your feedback about the review.</h3>
+          {isAlreadyReviewed && <h3>This is how you reviewed your feedback.</h3>}
+          {!isAlreadyReviewed && <h3>Please take a few moments and give your feedback about the review.</h3>}
         </div>
-        {error.length > 0 && (
-          <div className="my-2">
-            <p className="text-sm text-red-300">{error}</p>
-          </div>
-        )}
-        <ReviewFeedbackRating field={reviewFeedbackForm.clarity} addRating={addRating} />
-        <ReviewFeedbackRating field={reviewFeedbackForm.helpfulness} addRating={addRating} />
-        <ReviewFeedbackRating field={reviewFeedbackForm.thoroughness} addRating={addRating} />
-        <ReviewFeedbackRating field={reviewFeedbackForm.responseTime} addRating={addRating} />
+        <div className="my-2">
+          {errors.map((error) => {
+            return (
+              <p key={nanoid()} className="text-sm text-red-300">
+                {error}
+              </p>
+            );
+          })}
+        </div>
+        <ReviewFeedbackRating
+          isAlreadyReviewed={isAlreadyReviewed}
+          field={reviewFeedbackForm.clarity}
+          addRating={addRating}
+        />
+        <ReviewFeedbackRating
+          isAlreadyReviewed={isAlreadyReviewed}
+          field={reviewFeedbackForm.helpfulness}
+          addRating={addRating}
+        />
+        <ReviewFeedbackRating
+          isAlreadyReviewed={isAlreadyReviewed}
+          field={reviewFeedbackForm.thoroughness}
+          addRating={addRating}
+        />
+        <ReviewFeedbackRating
+          isAlreadyReviewed={isAlreadyReviewed}
+          field={reviewFeedbackForm.responseTime}
+          addRating={addRating}
+        />
       </div>
-      <div className="flex justify-center">
-        <button onClick={submitFeedback} className="btn">
-          Submit Feedback
-        </button>
-      </div>
+      {!isAlreadyReviewed && (
+        <div className="flex justify-center">
+          <button onClick={submitFeedback} className="btn">
+            Submit Feedback
+          </button>
+        </div>
+      )}
     </div>
   );
 };

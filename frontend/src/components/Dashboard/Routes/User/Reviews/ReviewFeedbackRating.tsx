@@ -7,13 +7,17 @@ import { IReviewFeedbackFormField } from '../../../../../interfaces';
 export interface IReviewFeedbackRatingProps {
   field: IReviewFeedbackFormField;
   addRating: (name: string, rating: number) => void;
+  isAlreadyReviewed: boolean;
 }
 
-const ReviewFeedbackRating = ({ field, addRating }: IReviewFeedbackRatingProps) => {
+const ReviewFeedbackRating = ({ field, addRating, isAlreadyReviewed }: IReviewFeedbackRatingProps) => {
   const NUM_OF_STARS = 5;
 
   const handleOnMouseEnter = useCallback(
     debounce((index: number) => {
+      if (isAlreadyReviewed) {
+        return;
+      }
       addRating(field.name, index);
     }, 200),
     [addRating, field.name]

@@ -483,7 +483,7 @@ export {
 
 export { useDeleteDropDownOptionMutation } from './apis/dropDownOptionsApi';
 
-export { useCreateReviewFeedbackMutation } from './apis/reviewFeedbacksApi';
+export { useLazyGetSingleReviewFeedbackQuery, useCreateReviewFeedbackMutation } from './apis/reviewFeedbacksApi';
 
 export {
   testimonialsApi,

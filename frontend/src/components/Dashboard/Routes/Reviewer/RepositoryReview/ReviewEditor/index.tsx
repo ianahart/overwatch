@@ -15,6 +15,7 @@ import Toolbar from './Toolbar';
 import HeadingElement from './HeadingElement';
 import { TRootState, updateRepository, useUpdateRepositoryReviewMutation } from '../../../../../../state/store';
 import { NotificationType } from '../../../../../../enums';
+import { useNavigate } from 'react-router-dom';
 
 declare module 'slate' {
   interface CustomTypes {
@@ -27,9 +28,10 @@ declare module 'slate' {
 let stompClient: any = null;
 
 const ReviewEditor = () => {
+  const navigate = useNavigate();
   const shouldRun = useRef(true);
   const dispatch = useDispatch();
-  const { token } = useSelector((store: TRootState) => store.user);
+  const { user, token } = useSelector((store: TRootState) => store.user);
   const [editor] = useState(() => withReact(createEditor()));
   const { repository } = useSelector((store: TRootState) => store.repositoryTree);
   const [status, setStatus] = useState(repository.status ? repository.status : 'COMPLETED');
@@ -171,6 +173,7 @@ const ReviewEditor = () => {
         const { feedback, status } = res.data;
         dispatch(updateRepository({ status, feedback }));
         emitNotification();
+        navigate(`/dashboard/${user.slug}/reviewer/reviews`);
       })
       .catch((err) => {
         console.log(err);

@@ -1,6 +1,19 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface IReviewFeedback {
+  [key: string]: string | number;
+  id: number;
+  clarity: number;
+  helpfulness: number;
+  thoroughness: number;
+  responseTime: number;
+  repositoryId: number;
+  reviewerId: number;
+  ownerId: number;
+  createdAt: string;
+}
+
 export interface IReviewFeedbackFormField {
   title: string;
   name: string;
@@ -1534,6 +1547,18 @@ export interface ICreateReviewFeedbackRequest {
   repositoryId: number;
   reviewerId: number;
   ownerId: number;
+}
+
+export interface IGetSingleReviewFeedbackRequest {
+  token: string;
+  reviewerId: number;
+  ownerId: number;
+  repositoryId: number;
+}
+
+export interface IGetSingleReviewFeedbackResponse {
+  message: string;
+  data: IReviewFeedback;
 }
 
 export interface ICreateReviewFeedbackResponse extends IBaseResponse {}

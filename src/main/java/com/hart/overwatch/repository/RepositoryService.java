@@ -51,7 +51,7 @@ public class RepositoryService {
         this.gitHubService = gitHubService;
     }
 
-    private Repository getRepositoryById(Long repositoryId) {
+    public Repository getRepositoryById(Long repositoryId) {
         return this.repositoryRepository.findById(repositoryId)
                 .orElseThrow(() -> new NotFoundException(
                         String.format("Repository with the id %d was not found", repositoryId)));
