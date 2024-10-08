@@ -1,6 +1,8 @@
 package com.hart.overwatch.repository.dto;
 
 import java.time.LocalDateTime;
+import com.hart.overwatch.repository.RepositoryStatus;
+import com.hart.overwatch.repository.ReviewType;
 
 public class CompletedRepositoryReviewDto {
 
@@ -8,17 +10,25 @@ public class CompletedRepositoryReviewDto {
 
     private LocalDateTime reviewEndTime;
 
+    private ReviewType reviewType;
+
     public CompletedRepositoryReviewDto() {
 
     }
 
-    public CompletedRepositoryReviewDto(Long id, LocalDateTime reviewEndTime) {
+    public CompletedRepositoryReviewDto(Long id, LocalDateTime reviewEndTime,
+            ReviewType reviewType) {
         this.id = id;
         this.reviewEndTime = reviewEndTime;
+        this.reviewType = reviewType;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public ReviewType getReviewType() {
+        return reviewType;
     }
 
     public LocalDateTime getReviewEndTime() {
@@ -31,5 +41,9 @@ public class CompletedRepositoryReviewDto {
 
     public void setReviewEndTime(LocalDateTime reviewEndTime) {
         this.reviewEndTime = reviewEndTime;
+    }
+
+    public void setReviewType(ReviewType reviewType) {
+        this.reviewType = reviewType;
     }
 }
