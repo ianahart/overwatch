@@ -19,6 +19,7 @@ import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
+import com.hart.overwatch.repository.dto.CompletedRepositoryReviewDto;
 import com.hart.overwatch.repository.dto.FullRepositoryDto;
 import com.hart.overwatch.repository.dto.RepositoryContentsDto;
 import com.hart.overwatch.repository.dto.RepositoryDto;
@@ -277,6 +278,11 @@ public class RepositoryService {
         repository.setReviewStartTime(reviewStartTime);
 
         repositoryRepository.save(repository);
+    }
+
+    public List<CompletedRepositoryReviewDto> getCompletedReviews(Long reviewerId) {
+        return repositoryRepository.findByReviewerIdAndCompleted(reviewerId,
+                RepositoryStatus.COMPLETED);
     }
 }
 

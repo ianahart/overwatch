@@ -136,6 +136,7 @@ import { activitiesApi } from './apis/activitiesApi';
 import { customFieldsApi } from './apis/customFieldsApi';
 import { dropDownOptionsApi } from './apis/dropDownOptionsApi';
 import { reviewFeedbacksApi } from './apis/reviewFeedbacksApi';
+import { statisticsApi } from './apis/statisticsApi';
 
 export const store = configureStore({
   reducer: {
@@ -185,6 +186,7 @@ export const store = configureStore({
     [customFieldsApi.reducerPath]: customFieldsApi.reducer,
     [dropDownOptionsApi.reducerPath]: dropDownOptionsApi.reducer,
     [reviewFeedbacksApi.reducerPath]: reviewFeedbacksApi.reducer,
+    [statisticsApi.reducerPath]: statisticsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -221,7 +223,8 @@ export const store = configureStore({
       .concat(activitiesApi.middleware)
       .concat(customFieldsApi.middleware)
       .concat(dropDownOptionsApi.middleware)
-      .concat(reviewFeedbacksApi.middleware);
+      .concat(reviewFeedbacksApi.middleware)
+      .concat(statisticsApi.middleware);
   },
 });
 
@@ -485,6 +488,8 @@ export { useDeleteDropDownOptionMutation } from './apis/dropDownOptionsApi';
 
 export { useLazyGetSingleReviewFeedbackQuery, useCreateReviewFeedbackMutation } from './apis/reviewFeedbacksApi';
 
+export { useFetchStatisticsQuery } from './apis/statisticsApi';
+
 export {
   testimonialsApi,
   authsApi,
@@ -509,4 +514,5 @@ export {
   customFieldsApi,
   dropDownOptionsApi,
   reviewFeedbacksApi,
+  statisticsApi,
 };
