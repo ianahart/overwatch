@@ -12,6 +12,7 @@ import com.hart.overwatch.repository.dto.CompletedRepositoryReviewDto;
 import com.hart.overwatch.reviewfeedback.ReviewFeedbackService;
 import com.hart.overwatch.statistic.dto.CompletedReviewStatDto;
 import com.hart.overwatch.statistic.dto.OverallStatDto;
+import com.hart.overwatch.statistic.dto.ReviewTypeStatDto;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.user.UserService;
 
@@ -31,6 +32,17 @@ public class StatisticService {
         this.repositoryService = repositoryService;
         this.userService = userService;
     }
+
+
+    private List<ReviewTypeStatDto> getReviewTypesCompleted(Long reviewerId) {
+        List<CompletedRepositoryReviewDto> reviews =
+                repositoryService.getCompletedReviews(reviewerId);
+           return reviews.stream()
+            .collect(Collectors.groupingBy(CompletedRepositoryReviewDto::getReviewType))
+            .entrySet().stream()
+            .<ReviewTypeStatDto>map(entry -> new ReviewTypeStatDto(entry.getKey(), entry.getValue().size()))
+            .collect(Collectors.toList());
+}
 
     private List<CompletedReviewStatDto> getReviewsCompleted(Long reviewerId) {
         LocalDateTime startOfMonth = LocalDate.now().withDayOfMonth(1).atStartOfDay();
@@ -55,6 +67,7 @@ public class StatisticService {
             throw new BadRequestException("Missing parameter: reviewerId");
         }
         List<CompletedReviewStatDto> reviewsCompleted = getReviewsCompleted(reviewerId);
-        return new OverallStatDto(reviewsCompleted);
+        List<ReviewTypeStatDto> reviewTypesCompleted = getReviewTypesCompleted(reviewerId);
+        return new OverallStatDto(reviewsCompleted, reviewTypesCompleted);
     }
 }

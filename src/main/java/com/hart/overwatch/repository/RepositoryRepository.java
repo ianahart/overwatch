@@ -14,7 +14,7 @@ public interface RepositoryRepository extends JpaRepository<Repository, Long> {
 
     @Query(value = """
             SELECT new com.hart.overwatch.repository.dto.CompletedRepositoryReviewDto(
-              r.id AS id, r.reviewEndTime AS reviewEndTime
+              r.id AS id, r.reviewEndTime AS reviewEndTime, r.reviewType AS reviewType
             ) FROM Repository r
             INNER JOIN r.reviewer re
             WHERE re.id = :reviewerId
