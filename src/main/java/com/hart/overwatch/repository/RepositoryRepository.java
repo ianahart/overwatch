@@ -6,12 +6,22 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import com.hart.overwatch.repository.dto.CompletedRepositoryReviewDto;
 import com.hart.overwatch.repository.dto.RepositoryDto;
 
 
 public interface RepositoryRepository extends JpaRepository<Repository, Long> {
 
-
+    @Query(value = """
+            SELECT new com.hart.overwatch.repository.dto.CompletedRepositoryReviewDto(
+              r.id AS id, r.reviewEndTime AS reviewEndTime
+            ) FROM Repository r
+            INNER JOIN r.reviewer re
+            WHERE re.id = :reviewerId
+            AND r.status = :status
+            """)
+    List<CompletedRepositoryReviewDto> findByReviewerIdAndCompleted(
+            @Param("reviewerId") Long reviewerId, @Param("status") RepositoryStatus status);
 
     @Query(value = """
             SELECT NEW com.hart.overwatch.repository.dto.RepositoryDto(

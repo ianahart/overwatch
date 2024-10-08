@@ -1561,6 +1561,16 @@ export interface IGetSingleReviewFeedbackResponse {
   data: IReviewFeedback;
 }
 
+export interface IFetchStatisticRequest {
+  reviewerId: number;
+  token: string;
+}
+
+export interface IFetchStatisticResponse {
+  message: string;
+  data: any;
+}
+
 export interface ICreateReviewFeedbackResponse extends IBaseResponse {}
 
 export interface IUpdateRepositoryReviewStartTimeResponse extends IBaseResponse {}
