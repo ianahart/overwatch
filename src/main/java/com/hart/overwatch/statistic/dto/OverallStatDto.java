@@ -15,7 +15,8 @@ public class OverallStatDto {
     }
 
     public OverallStatDto(List<CompletedReviewStatDto> reviewsCompleted,
-            List<ReviewTypeStatDto> reviewTypesCompleted, List<Map<String, Object>> avgReviewTimes) {
+            List<ReviewTypeStatDto> reviewTypesCompleted,
+            List<Map<String, Object>> avgReviewTimes) {
         this.reviewsCompleted = reviewsCompleted;
         this.reviewTypesCompleted = reviewTypesCompleted;
         this.avgReviewTimes = avgReviewTimes;
