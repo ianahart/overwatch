@@ -8,9 +8,19 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import com.hart.overwatch.repository.dto.CompletedRepositoryReviewDto;
 import com.hart.overwatch.repository.dto.RepositoryDto;
+import com.hart.overwatch.repository.dto.RepositoryLanguageDto;
 
 
 public interface RepositoryRepository extends JpaRepository<Repository, Long> {
+
+    @Query(value = """
+            SELECT new com.hart.overwatch.repository.dto.RepositoryLanguageDto(
+                 r.language AS language
+              ) FROM Repository r
+            INNER JOIN r.reviewer re
+            WHERE re.id = :reviewerId
+            """)
+    List<RepositoryLanguageDto> getMainLanguages(@Param("reviewerId") Long reviewerId);
 
     @Query(value = """
             SELECT new com.hart.overwatch.repository.dto.CompletedRepositoryReviewDto(

@@ -23,6 +23,7 @@ import com.hart.overwatch.repository.dto.CompletedRepositoryReviewDto;
 import com.hart.overwatch.repository.dto.FullRepositoryDto;
 import com.hart.overwatch.repository.dto.RepositoryContentsDto;
 import com.hart.overwatch.repository.dto.RepositoryDto;
+import com.hart.overwatch.repository.dto.RepositoryLanguageDto;
 import com.hart.overwatch.repository.dto.RepositoryReviewDto;
 import com.hart.overwatch.repository.request.CreateRepositoryFileRequest;
 import com.hart.overwatch.repository.request.CreateUserRepositoryRequest;
@@ -283,6 +284,10 @@ public class RepositoryService {
     public List<CompletedRepositoryReviewDto> getCompletedReviews(Long reviewerId) {
         return repositoryRepository.findByReviewerIdAndCompleted(reviewerId,
                 RepositoryStatus.COMPLETED);
+    }
+
+    public List<RepositoryLanguageDto> getMainLanguages(Long reviewerId) {
+        return repositoryRepository.getMainLanguages(reviewerId);
     }
 }
 

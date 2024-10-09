@@ -13,9 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.repository.RepositoryService;
 import com.hart.overwatch.repository.dto.CompletedRepositoryReviewDto;
+import com.hart.overwatch.repository.dto.RepositoryLanguageDto;
 import com.hart.overwatch.reviewfeedback.ReviewFeedbackService;
 import com.hart.overwatch.reviewfeedback.dto.ReviewFeedbackRatingsDto;
 import com.hart.overwatch.statistic.dto.CompletedReviewStatDto;
+import com.hart.overwatch.statistic.dto.LanguageStatDto;
 import com.hart.overwatch.statistic.dto.OverallStatDto;
 import com.hart.overwatch.statistic.dto.ReviewFeedbackRatingStatDto;
 import com.hart.overwatch.statistic.dto.ReviewTypeStatDto;
@@ -131,6 +133,15 @@ public class StatisticService {
 
     }
 
+    private List<LanguageStatDto> countMainLanguages(Long reviewerId) {
+        List<RepositoryLanguageDto> mainLanguages = repositoryService.getMainLanguages(reviewerId);
+        return mainLanguages.stream()
+                .collect(Collectors.groupingBy(language -> language.getLanguage())).entrySet()
+                .stream().map(entry -> new LanguageStatDto(entry.getKey(), entry.getValue().size()))
+                .collect(Collectors.toList());
+
+    }
+
     public OverallStatDto getStatistics(Long reviewerId) {
         if (reviewerId == null) {
             throw new BadRequestException("Missing parameter: reviewerId");
@@ -140,7 +151,8 @@ public class StatisticService {
         List<Map<String, Object>> avgReviewTimes = getAverageReviewTimes(reviewerId);
         List<ReviewFeedbackRatingStatDto> avgRatings =
                 mapAveragesToList(getReviewFeedbackRatings(reviewerId));
+        List<LanguageStatDto> mainLanguages = countMainLanguages(reviewerId);
         return new OverallStatDto(reviewsCompleted, reviewTypesCompleted, avgReviewTimes,
-                avgRatings);
+                avgRatings, mainLanguages);
     }
 }
