@@ -8,6 +8,7 @@ public class OverallStatDto {
     private List<CompletedReviewStatDto> reviewsCompleted;
     private List<ReviewTypeStatDto> reviewTypesCompleted;
     private List<Map<String, Object>> avgReviewTimes;
+    private List<ReviewFeedbackRatingStatDto> avgRatings;
 
 
     public OverallStatDto() {
@@ -15,15 +16,20 @@ public class OverallStatDto {
     }
 
     public OverallStatDto(List<CompletedReviewStatDto> reviewsCompleted,
-            List<ReviewTypeStatDto> reviewTypesCompleted,
-            List<Map<String, Object>> avgReviewTimes) {
+            List<ReviewTypeStatDto> reviewTypesCompleted, List<Map<String, Object>> avgReviewTimes,
+            List<ReviewFeedbackRatingStatDto> avgRatings) {
         this.reviewsCompleted = reviewsCompleted;
         this.reviewTypesCompleted = reviewTypesCompleted;
         this.avgReviewTimes = avgReviewTimes;
+        this.avgRatings = avgRatings;
     }
 
     public List<CompletedReviewStatDto> getReviewsCompleted() {
         return reviewsCompleted;
+    }
+
+    public List<ReviewFeedbackRatingStatDto> getAvgRatings() {
+        return avgRatings;
     }
 
     public List<Map<String, Object>> getAvgReviewTimes() {
@@ -44,5 +50,9 @@ public class OverallStatDto {
 
     public void setAvgReviewTimes(List<Map<String, Object>> avgReviewTimes) {
         this.avgReviewTimes = avgReviewTimes;
+    }
+
+    public void setAvgRatings(List<ReviewFeedbackRatingStatDto> avgRatings) {
+        this.avgRatings = avgRatings;
     }
 }
