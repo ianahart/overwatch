@@ -14,8 +14,10 @@ import org.springframework.stereotype.Service;
 import com.hart.overwatch.repository.RepositoryService;
 import com.hart.overwatch.repository.dto.CompletedRepositoryReviewDto;
 import com.hart.overwatch.reviewfeedback.ReviewFeedbackService;
+import com.hart.overwatch.reviewfeedback.dto.ReviewFeedbackRatingsDto;
 import com.hart.overwatch.statistic.dto.CompletedReviewStatDto;
 import com.hart.overwatch.statistic.dto.OverallStatDto;
+import com.hart.overwatch.statistic.dto.ReviewFeedbackRatingStatDto;
 import com.hart.overwatch.statistic.dto.ReviewTypeStatDto;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.user.UserService;
@@ -88,6 +90,47 @@ public class StatisticService {
         }).collect(Collectors.toList());
     }
 
+
+    private Map<String, Double> getReviewFeedbackRatings(Long reviewerId) {
+        List<ReviewFeedbackRatingsDto> ratings =
+                reviewFeedbackService.getReviewFeedbackRatings(reviewerId);
+
+        if (ratings.isEmpty()) {
+            return Map.of("averageClarity", 0.0, "averageThoroughness", 0.0, "averageResponseTime",
+                    0.0, "averageHelpfulness", 0.0);
+        }
+
+        double totalClarity = 0.0;
+        double totalHelpfulness = 0.0;
+        double totalResponseTime = 0.0;
+        double totalThoroughness = 0.0;
+
+        int totalRatings = ratings.size();
+
+        for (ReviewFeedbackRatingsDto rating : ratings) {
+            totalClarity += rating.getClarity();
+            totalHelpfulness = rating.getHelpfulness();
+            totalResponseTime = rating.getResponseTime();
+            totalThoroughness = rating.getThoroughness();
+        }
+
+        double avgClarity = totalClarity / totalRatings;
+        double avgHelpfulness = totalHelpfulness / totalRatings;
+        double avgResponseTime = totalResponseTime / totalRatings;
+        double avgThoroughness = totalThoroughness / totalRatings;
+
+        return Map.of("Average Clarity", avgClarity, "Average Helpfulness", avgHelpfulness,
+                "Average Response Time", avgResponseTime, "Average Thoroughness", avgThoroughness);
+
+    }
+
+    private List<ReviewFeedbackRatingStatDto> mapAveragesToList(Map<String, Double> averages) {
+        return averages.entrySet().stream().map(entry -> {
+            return new ReviewFeedbackRatingStatDto(entry.getKey(), entry.getValue());
+        }).collect(Collectors.toList());
+
+    }
+
     public OverallStatDto getStatistics(Long reviewerId) {
         if (reviewerId == null) {
             throw new BadRequestException("Missing parameter: reviewerId");
@@ -95,6 +138,9 @@ public class StatisticService {
         List<CompletedReviewStatDto> reviewsCompleted = getReviewsCompleted(reviewerId);
         List<ReviewTypeStatDto> reviewTypesCompleted = getReviewTypesCompleted(reviewerId);
         List<Map<String, Object>> avgReviewTimes = getAverageReviewTimes(reviewerId);
-        return new OverallStatDto(reviewsCompleted, reviewTypesCompleted, avgReviewTimes);
+        List<ReviewFeedbackRatingStatDto> avgRatings =
+                mapAveragesToList(getReviewFeedbackRatings(reviewerId));
+        return new OverallStatDto(reviewsCompleted, reviewTypesCompleted, avgReviewTimes,
+                avgRatings);
     }
 }

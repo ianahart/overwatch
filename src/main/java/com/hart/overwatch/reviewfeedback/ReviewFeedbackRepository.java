@@ -1,11 +1,24 @@
 package com.hart.overwatch.reviewfeedback;
 
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import com.hart.overwatch.reviewfeedback.dto.ReviewFeedbackDto;
+import com.hart.overwatch.reviewfeedback.dto.ReviewFeedbackRatingsDto;
 
 public interface ReviewFeedbackRepository extends JpaRepository<ReviewFeedback, Long> {
+    @Query(value = """
+            SELECT new com.hart.overwatch.reviewfeedback.dto.ReviewFeedbackRatingsDto(
+              rfb.thoroughness AS thoroughness, rfb.helpfulness AS helpfulness,
+              rfb.responseTime AS responseTime, rfb.clarity AS clarity
+            ) FROM ReviewFeedback rfb
+            INNER JOIN rfb.reviewer r
+            WHERE r.id = :reviewerId
+            """)
+    List<ReviewFeedbackRatingsDto> getReviewFeedbackRatings(@Param("reviewerId") Long reviewerId);
+
+
     @Query(value = """
              SELECT new com.hart.overwatch.reviewfeedback.dto.ReviewFeedbackDto(
               rf.id AS id, r.id AS repositoryId, o.id AS ownerId, re.id AS reviewerId,

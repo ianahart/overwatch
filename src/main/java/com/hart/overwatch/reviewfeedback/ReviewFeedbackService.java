@@ -1,10 +1,12 @@
 package com.hart.overwatch.reviewfeedback;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.repository.Repository;
 import com.hart.overwatch.repository.RepositoryService;
 import com.hart.overwatch.reviewfeedback.dto.ReviewFeedbackDto;
+import com.hart.overwatch.reviewfeedback.dto.ReviewFeedbackRatingsDto;
 import com.hart.overwatch.reviewfeedback.request.CreateReviewFeedbackRequest;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
@@ -83,6 +85,10 @@ public class ReviewFeedbackService {
         reviewFeedback.setRepository(repository);
 
         reviewFeedbackRepository.save(reviewFeedback);
+    }
+
+    public List<ReviewFeedbackRatingsDto> getReviewFeedbackRatings(Long reviewerId) {
+        return reviewFeedbackRepository.getReviewFeedbackRatings(reviewerId);
     }
 
 }
