@@ -10,6 +10,7 @@ public class OverallStatDto {
     private List<Map<String, Object>> avgReviewTimes;
     private List<ReviewFeedbackRatingStatDto> avgRatings;
     private List<LanguageStatDto> mainLanguages;
+    private List<StatusTypeStatDto> statusTypes;
 
 
     public OverallStatDto() {
@@ -18,12 +19,14 @@ public class OverallStatDto {
 
     public OverallStatDto(List<CompletedReviewStatDto> reviewsCompleted,
             List<ReviewTypeStatDto> reviewTypesCompleted, List<Map<String, Object>> avgReviewTimes,
-            List<ReviewFeedbackRatingStatDto> avgRatings, List<LanguageStatDto> mainLanguages) {
+            List<ReviewFeedbackRatingStatDto> avgRatings, List<LanguageStatDto> mainLanguages,
+            List<StatusTypeStatDto> statusTypes) {
         this.reviewsCompleted = reviewsCompleted;
         this.reviewTypesCompleted = reviewTypesCompleted;
         this.avgReviewTimes = avgReviewTimes;
         this.avgRatings = avgRatings;
         this.mainLanguages = mainLanguages;
+        this.statusTypes = statusTypes;
     }
 
     public List<CompletedReviewStatDto> getReviewsCompleted() {
@@ -40,6 +43,10 @@ public class OverallStatDto {
 
     public List<Map<String, Object>> getAvgReviewTimes() {
         return avgReviewTimes;
+    }
+
+    public List<StatusTypeStatDto> getStatusTypes() {
+        return statusTypes;
     }
 
     public List<ReviewTypeStatDto> getReviewTypesCompleted() {
@@ -64,5 +71,9 @@ public class OverallStatDto {
 
     public void setMainLanguages(List<LanguageStatDto> mainLanguages) {
         this.mainLanguages = mainLanguages;
+    }
+
+    public void setStatusTypes(List<StatusTypeStatDto> statusTypes) {
+        this.statusTypes = statusTypes;
     }
 }

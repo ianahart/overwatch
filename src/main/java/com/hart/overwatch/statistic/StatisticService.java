@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.hart.overwatch.repository.RepositoryService;
 import com.hart.overwatch.repository.dto.CompletedRepositoryReviewDto;
 import com.hart.overwatch.repository.dto.RepositoryLanguageDto;
+import com.hart.overwatch.repository.dto.RepositoryStatusDto;
 import com.hart.overwatch.reviewfeedback.ReviewFeedbackService;
 import com.hart.overwatch.reviewfeedback.dto.ReviewFeedbackRatingsDto;
 import com.hart.overwatch.statistic.dto.CompletedReviewStatDto;
@@ -21,6 +22,7 @@ import com.hart.overwatch.statistic.dto.LanguageStatDto;
 import com.hart.overwatch.statistic.dto.OverallStatDto;
 import com.hart.overwatch.statistic.dto.ReviewFeedbackRatingStatDto;
 import com.hart.overwatch.statistic.dto.ReviewTypeStatDto;
+import com.hart.overwatch.statistic.dto.StatusTypeStatDto;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.user.UserService;
 
@@ -142,6 +144,17 @@ public class StatisticService {
 
     }
 
+    private List<StatusTypeStatDto> countStatusTypes(Long reviewerId) {
+        List<RepositoryStatusDto> repositories =
+                repositoryService.getAllRepositoriesWithStatuses(reviewerId);
+        return repositories.stream()
+                .collect(Collectors.groupingBy(repository -> repository.getStatus())).entrySet()
+                .stream()
+                .map(entry -> new StatusTypeStatDto(entry.getKey().toString().toLowerCase(),
+                        entry.getValue().size()))
+                .collect(Collectors.toList());
+    }
+
     public OverallStatDto getStatistics(Long reviewerId) {
         if (reviewerId == null) {
             throw new BadRequestException("Missing parameter: reviewerId");
@@ -152,7 +165,9 @@ public class StatisticService {
         List<ReviewFeedbackRatingStatDto> avgRatings =
                 mapAveragesToList(getReviewFeedbackRatings(reviewerId));
         List<LanguageStatDto> mainLanguages = countMainLanguages(reviewerId);
+        List<StatusTypeStatDto> statusTypes = countStatusTypes(reviewerId);
+
         return new OverallStatDto(reviewsCompleted, reviewTypesCompleted, avgReviewTimes,
-                avgRatings, mainLanguages);
+                avgRatings, mainLanguages, statusTypes);
     }
 }
