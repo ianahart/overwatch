@@ -15,6 +15,7 @@ import com.hart.overwatch.repository.RepositoryService;
 import com.hart.overwatch.repository.dto.CompletedRepositoryReviewDto;
 import com.hart.overwatch.repository.dto.RepositoryLanguageDto;
 import com.hart.overwatch.repository.dto.RepositoryStatusDto;
+import com.hart.overwatch.repository.dto.RepositoryTopRequesterDto;
 import com.hart.overwatch.reviewfeedback.ReviewFeedbackService;
 import com.hart.overwatch.reviewfeedback.dto.ReviewFeedbackRatingsDto;
 import com.hart.overwatch.statistic.dto.CompletedReviewStatDto;
@@ -23,8 +24,8 @@ import com.hart.overwatch.statistic.dto.OverallStatDto;
 import com.hart.overwatch.statistic.dto.ReviewFeedbackRatingStatDto;
 import com.hart.overwatch.statistic.dto.ReviewTypeStatDto;
 import com.hart.overwatch.statistic.dto.StatusTypeStatDto;
+import com.hart.overwatch.statistic.dto.TopReviewRequesterStatDto;
 import com.hart.overwatch.advice.BadRequestException;
-import com.hart.overwatch.user.UserService;
 
 @Service
 public class StatisticService {
@@ -33,14 +34,11 @@ public class StatisticService {
 
     private final RepositoryService repositoryService;
 
-    private final UserService userService;
-
     @Autowired
     public StatisticService(ReviewFeedbackService reviewFeedbackService,
-            RepositoryService repositoryService, UserService userService) {
+            RepositoryService repositoryService) {
         this.reviewFeedbackService = reviewFeedbackService;
         this.repositoryService = repositoryService;
-        this.userService = userService;
     }
 
 
@@ -155,6 +153,19 @@ public class StatisticService {
                 .collect(Collectors.toList());
     }
 
+    private List<TopReviewRequesterStatDto> countTopReviewRequesters(Long reviewerId) {
+
+        List<RepositoryTopRequesterDto> repositories =
+                repositoryService.getTopRequestersOfReviewer(reviewerId);
+
+        return repositories.stream()
+                .collect(Collectors.groupingBy(repository -> String.format("%d-%s",
+                        repository.getOwnerId(), repository.getFullName())))
+                .entrySet().stream().map(entry -> new TopReviewRequesterStatDto(entry.getKey(),
+                        entry.getValue().size()))
+                .collect(Collectors.toList());
+    }
+
     public OverallStatDto getStatistics(Long reviewerId) {
         if (reviewerId == null) {
             throw new BadRequestException("Missing parameter: reviewerId");
@@ -166,8 +177,9 @@ public class StatisticService {
                 mapAveragesToList(getReviewFeedbackRatings(reviewerId));
         List<LanguageStatDto> mainLanguages = countMainLanguages(reviewerId);
         List<StatusTypeStatDto> statusTypes = countStatusTypes(reviewerId);
+        List<TopReviewRequesterStatDto> topRequesters = countTopReviewRequesters(reviewerId);
 
         return new OverallStatDto(reviewsCompleted, reviewTypesCompleted, avgReviewTimes,
-                avgRatings, mainLanguages, statusTypes);
+                avgRatings, mainLanguages, statusTypes, topRequesters);
     }
 }
