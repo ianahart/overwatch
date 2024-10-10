@@ -6,11 +6,18 @@ import java.util.Map;
 public class OverallStatDto {
 
     private List<CompletedReviewStatDto> reviewsCompleted;
+
     private List<ReviewTypeStatDto> reviewTypesCompleted;
+
     private List<Map<String, Object>> avgReviewTimes;
+
     private List<ReviewFeedbackRatingStatDto> avgRatings;
+
     private List<LanguageStatDto> mainLanguages;
+
     private List<StatusTypeStatDto> statusTypes;
+
+    private List<TopReviewRequesterStatDto> topRequesters;
 
 
     public OverallStatDto() {
@@ -20,17 +27,22 @@ public class OverallStatDto {
     public OverallStatDto(List<CompletedReviewStatDto> reviewsCompleted,
             List<ReviewTypeStatDto> reviewTypesCompleted, List<Map<String, Object>> avgReviewTimes,
             List<ReviewFeedbackRatingStatDto> avgRatings, List<LanguageStatDto> mainLanguages,
-            List<StatusTypeStatDto> statusTypes) {
+            List<StatusTypeStatDto> statusTypes, List<TopReviewRequesterStatDto> topRequesters) {
         this.reviewsCompleted = reviewsCompleted;
         this.reviewTypesCompleted = reviewTypesCompleted;
         this.avgReviewTimes = avgReviewTimes;
         this.avgRatings = avgRatings;
         this.mainLanguages = mainLanguages;
         this.statusTypes = statusTypes;
+        this.topRequesters = topRequesters;
     }
 
     public List<CompletedReviewStatDto> getReviewsCompleted() {
         return reviewsCompleted;
+    }
+
+    public List<TopReviewRequesterStatDto> getTopRequesters() {
+        return topRequesters;
     }
 
     public List<LanguageStatDto> getMainLanguages() {
@@ -75,5 +87,9 @@ public class OverallStatDto {
 
     public void setStatusTypes(List<StatusTypeStatDto> statusTypes) {
         this.statusTypes = statusTypes;
+    }
+
+    public void setTopRequesters(List<TopReviewRequesterStatDto> topRequesters) {
+        this.topRequesters = topRequesters;
     }
 }

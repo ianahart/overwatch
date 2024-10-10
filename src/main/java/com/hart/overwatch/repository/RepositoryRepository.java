@@ -1,5 +1,6 @@
 package com.hart.overwatch.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,10 +11,24 @@ import com.hart.overwatch.repository.dto.CompletedRepositoryReviewDto;
 import com.hart.overwatch.repository.dto.RepositoryDto;
 import com.hart.overwatch.repository.dto.RepositoryLanguageDto;
 import com.hart.overwatch.repository.dto.RepositoryStatusDto;
+import com.hart.overwatch.repository.dto.RepositoryTopRequesterDto;
 
 
 public interface RepositoryRepository extends JpaRepository<Repository, Long> {
 
+
+    @Query(value = """
+             SELECT new com.hart.overwatch.repository.dto.RepositoryTopRequesterDto(
+             o.id AS ownerId, o.fullName AS fullName, r.reviewStartTime AS reviewStartTime
+             ) FROM Repository r
+             INNER JOIN r.owner o
+             INNER JOIN r.reviewer re
+             WHERE re.id = :reviewerId
+             AND r.reviewStartTime BETWEEN :startOfMonth AND :endOfMonth
+            """)
+    List<RepositoryTopRequesterDto> findOwnersByReviewerId(@Param("reviewerId") Long reviewerId,
+            @Param("startOfMonth") LocalDateTime startOfMonth,
+            @Param("endOfMonth") LocalDateTime endOfMonth);
 
     @Query(value = """
             SELECT new com.hart.overwatch.repository.dto.RepositoryStatusDto(

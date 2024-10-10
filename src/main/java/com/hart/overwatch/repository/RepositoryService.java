@@ -2,7 +2,9 @@ package com.hart.overwatch.repository;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
@@ -26,6 +28,7 @@ import com.hart.overwatch.repository.dto.RepositoryDto;
 import com.hart.overwatch.repository.dto.RepositoryLanguageDto;
 import com.hart.overwatch.repository.dto.RepositoryReviewDto;
 import com.hart.overwatch.repository.dto.RepositoryStatusDto;
+import com.hart.overwatch.repository.dto.RepositoryTopRequesterDto;
 import com.hart.overwatch.repository.request.CreateRepositoryFileRequest;
 import com.hart.overwatch.repository.request.CreateUserRepositoryRequest;
 import com.hart.overwatch.repository.request.UpdateRepositoryReviewRequest;
@@ -293,6 +296,14 @@ public class RepositoryService {
 
     public List<RepositoryStatusDto> getAllRepositoriesWithStatuses(Long reviewerId) {
         return repositoryRepository.findStatusesByReviewerId(reviewerId);
+    }
+
+    public List<RepositoryTopRequesterDto> getTopRequestersOfReviewer(Long reviewerId) {
+        LocalDateTime startOfMonth = LocalDate.now().withDayOfMonth(1).atStartOfDay();
+        LocalDateTime endOfMonth = LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth())
+                .atTime(LocalTime.MAX);
+
+        return repositoryRepository.findOwnersByReviewerId(reviewerId, startOfMonth, endOfMonth);
     }
 }
 
