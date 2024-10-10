@@ -9,9 +9,20 @@ import org.springframework.data.repository.query.Param;
 import com.hart.overwatch.repository.dto.CompletedRepositoryReviewDto;
 import com.hart.overwatch.repository.dto.RepositoryDto;
 import com.hart.overwatch.repository.dto.RepositoryLanguageDto;
+import com.hart.overwatch.repository.dto.RepositoryStatusDto;
 
 
 public interface RepositoryRepository extends JpaRepository<Repository, Long> {
+
+
+    @Query(value = """
+            SELECT new com.hart.overwatch.repository.dto.RepositoryStatusDto(
+             r.status AS status
+            ) FROM Repository r
+            INNER JOIN r.reviewer re
+            WHERE re.id = :reviewerId
+            """)
+    List<RepositoryStatusDto> findStatusesByReviewerId(@Param("reviewerId") Long reviewerId);
 
     @Query(value = """
             SELECT new com.hart.overwatch.repository.dto.RepositoryLanguageDto(

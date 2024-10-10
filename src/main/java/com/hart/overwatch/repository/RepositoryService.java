@@ -25,6 +25,7 @@ import com.hart.overwatch.repository.dto.RepositoryContentsDto;
 import com.hart.overwatch.repository.dto.RepositoryDto;
 import com.hart.overwatch.repository.dto.RepositoryLanguageDto;
 import com.hart.overwatch.repository.dto.RepositoryReviewDto;
+import com.hart.overwatch.repository.dto.RepositoryStatusDto;
 import com.hart.overwatch.repository.request.CreateRepositoryFileRequest;
 import com.hart.overwatch.repository.request.CreateUserRepositoryRequest;
 import com.hart.overwatch.repository.request.UpdateRepositoryReviewRequest;
@@ -288,6 +289,10 @@ public class RepositoryService {
 
     public List<RepositoryLanguageDto> getMainLanguages(Long reviewerId) {
         return repositoryRepository.getMainLanguages(reviewerId);
+    }
+
+    public List<RepositoryStatusDto> getAllRepositoriesWithStatuses(Long reviewerId) {
+        return repositoryRepository.findStatusesByReviewerId(reviewerId);
     }
 }
 
