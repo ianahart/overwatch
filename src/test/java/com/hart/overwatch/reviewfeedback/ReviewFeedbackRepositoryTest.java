@@ -25,6 +25,7 @@ import com.hart.overwatch.profile.ProfileRepository;
 import com.hart.overwatch.repository.Repository;
 import com.hart.overwatch.repository.RepositoryRepository;
 import com.hart.overwatch.repository.RepositoryStatus;
+import com.hart.overwatch.reviewfeedback.dto.ReviewFeedbackDto;
 import com.hart.overwatch.reviewfeedback.dto.ReviewFeedbackRatingsDto;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.user.Role;
@@ -144,7 +145,7 @@ public class ReviewFeedbackRepositoryTest {
         entityManager.clear();
     }
 
-@Test
+    @Test
     public void ReviewFeedbackRepository_GetReviewFeedbackRatings_ReturnListOfReviewFeedbackRatingsDto() {
         Long reviewerId = reviewer.getId();
         List<ReviewFeedbackRatingsDto> reviewFeedbackRatings =
@@ -155,10 +156,40 @@ public class ReviewFeedbackRepositoryTest {
 
         ReviewFeedbackRatingsDto reviewFeedbackRating = reviewFeedbackRatings.getFirst();
 
-        Assertions.assertThat(reviewFeedbackRating.getClarity()).isEqualTo(reviewFeedback.getClarity());
-        Assertions.assertThat(reviewFeedbackRating.getResponseTime()).isEqualTo(reviewFeedback.getResponseTime());
-        Assertions.assertThat(reviewFeedbackRating.getThoroughness()).isEqualTo(reviewFeedback.getThoroughness());
-        Assertions.assertThat(reviewFeedbackRating.getHelpfulness()).isEqualTo(reviewFeedback.getHelpfulness());
+        Assertions.assertThat(reviewFeedbackRating.getClarity())
+                .isEqualTo(reviewFeedback.getClarity());
+        Assertions.assertThat(reviewFeedbackRating.getResponseTime())
+                .isEqualTo(reviewFeedback.getResponseTime());
+        Assertions.assertThat(reviewFeedbackRating.getThoroughness())
+                .isEqualTo(reviewFeedback.getThoroughness());
+        Assertions.assertThat(reviewFeedbackRating.getHelpfulness())
+                .isEqualTo(reviewFeedback.getHelpfulness());
+    }
+
+    @Test
+    public void ReviewFeedbackRepository_GetSingleReviewFeedback_ReturnReviewFeedbackDto() {
+        Long ownerId = owner.getId();
+        Long reviewerId = reviewer.getId();
+        Long repositoryId = repository.getId();
+
+        ReviewFeedbackDto reviewFeedbackDto =
+                reviewFeedbackRepository.getSingleReviewFeedback(ownerId, reviewerId, repositoryId);
+
+        Assertions.assertThat(reviewFeedbackDto).isNotNull();
+        Assertions.assertThat(reviewFeedbackDto.getOwnerId())
+                .isEqualTo(reviewFeedback.getOwner().getId());
+        Assertions.assertThat(reviewFeedbackDto.getReviewerId())
+                .isEqualTo(reviewFeedback.getReviewer().getId());
+        Assertions.assertThat(reviewFeedbackDto.getRepositoryId())
+                .isEqualTo(reviewFeedback.getRepository().getId());
+        Assertions.assertThat(reviewFeedbackDto.getClarity())
+                .isEqualTo(reviewFeedback.getClarity());
+        Assertions.assertThat(reviewFeedbackDto.getResponseTime())
+                .isEqualTo(reviewFeedback.getResponseTime());
+        Assertions.assertThat(reviewFeedbackDto.getThoroughness())
+                .isEqualTo(reviewFeedback.getThoroughness());
+        Assertions.assertThat(reviewFeedbackDto.getHelpfulness())
+                .isEqualTo(reviewFeedback.getHelpfulness());
     }
 }
 
