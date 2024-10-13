@@ -72,7 +72,7 @@ public class ReviewFeedbackService {
 
         if (!repository.getOwner().getId().equals(owner.getId())) {
             throw new ForbiddenException(
-                    "You are not authorized to submit feedback forthis repository.");
+                    "You are not authorized to submit feedback for this repository.");
         }
 
         ReviewFeedback reviewFeedback = new ReviewFeedback();

@@ -236,6 +236,34 @@ public class ReviewFeedbackServiceTest {
         }).isInstanceOf(BadRequestException.class)
                 .hasMessage("You have already given feedback for this review");
     }
+
+    @Test
+    public void ReviewFeedbackService_CreateReviewFeedback_ThrowForbiddenException() {
+        User forbiddenOwner = new User();
+        forbiddenOwner.setId(999L);
+        Long reviewerId = reviewer.getId();
+        Long repositoryId = repository.getId();
+        CreateReviewFeedbackRequest request = new CreateReviewFeedbackRequest();
+        request.setOwnerId(forbiddenOwner.getId());
+        request.setReviewerId(reviewerId);
+        request.setRepositoryId(repositoryId);
+        request.setClarity(1);
+        request.setHelpfulness(1);
+        request.setResponseTime(1);
+        request.setThoroughness(1);
+
+        when(reviewFeedbackRepository.findByOwnerIdAndReviewerIdAndRepositoryId(
+                forbiddenOwner.getId(), reviewerId, repositoryId)).thenReturn(false);
+        when(userService.getUserById(forbiddenOwner.getId())).thenReturn(forbiddenOwner);
+        when(userService.getUserById(reviewerId)).thenReturn(reviewer);
+        when(repositoryService.getRepositoryById(repositoryId)).thenReturn(repository);
+
+        Assertions.assertThatThrownBy(() -> {
+            reviewFeedbackService.createReviewFeedback(request);
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("You are not authorized to submit feedback for this repository.");
+
+    }
 }
 
 
