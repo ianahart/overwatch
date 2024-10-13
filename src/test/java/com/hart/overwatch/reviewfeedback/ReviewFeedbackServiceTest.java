@@ -15,10 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.profile.Profile;
@@ -26,6 +22,7 @@ import com.hart.overwatch.repository.Repository;
 import com.hart.overwatch.repository.RepositoryService;
 import com.hart.overwatch.repository.RepositoryStatus;
 import com.hart.overwatch.reviewfeedback.dto.ReviewFeedbackDto;
+import com.hart.overwatch.reviewfeedback.dto.ReviewFeedbackRatingsDto;
 import com.hart.overwatch.reviewfeedback.request.CreateReviewFeedbackRequest;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.user.Role;
@@ -289,6 +286,23 @@ public class ReviewFeedbackServiceTest {
         reviewFeedbackService.createReviewFeedback(request);
 
         verify(reviewFeedbackRepository, times(1)).save(any(ReviewFeedback.class));
+    }
+
+    @Test
+    public void ReviewFeedbackService_GetReviewFeedbackRatings_ReturnListOfReviewFeedbackRatings() {
+        Long reviewerId = reviewer.getId();
+        ReviewFeedbackRatingsDto reviewFeedbackRatingDto = new ReviewFeedbackRatingsDto(1, 1, 1, 1);
+        when(reviewFeedbackRepository.getReviewFeedbackRatings(reviewerId))
+                .thenReturn(List.of(reviewFeedbackRatingDto));
+
+        List<ReviewFeedbackRatingsDto> result =
+                reviewFeedbackService.getReviewFeedbackRatings(reviewerId);
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.size()).isEqualTo(1L);
+        Assertions.assertThat(result.getFirst().getClarity()).isEqualTo(1);
+        Assertions.assertThat(result.getFirst().getResponseTime()).isEqualTo(1);
+        Assertions.assertThat(result.getFirst().getHelpfulness()).isEqualTo(1);
+        Assertions.assertThat(result.getFirst().getThoroughness()).isEqualTo(1);
     }
 
 }
