@@ -21,20 +21,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
-import com.hart.overwatch.github.GitHubService;
-import com.hart.overwatch.github.dto.GitHubTreeDto;
-import com.hart.overwatch.github.dto.GitHubTreeNodeDto;
-import com.hart.overwatch.pagination.PaginationService;
-import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.repository.Repository;
 import com.hart.overwatch.repository.RepositoryService;
 import com.hart.overwatch.repository.RepositoryStatus;
-import com.hart.overwatch.repository.dto.FullRepositoryDto;
-import com.hart.overwatch.repository.dto.RepositoryContentsDto;
-import com.hart.overwatch.repository.dto.RepositoryDto;
-import com.hart.overwatch.repository.request.CreateUserRepositoryRequest;
-import com.hart.overwatch.repository.request.UpdateRepositoryReviewRequest;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
@@ -131,9 +121,19 @@ public class ReviewFeedbackServiceTest {
         reviewer = createReviewer();
         repository = createRepository(owner, reviewer);
         reviewFeedback = createReviewFeedback(owner, reviewer, repository);
-
     }
 
+    @Test
+    public void ReviewFeedbackService_GetSingleReviewFeedback_ThrowBadRequestExceptionMissingParams() {
+        Long ownerId = owner.getId();
+        Long reviewerId = null;
+        Long repositoryId = repository.getId();
+
+        Assertions.assertThatThrownBy(() -> {
+            reviewFeedbackService.getSingleReviewFeedback(ownerId, reviewerId, repositoryId);
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage("Missing parameters: ownerId, reviewerId, or repositoryId");
+    }
 
 }
 
