@@ -393,9 +393,9 @@ public class RepositoryServiceTest {
 
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result.getRepository()).usingRecursiveComparison()
-                       .isEqualTo(repositoryContentsDto.getRepository());
-         Assertions.assertThat(result.getContents()).usingRecursiveComparison()
-         .isEqualTo(repositoryContentsDto.getContents());
+                .isEqualTo(repositoryContentsDto.getRepository());
+        Assertions.assertThat(result.getContents()).usingRecursiveComparison()
+                .isEqualTo(repositoryContentsDto.getContents());
     }
 
     @Test
