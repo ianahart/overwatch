@@ -264,6 +264,33 @@ public class ReviewFeedbackServiceTest {
                 .hasMessage("You are not authorized to submit feedback for this repository.");
 
     }
+
+    @Test
+    public void ReviewFeedbackService_CreateReviewFeedback_DoNothing() {
+        Long ownerId = owner.getId();
+        Long reviewerId = reviewer.getId();
+        Long repositoryId = repository.getId();
+        CreateReviewFeedbackRequest request = new CreateReviewFeedbackRequest();
+        request.setOwnerId(ownerId);
+        request.setReviewerId(reviewerId);
+        request.setRepositoryId(repositoryId);
+        request.setClarity(1);
+        request.setHelpfulness(1);
+        request.setResponseTime(1);
+        request.setThoroughness(1);
+
+        when(reviewFeedbackRepository.findByOwnerIdAndReviewerIdAndRepositoryId(ownerId, reviewerId,
+                repositoryId)).thenReturn(false);
+        when(userService.getUserById(ownerId)).thenReturn(owner);
+        when(userService.getUserById(reviewerId)).thenReturn(reviewer);
+        when(repositoryService.getRepositoryById(repositoryId)).thenReturn(repository);
+        when(reviewFeedbackRepository.save(any(ReviewFeedback.class))).thenReturn(reviewFeedback);
+
+        reviewFeedbackService.createReviewFeedback(request);
+
+        verify(reviewFeedbackRepository, times(1)).save(any(ReviewFeedback.class));
+    }
+
 }
 
 
