@@ -99,6 +99,7 @@ public class RepositoryServiceTest {
 
     private Repository createRepository(User owner, User reviewer) {
         Repository repository = new Repository();
+        LocalDateTime reviewTimes = LocalDateTime.now();
 
         repository.setFeedback("some feedback");
         repository.setComment("here is some comment");
@@ -109,6 +110,8 @@ public class RepositoryServiceTest {
         repository.setStatus(RepositoryStatus.INCOMPLETE);
         repository.setReviewer(reviewer);
         repository.setOwner(owner);
+        repository.setReviewStartTime(reviewTimes);
+        repository.setReviewEndTime(reviewTimes);
 
         repository.setId(1L);
 
@@ -132,6 +135,8 @@ public class RepositoryServiceTest {
         repositoryDto.setRepoUrl(repository.getRepoUrl());
         repositoryDto.setAvatarUrl(repository.getAvatarUrl());
         repositoryDto.setCreatedAt(LocalDateTime.now());
+        repositoryDto.setReviewEndTime(LocalDateTime.now());
+        repositoryDto.setReviewStartTime(LocalDateTime.now());
         repositoryDto.setStatus(repository.getStatus());
 
         return repositoryDto;
@@ -364,6 +369,9 @@ public class RepositoryServiceTest {
         fullRepositoryDto.setStatus(repository.getStatus());
         fullRepositoryDto.setCreatedAt(repository.getCreatedAt());
         fullRepositoryDto.setUpdatedAt(repository.getCreatedAt());
+        fullRepositoryDto.setReviewDuration("0h0m0s");
+        fullRepositoryDto.setReviewStartTime(repository.getReviewEndTime());
+        fullRepositoryDto.setReviewEndTime(repository.getReviewEndTime());
         GitHubTreeDto gitHubTreeDto = new GitHubTreeDto();
         gitHubTreeDto.setLanguages(List.of("Java", "HTML", "Python"));
         GitHubTreeNodeDto gitHubTreeNodeDto = new GitHubTreeNodeDto();
