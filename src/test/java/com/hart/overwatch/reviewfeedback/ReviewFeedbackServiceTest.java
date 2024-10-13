@@ -25,6 +25,7 @@ import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.repository.Repository;
 import com.hart.overwatch.repository.RepositoryService;
 import com.hart.overwatch.repository.RepositoryStatus;
+import com.hart.overwatch.reviewfeedback.dto.ReviewFeedbackDto;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
@@ -151,6 +152,45 @@ public class ReviewFeedbackServiceTest {
                 .hasMessage("You are unauthorized to see feedback that is not yours");
     }
 
+    @Test
+    public void ReviewFeedbackService_GetSingleReviewFeedback_ReturnReviewFeedbackDto() {
+        Long ownerId = owner.getId();
+        Long reviewerId = reviewer.getId();
+        Long repositoryId = repository.getId();
+
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(owner);
+        ReviewFeedbackDto reviewFeedbackDto = new ReviewFeedbackDto();
+        reviewFeedbackDto.setOwnerId(ownerId);
+        reviewFeedbackDto.setReviewerId(reviewerId);
+        reviewFeedbackDto.setRepositoryId(repositoryId);
+        reviewFeedback.setClarity(1);
+        reviewFeedbackDto.setHelpfulness(1);
+        reviewFeedbackDto.setResponseTime(1);
+        reviewFeedbackDto.setThoroughness(1);
+
+        when(reviewFeedbackRepository.getSingleReviewFeedback(ownerId, reviewerId, repositoryId))
+                .thenReturn(reviewFeedbackDto);
+
+        ReviewFeedbackDto returnedReviewFeedbackDto =
+                reviewFeedbackService.getSingleReviewFeedback(ownerId, reviewerId, repositoryId);
+
+        Assertions.assertThat(returnedReviewFeedbackDto).isNotNull();
+        Assertions.assertThat(reviewFeedbackDto.getOwnerId())
+                .isEqualTo(returnedReviewFeedbackDto.getOwnerId());
+        Assertions.assertThat(reviewFeedbackDto.getReviewerId())
+                .isEqualTo(returnedReviewFeedbackDto.getReviewerId());
+        Assertions.assertThat(reviewFeedbackDto.getRepositoryId())
+                .isEqualTo(returnedReviewFeedbackDto.getRepositoryId());
+        Assertions.assertThat(reviewFeedbackDto.getClarity())
+                .isEqualTo(returnedReviewFeedbackDto.getClarity());
+        Assertions.assertThat(reviewFeedbackDto.getHelpfulness())
+                .isEqualTo(returnedReviewFeedbackDto.getHelpfulness());
+        Assertions.assertThat(reviewFeedbackDto.getResponseTime())
+                .isEqualTo(returnedReviewFeedbackDto.getResponseTime());
+        Assertions.assertThat(reviewFeedbackDto.getThoroughness())
+                .isEqualTo(returnedReviewFeedbackDto.getThoroughness());
+
+    }
 }
 
 
