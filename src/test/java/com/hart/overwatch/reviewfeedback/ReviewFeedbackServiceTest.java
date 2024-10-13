@@ -213,6 +213,29 @@ public class ReviewFeedbackServiceTest {
         }).isInstanceOf(BadRequestException.class)
                 .hasMessage("Missing parameters: ownerId, reviewerId, or repositoryId");
     }
+
+    @Test
+    public void ReviewFeedbackService_CreateReviewFeedback_Throw_BadRequestExceptionExists() {
+        Long ownerId = owner.getId();
+        Long reviewerId = reviewer.getId();
+        Long repositoryId = repository.getId();
+        CreateReviewFeedbackRequest request = new CreateReviewFeedbackRequest();
+        request.setOwnerId(ownerId);
+        request.setReviewerId(reviewerId);
+        request.setRepositoryId(repositoryId);
+        request.setClarity(1);
+        request.setHelpfulness(1);
+        request.setResponseTime(1);
+        request.setThoroughness(1);
+
+        when(reviewFeedbackRepository.findByOwnerIdAndReviewerIdAndRepositoryId(ownerId, reviewerId,
+                repositoryId)).thenReturn(true);
+
+        Assertions.assertThatThrownBy(() -> {
+            reviewFeedbackService.createReviewFeedback(request);
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage("You have already given feedback for this review");
+    }
 }
 
 
