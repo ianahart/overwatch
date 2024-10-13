@@ -2,17 +2,9 @@ package com.hart.overwatch.reviewfeedback;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.config.JwtService;
-import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.repository.Repository;
 import com.hart.overwatch.repository.RepositoryStatus;
-import com.hart.overwatch.repository.dto.RepositoryContentsDto;
-import com.hart.overwatch.repository.dto.RepositoryDto;
-import com.hart.overwatch.repository.dto.RepositoryReviewDto;
-import com.hart.overwatch.repository.request.CreateRepositoryFileRequest;
-import com.hart.overwatch.repository.request.CreateUserRepositoryRequest;
-import com.hart.overwatch.repository.request.UpdateRepositoryCommentRequest;
-import com.hart.overwatch.repository.request.UpdateRepositoryReviewRequest;
 import com.hart.overwatch.reviewfeedback.dto.ReviewFeedbackDto;
 import com.hart.overwatch.reviewfeedback.request.CreateReviewFeedbackRequest;
 import com.hart.overwatch.setting.Setting;
@@ -27,10 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
@@ -39,17 +27,11 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import org.hamcrest.CoreMatchers;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
 
 @ActiveProfiles("test")
 @WebMvcTest(controllers = ReviewFeedbackController.class)
