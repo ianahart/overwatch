@@ -1,6 +1,7 @@
 package com.hart.overwatch.statistic;
 
 import java.util.Map;
+import java.util.Collections;
 import java.util.HashMap;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -45,6 +46,10 @@ public class StatisticService {
     private List<ReviewTypeStatDto> getReviewTypesCompleted(Long reviewerId) {
         List<CompletedRepositoryReviewDto> reviews =
                 repositoryService.getCompletedReviews(reviewerId);
+
+        if (reviews.isEmpty()) {
+            return Collections.emptyList();
+        }
         return reviews.stream()
                 .collect(Collectors.groupingBy(CompletedRepositoryReviewDto::getReviewType))
                 .entrySet().stream()
@@ -61,6 +66,10 @@ public class StatisticService {
         List<CompletedRepositoryReviewDto> reviews =
                 repositoryService.getCompletedReviews(reviewerId);
 
+        if (reviews.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         return reviews.stream()
                 .filter(review -> review.getReviewEndTime().isAfter(startOfMonth.minusSeconds(1))
                         && review.getReviewEndTime().isBefore(endOfMonth.plusSeconds(1)))
@@ -74,6 +83,11 @@ public class StatisticService {
     private List<Map<String, Object>> getAverageReviewTimes(Long reviewerId) {
         List<CompletedRepositoryReviewDto> reviews =
                 repositoryService.getCompletedReviews(reviewerId);
+
+        if (reviews.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         Map<YearMonth, List<CompletedRepositoryReviewDto>> reviewsByMonth =
                 reviews.stream().collect(
                         Collectors.groupingBy(review -> YearMonth.from(review.getReviewEndTime())));
@@ -135,6 +149,11 @@ public class StatisticService {
 
     private List<LanguageStatDto> countMainLanguages(Long reviewerId) {
         List<RepositoryLanguageDto> mainLanguages = repositoryService.getMainLanguages(reviewerId);
+
+        if (mainLanguages.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         return mainLanguages.stream()
                 .collect(Collectors.groupingBy(language -> language.getLanguage())).entrySet()
                 .stream().map(entry -> new LanguageStatDto(entry.getKey(), entry.getValue().size()))
@@ -145,6 +164,11 @@ public class StatisticService {
     private List<StatusTypeStatDto> countStatusTypes(Long reviewerId) {
         List<RepositoryStatusDto> repositories =
                 repositoryService.getAllRepositoriesWithStatuses(reviewerId);
+
+        if (repositories.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         return repositories.stream()
                 .collect(Collectors.groupingBy(repository -> repository.getStatus())).entrySet()
                 .stream()
@@ -157,6 +181,10 @@ public class StatisticService {
 
         List<RepositoryTopRequesterDto> repositories =
                 repositoryService.getTopRequestersOfReviewer(reviewerId);
+
+        if (repositories.isEmpty()) {
+            return Collections.emptyList();
+        }
 
         return repositories.stream()
                 .collect(Collectors.groupingBy(repository -> String.format("%d-%s",
