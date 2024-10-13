@@ -13,6 +13,7 @@ import com.hart.overwatch.repository.request.CreateRepositoryFileRequest;
 import com.hart.overwatch.repository.request.CreateUserRepositoryRequest;
 import com.hart.overwatch.repository.request.UpdateRepositoryCommentRequest;
 import com.hart.overwatch.repository.request.UpdateRepositoryReviewRequest;
+import com.hart.overwatch.reviewfeedback.dto.ReviewFeedbackDto;
 import com.hart.overwatch.reviewfeedback.request.CreateReviewFeedbackRequest;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.token.TokenRepository;
@@ -171,6 +172,33 @@ public class ReviewFeedbackControllerTest {
                         .content(objectMapper.writeValueAsString(request)));
 
         response.andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
+    @Test
+    public void ReviewFeedbackController_GetSingleReviewFeedback_ReturnGetSingleReviewFeedbackResponse()
+            throws Exception {
+        Long ownerId = owner.getId();
+        Long reviewerId = reviewer.getId();
+        Long repositoryId = repository.getId();
+        ReviewFeedbackDto reviewFeedbackDto = new ReviewFeedbackDto();
+
+        reviewFeedbackDto.setId(reviewFeedback.getId());
+        reviewFeedbackDto.setOwnerId(ownerId);
+        reviewFeedbackDto.setReviewerId(reviewerId);
+        reviewFeedbackDto.setRepositoryId(repositoryId);
+        reviewFeedbackDto.setClarity(1);
+        reviewFeedbackDto.setResponseTime(1);
+        reviewFeedbackDto.setHelpfulness(1);
+        reviewFeedbackDto.setThoroughness(1);
+        reviewFeedbackDto.setCreatedAt(LocalDateTime.now());
+        when(reviewFeedbackService.getSingleReviewFeedback(ownerId, reviewerId, repositoryId))
+                .thenReturn(reviewFeedbackDto);
+
+        ResultActions response = mockMvc.perform(get("/api/v1/review-feedbacks/single")
+                .param("ownerId", "1").param("repositoryId", "1").param("reviewerId", "1"));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 
