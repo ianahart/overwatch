@@ -135,6 +135,22 @@ public class ReviewFeedbackServiceTest {
                 .hasMessage("Missing parameters: ownerId, reviewerId, or repositoryId");
     }
 
+    @Test
+    public void ReviewFeedbackService_GetSingleReviewFeedback_ThrowForbiddenException() {
+        Long ownerId = owner.getId();
+        Long reviewerId = reviewer.getId();
+        Long repositoryId = repository.getId();
+
+        User currentUser = new User();
+        currentUser.setId(999L);
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(currentUser);
+
+        Assertions.assertThatThrownBy(() -> {
+            reviewFeedbackService.getSingleReviewFeedback(ownerId, reviewerId, repositoryId);
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("You are unauthorized to see feedback that is not yours");
+    }
+
 }
 
 
