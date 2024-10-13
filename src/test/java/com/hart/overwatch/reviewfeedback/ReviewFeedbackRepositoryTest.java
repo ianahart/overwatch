@@ -2,7 +2,6 @@ package com.hart.overwatch.reviewfeedback;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,9 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -190,6 +186,18 @@ public class ReviewFeedbackRepositoryTest {
                 .isEqualTo(reviewFeedback.getThoroughness());
         Assertions.assertThat(reviewFeedbackDto.getHelpfulness())
                 .isEqualTo(reviewFeedback.getHelpfulness());
+    }
+
+    @Test
+    public void ReviewFeedbackRepository_FindByOwnerIdAndReviewerIdAndRepositoryId_ReturnBooleanTrue() {
+        Long ownerId = owner.getId();
+        Long reviewerId = reviewer.getId();
+        Long repositoryId = repository.getId();
+
+        boolean reviewFeedbackExists = reviewFeedbackRepository
+                .findByOwnerIdAndReviewerIdAndRepositoryId(ownerId, reviewerId, repositoryId);
+
+        Assertions.assertThat(reviewFeedbackExists).isTrue();
     }
 }
 
