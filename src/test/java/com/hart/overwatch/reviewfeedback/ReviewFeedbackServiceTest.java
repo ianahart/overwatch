@@ -26,6 +26,7 @@ import com.hart.overwatch.repository.Repository;
 import com.hart.overwatch.repository.RepositoryService;
 import com.hart.overwatch.repository.RepositoryStatus;
 import com.hart.overwatch.reviewfeedback.dto.ReviewFeedbackDto;
+import com.hart.overwatch.reviewfeedback.request.CreateReviewFeedbackRequest;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
@@ -190,6 +191,27 @@ public class ReviewFeedbackServiceTest {
         Assertions.assertThat(reviewFeedbackDto.getThoroughness())
                 .isEqualTo(returnedReviewFeedbackDto.getThoroughness());
 
+    }
+
+
+    @Test
+    public void ReviewFeedbackService_CreateReviewFeedback_Throw_BadRequestExceptionMissingParams() {
+        Long ownerId = owner.getId();
+        Long reviewerId = null;
+        Long repositoryId = repository.getId();
+        CreateReviewFeedbackRequest request = new CreateReviewFeedbackRequest();
+        request.setOwnerId(ownerId);
+        request.setReviewerId(reviewerId);
+        request.setRepositoryId(repositoryId);
+        request.setClarity(1);
+        request.setHelpfulness(1);
+        request.setResponseTime(1);
+        request.setThoroughness(1);
+
+        Assertions.assertThatThrownBy(() -> {
+            reviewFeedbackService.createReviewFeedback(request);
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage("Missing parameters: ownerId, reviewerId, or repositoryId");
     }
 }
 
