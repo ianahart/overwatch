@@ -41,7 +41,9 @@ const AuthNavbar = () => {
 
   return (
     <nav className="flex justify-between p-1">
-      <h1 className="text-2xl text-green-400 font-bold font-display tracking-wider">OverWatch</h1>
+      <Link to="/">
+        <h1 className="text-2xl text-green-400 font-bold font-display tracking-wider">OverWatch</h1>
+      </Link>
       <div className="relative cursor-pointer">
         <div className="flex items-center">
           {user.loggedIn && <Notifications />}
