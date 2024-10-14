@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { TRootState } from '../../state/store';
 import NavbarLink from './NavbarLink';
 import { openMobile, closeMobile } from '../../state/store';
+import { Link } from 'react-router-dom';
 
 const GuestNavbar = () => {
   const dispatch = useDispatch();
@@ -18,7 +19,9 @@ const GuestNavbar = () => {
 
   return (
     <nav className="flex flex-row justify-between p-2 items-center">
-      <h1 className="text-2xl text-green-400 font-bold font-display tracking-wider">OverWatch</h1>
+      <Link to="/">
+        <h1 className="text-2xl text-green-400 font-bold font-display tracking-wider">OverWatch</h1>
+      </Link>
       <div className="flex flex-row-reverse">
         <div
           onClick={() => dispatch(openMobile())}
