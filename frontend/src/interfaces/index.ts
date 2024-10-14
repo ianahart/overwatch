@@ -1,6 +1,51 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface IStatisticAvgRating {
+  name: string;
+  average: number;
+}
+
+export interface IStatisticAvgReviewTime {
+  month: string;
+  avgReviewTime: number;
+}
+
+export interface IStatisticMainLanguage {
+  lanugage: string;
+  count: number;
+}
+
+export interface IStatisticReviewTypesCompleted {
+  reviewType: string;
+  count: number;
+}
+
+export interface IStatisticReviewsCompleted {
+  day: string;
+  reviewsCompleted: number;
+}
+
+export interface IStatisticStatusTypes {
+  status: string;
+  count: number;
+}
+
+export interface IStatisticTopRequesters {
+  fullName: string;
+  count: number;
+}
+
+export interface IStatistics {
+  avgRatings: IStatisticAvgRating[];
+  avgReviewTimes: IStatisticAvgReviewTime[];
+  mainLanguages: IStatisticMainLanguage[];
+  reviewTypesCompleted: IStatisticReviewTypesCompleted[];
+  reviewsCompleted: IStatisticReviewsCompleted[];
+  statusTypes: IStatisticStatusTypes[];
+  topRequesters: IStatisticTopRequesters[];
+}
+
 export interface IReviewFeedback {
   [key: string]: string | number;
   id: number;
@@ -1568,7 +1613,7 @@ export interface IFetchStatisticRequest {
 
 export interface IFetchStatisticResponse {
   message: string;
-  data: any;
+  data: IStatistics;
 }
 
 export interface ICreateReviewFeedbackResponse extends IBaseResponse {}

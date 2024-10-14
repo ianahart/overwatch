@@ -2,7 +2,7 @@ package com.hart.overwatch.statistic.dto;
 
 public class CompletedReviewStatDto {
 
-    private Integer day;
+    private String day;
 
     private Integer reviewsCompleted;
 
@@ -10,12 +10,12 @@ public class CompletedReviewStatDto {
 
     }
 
-    public CompletedReviewStatDto(Integer day, Integer reviewsCompleted) {
+    public CompletedReviewStatDto(String day, Integer reviewsCompleted) {
         this.day = day;
         this.reviewsCompleted = reviewsCompleted;
     }
 
-    public Integer getDay() {
+    public String getDay() {
         return day;
     }
 
@@ -23,7 +23,7 @@ public class CompletedReviewStatDto {
         return reviewsCompleted;
     }
 
-    public void setDay(Integer day) {
+    public void setDay(String day) {
         this.day = day;
     }
 

@@ -75,7 +75,9 @@ public class StatisticService {
                         && review.getReviewEndTime().isBefore(endOfMonth.plusSeconds(1)))
                 .collect(Collectors.groupingBy(review -> review.getReviewEndTime().getDayOfMonth()))
                 .entrySet().stream()
-                .map(entry -> new CompletedReviewStatDto(entry.getKey(), entry.getValue().size()))
+                .map(entry -> new CompletedReviewStatDto(
+                        String.format("%d-%d", entry.getKey(), endOfMonth.getMonthValue()),
+                        entry.getValue().size()))
                 .collect(Collectors.toList());
 
     }
