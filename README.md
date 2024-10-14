@@ -55,6 +55,12 @@ More to come.
 ## Visuals
 
 <img width="700" alt="overwatch_screenshot" src="https://github.com/ianahart/overwatch/assets/29121238/d036be82-0f5d-45e1-b78d-548c11d3fb10">
+<img width="700" alt="explore-page" src="https://github.com/user-attachments/assets/43c900a8-a887-4cc8-88c9-66f921e5c7e0">
+<img width="700" alt="explore-single-view" src="https://github.com/user-attachments/assets/b48cf039-ebae-4942-9bba-f39f2998ced4">
+<img width="700" alt="main-trello" src="https://github.com/user-attachments/assets/f433530c-4672-4ddc-83e7-3bf68dafc28b">
+<img width="700" alt="review" src="https://github.com/user-attachments/assets/1c9e3fa9-04d4-4fab-a4f8-ded90958c9ac">
+<img width="700" alt="trello-options" src="https://github.com/user-attachments/assets/a1c764e6-acbd-4d14-a690-5f6f275b12f6">
+
 
 ## Tests
 
