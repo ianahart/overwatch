@@ -5,6 +5,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.setting.dto.SettingDto;
+import com.hart.overwatch.setting.request.UpdateSettingRequest;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
@@ -24,6 +25,12 @@ public class SettingService {
 
     public Setting createSetting() {
         Setting setting = new Setting();
+        setting.setRequestPendingNotifOn(true);
+        setting.setRequestAcceptedNotifOn(true);
+        setting.setReviewCompletedNotifOn(true);
+        setting.setReviewInCompleteNotifOn(true);
+        setting.setReviewInProgressNotifOn(true);
+        setting.setPaymentAcknowledgementNotifOn(true);
 
         this.settingRepository.save(setting);
 
@@ -64,7 +71,7 @@ public class SettingService {
             User currentUser = this.userService.getCurrentlyLoggedInUser();
             Setting currentUserSetting = getSettingById(settingId);
 
-            if (currentUser.getSetting().getId() != currentUserSetting.getId()) {
+            if (!currentUser.getSetting().getId().equals(currentUserSetting.getId())) {
                 throw new ForbiddenException("Cannot update another user's setting");
             }
 
@@ -79,6 +86,56 @@ public class SettingService {
             ex.printStackTrace();
             return false;
         }
+    }
+
+    public SettingDto updateSetting(UpdateSettingRequest request, Long settingId) {
+        try {
+            User currentUser = this.userService.getCurrentlyLoggedInUser();
+            Setting currentUserSetting = getSettingById(settingId);
+
+            if (!currentUser.getId().equals(currentUserSetting.getUser().getId())) {
+                throw new ForbiddenException("Cannot update another user's setting");
+            }
+
+            currentUserSetting.setUser(currentUser);
+            currentUserSetting.setMfaEnabled(request.getSetting().getMfaEnabled());
+            currentUserSetting
+                    .setRequestPendingNotifOn(request.getSetting().getRequestPendingNotifOn());
+            currentUserSetting
+                    .setRequestAcceptedNotifOn(request.getSetting().getRequestAcceptedNotifOn());
+            currentUserSetting
+                    .setReviewCompletedNotifOn(request.getSetting().getReviewCompletedNotifOn());
+            currentUserSetting
+                    .setReviewInCompleteNotifOn(request.getSetting().getReviewInCompleteNotifOn());
+            currentUserSetting
+                    .setReviewInProgressNotifOn(request.getSetting().getReviewInProgressNotifOn());
+            currentUserSetting.setPaymentAcknowledgementNotifOn(
+                    request.getSetting().getPaymentAcknowledgementNotifOn());
+
+
+            this.settingRepository.save(currentUserSetting);
+            return convertToDto(currentUserSetting);
+
+        } catch (IllegalArgumentException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    private SettingDto convertToDto(Setting setting) {
+        SettingDto settingDto = new SettingDto();
+        settingDto.setId(setting.getId());
+        settingDto.setUserId(setting.getUser().getId());
+        settingDto.setMfaEnabled(setting.getMfaEnabled());
+        settingDto.setCreatedAt(setting.getCreatedAt());
+        settingDto.setReviewInProgressNotifOn(setting.getReviewInProgressNotifOn());
+        settingDto.setReviewInCompleteNotifOn(setting.getReviewInCompleteNotifOn());
+        settingDto.setReviewCompletedNotifOn(setting.getReviewCompletedNotifOn());
+        settingDto.setPaymentAcknowledgementNotifOn(setting.getPaymentAcknowledgementNotifOn());
+        settingDto.setRequestPendingNotifOn(setting.getRequestPendingNotifOn());
+        settingDto.setRequestAcceptedNotifOn(setting.getRequestAcceptedNotifOn());
+
+        return settingDto;
     }
 }
 

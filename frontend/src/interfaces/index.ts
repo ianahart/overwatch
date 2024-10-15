@@ -1,6 +1,12 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface INotificationSwitch {
+  name: string;
+  displayName: string;
+  isOn: boolean;
+}
+
 export interface IStatisticAvgRating {
   name: string;
   average: number;
@@ -401,6 +407,12 @@ export interface ISetting {
   userId: number;
   mfaEnabled: boolean;
   createdAt: string;
+  requestAcceptedNotifOn: boolean;
+  requestPendingNotifOn: boolean;
+  paymentAcknowledgementNotifOn: boolean;
+  reviewInProgressNotifOn: boolean;
+  reviewInCompleteNotifOn: boolean;
+  reviewCompletedNotifOn: boolean;
 }
 
 export interface ISkillsFormField {
@@ -668,12 +680,7 @@ export interface IFetchSettingsRequest {
 
 export interface IFetchSettingsResponse {
   message: string;
-  data: {
-    id: number;
-    userId: number;
-    createdAt: Date;
-    mfaEnabled: boolean;
-  };
+  data: ISetting;
 }
 
 export interface ICreatePhoneRequest {
@@ -1614,6 +1621,16 @@ export interface IFetchStatisticRequest {
 export interface IFetchStatisticResponse {
   message: string;
   data: IStatistics;
+}
+
+export interface IUpdateSettingRequest {
+  token: string;
+  setting: ISetting;
+}
+
+export interface IUpdateSettingResponse {
+  message: string;
+  data: any;
 }
 
 export interface ICreateReviewFeedbackResponse extends IBaseResponse {}

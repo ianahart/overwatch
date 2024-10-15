@@ -1,5 +1,7 @@
+import Notification from '../../components/Settings/Notification';
+
 const NotificationSettingsRoute = () => {
-  return <div>Notification Settings Route</div>;
+  return <Notification />;
 };
 
 export default NotificationSettingsRoute;
