@@ -1,6 +1,7 @@
 package com.hart.overwatch.profile.dto;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class AllProfileDto {
@@ -23,6 +24,8 @@ public class AllProfileDto {
 
     private FullPackageDto basic;
 
+    private LocalDateTime lastActive;
+
     // Not in constructor
 
 
@@ -34,13 +37,15 @@ public class AllProfileDto {
 
     private Boolean isFavorited;
 
+    private String lastActiveReadable;
+
     public AllProfileDto() {
 
     }
 
     public AllProfileDto(Long id, Long userId, String fullName, String avatarUrl, String country,
             Timestamp createdAt, List<FullAvailabilityDto> availability,
-            List<ItemDto> programmingLanguages, FullPackageDto basic) {
+            List<ItemDto> programmingLanguages, FullPackageDto basic, LocalDateTime lastActive) {
         this.id = id;
         this.userId = userId;
         this.fullName = fullName;
@@ -50,10 +55,15 @@ public class AllProfileDto {
         this.availability = availability;
         this.programmingLanguages = programmingLanguages;
         this.basic = basic;
+        this.lastActive = lastActive;
     }
 
     public FullPackageDto getBasic() {
         return basic;
+    }
+
+    public LocalDateTime getLastActive() {
+        return lastActive;
     }
 
 
@@ -140,6 +150,10 @@ public class AllProfileDto {
         this.avatarUrl = avatarUrl;
     }
 
+    public String getLastActiveReadable() {
+        return lastActiveReadable;
+    }
+
     public void setAvailability(List<FullAvailabilityDto> availability) {
         this.availability = availability;
     }
@@ -158,6 +172,14 @@ public class AllProfileDto {
 
     public void setIsFavorited(Boolean isFavorited) {
         this.isFavorited = isFavorited;
+    }
+
+    public void setLastActive(LocalDateTime lastActive) {
+        this.lastActive = lastActive;
+    }
+
+    public void setLastActiveReadable(String lastActiveReadable) {
+        this.lastActiveReadable = lastActiveReadable;
     }
 
 }

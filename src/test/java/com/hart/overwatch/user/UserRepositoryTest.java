@@ -1,5 +1,6 @@
 package com.hart.overwatch.user;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -21,7 +22,8 @@ import com.hart.overwatch.setting.Setting;
 @DataJpaTest
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Sql(scripts = "classpath:reset_user_sequences.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(scripts = "classpath:reset_user_sequences.sql",
+        executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Transactional
 public class UserRepositoryTest {
 
@@ -69,7 +71,7 @@ public class UserRepositoryTest {
     @Test
     public void UserRepository_UpdateLoggedIn_ReturnNothing() {
 
-        userRepository.updateLoggedIn(1L, true);
+        userRepository.updateLoggedIn(1L, true, LocalDateTime.now());
 
         userRepository.flush();
 

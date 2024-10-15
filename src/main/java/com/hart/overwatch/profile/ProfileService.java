@@ -1,6 +1,7 @@
 package com.hart.overwatch.profile;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ import com.hart.overwatch.profile.request.UploadAvatarRequest;
 import com.hart.overwatch.review.ReviewService;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
+import com.hart.overwatch.util.MyUtil;
 
 @Service
 public class ProfileService {
@@ -299,6 +301,8 @@ public class ProfileService {
         Long currentUserId = this.userService.getCurrentlyLoggedInUser().getId();
 
         profile.setIsFavorited(this.favoriteService.favoriteExists(currentUserId, profile.getId()));
+
+        profile.setLastActiveReadable(MyUtil.makeReadableDate(profile.getLastActive()));
     }
 
     private AllProfileDto mapToAllProfileDto(Map<String, Object> rawResult) {
@@ -311,6 +315,9 @@ public class ProfileService {
         String availabilityJson = (String) rawResult.get("availability");
         String programmingLanguagesJson = (String) rawResult.get("programmingLanguages");
         String basicJson = (String) rawResult.get("basic");
+        Timestamp lastActiveTimestamp = (Timestamp) rawResult.get("lastActive");
+        LocalDateTime lastActive =
+                (lastActiveTimestamp != null) ? lastActiveTimestamp.toLocalDateTime() : null;
 
         List<ItemDto> programmingLanguages = null;
         List<FullAvailabilityDto> availability = null;
@@ -339,7 +346,7 @@ public class ProfileService {
                 getCompatibleProgrammingLanguages(programmingLanguages);
 
         AllProfileDto allProfile = new AllProfileDto(id, userId, fullName, avatarUrl, country,
-                createdAt, availability, compatibleProgrammingLanguages, basic);
+                createdAt, availability, compatibleProgrammingLanguages, basic, lastActive);
 
         if (availability != null) {
             attachProfileStatistics(allProfile, userId, availability);

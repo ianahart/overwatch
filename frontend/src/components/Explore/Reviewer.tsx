@@ -20,6 +20,8 @@ const Reviewer = ({ reviewer, filterValue, updateFavoritedReviewer }: IReviewerP
   const [toggleFavorite] = useToggleFavoriteMutation();
   const navigate = useNavigate();
 
+  const isNotActive = dayjs(reviewer.lastActive).isBefore(dayjs().subtract(1, 'day'));
+
   const goToProfile = (profileId: number) => {
     navigate(`/profiles/${profileId}`);
   };
@@ -77,6 +79,7 @@ const Reviewer = ({ reviewer, filterValue, updateFavoritedReviewer }: IReviewerP
         )}
       </div>
       <h3 className="text-gray-400">Availability</h3>
+      <p className={`text-sm ${isNotActive ? 'text-gray-400' : 'text-green-400'}`}>{reviewer.lastActiveReadable}</p>
       <div className="flex flex-wrap mb-4">
         {reviewer.availability.map((availability) => {
           return (
