@@ -39,6 +39,24 @@ public class Setting {
     @Column(name = "mfa_enabled")
     private Boolean mfaEnabled;
 
+    @Column(name = "review_inprogress_notif_on")
+    private Boolean reviewInProgressNotifOn;
+
+    @Column(name = "review_incomplete_notif_on")
+    private Boolean reviewInCompleteNotifOn;
+
+    @Column(name = "review_completed_notif_on")
+    private Boolean reviewCompletedNotifOn;
+
+    @Column(name = "payment_acknowledgement_notif_on")
+    private Boolean paymentAcknowledgementNotifOn;
+
+    @Column(name = "request_pending_notif_on")
+    private Boolean requestPendingNotifOn;
+
+    @Column(name = "request_accepted_notif_on")
+    private Boolean requestAcceptedNotifOn;
+
     @JsonIgnore
     @OneToOne(mappedBy = "setting")
     private User user;
@@ -47,12 +65,34 @@ public class Setting {
 
     }
 
-    public Setting(Long id, Timestamp createdAt, Timestamp updatedAt, Boolean mfaEnabled) {
+    public Setting(Long id, Timestamp createdAt, Timestamp updatedAt, Boolean mfaEnabled,
+            Boolean reviewInProgressNotifOn, Boolean reviewInCompleteNotifOn,
+            Boolean reviewCompletedNotifOn, Boolean paymentAcknowledgementNotifOn,
+            Boolean requestPendingNotifOn, Boolean requestAcceptedNotifOn) {
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.mfaEnabled = mfaEnabled;
+        this.reviewInProgressNotifOn = reviewInProgressNotifOn;
+        this.reviewInCompleteNotifOn = reviewInCompleteNotifOn;
+        this.reviewCompletedNotifOn = reviewCompletedNotifOn;
+        this.paymentAcknowledgementNotifOn = paymentAcknowledgementNotifOn;
+        this.requestPendingNotifOn = requestPendingNotifOn;
+        this.requestAcceptedNotifOn = requestAcceptedNotifOn;
     }
+
+
+    public Setting(Boolean reviewInProgressNotifOn, Boolean reviewInCompleteNotifOn,
+            Boolean reviewCompletedNotifOn, Boolean paymentAcknowledgementNotifOn,
+            Boolean requestPendingNotifOn, Boolean requestAcceptedNotifOn) {
+        this.reviewInProgressNotifOn = reviewInProgressNotifOn;
+        this.reviewInCompleteNotifOn = reviewInCompleteNotifOn;
+        this.reviewCompletedNotifOn = reviewCompletedNotifOn;
+        this.paymentAcknowledgementNotifOn = paymentAcknowledgementNotifOn;
+        this.requestPendingNotifOn = requestPendingNotifOn;
+        this.requestAcceptedNotifOn = requestAcceptedNotifOn;
+    }
+
 
     public Long getId() {
         return id;
@@ -60,6 +100,30 @@ public class Setting {
 
     public Boolean getMfaEnabled() {
         return mfaEnabled;
+    }
+
+    public Boolean getRequestPendingNotifOn() {
+        return requestPendingNotifOn;
+    }
+
+    public Boolean getRequestAcceptedNotifOn() {
+        return requestAcceptedNotifOn;
+    }
+
+    public Boolean getReviewCompletedNotifOn() {
+        return reviewCompletedNotifOn;
+    }
+
+    public Boolean getReviewInCompleteNotifOn() {
+        return reviewInCompleteNotifOn;
+    }
+
+    public Boolean getReviewInProgressNotifOn() {
+        return reviewInProgressNotifOn;
+    }
+
+    public Boolean getPaymentAcknowledgementNotifOn() {
+        return paymentAcknowledgementNotifOn;
     }
 
 
@@ -72,9 +136,11 @@ public class Setting {
         return updatedAt;
     }
 
+
     public User getUser() {
         return user;
     }
+
 
     public void setId(Long id) {
         this.id = id;
@@ -94,6 +160,30 @@ public class Setting {
 
     public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public void setRequestPendingNotifOn(Boolean requestPendingNotifOn) {
+        this.requestPendingNotifOn = requestPendingNotifOn;
+    }
+
+    public void setRequestAcceptedNotifOn(Boolean requestAcceptedNotifOn) {
+        this.requestAcceptedNotifOn = requestAcceptedNotifOn;
+    }
+
+    public void setReviewCompletedNotifOn(Boolean reviewCompletedNotifOn) {
+        this.reviewCompletedNotifOn = reviewCompletedNotifOn;
+    }
+
+    public void setReviewInCompleteNotifOn(Boolean reviewInCompleteNotifOn) {
+        this.reviewInCompleteNotifOn = reviewInCompleteNotifOn;
+    }
+
+    public void setReviewInProgressNotifOn(Boolean reviewInProgressNotifOn) {
+        this.reviewInProgressNotifOn = reviewInProgressNotifOn;
+    }
+
+    public void setPaymentAcknowledgementNotifOn(Boolean paymentAcknowledgementNotifOn) {
+        this.paymentAcknowledgementNotifOn = paymentAcknowledgementNotifOn;
     }
 }
 

@@ -2,6 +2,8 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import {
   IFetchSettingsRequest,
   IFetchSettingsResponse,
+  IUpdateSettingRequest,
+  IUpdateSettingResponse,
   IUpdateSettingsMFARequest,
   IUpdateSettingsMFAResponse,
 } from '../../interfaces';
@@ -40,9 +42,21 @@ const settingsApi = createApi({
           };
         },
       }),
+      updateSettings: builder.mutation<IUpdateSettingResponse, IUpdateSettingRequest>({
+        query: ({ setting, token }) => {
+          return {
+            url: `/settings/${setting.id}`,
+            method: 'PUT',
+            body: { setting },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+      }),
     };
   },
 });
 
-export const { useUpdateSettingsMFAMutation, useFetchSettingsQuery } = settingsApi;
+export const { useUpdateSettingsMutation, useUpdateSettingsMFAMutation, useFetchSettingsQuery } = settingsApi;
 export { settingsApi };

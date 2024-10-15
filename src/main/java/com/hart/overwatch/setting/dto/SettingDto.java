@@ -12,20 +12,65 @@ public class SettingDto {
 
     private Timestamp createdAt;
 
+    private Boolean reviewInProgressNotifOn;
+
+    private Boolean reviewInCompleteNotifOn;
+
+    private Boolean reviewCompletedNotifOn;
+
+    private Boolean paymentAcknowledgementNotifOn;
+
+    private Boolean requestPendingNotifOn;
+
+    private Boolean requestAcceptedNotifOn;
+
 
     public SettingDto() {
 
     }
 
-    public SettingDto(Long id, Long userId, Boolean mfaEnabled, Timestamp createdAt) {
+    public SettingDto(Long id, Long userId, Boolean mfaEnabled, Timestamp createdAt,
+            Boolean reviewInProgressNotifOn, Boolean reviewInCompleteNotifOn,
+            Boolean reviewCompletedNotifOn, Boolean paymentAcknowledgementNotifOn,
+            Boolean requestPendingNotifOn, Boolean requestAcceptedNotifOn) {
         this.id = id;
         this.userId = userId;
         this.mfaEnabled = mfaEnabled;
         this.createdAt = createdAt;
+        this.reviewInProgressNotifOn = reviewInProgressNotifOn;
+        this.reviewInCompleteNotifOn = reviewInCompleteNotifOn;
+        this.reviewCompletedNotifOn = reviewCompletedNotifOn;
+        this.paymentAcknowledgementNotifOn = paymentAcknowledgementNotifOn;
+        this.requestPendingNotifOn = paymentAcknowledgementNotifOn;
+        this.requestAcceptedNotifOn = requestAcceptedNotifOn;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public Boolean getRequestPendingNotifOn() {
+        return requestPendingNotifOn;
+    }
+
+    public Boolean getRequestAcceptedNotifOn() {
+        return requestAcceptedNotifOn;
+    }
+
+    public Boolean getReviewCompletedNotifOn() {
+        return reviewCompletedNotifOn;
+    }
+
+    public Boolean getReviewInCompleteNotifOn() {
+        return reviewInCompleteNotifOn;
+    }
+
+    public Boolean getPaymentAcknowledgementNotifOn() {
+        return paymentAcknowledgementNotifOn;
+    }
+
+    public Boolean getReviewInProgressNotifOn() {
+        return reviewInProgressNotifOn;
     }
 
     public Long getUserId() {
@@ -54,5 +99,29 @@ public class SettingDto {
 
     public void setMfaEnabled(Boolean mfaEnabled) {
         this.mfaEnabled = mfaEnabled;
+    }
+
+    public void setRequestPendingNotifOn(Boolean requestPendingNotifOn) {
+        this.requestPendingNotifOn = requestPendingNotifOn;
+    }
+
+    public void setRequestAcceptedNotifOn(Boolean requestAcceptedNotifOn) {
+        this.requestAcceptedNotifOn = requestAcceptedNotifOn;
+    }
+
+    public void setReviewCompletedNotifOn(Boolean reviewCompletedNotifOn) {
+        this.reviewCompletedNotifOn = reviewCompletedNotifOn;
+    }
+
+    public void setReviewInCompleteNotifOn(Boolean reviewInCompleteNotifOn) {
+        this.reviewInCompleteNotifOn = reviewInCompleteNotifOn;
+    }
+
+    public void setReviewInProgressNotifOn(Boolean reviewInProgressNotifOn) {
+        this.reviewInProgressNotifOn = reviewInProgressNotifOn;
+    }
+
+    public void setPaymentAcknowledgementNotifOn(Boolean paymentAcknowledgementNotifOn) {
+        this.paymentAcknowledgementNotifOn = paymentAcknowledgementNotifOn;
     }
 }

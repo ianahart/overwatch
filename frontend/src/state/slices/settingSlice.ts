@@ -11,6 +11,12 @@ const initialState: ISettingState = {
     userId: 0,
     mfaEnabled: false,
     createdAt: '',
+    requestAcceptedNotifOn: true,
+    requestPendingNotifOn: true,
+    paymentAcknowledgementNotifOn: true,
+    reviewInProgressNotifOn: true,
+    reviewInCompleteNotifOn: true,
+    reviewCompletedNotifOn: true,
   },
 };
 
