@@ -1,5 +1,6 @@
 package com.hart.overwatch.user;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.Modifying;
@@ -20,8 +21,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Modifying
     @Query(value = """
-            update User u set u.loggedIn = :loggedIn WHERE u.id = :userId
+            update User u set u.loggedIn = :loggedIn, u.lastActive = :lastActive WHERE u.id = :userId
             """)
-    void updateLoggedIn(@Param("userId") Long userId, @Param("loggedIn") Boolean loggedIn);
+    void updateLoggedIn(@Param("userId") Long userId, @Param("loggedIn") Boolean loggedIn,
+            @Param("lastActive") LocalDateTime lastActive);
 
 }

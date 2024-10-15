@@ -5,7 +5,7 @@ import com.hart.overwatch.refreshtoken.RefreshTokenService;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserRepository;
-
+import java.time.LocalDateTime;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
@@ -48,11 +48,13 @@ public class LogoutService implements LogoutHandler {
         User user = this.userRepository.findByEmail(this.jwtService.extractUsername(jwt))
                 .orElseThrow(() -> new NotFoundException("User not found logging out."));
 
-        this.userRepository.updateLoggedIn(user.getId(), false);
+        Boolean isLoggedIn = false;
+        LocalDateTime lastActive = LocalDateTime.now();
+        userRepository.updateLoggedIn(user.getId(), isLoggedIn, lastActive);
         storedToken.setRevoked(true);
         storedToken.setExpired(true);
-        this.tokenRepository.save(storedToken);
-        this.refreshTokenService.revokeAllUserRefreshTokens(user);
+        tokenRepository.save(storedToken);
+        refreshTokenService.revokeAllUserRefreshTokens(user);
         SecurityContextHolder.clearContext();
 
     }

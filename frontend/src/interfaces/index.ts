@@ -581,6 +581,8 @@ export interface IMinProfile {
   weekendsAvailable: boolean;
   reviewAvgRating: number;
   isFavorited: boolean;
+  lastActive: string;
+  lastActiveReadable: string;
 }
 
 export interface ISignOut {

@@ -34,6 +34,7 @@ const Explore = () => {
       const response = await fetchAllProfiles(params).unwrap();
       const { items, direction, page, pageSize, totalElements, totalPages } = response.data;
 
+      console.log(response);
       setPag((prevState) => ({
         ...prevState,
         direction,
