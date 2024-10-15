@@ -79,8 +79,9 @@ public class SettingControllerTest {
 
     @Test
     public void SettingController_GetSetting_ReturnGetSettingResponse() throws Exception {
-        SettingDto settingDto = new SettingDto(setting.getId(), user.getId(),
-                setting.getMfaEnabled(), setting.getCreatedAt());
+        SettingDto settingDto =
+                new SettingDto(setting.getId(), user.getId(), setting.getMfaEnabled(),
+                        setting.getCreatedAt(), true, true, true, true, true, true);
 
         when(this.settingService.getSetting(setting.getId())).thenReturn(settingDto);
 
