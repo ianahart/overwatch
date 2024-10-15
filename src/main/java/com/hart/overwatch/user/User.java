@@ -2,6 +2,7 @@ package com.hart.overwatch.user;
 
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -90,6 +91,9 @@ public class User implements UserDetails {
 
     @Column(name = "logged_in")
     private Boolean loggedIn;
+
+    @Column(name = "last_active")
+    private LocalDateTime lastActive;
 
     @Transient
     private String abbreviation;
@@ -272,6 +276,10 @@ public class User implements UserDetails {
 
     public List<CheckList> getCheckLists() {
         return checkLists;
+    }
+
+    public LocalDateTime getLastActive() {
+        return lastActive;
     }
 
     public List<CheckListItem> getCheckListItems() {
@@ -604,6 +612,10 @@ public class User implements UserDetails {
 
     public void setSlug(String slug) {
         this.slug = slug;
+    }
+
+    public void setLastActive(LocalDateTime lastActive) {
+        this.lastActive = lastActive;
     }
 
     public void setActivities(List<Activity> activities) {
