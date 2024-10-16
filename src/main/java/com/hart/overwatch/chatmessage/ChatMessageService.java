@@ -11,6 +11,8 @@ import com.hart.overwatch.connection.ConnectionService;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.blockuser.BlockUser;
+import com.hart.overwatch.blockuser.BlockUserService;
 import com.hart.overwatch.chatmessage.dto.ChatMessageDto;
 
 @Service
@@ -22,12 +24,15 @@ public class ChatMessageService {
 
     private final ConnectionService connectionService;
 
+    private final BlockUserService blockUserService;
+
     @Autowired
     public ChatMessageService(ChatMessageRepository chatMessageRepository, UserService userService,
-            ConnectionService connectionService) {
+            ConnectionService connectionService, BlockUserService blockUserService) {
         this.chatMessageRepository = chatMessageRepository;
         this.userService = userService;
         this.connectionService = connectionService;
+        this.blockUserService = blockUserService;
     }
 
 
@@ -56,10 +61,21 @@ public class ChatMessageService {
         String text = message.getString("text");
 
         User user = this.userService.getUserById(userId);
+
         Connection connection = this.connectionService.getConnectionById(connectionId);
 
         ChatMessage chatMessage = new ChatMessage(text, user, connection);
 
+        Long potentialBlockerId = user.getId().equals(connection.getReceiver().getId())
+                ? connection.getSender().getId()
+                : connection.getReceiver().getId();
+
+        BlockUser blockedByReceiver =
+                blockUserService.getCurUserBlockedByUser(user.getId(), potentialBlockerId);
+
+        if (blockedByReceiver != null) {
+            return null;
+        }
         this.chatMessageRepository.save(chatMessage);
 
         return constructFullChatMessage(chatMessage.getId());

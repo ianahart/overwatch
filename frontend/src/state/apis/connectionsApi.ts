@@ -34,7 +34,6 @@ const connectionsApi = createApi({
       }),
       fetchSearchConnections: builder.query<IFetchSearchConnectionsResposne, IFetchSearchConnectionsRequest>({
         query: ({ token, page, pageSize, direction, query }) => {
-          console.log(token);
           if (!token) {
             return '';
           }

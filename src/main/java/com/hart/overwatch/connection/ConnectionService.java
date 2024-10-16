@@ -12,6 +12,7 @@ import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.blockuser.BlockUserService;
 import com.hart.overwatch.chatmessage.ChatMessage;
 import com.hart.overwatch.connection.dto.ConnectionDto;
 import com.hart.overwatch.connection.dto.MinConnectionDto;
@@ -33,13 +34,17 @@ public class ConnectionService {
 
     private final ConnectionPinService connectionPinService;
 
+    private final BlockUserService blockUserService;
+
     @Autowired
     public ConnectionService(ConnectionRepository connectionRepository, UserService userService,
-            PaginationService paginationService, @Lazy ConnectionPinService connectionPinService) {
+            PaginationService paginationService, @Lazy ConnectionPinService connectionPinService,
+            BlockUserService blockUserService) {
         this.connectionRepository = connectionRepository;
         this.userService = userService;
         this.paginationService = paginationService;
         this.connectionPinService = connectionPinService;
+        this.blockUserService = blockUserService;
     }
 
     public Connection getConnectionById(Long connectionId) {
@@ -138,7 +143,6 @@ public class ConnectionService {
                         .filter(v -> v.getUser().getId() != currentUserId).toList().get(0);
                 connection.setLastMessage(lastMessage.getText());
 
-                System.out.println(lastMessage.getText());
             } catch (IndexOutOfBoundsException ex) {
                 connection.setLastMessage("");
             }
@@ -165,20 +169,27 @@ public class ConnectionService {
             List<Long> pinnedConnectionIds =
                     this.connectionPinService.getOwnerConnectionPins(user.getId());
 
+            List<Long> blockedUserIds = null;
+            List<Long> potentialBlockedUserIds = blockUserService.getBlockedUsersForCurUser(user);
+
+            if (potentialBlockedUserIds.size() > 0) {
+                blockedUserIds = potentialBlockedUserIds;
+            }
+
 
             if (user.getRole() == Role.REVIEWER) {
 
                 queryResult = pinnedConnectionIds.size() == 0 || override.equals("true")
                         ? this.connectionRepository.getReceiverConnectionsWithoutPins(pageable,
-                                userId)
+                                userId, blockedUserIds)
                         : this.connectionRepository.getReceiverConnections(pageable, userId,
-                                pinnedConnectionIds);
+                                pinnedConnectionIds, blockedUserIds);
             } else {
                 queryResult = pinnedConnectionIds.size() == 0 || override.equals("true")
                         ? this.connectionRepository.getSenderConnectionsWithoutPins(pageable,
-                                userId)
+                                userId, blockedUserIds)
                         : this.connectionRepository.getSenderConnections(pageable, userId,
-                                pinnedConnectionIds);
+                                pinnedConnectionIds, blockedUserIds);
             }
 
             List<ConnectionDto> connections = connectMessages(queryResult.getContent(), userId);
@@ -205,12 +216,19 @@ public class ConnectionService {
 
             String searchQuery = "%" + query.toLowerCase() + "%";
 
+            List<Long> blockedUserIds = null;
+            List<Long> potentialBlockedUserIds = blockUserService.getBlockedUsersForCurUser(user);
+
+            if (potentialBlockedUserIds.size() > 0) {
+                blockedUserIds = potentialBlockedUserIds;
+            }
+
             if (user.getRole() == Role.REVIEWER) {
                 queryResult = this.connectionRepository.getSearchReceiverConnections(pageable,
-                        user.getId(), searchQuery);
+                        user.getId(), searchQuery, blockedUserIds);
             } else {
                 queryResult = this.connectionRepository.getSearchSenderConnections(pageable,
-                        user.getId(), searchQuery);
+                        user.getId(), searchQuery, blockedUserIds);
             }
 
             List<ConnectionDto> connections =

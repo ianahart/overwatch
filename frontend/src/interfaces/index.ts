@@ -1635,6 +1635,14 @@ export interface IUpdateSettingResponse {
   data: any;
 }
 
+export interface ICreateBlockedUserRequest {
+  token: string;
+  blockedUserId: number;
+  blockerUserId: number;
+}
+
+export interface ICreateBlockedUserResponse extends IBaseResponse {}
+
 export interface ICreateReviewFeedbackResponse extends IBaseResponse {}
 
 export interface IUpdateRepositoryReviewStartTimeResponse extends IBaseResponse {}

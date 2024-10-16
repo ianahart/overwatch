@@ -129,8 +129,9 @@ public class ConnectionRepositoryTest {
     @Test
     public void ConnectionRepository_GetSearchSenderConnections_ReturnPageOfConnectionDto() {
         Pageable pageable = PageRequest.of(0, 10);
-        Page<ConnectionDto> result =
-                connectionRepository.getSearchSenderConnections(pageable, sender.getId(), "jane");
+        List<Long> blockedUserIds = List.of(1L, 2L);
+        Page<ConnectionDto> result = connectionRepository.getSearchSenderConnections(pageable,
+                sender.getId(), "jane", blockedUserIds);
 
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result.getContent().size()).isEqualTo(1);
@@ -142,8 +143,9 @@ public class ConnectionRepositoryTest {
     @Test
     public void ConnectionRepository_GetSearchReceiverConnections_ReturnPageOfConnectionDto() {
         Pageable pageable = PageRequest.of(0, 10);
+        List<Long> blockedUserIds = List.of(1L, 2L);
         Page<ConnectionDto> result = connectionRepository.getSearchReceiverConnections(pageable,
-                receiver.getId(), "john");
+                receiver.getId(), "john", blockedUserIds);
 
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result.getContent().size()).isEqualTo(1);
@@ -156,8 +158,9 @@ public class ConnectionRepositoryTest {
     public void ConnectionRepository_GetSenderConnections_ReturnPageOfConnectionDtoOfSizeZero() {
         Pageable pageable = PageRequest.of(0, 10);
         List<Long> connectionPinIds = Arrays.asList(connection.getId());
+        List<Long> blockedUserIds = List.of(1L, 2L);
         Page<ConnectionDto> result = connectionRepository.getSenderConnections(pageable,
-                sender.getId(), connectionPinIds);
+                sender.getId(), connectionPinIds, blockedUserIds);
 
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result.getContent().size()).isEqualTo(0);
@@ -166,8 +169,9 @@ public class ConnectionRepositoryTest {
     @Test
     public void ConnectionRepository_GetSenderConnectionsWithoutPins_ReturnPageOfConnectionDto() {
         Pageable pageable = PageRequest.of(0, 10);
-        Page<ConnectionDto> result =
-                connectionRepository.getSenderConnectionsWithoutPins(pageable, sender.getId());
+        List<Long> blockedUserIds = List.of(1L, 2L);
+        Page<ConnectionDto> result = connectionRepository.getSenderConnectionsWithoutPins(pageable,
+                sender.getId(), blockedUserIds);
 
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result.getContent().size()).isEqualTo(1);
@@ -180,8 +184,9 @@ public class ConnectionRepositoryTest {
     public void ConnectionRepository_GetReceiverConnections_ReturnPageOfConnectionDtoOfSizeZero() {
         Pageable pageable = PageRequest.of(0, 10);
         List<Long> connectionPinIds = Arrays.asList(connection.getId());
+        List<Long> blockedUserIds = List.of(1L, 2L);
         Page<ConnectionDto> result = connectionRepository.getReceiverConnections(pageable,
-                receiver.getId(), connectionPinIds);
+                receiver.getId(), connectionPinIds, blockedUserIds);
 
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result.getContent().size()).isEqualTo(0);
@@ -190,8 +195,9 @@ public class ConnectionRepositoryTest {
     @Test
     public void ConnectionRepository_GetReceiverConnectionsWithoutPins_ReturnPageOfConnectionDto() {
         Pageable pageable = PageRequest.of(0, 10);
-        Page<ConnectionDto> result =
-                connectionRepository.getReceiverConnectionsWithoutPins(pageable, receiver.getId());
+        List<Long> blockedUserIds = List.of(1L, 2L);
+        Page<ConnectionDto> result = connectionRepository
+                .getReceiverConnectionsWithoutPins(pageable, receiver.getId(), blockedUserIds);
 
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result.getContent().size()).isEqualTo(1);
