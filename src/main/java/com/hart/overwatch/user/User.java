@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.hart.overwatch.activity.Activity;
+import com.hart.overwatch.blockuser.BlockUser;
 import com.hart.overwatch.chatmessage.ChatMessage;
 import com.hart.overwatch.checklist.CheckList;
 import com.hart.overwatch.checklistitem.CheckListItem;
@@ -218,6 +219,13 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<ReviewFeedback> ReviewerReviewFeedbacks;
 
+    @OneToMany(mappedBy = "blockedUser", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<BlockUser> blockedUsers;
+
+    @OneToMany(mappedBy = "blockerUser", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<BlockUser> blockerUsers;
 
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -272,6 +280,14 @@ public class User implements UserDetails {
 
     public String getSlug() {
         return (firstName + lastName).toLowerCase();
+    }
+
+    public List<BlockUser> getBlockedUsers() {
+        return blockedUsers;
+    }
+
+    public List<BlockUser> getBlockerUsers() {
+        return blockerUsers;
     }
 
     public List<CheckList> getCheckLists() {
@@ -600,6 +616,14 @@ public class User implements UserDetails {
 
     public void setTodocards(List<TodoCard> todocards) {
         this.todocards = todocards;
+    }
+
+    public void setBlockedUsers(List<BlockUser> blockedUsers) {
+        this.blockedUsers = blockedUsers;
+    }
+
+    public void setBlockerUsers(List<BlockUser> blockerUsers) {
+        this.blockerUsers = blockerUsers;
     }
 
     public void setSenderConnections(List<Connection> senderConnections) {

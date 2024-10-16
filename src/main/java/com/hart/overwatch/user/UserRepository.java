@@ -26,4 +26,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     void updateLoggedIn(@Param("userId") Long userId, @Param("loggedIn") Boolean loggedIn,
             @Param("lastActive") LocalDateTime lastActive);
 
+
+    @Query("SELECT u FROM User u LEFT JOIN FETCH u.blockerUsers WHERE u.id = :userId")
+    User findUserWithBlockerUsers(@Param("userId") Long userId);
 }

@@ -137,6 +137,7 @@ import { customFieldsApi } from './apis/customFieldsApi';
 import { dropDownOptionsApi } from './apis/dropDownOptionsApi';
 import { reviewFeedbacksApi } from './apis/reviewFeedbacksApi';
 import { statisticsApi } from './apis/statisticsApi';
+import { blockedUsersApi } from './apis/blockedUsersApi';
 
 export const store = configureStore({
   reducer: {
@@ -187,6 +188,7 @@ export const store = configureStore({
     [dropDownOptionsApi.reducerPath]: dropDownOptionsApi.reducer,
     [reviewFeedbacksApi.reducerPath]: reviewFeedbacksApi.reducer,
     [statisticsApi.reducerPath]: statisticsApi.reducer,
+    [blockedUsersApi.reducerPath]: blockedUsersApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -224,7 +226,8 @@ export const store = configureStore({
       .concat(customFieldsApi.middleware)
       .concat(dropDownOptionsApi.middleware)
       .concat(reviewFeedbacksApi.middleware)
-      .concat(statisticsApi.middleware);
+      .concat(statisticsApi.middleware)
+      .concat(blockedUsersApi.middleware);
   },
 });
 
@@ -490,6 +493,8 @@ export { useLazyGetSingleReviewFeedbackQuery, useCreateReviewFeedbackMutation } 
 
 export { useFetchStatisticsQuery } from './apis/statisticsApi';
 
+export { useCreateBlockedUserMutation } from './apis/blockedUsersApi';
+
 export {
   testimonialsApi,
   authsApi,
@@ -515,4 +520,5 @@ export {
   dropDownOptionsApi,
   reviewFeedbacksApi,
   statisticsApi,
+  blockedUsersApi,
 };

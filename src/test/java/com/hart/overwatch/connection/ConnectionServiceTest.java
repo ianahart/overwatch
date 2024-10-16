@@ -229,13 +229,13 @@ public class ConnectionServiceTest {
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setUser(sender);
         connection.setChatMessages(List.of(chatMessage));
-
+        List<Long> blockedUserIds = List.of(1L, 2L);
         when(userService.getUserById(sender.getId())).thenReturn(sender);
         when(userService.getCurrentlyLoggedInUser()).thenReturn(sender);
         when(paginationService.getPageable(0, 10, "next")).thenReturn(pageable);
         when(connectionPinService.getOwnerConnectionPins(sender.getId())).thenReturn(List.of(1L));
-        when(connectionRepository.getSenderConnectionsWithoutPins(pageable, sender.getId()))
-                .thenReturn(pageOfConnectionDto);
+        when(connectionRepository.getSenderConnectionsWithoutPins(pageable, sender.getId(),
+                blockedUserIds)).thenReturn(pageOfConnectionDto);
         when(connectionRepository.findById(connection.getId())).thenReturn(Optional.of(connection));
 
 
@@ -260,13 +260,13 @@ public class ConnectionServiceTest {
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setUser(sender);
         connection.setChatMessages(List.of(chatMessage));
-
+        List<Long> blockedUserIds = List.of(1L, 2L);
         when(userService.getUserById(sender.getId())).thenReturn(sender);
         when(userService.getCurrentlyLoggedInUser()).thenReturn(sender);
         when(paginationService.getPageable(0, 10, "next")).thenReturn(pageable);
         when(connectionPinService.getOwnerConnectionPins(sender.getId())).thenReturn(List.of(1L));
-        when(connectionRepository.getSenderConnections(pageable, sender.getId(), List.of(1L)))
-                .thenReturn(pageOfConnectionDto);
+        when(connectionRepository.getSenderConnections(pageable, sender.getId(), List.of(1L),
+                blockedUserIds)).thenReturn(pageOfConnectionDto);
         when(connectionRepository.findById(connection.getId())).thenReturn(Optional.of(connection));
 
 
@@ -291,13 +291,13 @@ public class ConnectionServiceTest {
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setUser(sender);
         connection.setChatMessages(List.of(chatMessage));
-
+        List<Long> blockedUserIds = List.of(1L, 2L);
         when(userService.getUserById(receiver.getId())).thenReturn(receiver);
         when(userService.getCurrentlyLoggedInUser()).thenReturn(receiver);
         when(paginationService.getPageable(0, 10, "next")).thenReturn(pageable);
         when(connectionPinService.getOwnerConnectionPins(receiver.getId())).thenReturn(List.of(1L));
-        when(connectionRepository.getReceiverConnections(pageable, receiver.getId(), List.of(1L)))
-                .thenReturn(pageOfConnectionDto);
+        when(connectionRepository.getReceiverConnections(pageable, receiver.getId(), List.of(1L),
+                blockedUserIds)).thenReturn(pageOfConnectionDto);
         when(connectionRepository.findById(connection.getId())).thenReturn(Optional.of(connection));
 
         PaginationDto<ConnectionDto> result =
@@ -323,13 +323,13 @@ public class ConnectionServiceTest {
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setUser(sender);
         connection.setChatMessages(List.of(chatMessage));
-
+        List<Long> blockedUserIds = List.of(1L, 2L);
         when(userService.getUserById(receiver.getId())).thenReturn(receiver);
         when(userService.getCurrentlyLoggedInUser()).thenReturn(receiver);
         when(paginationService.getPageable(0, 10, "next")).thenReturn(pageable);
         when(connectionPinService.getOwnerConnectionPins(receiver.getId())).thenReturn(List.of());
-        when(connectionRepository.getReceiverConnectionsWithoutPins(pageable, receiver.getId()))
-                .thenReturn(pageOfConnectionDto);
+        when(connectionRepository.getReceiverConnectionsWithoutPins(pageable, receiver.getId(),
+                blockedUserIds)).thenReturn(pageOfConnectionDto);
         when(connectionRepository.findById(connection.getId())).thenReturn(Optional.of(connection));
 
 
@@ -358,11 +358,11 @@ public class ConnectionServiceTest {
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setUser(receiver);
         connection.setChatMessages(List.of(chatMessage));
-
+        List<Long> blockedUserIds = List.of(1L, 2L);
         when(userService.getCurrentlyLoggedInUser()).thenReturn(receiver);
         when(paginationService.getPageable(0, 10, "next")).thenReturn(pageable);
-        when(connectionRepository.getSearchReceiverConnections(pageable, receiver.getId(),
-                "%john%")).thenReturn(pageOfConnectionDto);
+        when(connectionRepository.getSearchReceiverConnections(pageable, receiver.getId(), "%john%",
+                blockedUserIds)).thenReturn(pageOfConnectionDto);
         when(connectionRepository.findById(connection.getId())).thenReturn(Optional.of(connection));
 
         PaginationDto<ConnectionDto> result =
@@ -391,8 +391,9 @@ public class ConnectionServiceTest {
 
         when(userService.getCurrentlyLoggedInUser()).thenReturn(sender);
         when(paginationService.getPageable(0, 10, "next")).thenReturn(pageable);
-        when(connectionRepository.getSearchSenderConnections(pageable, sender.getId(), "%jane%"))
-                .thenReturn(pageOfConnectionDto);
+        List<Long> blockedUserIds = List.of(1L, 2L);
+        when(connectionRepository.getSearchSenderConnections(pageable, sender.getId(), "%jane%",
+                blockedUserIds)).thenReturn(pageOfConnectionDto);
         when(connectionRepository.findById(connection.getId())).thenReturn(Optional.of(connection));
 
         PaginationDto<ConnectionDto> result =

@@ -125,7 +125,7 @@ const Chat = () => {
             {messages.map((message) => {
               return (
                 <div
-                  className={`my-4 flex flex-col ${message.userId === user.id ? 'items-end' : 'items-start'}`}
+                  className={`flex flex-col ${message.userId === user.id ? 'items-end' : 'items-start'}`}
                   key={message.id}
                 >
                   <div className="flex items-center">

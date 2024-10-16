@@ -18,6 +18,7 @@ import {
   useLazyFetchPinnedConnectionsQuery,
   clearPinnedConnections,
   clearConnections,
+  useCreateBlockedUserMutation,
 } from '../../../state/store';
 import Spinner from '../../Shared/Spinner';
 import { IConnection } from '../../../interfaces';
@@ -34,6 +35,7 @@ const Connections = () => {
   const [fetchConnections, { isLoading: fetchLoading }] = useLazyFetchConnectionsQuery();
   const [deletePinnedConnection] = useDeletePinnedConnectionMutation();
   const [createPinnedConnection] = useCreatePinnedConnectionMutation();
+  const [createBlockedUser] = useCreateBlockedUserMutation();
   const [fetchPinnedConnections] = useLazyFetchPinnedConnectionsQuery();
   const { data: pinnedConnectionsData } = useFetchPinnedConnectionsQuery({
     userId: user.id,
@@ -105,6 +107,18 @@ const Connections = () => {
   const changeConnection = (connection: IConnection) => {
     dispatch(setCurrentConnection(connection));
     dispatch(clearMessages());
+  };
+
+  const blockUser = (blockerUserId: number, blockedUserId: number, connection: IConnection): void => {
+    createBlockedUser({ token, blockerUserId, blockedUserId })
+      .unwrap()
+      .then((res) => {
+        dispatch(removeConnection(connection));
+        dispatch(clearMessages());
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const pin = (ownerId: number, connectionId: number, pinnedId: number, token: string, connection: IConnection) => {
@@ -189,6 +203,7 @@ const Connections = () => {
               connection={connection}
               unPin={unPin}
               pin={pin}
+              blockUser={blockUser}
             />
           );
         })}

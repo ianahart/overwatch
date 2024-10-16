@@ -7,6 +7,7 @@ import { IConnection, IPinnedConnection } from '../../../interfaces';
 import Avatar from '../../Shared/Avatar';
 import { TRootState } from '../../../state/store';
 import { retrieveTokens, shortenString } from '../../../util';
+import { MdBlock } from 'react-icons/md';
 
 type TConnection = IConnection | IPinnedConnection;
 
@@ -16,22 +17,39 @@ export interface IConnectionProps {
   isPinned: boolean;
   unPin: (id: number) => void;
   pin: (ownerId: number, connectionId: number, pinnedId: number, token: string, connection: IConnection) => void;
+  blockUser?: (blockerUserId: number, blockedUserId: number, connection: IConnection) => void;
 }
 
-const Connection = ({ connection, changeConnection, isPinned, unPin, pin }: IConnectionProps) => {
+const Connection = ({ connection, changeConnection, isPinned, unPin, pin, blockUser }: IConnectionProps) => {
   const { currentConnection } = useSelector((store: TRootState) => store.chat);
   const { user } = useSelector((store: TRootState) => store.user);
-  const [isToolTipShowing, setIsToolTipShowing] = useState(false);
+  const [toolTipShowing, setToolTipShowing] = useState({ pin: false, block: false });
 
   const isPinnedConnection = (connection: TConnection): connection is IPinnedConnection => {
     return 'connectionPinId' in connection;
   };
 
-  const handleOnMouseEnter = () => setIsToolTipShowing(true);
+  const handleOnMouseEnter = (toolTip: string): void => {
+    setToolTipShowing((prevState) => ({
+      ...prevState,
+      [toolTip]: true,
+    }));
+  };
 
-  const handleOnMouseLeave = () => setIsToolTipShowing(false);
+  const handleOnMouseLeave = (toolTip: string): void => {
+    setToolTipShowing((prevState) => ({
+      ...prevState,
+      [toolTip]: false,
+    }));
+  };
 
-  const handleOnPin = (connection: IConnection) => {
+  const handleOnBlock = (connection: IConnection): void => {
+    const blockerUserId = user.id === connection.receiverId ? connection.receiverId : connection.senderId;
+    const blockedUserId = blockerUserId === connection.senderId ? connection.receiverId : connection.senderId;
+    blockUser?.(blockerUserId, blockedUserId, connection);
+  };
+
+  const handleOnPin = (connection: IConnection): void => {
     const ownerId = user.id === connection.receiverId ? connection.receiverId : connection.senderId;
     const pinnedId = connection.receiverId === ownerId ? connection.senderId : connection.receiverId;
     pin(ownerId, connection.id, pinnedId, retrieveTokens().token, connection);
@@ -56,18 +74,31 @@ const Connection = ({ connection, changeConnection, isPinned, unPin, pin }: ICon
             {connection.firstName} {connection.lastName}
           </p>
         </div>
-        <div>
-          <div className="relative">
+        <div className="flex items-center">
+          <div className="relative mx-1">
+            <MdBlock
+              className="text-xl"
+              onClick={() => handleOnBlock(connection)}
+              onMouseEnter={() => handleOnMouseEnter('block')}
+              onMouseLeave={() => handleOnMouseLeave('block')}
+            />
+            {toolTipShowing.block && (
+              <div className="absolute -top-8 left-0 bg-stone-900 p-2 rounded">
+                <p className="text-xs">Block</p>
+              </div>
+            )}
+          </div>
+          <div className="relative mx-1">
             {isPinned ? (
               <BsPinAngle onClick={handleOnUnPin} />
             ) : (
               <FaRegCircle
                 onClick={() => handleOnPin(connection)}
-                onMouseEnter={handleOnMouseEnter}
-                onMouseLeave={handleOnMouseLeave}
+                onMouseEnter={() => handleOnMouseEnter('pin')}
+                onMouseLeave={() => handleOnMouseLeave('pin')}
               />
             )}
-            {isToolTipShowing && (
+            {toolTipShowing.pin && (
               <div className="absolute -top-8 left-0 bg-stone-900 p-2 rounded">
                 <p className="text-xs">Pin</p>
               </div>

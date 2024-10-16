@@ -1,6 +1,7 @@
 package com.hart.overwatch.chatmessage;
 
 import org.springframework.data.redis.connection.Message;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.lang.Nullable;
@@ -19,9 +20,17 @@ public class ChatMessageSubscriber implements MessageListener {
 
     @Override
     public void onMessage(Message message, @Nullable byte[] pattern) {
+
         ChatMessageDto chatMessage = this.chatMessageService.createChatMessage(message.toString());
+
+        if (chatMessage == null) {
+            return;
+        }
+
+
         ChatMessage chatMessageEntity =
                 this.chatMessageService.getChatMessageById(chatMessage.getId());
+
 
         Long receiverId = chatMessageEntity.getConnection().getReceiver().getId();
         Long senderId = chatMessageEntity.getConnection().getSender().getId();
