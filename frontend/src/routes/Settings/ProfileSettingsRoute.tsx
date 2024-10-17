@@ -1,5 +1,7 @@
+import ProfileSettings from '../../components/Settings/Profile';
+
 const ProfileSettingsRoute = () => {
-  return <div>Profile Settings Route</div>;
+  return <ProfileSettings />;
 };
 
 export default ProfileSettingsRoute;

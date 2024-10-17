@@ -7,6 +7,14 @@ export interface INotificationSwitch {
   isOn: boolean;
 }
 
+export interface IBlockedUser {
+  createdAt: string;
+  fullName: string;
+  avatarUrl: string;
+  id: number;
+  blockedUserId: number;
+}
+
 export interface IStatisticAvgRating {
   name: string;
   average: number;
@@ -1640,6 +1648,33 @@ export interface ICreateBlockedUserRequest {
   blockedUserId: number;
   blockerUserId: number;
 }
+
+export interface IFetchBlockedUsersRequest {
+  token: string;
+  page: number;
+  pageSize: number;
+  blockerUserId: number;
+  direction: string;
+}
+
+export interface IFetchBlockedUsersResponse {
+  message: string;
+  data: {
+    items: IBlockedUser[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
+}
+
+export interface IDeleteBlockedUserRequest {
+  token: string;
+  blockUserId: number;
+}
+
+export interface IDeleteBlockedUserResponse extends IBaseResponse {}
 
 export interface ICreateBlockedUserResponse extends IBaseResponse {}
 
