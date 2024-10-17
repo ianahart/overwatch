@@ -12,7 +12,7 @@ import BlockedUserItem from './BlockedUserItem';
 const BlockedUserList = () => {
   const paginationState = {
     page: 0,
-    pageSize: 1,
+    pageSize: 3,
     totalPages: 0,
     direction: 'next',
     totalElements: 0,
@@ -25,7 +25,7 @@ const BlockedUserList = () => {
     blockerUserId: user.id,
     token,
     page: -1,
-    pageSize: 1,
+    pageSize: 3,
     direction: 'next',
   });
 

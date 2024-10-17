@@ -1,7 +1,5 @@
 package com.hart.overwatch.blockuser;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -16,13 +17,9 @@ import org.springframework.test.context.jdbc.Sql;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import com.hart.overwatch.blockuser.dto.BlockUserDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.profile.ProfileRepository;
-import com.hart.overwatch.repository.Repository;
-import com.hart.overwatch.repository.RepositoryRepository;
-import com.hart.overwatch.repository.RepositoryStatus;
-import com.hart.overwatch.reviewfeedback.dto.ReviewFeedbackDto;
-import com.hart.overwatch.reviewfeedback.dto.ReviewFeedbackRatingsDto;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
@@ -52,7 +49,7 @@ public class BlockUserRepositoryTest {
 
     private User blockedUser;
 
-    private BlockUser blockUserEntity;
+    private BlockUser blockUser;
 
 
     private User createBlockerUser() {
@@ -81,23 +78,16 @@ public class BlockUserRepositoryTest {
         return blockedUser;
     }
 
-
-    private BlockUser createBlockUserEntity(User blockerUser, User blockedUser) {
-        blockUserEntity = new BlockUser(blockerUser, blockedUser);
-
-        blockUserRepository.save(blockUserEntity);
-
-        return blockUserEntity;
-
-    }
-
-
     @BeforeEach
     public void setUp() {
         blockerUser = createBlockerUser();
         blockedUser = createBlockedUser();
-        blockUserEntity = createBlockUserEntity(blockerUser, blockedUser);
+        blockUser = new BlockUser(blockerUser, blockedUser);
 
+        blockUser.setBlockedUser(blockedUser);
+        blockUser.setBlockerUser(blockerUser);
+
+        blockUserRepository.save(blockUser);
     }
 
     @AfterEach
@@ -110,6 +100,33 @@ public class BlockUserRepositoryTest {
         entityManager.clear();
     }
 
+    @Test
+    public void BlockUserRepository_GetAllBlockedUsers_ReturnPageOfBlockUserDto() {
+        Pageable pageable = PageRequest.of(0, 1);
+        Long blockerUserId = blockerUser.getId();
+
+        Page<BlockUserDto> result = blockUserRepository.getAllBlockedUsers(pageable, blockerUserId);
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getTotalElements()).isEqualTo(1);
+        Assertions.assertThat(result.getContent()).hasSize(1);
+
+        BlockUserDto blockUserDto = result.getContent().get(0);
+        Assertions.assertThat(blockUserDto.getBlockedUserId()).isEqualTo(blockedUser.getId());
+        Assertions.assertThat(blockUserDto.getFullName()).isEqualTo(blockedUser.getFullName());
+        Assertions.assertThat(blockUserDto.getAvatarUrl())
+                .isEqualTo(blockedUser.getProfile().getAvatarUrl());
+    }
+
+    @Test
+    public void BlockUserRepository_FindByBlockedUserIdAndBlockerUserId_ReturnBooleanTrue() {
+        Long blockedUserId = blockedUser.getId();
+        Long blockerUserId = blockerUser.getId();
+
+        boolean exists = blockUserRepository.findByBlockedUserIdAndBlockerUserId(blockedUserId,
+                blockerUserId);
+
+        Assertions.assertThat(exists).isTrue();
+    }
 }
 
 
