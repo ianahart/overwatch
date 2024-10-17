@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.blockuser.BlockUserService;
 import com.hart.overwatch.chatmessage.ChatMessage;
 import com.hart.overwatch.connection.dto.ConnectionDto;
 import com.hart.overwatch.connection.dto.MinConnectionDto;
@@ -39,6 +40,9 @@ public class ConnectionServiceTest {
 
     @InjectMocks
     private ConnectionService connectionService;
+
+    @Mock
+    private BlockUserService blockUserService;
 
     @Mock
     private ConnectionRepository connectionRepository;
@@ -229,11 +233,12 @@ public class ConnectionServiceTest {
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setUser(sender);
         connection.setChatMessages(List.of(chatMessage));
-        List<Long> blockedUserIds = List.of(1L, 2L);
+        List<Long> blockedUserIds = null;
         when(userService.getUserById(sender.getId())).thenReturn(sender);
         when(userService.getCurrentlyLoggedInUser()).thenReturn(sender);
         when(paginationService.getPageable(0, 10, "next")).thenReturn(pageable);
         when(connectionPinService.getOwnerConnectionPins(sender.getId())).thenReturn(List.of(1L));
+        when(blockUserService.getBlockedUsersForCurUser(sender)).thenReturn(List.of());
         when(connectionRepository.getSenderConnectionsWithoutPins(pageable, sender.getId(),
                 blockedUserIds)).thenReturn(pageOfConnectionDto);
         when(connectionRepository.findById(connection.getId())).thenReturn(Optional.of(connection));
@@ -260,11 +265,12 @@ public class ConnectionServiceTest {
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setUser(sender);
         connection.setChatMessages(List.of(chatMessage));
-        List<Long> blockedUserIds = List.of(1L, 2L);
+        List<Long> blockedUserIds = null;
         when(userService.getUserById(sender.getId())).thenReturn(sender);
         when(userService.getCurrentlyLoggedInUser()).thenReturn(sender);
         when(paginationService.getPageable(0, 10, "next")).thenReturn(pageable);
         when(connectionPinService.getOwnerConnectionPins(sender.getId())).thenReturn(List.of(1L));
+        when(blockUserService.getBlockedUsersForCurUser(sender)).thenReturn(List.of());
         when(connectionRepository.getSenderConnections(pageable, sender.getId(), List.of(1L),
                 blockedUserIds)).thenReturn(pageOfConnectionDto);
         when(connectionRepository.findById(connection.getId())).thenReturn(Optional.of(connection));
@@ -291,11 +297,12 @@ public class ConnectionServiceTest {
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setUser(sender);
         connection.setChatMessages(List.of(chatMessage));
-        List<Long> blockedUserIds = List.of(1L, 2L);
+        List<Long> blockedUserIds = null;
         when(userService.getUserById(receiver.getId())).thenReturn(receiver);
         when(userService.getCurrentlyLoggedInUser()).thenReturn(receiver);
         when(paginationService.getPageable(0, 10, "next")).thenReturn(pageable);
         when(connectionPinService.getOwnerConnectionPins(receiver.getId())).thenReturn(List.of(1L));
+        when(blockUserService.getBlockedUsersForCurUser(receiver)).thenReturn(List.of());
         when(connectionRepository.getReceiverConnections(pageable, receiver.getId(), List.of(1L),
                 blockedUserIds)).thenReturn(pageOfConnectionDto);
         when(connectionRepository.findById(connection.getId())).thenReturn(Optional.of(connection));
@@ -323,11 +330,12 @@ public class ConnectionServiceTest {
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setUser(sender);
         connection.setChatMessages(List.of(chatMessage));
-        List<Long> blockedUserIds = List.of(1L, 2L);
+        List<Long> blockedUserIds = null;
         when(userService.getUserById(receiver.getId())).thenReturn(receiver);
         when(userService.getCurrentlyLoggedInUser()).thenReturn(receiver);
         when(paginationService.getPageable(0, 10, "next")).thenReturn(pageable);
         when(connectionPinService.getOwnerConnectionPins(receiver.getId())).thenReturn(List.of());
+        when(blockUserService.getBlockedUsersForCurUser(receiver)).thenReturn(List.of());
         when(connectionRepository.getReceiverConnectionsWithoutPins(pageable, receiver.getId(),
                 blockedUserIds)).thenReturn(pageOfConnectionDto);
         when(connectionRepository.findById(connection.getId())).thenReturn(Optional.of(connection));
@@ -358,9 +366,10 @@ public class ConnectionServiceTest {
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setUser(receiver);
         connection.setChatMessages(List.of(chatMessage));
-        List<Long> blockedUserIds = List.of(1L, 2L);
+        List<Long> blockedUserIds = null;
         when(userService.getCurrentlyLoggedInUser()).thenReturn(receiver);
         when(paginationService.getPageable(0, 10, "next")).thenReturn(pageable);
+        when(blockUserService.getBlockedUsersForCurUser(receiver)).thenReturn(List.of());
         when(connectionRepository.getSearchReceiverConnections(pageable, receiver.getId(), "%john%",
                 blockedUserIds)).thenReturn(pageOfConnectionDto);
         when(connectionRepository.findById(connection.getId())).thenReturn(Optional.of(connection));
@@ -391,7 +400,8 @@ public class ConnectionServiceTest {
 
         when(userService.getCurrentlyLoggedInUser()).thenReturn(sender);
         when(paginationService.getPageable(0, 10, "next")).thenReturn(pageable);
-        List<Long> blockedUserIds = List.of(1L, 2L);
+        List<Long> blockedUserIds = null;
+        when(blockUserService.getBlockedUsersForCurUser(sender)).thenReturn(List.of());
         when(connectionRepository.getSearchSenderConnections(pageable, sender.getId(), "%jane%",
                 blockedUserIds)).thenReturn(pageOfConnectionDto);
         when(connectionRepository.findById(connection.getId())).thenReturn(Optional.of(connection));
