@@ -15,6 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.blockuser.BlockUser;
+import com.hart.overwatch.blockuser.BlockUserService;
 import com.hart.overwatch.chatmessage.dto.ChatMessageDto;
 import com.hart.overwatch.connection.Connection;
 import com.hart.overwatch.connection.ConnectionService;
@@ -33,6 +35,9 @@ public class ChatMessageServiceTest {
 
     @InjectMocks
     private ChatMessageService chatMessageService;
+
+    @Mock
+    private BlockUserService blockUserService;
 
     @Mock
     private ChatMessageRepository chatMessageRepository;
@@ -156,6 +161,8 @@ public class ChatMessageServiceTest {
 
         when(userService.getUserById(sender.getId())).thenReturn(sender);
         when(connectionService.getConnectionById(connection.getId())).thenReturn(connection);
+        when(blockUserService.getCurUserBlockedByUser(sender.getId(),
+                connection.getReceiver().getId())).thenReturn(null);
 
         ArgumentCaptor<ChatMessage> chatMessageCaptor = ArgumentCaptor.forClass(ChatMessage.class);
 
