@@ -3,6 +3,7 @@ package com.hart.overwatch.blockuser;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,9 +12,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
+import com.hart.overwatch.blockuser.dto.BlockUserDto;
 import com.hart.overwatch.pagination.PaginationService;
+import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.user.Role;
@@ -82,6 +88,46 @@ public class BlockUserServiceTest {
         blockUser.setBlockerUser(blockerUser);
 
         blockUser.setId(1L);
+    }
+
+    @Test
+    public void BlockUserService_GetAllBlockedUsers_ReturnPaginationDtoOfBlockUserDto() {
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+        Pageable pageable = Pageable.ofSize(pageSize);
+        BlockUserDto blockUserDto = new BlockUserDto();
+        LocalDateTime createdAt = LocalDateTime.now();
+        blockUserDto.setId(blockUser.getId());
+        blockUserDto.setFullName(blockedUser.getFullName());
+        blockUserDto.setAvatarUrl(blockedUser.getProfile().getAvatarUrl());
+        blockUserDto.setBlockedUserId(blockedUser.getId());
+        blockUserDto.setCreatedAt(createdAt);
+        Page<BlockUserDto> pageResult =
+                new PageImpl<>(Collections.singletonList(blockUserDto), pageable, 1);
+        PaginationDto<BlockUserDto> expectedPaginationDto =
+                new PaginationDto<>(pageResult.getContent(), pageResult.getNumber(), pageSize,
+                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
+
+        when(paginationService.getPageable(page, pageSize, direction)).thenReturn(pageable);
+
+        when(blockUserRepository.getAllBlockedUsers(pageable, blockerUser.getId()))
+                .thenReturn(pageResult);
+
+        PaginationDto<BlockUserDto> result =
+                blockUserService.getAllBlockedUsers(blockerUser.getId(), page, pageSize, direction);
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getItems()).hasSize(1);
+        BlockUserDto actualBlockUserDto = result.getItems().getFirst();
+        Assertions.assertThat(actualBlockUserDto.getId()).isEqualTo(blockUserDto.getId());
+        Assertions.assertThat(actualBlockUserDto.getBlockedUserId())
+                .isEqualTo(blockUserDto.getBlockedUserId());
+        Assertions.assertThat(actualBlockUserDto.getFullName())
+                .isEqualTo(blockUserDto.getFullName());
+        Assertions.assertThat(actualBlockUserDto.getAvatarUrl())
+                .isEqualTo(actualBlockUserDto.getAvatarUrl());
+        Assertions.assertThat(actualBlockUserDto.getCreatedAt())
+                .isEqualTo(blockUserDto.getCreatedAt());
     }
 
 }
