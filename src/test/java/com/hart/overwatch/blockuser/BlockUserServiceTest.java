@@ -119,6 +119,20 @@ public class BlockUserServiceTest {
     }
 
     @Test
+    public void BlockUserService_DeleteBlockUser_ReturnNothing() {
+        Long blockUserId = blockUser.getId();
+
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(blockerUser);
+        when(blockUserRepository.findById(blockUserId)).thenReturn(Optional.of(blockUser));
+
+        doNothing().when(blockUserRepository).delete(blockUser);
+
+        blockUserService.deleteBlockUser(blockUserId);
+
+        verify(blockUserRepository, times(1)).delete(blockUser);
+    }
+
+    @Test
     public void BlockUserService_GetAllBlockedUsers_ReturnPaginationDtoOfBlockUserDto() {
         int page = 0;
         int pageSize = 3;
@@ -154,6 +168,7 @@ public class BlockUserServiceTest {
         Assertions.assertThat(actualBlockUserDto.getCreatedAt())
                 .isEqualTo(blockUserDto.getCreatedAt());
     }
+
 
 }
 
