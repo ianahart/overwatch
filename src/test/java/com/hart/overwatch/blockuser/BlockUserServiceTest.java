@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -90,6 +91,33 @@ public class BlockUserServiceTest {
         blockUser.setId(1L);
     }
 
+
+
+    @Test
+    public void BlockUserService_DeleteBlockUser_ThrowBadRequestException() {
+        Long blockUserId = null;
+
+        Assertions.assertThatThrownBy(() -> {
+            blockUserService.deleteBlockUser(blockUserId);
+        }).isInstanceOf(BadRequestException.class).hasMessage("Missing block user id");
+    }
+
+    @Test
+    public void BlockUserService_DeleteBlockUser_ThrowForbiddenException() {
+        Long blockUserId = blockUser.getId();
+
+        User forbiddenUser = new User();
+        forbiddenUser.setId(999L);
+
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(forbiddenUser);
+        when(blockUserRepository.findById(blockUserId)).thenReturn(Optional.of(blockUser));
+
+        Assertions.assertThatThrownBy(() -> {
+            blockUserService.deleteBlockUser(blockUserId);
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("Cannot unblock a user that you have not blocked");
+    }
+
     @Test
     public void BlockUserService_GetAllBlockedUsers_ReturnPaginationDtoOfBlockUserDto() {
         int page = 0;
@@ -105,9 +133,6 @@ public class BlockUserServiceTest {
         blockUserDto.setCreatedAt(createdAt);
         Page<BlockUserDto> pageResult =
                 new PageImpl<>(Collections.singletonList(blockUserDto), pageable, 1);
-        PaginationDto<BlockUserDto> expectedPaginationDto =
-                new PaginationDto<>(pageResult.getContent(), pageResult.getNumber(), pageSize,
-                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
 
         when(paginationService.getPageable(page, pageSize, direction)).thenReturn(pageable);
 
