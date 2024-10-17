@@ -493,7 +493,12 @@ export { useLazyGetSingleReviewFeedbackQuery, useCreateReviewFeedbackMutation } 
 
 export { useFetchStatisticsQuery } from './apis/statisticsApi';
 
-export { useCreateBlockedUserMutation } from './apis/blockedUsersApi';
+export {
+  useCreateBlockedUserMutation,
+  useFetchBlockedUsersQuery,
+  useLazyFetchBlockedUsersQuery,
+  useDeleteBlockedUserMutation,
+} from './apis/blockedUsersApi';
 
 export {
   testimonialsApi,
