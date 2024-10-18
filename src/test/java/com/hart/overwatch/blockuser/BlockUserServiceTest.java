@@ -18,7 +18,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
+import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.blockuser.dto.BlockUserDto;
+import com.hart.overwatch.blockuser.request.CreateBlockUserRequest;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
@@ -180,7 +182,55 @@ public class BlockUserServiceTest {
         Assertions.assertThat(result).isNotNull();
     }
 
+    @Test
+    public void BlockUserService_CreateBlockUser_ThrowBadRequestException() {
+        CreateBlockUserRequest request = new CreateBlockUserRequest();
+        request.setBlockedUserId(blockedUser.getId());
+        request.setBlockerUserId(blockerUser.getId());
 
+        when(blockUserRepository.findByBlockedUserIdAndBlockerUserId(request.getBlockedUserId(),
+                request.getBlockerUserId())).thenReturn(true);
+
+        Assertions.assertThatThrownBy(() -> {
+            blockUserService.createBlockUser(request);
+        }).isInstanceOf(BadRequestException.class).hasMessage("You have already blocked this user");
+    }
+
+
+    @Test
+    public void BlockUserService_CreateBlockUser_ThrowNotFoundException() {
+        CreateBlockUserRequest request = new CreateBlockUserRequest();
+        request.setBlockedUserId(blockedUser.getId());
+        request.setBlockerUserId(blockerUser.getId());
+
+        when(blockUserRepository.findByBlockedUserIdAndBlockerUserId(request.getBlockedUserId(),
+                request.getBlockerUserId())).thenReturn(false);
+        when(userService.getUserById(request.getBlockedUserId())).thenReturn(blockedUser);
+        when(userService.getUserById(request.getBlockerUserId())).thenReturn(null);
+
+        Assertions.assertThatThrownBy(() -> {
+            blockUserService.createBlockUser(request);
+        }).isInstanceOf(NotFoundException.class)
+                .hasMessage("Could not find either blocked user or blocker user");
+    }
+
+    @Test
+    public void BlockUserService_CreateBlockUser_ReturnNothing() {
+        CreateBlockUserRequest request = new CreateBlockUserRequest();
+        request.setBlockedUserId(blockedUser.getId());
+        request.setBlockerUserId(blockerUser.getId());
+
+        when(blockUserRepository.findByBlockedUserIdAndBlockerUserId(request.getBlockedUserId(),
+                request.getBlockerUserId())).thenReturn(false);
+        when(userService.getUserById(request.getBlockedUserId())).thenReturn(blockedUser);
+        when(userService.getUserById(request.getBlockerUserId())).thenReturn(blockedUser);
+
+        when(blockUserRepository.save(any(BlockUser.class))).thenReturn(blockUser);
+
+        blockUserService.createBlockUser(request);
+
+        verify(blockUserRepository, times(1)).save(any(BlockUser.class));
+    }
 }
 
 
