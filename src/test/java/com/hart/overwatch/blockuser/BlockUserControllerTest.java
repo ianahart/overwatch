@@ -2,6 +2,7 @@ package com.hart.overwatch.blockuser;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.blockuser.dto.BlockUserDto;
+import com.hart.overwatch.blockuser.request.CreateBlockUserRequest;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
@@ -160,6 +161,21 @@ public class BlockUserControllerTest {
                         CoreMatchers.is((int) pageResult.getTotalElements())));
     }
 
+    @Test
+    public void BlockUserController_CreateBlockUser_ReturnCreateBlockUserResponse()
+            throws Exception {
+        CreateBlockUserRequest request = new CreateBlockUserRequest();
+        request.setBlockedUserId(blockedUser.getId());
+        request.setBlockerUserId(blockerUser.getId());
+
+        doNothing().when(blockUserService).createBlockUser(request);
+
+        ResultActions response =
+                mockMvc.perform(post("/api/v1/block-users").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+        response.andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
 
 }
 
