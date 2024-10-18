@@ -12,12 +12,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.hart.overwatch.profile.request.RemoveAvatarRequest;
 import com.hart.overwatch.profile.request.UpdateProfileRequest;
+import com.hart.overwatch.profile.request.UpdateProfileVisibilityRequest;
 import com.hart.overwatch.profile.request.UploadAvatarRequest;
 import com.hart.overwatch.profile.response.GetAllProfileResponse;
 import com.hart.overwatch.profile.response.GetFullProfileResponse;
 import com.hart.overwatch.profile.response.GetProfileResponse;
+import com.hart.overwatch.profile.response.GetProfileVisibilityResponse;
 import com.hart.overwatch.profile.response.RemoveAvatarResponse;
 import com.hart.overwatch.profile.response.UpdateProfileResponse;
+import com.hart.overwatch.profile.response.UpdateProfileVisibilityResponse;
 import com.hart.overwatch.profile.response.UploadAvatarResponse;
 
 @RestController
@@ -30,6 +33,15 @@ public class ProfileController {
     @Autowired
     public ProfileController(ProfileService profileService) {
         this.profileService = profileService;
+    }
+
+    @PatchMapping(path = "/{profileId}/visibility")
+    public ResponseEntity<UpdateProfileVisibilityResponse> updateProfileVisibility(
+            @RequestBody UpdateProfileVisibilityRequest request,
+            @PathVariable("profileId") Long profileId) {
+        return ResponseEntity.status(HttpStatus.OK).body(new UpdateProfileVisibilityResponse(
+                "success", profileService.updateProfileVisibility(request, profileId)));
+
     }
 
     @PatchMapping(path = "/{profileId}/avatar/remove")
@@ -62,6 +74,13 @@ public class ProfileController {
                 new GetProfileResponse("success", this.profileService.populateProfile(profileId)));
     }
 
+    @GetMapping(path = "/{profileId}/visibility")
+    public ResponseEntity<GetProfileVisibilityResponse> getProfileVisibility(
+            @PathVariable("profileId") Long profileId) {
+        return ResponseEntity.status(HttpStatus.OK).body(new GetProfileVisibilityResponse("success",
+                profileService.getProfileVisibility(profileId)));
+    }
+
     @GetMapping(path = "/{profileId}")
     public ResponseEntity<GetFullProfileResponse> getProfile(
             @PathVariable("profileId") Long profileId) {
@@ -79,6 +98,5 @@ public class ProfileController {
                 this.profileService.getAllProfiles(filterType, page, pageSize, direction)));
 
     }
-
 
 }

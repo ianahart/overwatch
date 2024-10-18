@@ -1674,6 +1674,24 @@ export interface IDeleteBlockedUserRequest {
   blockUserId: number;
 }
 
+export interface IUpdateProfileVisibilityRequest {
+  token: string;
+  isVisible: boolean;
+  profileId: number;
+}
+
+export interface IUpdateProfileVisibilityResponse {
+  message: string;
+  data: boolean;
+}
+
+export interface IFetchProfileVisibilityRequest {
+  token: string;
+  profileId: number;
+}
+
+export interface IFetchProfileVisibilityResponse extends IUpdateProfileVisibilityResponse {}
+
 export interface IDeleteBlockedUserResponse extends IBaseResponse {}
 
 export interface ICreateBlockedUserResponse extends IBaseResponse {}

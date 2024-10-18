@@ -107,6 +107,9 @@ public class Profile {
     @Column(name = "more_info", length = 300)
     private String moreInfo;
 
+    @Column(name = "is_visible")
+    private Boolean isVisible;
+
 
 
     @JsonIgnore
@@ -182,6 +185,10 @@ public class Profile {
 
     public Long getId() {
         return id;
+    }
+
+    public Boolean getIsVisible() {
+        return isVisible;
     }
 
     public List<Favorite> getFavorites() {
@@ -359,6 +366,10 @@ public class Profile {
 
     public void setFavorites(List<Favorite> favorites) {
         this.favorites = favorites;
+    }
+
+    public void setIsVisible(Boolean isVisible) {
+        this.isVisible = isVisible;
     }
 
 }

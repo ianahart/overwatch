@@ -8,16 +8,21 @@ import {
   IFetchFullProfileResponse,
   IFetchProfileRequest,
   IFetchProfileResponse,
+  IFetchProfileVisibilityRequest,
+  IFetchProfileVisibilityResponse,
   IRemoveAvatarRequest,
   IRemoveAvatarResponse,
   IUpdateProfileRequest,
   IUpdateProfileResponse,
+  IUpdateProfileVisibilityRequest,
+  IUpdateProfileVisibilityResponse,
 } from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
 const profilesApi = createApi({
   reducerPath: 'profiles',
   baseQuery: baseQueryWithReauth,
+  tagTypes: ['Profile'],
   endpoints(builder) {
     return {
       fetchAllProfile: builder.query<IFetchAllProfileResponse, IFetchAllProfileRequest>({
@@ -63,7 +68,7 @@ const profilesApi = createApi({
           };
         },
         // @ts-ignore
-        providesTags: ['Profile'],
+        providesTags: ['Profile', 'ProfileVisibility'],
       }),
       updateProfile: builder.mutation<IUpdateProfileResponse, IUpdateProfileRequest<object>>({
         query: ({ profileId, formData, token }) => {
@@ -103,11 +108,43 @@ const profilesApi = createApi({
           };
         },
       }),
+      updateProfileVisibility: builder.mutation<IUpdateProfileVisibilityResponse, IUpdateProfileVisibilityRequest>({
+        query: ({ profileId, isVisible, token }) => {
+          return {
+            url: `/profiles/${profileId}/visibility`,
+            method: 'PATCH',
+            body: { isVisible },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+        //@ts-ignore
+        invalidatesTags: (result, error, { profileId }) => [{ type: 'ProfileVisibility', id: profileId }],
+      }),
+      fetchProfileVisibility: builder.query<IFetchProfileVisibilityResponse, IFetchProfileVisibilityRequest>({
+        query: ({ token, profileId }) => {
+          if (profileId === 0 || profileId === undefined || !token) {
+            return '';
+          }
+          return {
+            url: `/profiles/${profileId}/visibility`,
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+        // @ts-ignore
+        providesTags: (result, error, { profileId }) => [{ type: 'ProfileVisibility', id: profileId }],
+      }),
     };
   },
 });
 
 export const {
+  useFetchProfileVisibilityQuery,
+  useUpdateProfileVisibilityMutation,
   useFetchAllProfileQuery,
   useLazyFetchAllProfileQuery,
   useFetchProfileQuery,
