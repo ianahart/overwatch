@@ -350,6 +350,8 @@ export {
   useDeleteUserMutation,
 } from './apis/usersApi';
 export {
+  useFetchProfileVisibilityQuery,
+  useUpdateProfileVisibilityMutation,
   useFetchAllProfileQuery,
   useLazyFetchAllProfileQuery,
   useFetchProfileQuery,

@@ -28,6 +28,7 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
                 JOIN profile p ON u.profile_id = p.id
                 JOIN location l ON u.id = l.user_id
                 WHERE u.role = 'REVIEWER'
+                AND p.is_visible = true
                   AND EXISTS (
                       SELECT 1
                       FROM jsonb_array_elements(p.programming_languages) AS lang
@@ -47,6 +48,7 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
                 JOIN profile p ON u.profile_id = p.id
                 JOIN location l ON u.id = l.user_id
                 WHERE u.role = 'REVIEWER'
+                 AND p.is_visible = true
             """,
             nativeQuery = true)
     Page<Map<String, Object>> getMostRecent(@Param("pageable") Pageable pageable);
@@ -62,6 +64,7 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
                 JOIN location l ON u.id = l.user_id
                 WHERE (LOWER(l.country) = :full OR LOWER(l.country) = :abbrev)
               AND u.role = 'REVIEWER'
+              AND p.is_visible = true
             """,
             nativeQuery = true)
     Page<Map<String, Object>> getDomestic(@Param("pageable") Pageable pageable,
@@ -78,6 +81,7 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
                 JOIN location l ON u.id = l.user_id
                 WHERE p.id IN :favoriteIds
                 AND u.role = 'REVIEWER'
+                AND p.is_visible = true
             """,
             nativeQuery = true)
     List<Map<String, Object>> getSaved(@Param("favoriteIds") List<Long> favoriteIds);

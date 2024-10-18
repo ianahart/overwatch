@@ -42,8 +42,10 @@ import com.hart.overwatch.profile.dto.WorkExpDto;
 import com.hart.overwatch.profile.dto.WorkExpsDto;
 import com.hart.overwatch.profile.request.RemoveAvatarRequest;
 import com.hart.overwatch.profile.request.UpdateProfileRequest;
+import com.hart.overwatch.profile.request.UpdateProfileVisibilityRequest;
 import com.hart.overwatch.profile.request.UploadAvatarRequest;
 import com.hart.overwatch.review.ReviewService;
+import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.util.MyUtil;
@@ -81,6 +83,7 @@ public class ProfileService {
 
     public Profile createProfile() {
         Profile profile = new Profile();
+        profile.setIsVisible(true);
 
         this.profileRepository.save(profile);
 
@@ -410,6 +413,25 @@ public class ProfileService {
 
     }
 
+    public Boolean updateProfileVisibility(UpdateProfileVisibilityRequest request, Long profileId) {
+        Boolean isVisible = request.getIsVisible();
+        Profile profile = getProfileById(profileId);
 
+        if (profile.getUser().getRole() != Role.REVIEWER) {
+            throw new BadRequestException("Only a reviewer can change their profile visibility");
+        }
+
+        profile.setIsVisible(isVisible);
+
+        profileRepository.save(profile);
+
+        return profile.getIsVisible();
+    }
+
+    public Boolean getProfileVisibility(Long profileId) {
+        Profile profile = getProfileById(profileId);
+
+        return profile.getIsVisible();
+    }
 
 }
