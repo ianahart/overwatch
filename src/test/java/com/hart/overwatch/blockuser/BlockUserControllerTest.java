@@ -1,6 +1,7 @@
 package com.hart.overwatch.blockuser;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.mockito.Mockito.*;
 import com.hart.overwatch.blockuser.dto.BlockUserDto;
 import com.hart.overwatch.blockuser.request.CreateBlockUserRequest;
 import com.hart.overwatch.config.JwtService;
@@ -35,6 +36,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import org.hamcrest.CoreMatchers;
 import java.time.LocalDateTime;
@@ -175,6 +177,24 @@ public class BlockUserControllerTest {
                         .content(objectMapper.writeValueAsString(request)));
         response.andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+
+        verify(blockUserService, times(1)).createBlockUser(any(CreateBlockUserRequest.class));
+    }
+
+    @Test
+    public void BlockUserController_DeleteBlockUser_ReturnDeleteBlockUserResponse()
+            throws Exception {
+        Long blockUserId = blockUser.getId();
+
+        doNothing().when(blockUserService).deleteBlockUser(blockUserId);
+
+        ResultActions response =
+                mockMvc.perform(delete(String.format("/api/v1/block-users/%d", blockUserId)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+
+        verify(blockUserService, times(1)).deleteBlockUser(blockUserId);
     }
 
 }
