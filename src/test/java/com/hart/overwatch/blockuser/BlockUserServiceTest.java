@@ -89,6 +89,8 @@ public class BlockUserServiceTest {
         blockUser.setBlockerUser(blockerUser);
 
         blockUser.setId(1L);
+
+        blockerUser.setBlockerUsers(List.of(blockUser));
     }
 
 
@@ -167,6 +169,15 @@ public class BlockUserServiceTest {
                 .isEqualTo(actualBlockUserDto.getAvatarUrl());
         Assertions.assertThat(actualBlockUserDto.getCreatedAt())
                 .isEqualTo(blockUserDto.getCreatedAt());
+    }
+
+    @Test
+    public void BlockUserService_GetCurUserBlockedByUser_ReturnBlockUser() {
+        when(userRepository.findUserWithBlockerUsers(blockerUser.getId())).thenReturn(blockerUser);
+
+        BlockUser result = blockUserService.getCurUserBlockedByUser(blockedUser.getId(), blockerUser.getId());
+
+        Assertions.assertThat(result).isNotNull();
     }
 
 
