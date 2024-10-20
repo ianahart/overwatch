@@ -66,6 +66,9 @@ public class Repository {
     @Column(name = "review_end_time")
     private LocalDateTime reviewEndTime;
 
+    @Column(name = "payment_price")
+    private Double paymentPrice;
+
     @Enumerated(EnumType.STRING)
     private ReviewType reviewType;
 
@@ -111,7 +114,7 @@ public class Repository {
 
     public Repository(String feedback, String comment, String avatarUrl, String repoUrl,
             String repoName, String language, RepositoryStatus status, User reviewer, User owner,
-            ReviewType reviewType) {
+            ReviewType reviewType, Double paymentPrice) {
         this.feedback = feedback;
         this.comment = comment;
         this.avatarUrl = avatarUrl;
@@ -122,10 +125,15 @@ public class Repository {
         this.reviewer = reviewer;
         this.owner = owner;
         this.reviewType = reviewType;
+        this.paymentPrice = paymentPrice;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public Double getPaymentPrice() {
+        return paymentPrice;
     }
 
     public ReviewType getReviewType() {
@@ -257,6 +265,10 @@ public class Repository {
 
     public void setReviewFeedbacks(List<ReviewFeedback> reviewFeedbacks) {
         this.reviewFeedbacks = reviewFeedbacks;
+    }
+
+    public void setPaymentPrice(Double paymentPrice) {
+        this.paymentPrice = paymentPrice;
     }
 
 }

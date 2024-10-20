@@ -8,10 +8,17 @@ import {
   useCreateUserRepositoryMutation,
   useFetchGitHubUserReposQuery,
   useLazyFetchGitHubUserReposQuery,
+  useLazyFetchProfilePackagesQuery,
 } from '../../../../../state/store';
 import { retrieveTokens } from '../../../../../util';
 import { IGitHubRepositoryPreview } from '../../../../../interfaces';
 import Repository from './Repository';
+import { nanoid } from 'nanoid';
+
+export interface IPackagePlan {
+  price: string;
+  plan: string;
+}
 
 const RepositoryList = () => {
   const navigate = useNavigate();
@@ -24,10 +31,30 @@ const RepositoryList = () => {
   const [nextPageUrl, setNextPageUrl] = useState('');
   const [error, setError] = useState('');
   const { data } = useFetchGitHubUserReposQuery({ token, accessToken, page });
+  const [packages, setPackages] = useState<IPackagePlan[]>([]);
+  const [selectedPackagePrice, setSelectedPackagePrice] = useState('');
   const [paginateRepositories] = useLazyFetchGitHubUserReposQuery();
+  const [getProfilePackages] = useLazyFetchProfilePackagesQuery();
   const [createUserRepository] = useCreateUserRepositoryMutation();
   const { selectedReviewer } = useSelector((store: TRootState) => store.addReview);
   const { user } = useSelector((store: TRootState) => store.user);
+
+  useEffect(() => {
+    getProfilePackages({ userId: selectedReviewer.receiverId, token })
+      .unwrap()
+      .then((res) => {
+        const plans = ['basic', 'standard', 'pro'];
+
+        setPackages(
+          [...Object.values(res.data)].map((pckge, index) => {
+            return { price: pckge.price, plan: plans[index] };
+          })
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [selectedReviewer.id, token]);
 
   const reviewTypes = [
     { id: 1, name: 'Bug-fixes', value: 'BUG' },
@@ -74,7 +101,13 @@ const RepositoryList = () => {
         comment,
         language,
         reviewType,
+        paymentPrice: Number.parseFloat(selectedPackagePrice),
       };
+
+      if (!selectedPackagePrice.length) {
+        setError('Please select a package plan to continue');
+        return;
+      }
 
       if (!reviewType.length) {
         setError('Please select the type of review you are requesting for');
@@ -83,15 +116,22 @@ const RepositoryList = () => {
 
       createUserRepository({ payload, token })
         .unwrap()
-        .then((res) => {
-          console.log(res);
+        .then(() => {
           navigate(`/dashboard/${user.slug}/user/reviews`);
         })
         .catch((err) => {
           applyServerErrors(err.data);
         });
     },
-    [selectedReviewer.receiverId, reviewType, navigate, comment, createUserRepository, applyServerErrors]
+    [
+      selectedReviewer.receiverId,
+      reviewType,
+      navigate,
+      comment,
+      createUserRepository,
+      applyServerErrors,
+      selectedPackagePrice,
+    ]
   );
 
   return (
@@ -134,7 +174,26 @@ const RepositoryList = () => {
           className="text-sm p-1 w-full bg-transparent border-gray-800 border rounded min-h-20 resize-none"
         ></textarea>
       </div>
-
+      <div className="my-8">
+        <p className="text-sm">What plan do you want?</p>
+        <p className="text-xs mb-2">(Refer to their profile for details)</p>
+        <select
+          onChange={(e) => setSelectedPackagePrice(e.target.value)}
+          value={selectedPackagePrice}
+          className="w-full bg-transparent border border-gray-800 p-1"
+        >
+          <option value="" disabled>
+            Select package plan
+          </option>
+          {packages.map((pckge) => {
+            return (
+              <option key={nanoid()} value={pckge.price}>
+                {pckge.plan}-${pckge.price}
+              </option>
+            );
+          })}
+        </select>
+      </div>
       <div className="my-1">
         <p className="text-gray-400">Click on a repository to request a review.</p>
       </div>

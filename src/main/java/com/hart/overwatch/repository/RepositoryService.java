@@ -82,10 +82,11 @@ public class RepositoryService {
 
         String feedback = "";
 
-        Repository repository = new Repository(feedback,
-                Jsoup.clean(request.getComment(), Safelist.none()), request.getAvatarUrl(),
-                request.getRepoUrl(), request.getRepoName(), request.getLanguage(),
-                RepositoryStatus.INCOMPLETE, reviewer, owner, request.getReviewType());
+        Repository repository =
+                new Repository(feedback, Jsoup.clean(request.getComment(), Safelist.none()),
+                        request.getAvatarUrl(), request.getRepoUrl(), request.getRepoName(),
+                        request.getLanguage(), RepositoryStatus.INCOMPLETE, reviewer, owner,
+                        request.getReviewType(), request.getPaymentPrice());
 
         this.repositoryRepository.save(repository);
 
