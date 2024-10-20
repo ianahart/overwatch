@@ -798,6 +798,16 @@ export interface IUserProfileResponse {
   city: string;
 }
 
+export interface IFetchProfilePackageResponse {
+  message: string;
+  data: IPckgResponse;
+}
+
+export interface IFetchProfilePackageRequest {
+  token: string;
+  userId: number;
+}
+
 export interface IFetchProfileResponse {
   message: string;
   data: {
@@ -1129,6 +1139,7 @@ export interface ICreateUserRepositoryRequest {
     comment: string;
     language: string;
     reviewType: string;
+    paymentPrice: number;
   };
 }
 

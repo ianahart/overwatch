@@ -6,6 +6,8 @@ import {
   IFetchAllProfileResponse,
   IFetchFullProfileRequest,
   IFetchFullProfileResponse,
+  IFetchProfilePackageRequest,
+  IFetchProfilePackageResponse,
   IFetchProfileRequest,
   IFetchProfileResponse,
   IFetchProfileVisibilityRequest,
@@ -25,6 +27,22 @@ const profilesApi = createApi({
   tagTypes: ['Profile'],
   endpoints(builder) {
     return {
+      fetchProfilePackages: builder.query<IFetchProfilePackageResponse, IFetchProfilePackageRequest>({
+        query: ({ token, userId }) => {
+          if (userId === 0 || userId === undefined || token === '' || !token) {
+            return '';
+          }
+          return {
+            url: `/profiles/packages?userId=${userId}`,
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+        // @ts-ignore
+        providesTags: ['Profile'],
+      }),
       fetchAllProfile: builder.query<IFetchAllProfileResponse, IFetchAllProfileRequest>({
         query: ({ token, page, pageSize, direction, filter }) => {
           if (!token) {
@@ -143,6 +161,7 @@ const profilesApi = createApi({
 });
 
 export const {
+  useLazyFetchProfilePackagesQuery,
   useFetchProfileVisibilityQuery,
   useUpdateProfileVisibilityMutation,
   useFetchAllProfileQuery,

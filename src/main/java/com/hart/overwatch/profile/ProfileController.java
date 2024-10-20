@@ -16,6 +16,7 @@ import com.hart.overwatch.profile.request.UpdateProfileVisibilityRequest;
 import com.hart.overwatch.profile.request.UploadAvatarRequest;
 import com.hart.overwatch.profile.response.GetAllProfileResponse;
 import com.hart.overwatch.profile.response.GetFullProfileResponse;
+import com.hart.overwatch.profile.response.GetProfilePackageResponse;
 import com.hart.overwatch.profile.response.GetProfileResponse;
 import com.hart.overwatch.profile.response.GetProfileVisibilityResponse;
 import com.hart.overwatch.profile.response.RemoveAvatarResponse;
@@ -79,6 +80,13 @@ public class ProfileController {
             @PathVariable("profileId") Long profileId) {
         return ResponseEntity.status(HttpStatus.OK).body(new GetProfileVisibilityResponse("success",
                 profileService.getProfileVisibility(profileId)));
+    }
+
+    @GetMapping(path = "/packages")
+    public ResponseEntity<GetProfilePackageResponse> getProfilePackages(
+            @RequestParam("userId") Long userId) {
+        return ResponseEntity.status(HttpStatus.OK).body(new GetProfilePackageResponse("success",
+                profileService.getProfilePackages(userId)));
     }
 
     @GetMapping(path = "/{profileId}")

@@ -17,6 +17,12 @@ export const repositoryState = {
   reviewType: '',
 };
 
+export const pckgsState = {
+  basic: { price: '', description: '', items: [] },
+  pro: { price: '', description: '', items: [] },
+  standard: { price: '', description: '', items: [] },
+};
+
 export const labelColors = [
   { id: 1, background: '#F1C93B' },
   { id: 2, background: '#1A5D1A' },

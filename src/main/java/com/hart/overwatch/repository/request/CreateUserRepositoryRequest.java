@@ -1,6 +1,7 @@
 package com.hart.overwatch.repository.request;
 
 import com.hart.overwatch.repository.ReviewType;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class CreateUserRepositoryRequest {
@@ -19,6 +20,9 @@ public class CreateUserRepositoryRequest {
 
     private ReviewType reviewType;
 
+    @NotNull
+    private Double paymentPrice;
+
     @Size(max = 500, message = "Comment must be under 500 characters")
     private String comment;
 
@@ -29,7 +33,7 @@ public class CreateUserRepositoryRequest {
 
     public CreateUserRepositoryRequest(Long reviewerId, Long ownerId, String repoName,
             String repoUrl, String avatarUrl, String comment, String language,
-            ReviewType reviewType) {
+            ReviewType reviewType, Double paymentPrice) {
         this.reviewerId = reviewerId;
         this.ownerId = ownerId;
         this.repoName = repoName;
@@ -38,10 +42,15 @@ public class CreateUserRepositoryRequest {
         this.comment = comment;
         this.language = language;
         this.reviewType = reviewType;
+        this.paymentPrice = paymentPrice;
     }
 
     public String getLanguage() {
         return language;
+    }
+
+    public Double getPaymentPrice() {
+        return paymentPrice;
     }
 
     public ReviewType getReviewType() {
@@ -102,5 +111,9 @@ public class CreateUserRepositoryRequest {
 
     public void setReviewType(ReviewType reviewType) {
         this.reviewType = reviewType;
+    }
+
+    public void setPaymentPrice(Double paymentPrice) {
+        this.paymentPrice = paymentPrice;
     }
 }

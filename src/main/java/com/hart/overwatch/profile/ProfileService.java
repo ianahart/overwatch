@@ -183,6 +183,16 @@ public class ProfileService {
 
     }
 
+    public PackagesDto getProfilePackages(Long userId) {
+
+        if (userId == null) {
+            throw new BadRequestException("Something went wrong please try again.");
+        }
+        User user = userService.getUserById(userId);
+        Profile profile = getProfileById(user.getProfile().getId());
+        return new PackagesDto(profile.getBasic(), profile.getStandard(), profile.getPro());
+    }
+
     public ProfileDto populateProfile(Long profileId) {
         Profile profile = getProfileById(profileId);
 
