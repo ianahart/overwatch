@@ -7,8 +7,11 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import com.hart.overwatch.chatmessage.ChatMessageSubscriber;
+import com.hart.overwatch.email.request.EmailRequest;
 import org.springframework.data.redis.core.RedisTemplate;
 
 @Configuration
@@ -39,5 +42,15 @@ public class RedisConfig {
     @Bean
     MessageListenerAdapter listenerAdapter(ChatMessageSubscriber receiver) {
         return new MessageListenerAdapter(receiver, "receiveMessage");
+    }
+
+    @Bean
+    public RedisTemplate<String, EmailRequest> emailRedisTemplate() {
+        RedisTemplate<String, EmailRequest> template = new RedisTemplate<>();
+        template.setConnectionFactory(redisConnectionFactory());
+
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        return template;
     }
 }
