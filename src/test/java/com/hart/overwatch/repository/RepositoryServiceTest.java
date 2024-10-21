@@ -182,6 +182,7 @@ public class RepositoryServiceTest {
         request.setAvatarUrl(repository.getAvatarUrl());
         request.setComment(repository.getComment());
         request.setLanguage(repository.getLanguage());
+        request.setPaymentPrice(0.00);
         when(repositoryRepository.repositoryAlreadyInReview(request.getOwnerId(),
                 request.getReviewerId(), request.getRepoName())).thenReturn(true);
 

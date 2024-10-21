@@ -192,6 +192,7 @@ public class RepositoryControllerTest {
         request.setRepoUrl(repository.getRepoUrl());
         request.setComment(repository.getComment());
         request.setLanguage(repository.getLanguage());
+        request.setPaymentPrice(0.00);
 
         doNothing().when(repositoryService).handleCreateUserRepository(request);
 
