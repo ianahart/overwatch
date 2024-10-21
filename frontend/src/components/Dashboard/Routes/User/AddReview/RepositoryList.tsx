@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -37,6 +37,7 @@ const RepositoryList = () => {
   const [getProfilePackages] = useLazyFetchProfilePackagesQuery();
   const [createUserRepository] = useCreateUserRepositoryMutation();
   const { selectedReviewer } = useSelector((store: TRootState) => store.addReview);
+  const [selectedRepository, setSelectedRepository] = useState<IGitHubRepositoryPreview | null>(null);
   const { user } = useSelector((store: TRootState) => store.user);
 
   useEffect(() => {
@@ -89,50 +90,46 @@ const RepositoryList = () => {
     }
   };
 
-  const addReview = useCallback(
-    (repoName: string, repoUrl: string, avatarUrl: string, language: string) => {
-      setError('');
-      const payload = {
-        reviewerId: selectedReviewer.receiverId,
-        ownerId: user.id,
-        repoName,
-        repoUrl,
-        avatarUrl,
-        comment,
-        language,
-        reviewType,
-        paymentPrice: Number.parseFloat(selectedPackagePrice),
-      };
-
-      if (!selectedPackagePrice.length) {
-        setError('Please select a package plan to continue');
-        return;
-      }
-
-      if (!reviewType.length) {
-        setError('Please select the type of review you are requesting for');
-        return;
-      }
-
-      createUserRepository({ payload, token })
-        .unwrap()
-        .then(() => {
-          navigate(`/dashboard/${user.slug}/user/reviews`);
-        })
-        .catch((err) => {
-          applyServerErrors(err.data);
-        });
-    },
-    [
-      selectedReviewer.receiverId,
-      reviewType,
-      navigate,
+  const addReview = (): void => {
+    setError('');
+    if (selectedRepository === null) {
+      return;
+    }
+    const payload = {
+      reviewerId: selectedReviewer.receiverId,
+      ownerId: user.id,
+      repoName: selectedRepository.fullName,
+      repoUrl: selectedRepository.htmlUrl,
+      avatarUrl: selectedRepository.avatarUrl,
       comment,
-      createUserRepository,
-      applyServerErrors,
-      selectedPackagePrice,
-    ]
-  );
+      language: selectedRepository.language,
+      reviewType,
+      paymentPrice: Number.parseFloat(selectedPackagePrice),
+    };
+
+    if (!selectedPackagePrice.length) {
+      setError('Please select a package plan to continue');
+      return;
+    }
+
+    if (!reviewType.length) {
+      setError('Please select the type of review you are requesting for');
+      return;
+    }
+
+    createUserRepository({ payload, token })
+      .unwrap()
+      .then(() => {
+        navigate(`/dashboard/${user.slug}/user/reviews`);
+      })
+      .catch((err) => {
+        applyServerErrors(err.data);
+      });
+  };
+
+  const selectRepository = (repository: IGitHubRepositoryPreview | null): void => {
+    setSelectedRepository(repository);
+  };
 
   return (
     <>
@@ -199,13 +196,30 @@ const RepositoryList = () => {
       </div>
       <div className="overflow-scroll overflow-y-auto overflow-x-hidden h-[300px]">
         {repositories.map((repository) => {
-          return <Repository key={repository.id} data={repository} addReview={addReview} />;
+          return <Repository key={repository.id} data={repository} selectRepository={selectRepository} />;
         })}
         {nextPageUrl.length > 0 && (
           <div className="flex justify-center">
             <button onClick={handleOnClickMore}>More repositories...</button>
           </div>
         )}
+      </div>
+      {selectedPackagePrice.length > 0 && selectedRepository !== null && (
+        <div className="my-8">
+          <p className="text-sm mb-2">
+            You have selected <span className="font-bold text-green-400">{selectedRepository?.fullName}</span> as the
+            repository you want reviewed
+          </p>
+          <p className="text-sm">
+            You will be charged <span className="font-bold text-green-400">${selectedPackagePrice}</span> once the
+            review is completed
+          </p>
+        </div>
+      )}
+      <div className="my-8">
+        <button onClick={addReview} className="btn w-full">
+          Submit
+        </button>
       </div>
     </>
   );
