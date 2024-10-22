@@ -1,6 +1,11 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface IFormTopicTag {
+  id: string;
+  name: string;
+}
+
 export interface INotificationSwitch {
   name: string;
   displayName: string;

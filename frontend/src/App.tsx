@@ -44,6 +44,7 @@ import RequireAuthReviewer from './components/Guard/RequireAuthReviewer';
 import WorkSpaceContainerRoute from './routes/Dashboard/Reviewer/WorkSpaceContainerRoute';
 import WorkSpaceRoute from './routes/Dashboard/Reviewer/WorkSpaceRoute';
 import ReviewFeedbackRoute from './components/Dashboard/Routes/User/Reviews/ReviewFeedbackRoute';
+import CreateCommunityTopicRoute from './routes/CreateCommunityTopicRoute';
 import NotFoundRoute from './routes/NotFoundRoute';
 
 const router = createBrowserRouter(
@@ -66,7 +67,14 @@ const router = createBrowserRouter(
           </RequireAuth>
         }
       />
-
+      <Route
+        path="community/create-topic"
+        element={
+          <RequireAuth>
+            <CreateCommunityTopicRoute />
+          </RequireAuth>
+        }
+      />
       <Route
         path="/reviewer/repositories/:id"
         element={

@@ -1,11 +1,14 @@
 package com.hart.overwatch.tag;
 
+import java.util.List;
+import com.hart.overwatch.topic.Topic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Table;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.SequenceGenerator;
 
 @Entity
@@ -20,6 +23,9 @@ public class Tag {
 
     @Column(name = "name", length = 100, nullable = false)
     private String name;
+
+    @ManyToMany(mappedBy = "tags")
+    private List<Topic> topics;
 
 
     public Tag() {
@@ -39,6 +45,10 @@ public class Tag {
         return name;
     }
 
+    public List<Topic> getTopics() {
+        return topics;
+    }
+
     public Long getId() {
         return id;
     }
@@ -49,6 +59,10 @@ public class Tag {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setTopics(List<Topic> topics) {
+        this.topics = topics;
     }
 
 
