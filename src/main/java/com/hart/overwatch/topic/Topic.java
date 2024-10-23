@@ -1,6 +1,7 @@
 package com.hart.overwatch.topic;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import com.hart.overwatch.comment.Comment;
@@ -41,7 +42,8 @@ public class Topic {
     @Column(name = "description", length = 250, nullable = false)
     private String description;
 
-    @Column(name = "search_vector", columnDefinition = "tsvector")
+    @Column(name = "search_vector", insertable = false, updatable = false,
+            columnDefinition = "tsvector")
     private String searchVector;
 
     @ManyToOne
@@ -56,7 +58,7 @@ public class Topic {
     @ManyToMany
     @JoinTable(name = "topic_tags", joinColumns = @JoinColumn(name = "topic_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
-    private List<Tag> tags;
+    private List<Tag> tags = new ArrayList<>();
 
 
     public Topic() {
@@ -82,6 +84,14 @@ public class Topic {
 
     public User getUser() {
         return user;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
     }
 
     public String getTitle() {
@@ -122,5 +132,13 @@ public class Topic {
 
     public void setSearchVector(String searchVector) {
         this.searchVector = searchVector;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }

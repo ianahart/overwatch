@@ -16,7 +16,7 @@ const CreateCommunityTagItem = ({ tag, removeTag }: ICreateCommunityTagItemProps
       <div onClick={handleOnClick} className="absolute top-0 right-0 z-10">
         <AiOutlineCloseCircle className="text-black cursor-pointer" />
       </div>
-      <p className="text-black">#{tag.name}</p>
+      <p className="text-black break-all">#{tag.name}</p>
     </div>
   );
 };

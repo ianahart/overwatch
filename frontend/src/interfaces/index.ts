@@ -1706,6 +1706,16 @@ export interface IFetchProfileVisibilityRequest {
   profileId: number;
 }
 
+export interface ICreateTopicRequest {
+  title: string;
+  description: string;
+  tags: string[];
+  userId: number;
+  token: string;
+}
+
+export interface ICreateTopicResponse extends IBaseResponse {}
+
 export interface IFetchProfileVisibilityResponse extends IUpdateProfileVisibilityResponse {}
 
 export interface IDeleteBlockedUserResponse extends IBaseResponse {}

@@ -1,11 +1,20 @@
 import { useState } from 'react';
-import { IFormTopicTag } from '../../interfaces';
+import { useSelector } from 'react-redux';
 import { nanoid } from 'nanoid';
+import { useNavigate } from 'react-router-dom';
+
+import { IError, IFormTopicTag } from '../../interfaces';
 import CreateCommunityTagItem from './CreateCommunityTagItem';
+import { TRootState, useCreateTopicMutation } from '../../state/store';
 
 const CreateCommunity = () => {
+  const { user, token } = useSelector((store: TRootState) => store.user);
+  const [createTopicMut] = useCreateTopicMutation();
+  const navigate = useNavigate();
   const MAX_TAGS = 5;
+  const MAX_TAG_LENGTH = 50;
   const [error, setError] = useState('');
+  const [serverErrors, setServerErrors] = useState<string[]>([]);
   const [title, setTitle] = useState('');
   const [currentTag, setCurrentTag] = useState('');
   const [description, setDescription] = useState('');
@@ -17,8 +26,8 @@ const CreateCommunity = () => {
       return;
     }
 
-    if (currentTag.trim().length === 0) {
-      setError('A tag cannot be empty');
+    if (currentTag.trim().length === 0 || currentTag.length > MAX_TAG_LENGTH) {
+      setError('A tag cannot be empty and must be under 50 characters');
       return;
     }
 
@@ -38,10 +47,42 @@ const CreateCommunity = () => {
     setTags((prevState) => prevState.filter((tag) => tag.id !== id));
   };
 
+  const applyServerErrors = <T extends IError>(errors: T) => {
+    for (let prop in errors) {
+      setServerErrors((prevState) => [...prevState, errors[prop]]);
+    }
+  };
+
+  const createTopic = () => {
+    const tagNames = tags.map((tag) => tag.name);
+    const payload = { title, description, tags: tagNames, userId: user.id, token };
+    createTopicMut(payload)
+      .unwrap()
+      .then(() => {
+        navigate('/community');
+      })
+      .catch((err) => {
+        applyServerErrors(err.data);
+      });
+  };
+
   const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
 
     setError('');
+    setServerErrors([]);
+
+    if (tags.length === 0) {
+      setError('Please add at least one tag for this topic');
+      return;
+    }
+
+    if ([title, description].some((field) => field.trim().length === 0)) {
+      setError('Please make sure to fill out all fields');
+      return;
+    }
+
+    createTopic();
   };
 
   return (
@@ -100,8 +141,19 @@ const CreateCommunity = () => {
               })}
             </div>
           </div>
+          {serverErrors.length > 0 && (
+            <div className="my-4 flex flex-col items-center">
+              {serverErrors.map((serverError) => {
+                return (
+                  <p key={nanoid()} className="text-sm text-red-300">
+                    {serverError}
+                  </p>
+                );
+              })}
+            </div>
+          )}
           <div className="my-4 flex justify-center">
-            <button type="button" className="btn w-full">
+            <button type="submit" className="btn w-full">
               Create
             </button>
           </div>
