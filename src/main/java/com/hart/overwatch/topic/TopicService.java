@@ -1,14 +1,18 @@
 package com.hart.overwatch.topic;
 
+import java.util.List;
+import java.util.ArrayList;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.hart.overwatch.topic.dto.TopicDto;
 import com.hart.overwatch.topic.request.CreateTopicRequest;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.tag.dto.TagDto;
 
 @Service
 public class TopicService {
@@ -51,5 +55,31 @@ public class TopicService {
         topicRepository.save(topic);
 
         return topic;
+    }
+
+    private List<TopicDto> convertToDto(List<Topic> topics) {
+        List<TopicDto> topicDtos = new ArrayList<>();
+
+        for (Topic topic : topics) {
+            TopicDto topicDto = new TopicDto();
+            topicDto.setId(topic.getId());
+            topicDto.setTitle(topic.getTitle());
+            topicDto.setDescription(topic.getDescription());
+            List<TagDto> tagDtos = topic.getTags().stream()
+                    .map(tag -> new TagDto(tag.getId(), tag.getName())).toList();
+            topicDto.setTags(tagDtos);
+            topicDtos.add(topicDto);
+        }
+        return topicDtos;
+    }
+
+    public List<TopicDto> searchTopics(String query) {
+        if (query == null || query.length() == 0) {
+            throw new BadRequestException("Please provide a search term");
+        }
+
+        String fuzzyQuery = query.toLowerCase() + ":*";
+
+        return convertToDto(topicRepository.searchTopics(fuzzyQuery.toLowerCase()));
     }
 }

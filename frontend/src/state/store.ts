@@ -506,7 +506,7 @@ export {
   useDeleteBlockedUserMutation,
 } from './apis/blockedUsersApi';
 
-export { useCreateTopicMutation } from './apis/topicsApi';
+export { useLazyFetchTopicsQuery, useCreateTopicMutation } from './apis/topicsApi';
 
 export {
   testimonialsApi,

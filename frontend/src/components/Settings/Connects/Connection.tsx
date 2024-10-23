@@ -109,7 +109,7 @@ const Connection = ({ connection, changeConnection, isPinned, unPin, pin, blockU
       <div>
         <p className="text-xs flex items-center">
           {connection.lastMessage.length > 0 && <FaLongArrowAltRight className="mr-1 text-gray-500" />}
-          {shortenString(connection.lastMessage ? connection.lastMessage : '')}
+          {shortenString(connection.lastMessage ? connection.lastMessage : '', 5)}
         </p>
       </div>
     </div>
