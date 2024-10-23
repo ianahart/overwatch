@@ -1,6 +1,23 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface ITag {
+  id: number;
+  name: string;
+}
+
+export interface IFormTopicTag {
+  id: string;
+  name: string;
+}
+
+export interface ITopic {
+  id: number;
+  title: string;
+  description: string;
+  tags: ITag[];
+}
+
 export interface INotificationSwitch {
   name: string;
   displayName: string;
@@ -1700,6 +1717,25 @@ export interface IFetchProfileVisibilityRequest {
   token: string;
   profileId: number;
 }
+
+export interface ICreateTopicRequest {
+  title: string;
+  description: string;
+  tags: string[];
+  userId: number;
+  token: string;
+}
+
+export interface IGetTopicsRequest {
+  query: string;
+}
+
+export interface IGetTopicsResponse {
+  message: string;
+  data: ITopic[];
+}
+
+export interface ICreateTopicResponse extends IBaseResponse {}
 
 export interface IFetchProfileVisibilityResponse extends IUpdateProfileVisibilityResponse {}
 

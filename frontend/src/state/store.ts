@@ -138,6 +138,7 @@ import { dropDownOptionsApi } from './apis/dropDownOptionsApi';
 import { reviewFeedbacksApi } from './apis/reviewFeedbacksApi';
 import { statisticsApi } from './apis/statisticsApi';
 import { blockedUsersApi } from './apis/blockedUsersApi';
+import { topicsApi } from './apis/topicsApi';
 
 export const store = configureStore({
   reducer: {
@@ -189,6 +190,7 @@ export const store = configureStore({
     [reviewFeedbacksApi.reducerPath]: reviewFeedbacksApi.reducer,
     [statisticsApi.reducerPath]: statisticsApi.reducer,
     [blockedUsersApi.reducerPath]: blockedUsersApi.reducer,
+    [topicsApi.reducerPath]: topicsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -227,7 +229,8 @@ export const store = configureStore({
       .concat(dropDownOptionsApi.middleware)
       .concat(reviewFeedbacksApi.middleware)
       .concat(statisticsApi.middleware)
-      .concat(blockedUsersApi.middleware);
+      .concat(blockedUsersApi.middleware)
+      .concat(topicsApi.middleware);
   },
 });
 
@@ -503,6 +506,8 @@ export {
   useDeleteBlockedUserMutation,
 } from './apis/blockedUsersApi';
 
+export { useLazyFetchTopicsQuery, useCreateTopicMutation } from './apis/topicsApi';
+
 export {
   testimonialsApi,
   authsApi,
@@ -529,4 +534,5 @@ export {
   reviewFeedbacksApi,
   statisticsApi,
   blockedUsersApi,
+  topicsApi,
 };

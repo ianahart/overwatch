@@ -38,11 +38,11 @@ export const maskEmail = (email: string) => {
   return mask;
 };
 
-export const shortenString = (str: string) => {
+export const shortenString = (str: string, size: number) => {
   if (str.length === 0) {
     return '';
   }
-  return str.split(' ').slice(0, 5).join(' ') + '...';
+  return str.split(' ').slice(0, size).join(' ') + '...';
 };
 
 export const addDays = (date: Date, days: number) => {

@@ -1,5 +1,7 @@
+import Community from '../components/Community';
+
 const CommunityRoute = () => {
-  return <h1>Community Route</h1>;
+  return <Community />;
 };
 
 export default CommunityRoute;

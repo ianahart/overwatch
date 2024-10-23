@@ -13,6 +13,7 @@ import com.hart.overwatch.blockuser.BlockUser;
 import com.hart.overwatch.chatmessage.ChatMessage;
 import com.hart.overwatch.checklist.CheckList;
 import com.hart.overwatch.checklistitem.CheckListItem;
+import com.hart.overwatch.comment.Comment;
 import com.hart.overwatch.connection.Connection;
 import com.hart.overwatch.connectionpin.ConnectionPin;
 import com.hart.overwatch.customfield.CustomField;
@@ -33,6 +34,7 @@ import com.hart.overwatch.testimonial.Testimonial;
 import com.hart.overwatch.todocard.TodoCard;
 import com.hart.overwatch.todolist.TodoList;
 import com.hart.overwatch.token.Token;
+import com.hart.overwatch.topic.Topic;
 import com.hart.overwatch.workspace.WorkSpace;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -227,6 +229,14 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<BlockUser> blockerUsers;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Topic> topics;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Comment> comments;
+
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "setting_id", referencedColumnName = "id")
@@ -286,12 +296,20 @@ public class User implements UserDetails {
         return blockedUsers;
     }
 
+    public List<Comment> getComments() {
+        return comments;
+    }
+
     public List<BlockUser> getBlockerUsers() {
         return blockerUsers;
     }
 
     public List<CheckList> getCheckLists() {
         return checkLists;
+    }
+
+    public List<Topic> getTopics() {
+        return topics;
     }
 
     public LocalDateTime getLastActive() {
@@ -464,6 +482,10 @@ public class User implements UserDetails {
 
     public void setCheckLists(List<CheckList> checkLists) {
         this.checkLists = checkLists;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
     public void setTodoLists(List<TodoList> todoLists) {
@@ -644,6 +666,10 @@ public class User implements UserDetails {
 
     public void setActivities(List<Activity> activities) {
         this.activities = activities;
+    }
+
+    public void setTopics(List<Topic> topics) {
+        this.topics = topics;
     }
 
     public String getUsername() {
