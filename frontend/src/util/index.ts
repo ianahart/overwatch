@@ -56,3 +56,10 @@ export const addMonths = (date: Date, months: number) => {
   newDate.setMonth(date.getMonth() + months);
   return newDate;
 };
+
+export const initializeName = (firstName: string, lastName: string): string => {
+  if (!firstName || !lastName) {
+    return '?.?';
+  }
+  return firstName.slice(0, 1).toUpperCase() + '.' + lastName.slice(0, 1).toUpperCase();
+};

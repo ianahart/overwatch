@@ -7,7 +7,7 @@ export interface ITopicDetailsDescriptionProps {
 
 const TopicDetailsDescription = ({ tags, description }: ITopicDetailsDescriptionProps) => {
   return (
-    <div className="my-4 max-w-[600px]">
+    <div className="my-4 mx-auto w-full flex items-center flex-col">
       <p className="leading-7">{description}</p>
       <div className="my-4 flex flex-wrap">
         {tags.map((tag) => {

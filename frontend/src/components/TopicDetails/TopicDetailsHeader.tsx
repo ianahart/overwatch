@@ -4,7 +4,7 @@ export interface ITopicDetailsHeaderProps {
 
 const TopicDetailsHeader = ({ title }: ITopicDetailsHeaderProps) => {
   return (
-    <header className="flex">
+    <header className="flex justify-start">
       <h2 className="text-3xl text-gray-400">{title}</h2>
     </header>
   );
