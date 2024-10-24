@@ -31,7 +31,7 @@ public class PaginationService {
 
     public Pageable getSortedPageable(int page, int pageSize, String direction, String order) {
         int currentPage = paginate(page, direction);
-        Sort sortOrder = order.equals("desc") ? Sort.by("createdAt").descending()
+        Sort sortOrder = order.toLowerCase().equals("desc") ? Sort.by("createdAt").descending()
                 : Sort.by("createdAt").ascending();
 
         return PageRequest.of(currentPage, pageSize, sortOrder);

@@ -1,6 +1,15 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface IComment {
+  id: number;
+  content: string;
+  userId: number;
+  createdAt: string;
+  avatarUrl: string;
+  fullName: string;
+}
+
 export interface ITag {
   id: number;
   name: string;
@@ -1749,6 +1758,26 @@ export interface ICreateCommentRequest {
   userId: number;
   topicId: number;
   content: string;
+}
+
+export interface IGetCommentsRequest {
+  topicId: number;
+  page: number;
+  pageSize: number;
+  direction: string;
+  sort: string;
+}
+
+export interface IGetCommentsResponse {
+  message: string;
+  data: {
+    items: IComment[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
 }
 
 export interface ICreateCommentResponse extends IBaseResponse {}
