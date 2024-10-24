@@ -1,5 +1,12 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { ICreateTopicRequest, ICreateTopicResponse, IGetTopicsRequest, IGetTopicsResponse } from '../../interfaces';
+import {
+  ICreateTopicRequest,
+  ICreateTopicResponse,
+  IGetTopicRequest,
+  IGetTopicResponse,
+  IGetTopicsRequest,
+  IGetTopicsResponse,
+} from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
 const topicsApi = createApi({
@@ -8,6 +15,20 @@ const topicsApi = createApi({
   tagTypes: ['Topic'],
   endpoints(builder) {
     return {
+      fetchTopic: builder.query<IGetTopicResponse, IGetTopicRequest>({
+        query: ({ topicId }) => {
+          if (topicId === 0 || topicId === undefined) {
+            return '';
+          }
+          return {
+            url: `/topics/${topicId}`,
+            method: 'GET',
+            headers: {},
+          };
+        },
+        providesTags: (result, _, arg) => (result ? [{ type: 'Topic', id: arg.topicId }] : []),
+      }),
+
       fetchTopics: builder.query<IGetTopicsResponse, IGetTopicsRequest>({
         query: ({ query }) => {
           return {
@@ -38,5 +59,5 @@ const topicsApi = createApi({
     };
   },
 });
-export const { useCreateTopicMutation, useLazyFetchTopicsQuery } = topicsApi;
+export const { useCreateTopicMutation, useLazyFetchTopicsQuery, useFetchTopicQuery } = topicsApi;
 export { topicsApi };

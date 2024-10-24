@@ -2,6 +2,7 @@ package com.hart.overwatch.topic;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,20 +58,17 @@ public class TopicService {
         return topic;
     }
 
-    private List<TopicDto> convertToDto(List<Topic> topics) {
-        List<TopicDto> topicDtos = new ArrayList<>();
+    private TopicDto convertToDto(Topic topic) {
+        TopicDto topicDto = new TopicDto();
 
-        for (Topic topic : topics) {
-            TopicDto topicDto = new TopicDto();
-            topicDto.setId(topic.getId());
-            topicDto.setTitle(topic.getTitle());
-            topicDto.setDescription(topic.getDescription());
-            List<TagDto> tagDtos = topic.getTags().stream()
-                    .map(tag -> new TagDto(tag.getId(), tag.getName())).toList();
-            topicDto.setTags(tagDtos);
-            topicDtos.add(topicDto);
-        }
-        return topicDtos;
+        topicDto.setId(topic.getId());
+        topicDto.setTitle(topic.getTitle());
+        topicDto.setDescription(topic.getDescription());
+        List<TagDto> tagDtos = topic.getTags().stream()
+                .map(tag -> new TagDto(tag.getId(), tag.getName())).toList();
+        topicDto.setTags(tagDtos);
+
+        return topicDto;
     }
 
     public List<TopicDto> searchTopics(String query) {
@@ -79,7 +77,19 @@ public class TopicService {
         }
 
         String fuzzyQuery = query.toLowerCase() + ":*";
+        List<Topic> topics = topicRepository.searchTopics(fuzzyQuery.toLowerCase());
+        List<TopicDto> topicDtos =
+                topics.stream().map(this::convertToDto).collect(Collectors.toList());
 
-        return convertToDto(topicRepository.searchTopics(fuzzyQuery.toLowerCase()));
+        return topicDtos;
+    }
+
+    public TopicDto getTopic(Long topicId) {
+        if (topicId == null) {
+            throw new BadRequestException("Missing topicId. Please try again");
+        }
+        Topic topic = getTopicById(topicId);
+
+        return convertToDto(topic);
     }
 }

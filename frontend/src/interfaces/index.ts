@@ -1735,6 +1735,15 @@ export interface IGetTopicsResponse {
   data: ITopic[];
 }
 
+export interface IGetTopicRequest {
+  topicId: number;
+}
+
+export interface IGetTopicResponse {
+  message: string;
+  data: ITopic;
+}
+
 export interface ICreateTopicResponse extends IBaseResponse {}
 
 export interface IFetchProfileVisibilityResponse extends IUpdateProfileVisibilityResponse {}

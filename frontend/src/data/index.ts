@@ -1,3 +1,10 @@
+export const topicState = {
+  id: 0,
+  title: '',
+  description: '',
+  tags: [],
+};
+
 export const repositoryState = {
   avatarUrl: '',
   comment: '',
