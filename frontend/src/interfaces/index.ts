@@ -1744,6 +1744,15 @@ export interface IGetTopicResponse {
   data: ITopic;
 }
 
+export interface ICreateCommentRequest {
+  token: string;
+  userId: number;
+  topicId: number;
+  content: string;
+}
+
+export interface ICreateCommentResponse extends IBaseResponse {}
+
 export interface ICreateTopicResponse extends IBaseResponse {}
 
 export interface IFetchProfileVisibilityResponse extends IUpdateProfileVisibilityResponse {}
