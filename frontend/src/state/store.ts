@@ -511,7 +511,7 @@ export {
 
 export { useLazyFetchTopicsQuery, useCreateTopicMutation, useFetchTopicQuery } from './apis/topicsApi';
 
-export { useCreateCommentMutation } from './apis/commentsApi';
+export { useCreateCommentMutation, useFetchCommentsQuery, useLazyFetchCommentsQuery } from './apis/commentsApi';
 
 export {
   testimonialsApi,

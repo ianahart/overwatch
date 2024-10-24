@@ -8,6 +8,7 @@ import TopicDetailsHeader from './TopicDetailsHeader';
 import TopicDetailsDescription from './TopicDetailsDescription';
 import TopicDetailsStats from './TopicDetailsStats';
 import TopicDetailsCommentModal from './TopicDetailsCommentModal';
+import TopicDetailsComments from './TopicDetailsComments';
 
 const TopicDetails = () => {
   let { topicId: potentialTopicId } = useParams();
@@ -36,6 +37,7 @@ const TopicDetails = () => {
           <TopicDetailsStats />
           <hr className="border-gray-800" />
           <TopicDetailsCommentModal topicId={topic.id} />
+          <TopicDetailsComments topicId={topic.id} />
         </div>
       </div>
     </>

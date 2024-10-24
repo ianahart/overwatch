@@ -1,5 +1,10 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { ICreateCommentRequest, ICreateCommentResponse } from '../../interfaces';
+import {
+  ICreateCommentRequest,
+  ICreateCommentResponse,
+  IGetCommentsRequest,
+  IGetCommentsResponse,
+} from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
 const commentsApi = createApi({
@@ -8,6 +13,24 @@ const commentsApi = createApi({
   tagTypes: ['Comment'],
   endpoints(builder) {
     return {
+      fetchComments: builder.query<IGetCommentsResponse, IGetCommentsRequest>({
+        query: ({ topicId, page, pageSize, direction, sort }) => {
+          if (topicId === undefined || !topicId) {
+            return '';
+          }
+          return {
+            url: `/topics/${topicId}/comments?page=${page}&pageSize=${pageSize}&direction=${direction}&sort=${sort}`,
+            method: 'GET',
+            headers: {},
+          };
+        },
+        //@ts-ignore
+        providesTags: (result, error, arg) =>
+          result
+            ? [...result.data.items.map(({ id }) => ({ type: 'Comment', id })), { type: 'Comment', id: 'LIST' }]
+            : [{ type: 'Comment', id: 'LIST' }],
+      }),
+
       createComment: builder.mutation<ICreateCommentResponse, ICreateCommentRequest>({
         query: ({ token, userId, topicId, content }) => {
           return {
@@ -24,5 +47,5 @@ const commentsApi = createApi({
     };
   },
 });
-export const { useCreateCommentMutation } = commentsApi;
+export const { useCreateCommentMutation, useFetchCommentsQuery, useLazyFetchCommentsQuery } = commentsApi;
 export { commentsApi };
