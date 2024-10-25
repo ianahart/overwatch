@@ -14,6 +14,7 @@ import com.hart.overwatch.chatmessage.ChatMessage;
 import com.hart.overwatch.checklist.CheckList;
 import com.hart.overwatch.checklistitem.CheckListItem;
 import com.hart.overwatch.comment.Comment;
+import com.hart.overwatch.commentvote.CommentVote;
 import com.hart.overwatch.connection.Connection;
 import com.hart.overwatch.connectionpin.ConnectionPin;
 import com.hart.overwatch.customfield.CustomField;
@@ -237,6 +238,11 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<Comment> comments;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<CommentVote> commentVotes;
+
+
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "setting_id", referencedColumnName = "id")
@@ -302,6 +308,10 @@ public class User implements UserDetails {
 
     public List<BlockUser> getBlockerUsers() {
         return blockerUsers;
+    }
+
+    public List<CommentVote> getCommentVotes() {
+        return commentVotes;
     }
 
     public List<CheckList> getCheckLists() {
@@ -634,6 +644,10 @@ public class User implements UserDetails {
 
     public void setAbbreviation(String abbreviation) {
         this.abbreviation = abbreviation;
+    }
+
+    public void setCommentVotes(List<CommentVote> commentVotes) {
+        this.commentVotes = commentVotes;
     }
 
     public void setTodocards(List<TodoCard> todocards) {
