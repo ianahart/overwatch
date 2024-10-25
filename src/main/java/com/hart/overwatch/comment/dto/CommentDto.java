@@ -17,23 +17,30 @@ public class CommentDto {
 
     private String fullName;
 
+    private Long voteDifference;
+
 
     public CommentDto() {
 
     }
 
     public CommentDto(Long id, String content, Long userId, LocalDateTime createdAt,
-            String avatarUrl, String fullName) {
+            String avatarUrl, String fullName, Long voteDifference) {
         this.id = id;
         this.content = content;
         this.userId = userId;
         this.createdAt = createdAt;
         this.avatarUrl = avatarUrl;
         this.fullName = fullName;
+        this.voteDifference = voteDifference;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public Long getVoteDifference() {
+        return voteDifference;
     }
 
     public Long getUserId() {
@@ -78,5 +85,9 @@ public class CommentDto {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public void setVoteDifference(Long voteDifference) {
+        this.voteDifference = voteDifference;
     }
 }

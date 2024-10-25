@@ -92,6 +92,7 @@ const TopicDetailsComments = ({ topicId }: ITopicDetailsCommentsProps) => {
         >
           <option value="DESC">Newest</option>
           <option value="ASC">Oldest</option>
+          <option value="VOTE">Most Popular</option>
         </select>
       </div>
 

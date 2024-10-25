@@ -8,6 +8,7 @@ export interface IComment {
   createdAt: string;
   avatarUrl: string;
   fullName: string;
+  voteDifference: number;
 }
 
 export interface ITag {

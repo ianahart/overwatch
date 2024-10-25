@@ -59,7 +59,7 @@ const TopicDetailsCommentItem = ({ comment }: ITopicDetailsCommentItemProps) => 
               <TbArrowBigUp className="text-xl" />
             </div>
             <div className="mx-1">
-              <p>0</p>
+              <p>{comment.voteDifference}</p>
             </div>
             <div onClick={() => createVote('DOWNVOTE')} className="mx-1 cursor-pointer">
               <TbArrowBigDown className="text-xl" />

@@ -63,7 +63,15 @@ public class CommentService {
             pageable = paginationService.getPageable(page, pageSize, direction);
         }
 
-        Page<CommentDto> result = this.commentRepository.getCommentsByTopicId(topicId, pageable);
+        Page<CommentDto> result;
+
+        if (sort.toLowerCase().equals("vote")) {
+            result = this.commentRepository.getCommentsByTopicIdWithVoteDifference(topicId,
+                    pageable);
+        } else {
+            result = this.commentRepository.getCommentsByTopicId(topicId, pageable);
+        }
+
 
         return new PaginationDto<CommentDto>(result.getContent(), result.getNumber(), pageSize,
                 result.getTotalPages(), direction, result.getTotalElements());
