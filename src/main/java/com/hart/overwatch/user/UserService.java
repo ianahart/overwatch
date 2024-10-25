@@ -62,11 +62,12 @@ public class UserService {
 
     public User getCurrentlyLoggedInUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        String username = ((UserDetails) principal).getUsername();
-        User user = this.userRepository.findByEmail(username)
-                .orElseThrow(() -> new NotFoundException("Current user was not found"));
-        return user;
+        if (principal instanceof UserDetails) {
+            String username = ((UserDetails) principal).getUsername();
+            return this.userRepository.findByEmail(username)
+                    .orElseThrow(() -> new NotFoundException("Current user was not found"));
+        }
+        return null;
     }
 
     private Key getSignInKey() {
@@ -167,7 +168,8 @@ public class UserService {
 
             user.setFirstName(
                     Jsoup.clean(MyUtil.capitalize(request.getFirstName()), Safelist.none()));
-            user.setLastName(Jsoup.clean(MyUtil.capitalize(request.getLastName()), Safelist.none()));
+            user.setLastName(
+                    Jsoup.clean(MyUtil.capitalize(request.getLastName()), Safelist.none()));
             user.setEmail(Jsoup.clean(request.getEmail(), Safelist.none()));
 
             this.userRepository.save(user);

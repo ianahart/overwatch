@@ -8,6 +8,9 @@ export interface IComment {
   createdAt: string;
   avatarUrl: string;
   fullName: string;
+  voteDifference: number;
+  curUserVoteType: string;
+  curUserHasVoted: boolean;
 }
 
 export interface ITag {
@@ -1766,6 +1769,7 @@ export interface IGetCommentsRequest {
   pageSize: number;
   direction: string;
   sort: string;
+  token?: string;
 }
 
 export interface IGetCommentsResponse {

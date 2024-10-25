@@ -17,23 +17,41 @@ public class CommentDto {
 
     private String fullName;
 
+    private Long voteDifference;
+     private Boolean curUserHasVoted;
+
+    private String curUserVoteType;
+
 
     public CommentDto() {
 
     }
 
     public CommentDto(Long id, String content, Long userId, LocalDateTime createdAt,
-            String avatarUrl, String fullName) {
+            String avatarUrl, String fullName, Long voteDifference) {
         this.id = id;
         this.content = content;
         this.userId = userId;
         this.createdAt = createdAt;
         this.avatarUrl = avatarUrl;
         this.fullName = fullName;
+        this.voteDifference = voteDifference;
+    }
+
+    public String getCurUserVoteType() {
+        return curUserVoteType;
+    }
+
+    public Boolean getCurUserHasVoted() {
+        return curUserHasVoted;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public Long getVoteDifference() {
+        return voteDifference;
     }
 
     public Long getUserId() {
@@ -78,5 +96,17 @@ public class CommentDto {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public void setVoteDifference(Long voteDifference) {
+        this.voteDifference = voteDifference;
+    }
+
+    public void setCurUserVoteType(String curUserVoteType) {
+        this.curUserVoteType = curUserVoteType;
+    }
+
+    public void setCurUserHasVoted(Boolean curUserHasVoted) {
+        this.curUserHasVoted = curUserHasVoted;
     }
 }

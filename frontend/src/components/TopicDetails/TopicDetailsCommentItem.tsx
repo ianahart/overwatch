@@ -10,12 +10,14 @@ import { TRootState, useCreateVoteMutation } from '../../state/store';
 
 export interface ITopicDetailsCommentItemProps {
   comment: IComment;
+  updateCommentVote: (commentId: number, voteType: string) => void;
 }
 
-const TopicDetailsCommentItem = ({ comment }: ITopicDetailsCommentItemProps) => {
+const TopicDetailsCommentItem = ({ comment, updateCommentVote }: ITopicDetailsCommentItemProps) => {
   const navigate = useNavigate();
   const { user, token } = useSelector((store: TRootState) => store.user);
   const [createVoteMut] = useCreateVoteMutation();
+
   const [firstName, lastName] = comment.fullName.split(' ');
 
   const createVote = (voteType: string) => {
@@ -27,8 +29,8 @@ const TopicDetailsCommentItem = ({ comment }: ITopicDetailsCommentItemProps) => 
     const payload = { userId: user.id, commentId: comment.id, token, voteType };
     createVoteMut(payload)
       .unwrap()
-      .then((res) => {
-        console.log(res);
+      .then(() => {
+        updateCommentVote(comment.id, voteType);
       })
       .catch((err) => {
         console.log(err);
@@ -56,13 +58,21 @@ const TopicDetailsCommentItem = ({ comment }: ITopicDetailsCommentItemProps) => 
         <div className="my-2">
           <div className="m-2 flex items-center 2xl">
             <div onClick={() => createVote('UPVOTE')} className="mx-1 cursor-pointer">
-              <TbArrowBigUp className="text-xl" />
+              <TbArrowBigUp
+                className={`text-xl ${
+                  comment.curUserHasVoted && comment.curUserVoteType === 'UPVOTE' ? 'text-blue-400' : 'text-gray-400'
+                }`}
+              />
             </div>
             <div className="mx-1">
-              <p>0</p>
+              <p>{comment.voteDifference}</p>
             </div>
             <div onClick={() => createVote('DOWNVOTE')} className="mx-1 cursor-pointer">
-              <TbArrowBigDown className="text-xl" />
+              <TbArrowBigDown
+                className={`text-xl ${
+                  comment.curUserHasVoted && comment.curUserVoteType === 'DOWNVOTE' ? 'text-blue-400' : 'text-gray-400'
+                }`}
+              />
             </div>
           </div>
         </div>
