@@ -90,9 +90,7 @@ const TopicDetailsComments = ({ topicId }: ITopicDetailsCommentsProps) => {
           onChange={handleOnChange}
           className="bg-transparent border border-gray-800 w-[200px] p-2 rounded"
         >
-          <option selected value="DESC">
-            Newest
-          </option>
+          <option value="DESC">Newest</option>
           <option value="ASC">Oldest</option>
         </select>
       </div>

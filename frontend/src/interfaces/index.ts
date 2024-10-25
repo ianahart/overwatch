@@ -1780,6 +1780,18 @@ export interface IGetCommentsResponse {
   };
 }
 
+export interface ICreateVoteRequest {
+  token: string;
+  commentId: number;
+  userId: number;
+  voteType: string;
+}
+
+export interface ICreateVoteResponse {
+  message: string;
+  data: any;
+}
+
 export interface ICreateCommentResponse extends IBaseResponse {}
 
 export interface ICreateTopicResponse extends IBaseResponse {}

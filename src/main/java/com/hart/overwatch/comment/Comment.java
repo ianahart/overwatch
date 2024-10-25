@@ -1,17 +1,22 @@
 package com.hart.overwatch.comment;
 
+import java.util.List;
 import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import com.hart.overwatch.commentvote.CommentVote;
 import com.hart.overwatch.topic.Topic;
 import com.hart.overwatch.user.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
@@ -45,6 +50,11 @@ public class Comment {
     @JoinColumn(name = "topic_id", referencedColumnName = "id", nullable = false)
     private Topic topic;
 
+    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<CommentVote> commentVotes;
+
+
     public Comment() {
 
     }
@@ -60,6 +70,15 @@ public class Comment {
         this.content = content;
         this.user = user;
         this.topic = topic;
+    }
+
+    public int getUpVoteCount() {
+        return (int) commentVotes.stream().filter(cv -> "UPVOTE".equals(cv.getVoteType())).count();
+    }
+
+    public int getDownVoteCount() {
+        return (int) commentVotes.stream().filter(cv -> "DOWNVOTE".equals(cv.getVoteType()))
+                .count();
     }
 
     public Long getId() {
@@ -80,6 +99,10 @@ public class Comment {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public List<CommentVote> getCommentVotes() {
+        return commentVotes;
     }
 
     public LocalDateTime getUpdatedAt() {
@@ -108,6 +131,10 @@ public class Comment {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public void setCommentVotes(List<CommentVote> commentVotes) {
+        this.commentVotes = commentVotes;
     }
 
 };

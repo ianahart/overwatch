@@ -140,6 +140,7 @@ import { statisticsApi } from './apis/statisticsApi';
 import { blockedUsersApi } from './apis/blockedUsersApi';
 import { topicsApi } from './apis/topicsApi';
 import { commentsApi } from './apis/commentsApi';
+import { commentVotesApi } from './apis/commentVotesApi';
 
 export const store = configureStore({
   reducer: {
@@ -193,6 +194,7 @@ export const store = configureStore({
     [blockedUsersApi.reducerPath]: blockedUsersApi.reducer,
     [topicsApi.reducerPath]: topicsApi.reducer,
     [commentsApi.reducerPath]: commentsApi.reducer,
+    [commentVotesApi.reducerPath]: commentVotesApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -233,7 +235,8 @@ export const store = configureStore({
       .concat(statisticsApi.middleware)
       .concat(blockedUsersApi.middleware)
       .concat(topicsApi.middleware)
-      .concat(commentsApi.middleware);
+      .concat(commentsApi.middleware)
+      .concat(commentVotesApi.middleware);
   },
 });
 
@@ -513,6 +516,8 @@ export { useLazyFetchTopicsQuery, useCreateTopicMutation, useFetchTopicQuery } f
 
 export { useCreateCommentMutation, useFetchCommentsQuery, useLazyFetchCommentsQuery } from './apis/commentsApi';
 
+export { useCreateVoteMutation } from './apis/commentVotesApi';
+
 export {
   testimonialsApi,
   authsApi,
@@ -541,4 +546,5 @@ export {
   blockedUsersApi,
   topicsApi,
   commentsApi,
+  commentVotesApi,
 };
