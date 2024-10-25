@@ -18,6 +18,9 @@ public class CommentDto {
     private String fullName;
 
     private Long voteDifference;
+     private Boolean curUserHasVoted;
+
+    private String curUserVoteType;
 
 
     public CommentDto() {
@@ -33,6 +36,14 @@ public class CommentDto {
         this.avatarUrl = avatarUrl;
         this.fullName = fullName;
         this.voteDifference = voteDifference;
+    }
+
+    public String getCurUserVoteType() {
+        return curUserVoteType;
+    }
+
+    public Boolean getCurUserHasVoted() {
+        return curUserHasVoted;
     }
 
     public Long getId() {
@@ -89,5 +100,13 @@ public class CommentDto {
 
     public void setVoteDifference(Long voteDifference) {
         this.voteDifference = voteDifference;
+    }
+
+    public void setCurUserVoteType(String curUserVoteType) {
+        this.curUserVoteType = curUserVoteType;
+    }
+
+    public void setCurUserHasVoted(Boolean curUserHasVoted) {
+        this.curUserHasVoted = curUserHasVoted;
     }
 }

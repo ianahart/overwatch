@@ -1,5 +1,7 @@
 package com.hart.overwatch.comment;
 
+import java.util.List;
+import java.util.Optional;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.comment.dto.CommentDto;
 import com.hart.overwatch.comment.request.CreateCommentRequest;
+import com.hart.overwatch.commentvote.CommentVote;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.topic.Topic;
@@ -53,6 +56,29 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
+    private List<CommentDto> attachExtraFields(List<CommentDto> commentDtos, User user) {
+        for (CommentDto commentDto : commentDtos) {
+            Comment comment = getCommentById(commentDto.getId());
+            if (user == null) {
+                commentDto.setCurUserVoteType(null);
+                commentDto.setCurUserHasVoted(false);
+            } else {
+                CommentVote commentVote = comment.getCommentVotes().stream()
+                        .filter(vote -> vote.getUser().getId().equals(user.getId())
+                                && vote.getVoteType() != null)
+                        .findFirst().orElse(null);
+
+                if (commentVote != null) {
+                    commentDto.setCurUserHasVoted(true);
+                    commentDto.setCurUserVoteType(commentVote.getVoteType());
+
+                }
+
+            }
+        }
+        return commentDtos;
+    }
+
     public PaginationDto<CommentDto> getComments(Long topicId, int page, int pageSize,
             String direction, String sort) {
 
@@ -72,8 +98,10 @@ public class CommentService {
             result = this.commentRepository.getCommentsByTopicId(topicId, pageable);
         }
 
+        User currentUser = userService.getCurrentlyLoggedInUser();
 
-        return new PaginationDto<CommentDto>(result.getContent(), result.getNumber(), pageSize,
+        List<CommentDto> comments = attachExtraFields(result.getContent(), currentUser);
+        return new PaginationDto<CommentDto>(comments, result.getNumber(), pageSize,
                 result.getTotalPages(), direction, result.getTotalElements());
 
     }

@@ -14,14 +14,16 @@ const commentsApi = createApi({
   endpoints(builder) {
     return {
       fetchComments: builder.query<IGetCommentsResponse, IGetCommentsRequest>({
-        query: ({ topicId, page, pageSize, direction, sort }) => {
+        query: ({ topicId, page, pageSize, direction, sort, token = '' }) => {
           if (topicId === undefined || !topicId) {
             return '';
           }
           return {
             url: `/topics/${topicId}/comments?page=${page}&pageSize=${pageSize}&direction=${direction}&sort=${sort}`,
             method: 'GET',
-            headers: {},
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           };
         },
         //@ts-ignore

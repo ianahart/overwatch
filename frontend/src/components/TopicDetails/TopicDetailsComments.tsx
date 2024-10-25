@@ -3,6 +3,7 @@ import { IComment, IPaginationState } from '../../interfaces';
 import { useFetchCommentsQuery, useLazyFetchCommentsQuery } from '../../state/store';
 import TopicDetailsCommentItem from './TopicDetailsCommentItem';
 import Spinner from '../Shared/Spinner';
+import { retrieveTokens } from '../../util';
 
 export interface ITopicDetailsCommentsProps {
   topicId: number;
@@ -15,7 +16,7 @@ export interface IEnhancedPaginationState extends IPaginationState {
 const TopicDetailsComments = ({ topicId }: ITopicDetailsCommentsProps) => {
   const pagState = {
     page: -1,
-    pageSize: 2,
+    pageSize: 5,
     totalPages: 0,
     direction: 'next',
     totalElements: 0,
@@ -28,6 +29,7 @@ const TopicDetailsComments = ({ topicId }: ITopicDetailsCommentsProps) => {
     pageSize: pagState.pageSize,
     direction: pagState.direction,
     sort: pagState.sort,
+    token: retrieveTokens()?.token,
   });
   const [pag, setPag] = useState<IEnhancedPaginationState>(pagState);
   const [comments, setComments] = useState<IComment[]>([]);
@@ -56,6 +58,7 @@ const TopicDetailsComments = ({ topicId }: ITopicDetailsCommentsProps) => {
         pageSize: pag.pageSize,
         direction: dir,
         sort,
+        token: retrieveTokens()?.token,
       }).unwrap();
 
       const { items, page, pageSize, totalPages, direction, totalElements } = response.data;
@@ -73,13 +76,24 @@ const TopicDetailsComments = ({ topicId }: ITopicDetailsCommentsProps) => {
     }
   };
 
-  const handleOnChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleOnChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     const sort = e.target.value;
     setPag((prevState) => ({
       ...prevState,
       sort,
     }));
     paginateComments('next', sort, true);
+  };
+
+  const updateCommentVote = (commentId: number, voteType: string): void => {
+    const updatedComments = comments.map((comment) => {
+      if (comment.id === commentId) {
+        const voteDifference = voteType === 'UPVOTE' ? comment.voteDifference + 1 : comment.voteDifference - 1;
+        return { ...comment, voteDifference, curUserVoteType: voteType, curUserHasVoted: true };
+      }
+      return { ...comment };
+    });
+    setComments(updatedComments);
   };
 
   return (
@@ -104,7 +118,8 @@ const TopicDetailsComments = ({ topicId }: ITopicDetailsCommentsProps) => {
         )}
         <div>
           {comments.map((comment) => {
-            return <TopicDetailsCommentItem key={comment.id} comment={comment} />;
+            updateCommentVote;
+            return <TopicDetailsCommentItem key={comment.id} comment={comment} updateCommentVote={updateCommentVote} />;
           })}
         </div>
         <div className="flex items-center justify-center">
