@@ -12,6 +12,7 @@ export interface IComment {
   voteDifference: number;
   curUserVoteType: string;
   curUserHasVoted: boolean;
+  curUserHasSaved: boolean;
 }
 
 export interface ITag {
@@ -1816,6 +1817,14 @@ export interface ICreateReportCommentRequest {
   details: string;
   reason: string;
 }
+
+export interface ICreateSaveCommentRequest {
+  token: string;
+  userId: number;
+  commentId: number;
+}
+
+export interface ICreateSaveCommentResponse extends IBaseResponse {}
 
 export interface ICreateReportCommentResponse extends IBaseResponse {}
 

@@ -25,6 +25,8 @@ public class CommentDto {
 
     private String curUserVoteType;
 
+    private Boolean curUserHasSaved;
+
 
     public CommentDto() {
 
@@ -48,6 +50,10 @@ public class CommentDto {
 
     public Boolean getCurUserHasVoted() {
         return curUserHasVoted;
+    }
+
+    public Boolean getCurUserHasSaved() {
+        return curUserHasSaved;
     }
 
     public Boolean getIsEdited() {
@@ -120,5 +126,9 @@ public class CommentDto {
 
     public void setIsEdited(Boolean isEdited) {
         this.isEdited = isEdited;
+    }
+
+    public void setCurUserHasSaved(Boolean curUserHasSaved) {
+        this.curUserHasSaved = curUserHasSaved;
     }
 }

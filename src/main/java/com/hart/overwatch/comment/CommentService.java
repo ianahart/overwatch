@@ -1,7 +1,6 @@
 package com.hart.overwatch.comment;
 
 import java.util.List;
-import java.util.Optional;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,11 +64,15 @@ public class CommentService {
             if (user == null) {
                 commentDto.setCurUserVoteType(null);
                 commentDto.setCurUserHasVoted(false);
+                commentDto.setCurUserHasSaved(false);
             } else {
                 CommentVote commentVote = comment.getCommentVotes().stream()
                         .filter(vote -> vote.getUser().getId().equals(user.getId())
                                 && vote.getVoteType() != null)
                         .findFirst().orElse(null);
+
+                commentDto.setCurUserHasSaved(comment.getSavedComments().stream().anyMatch(
+                        saveComment -> saveComment.getUser().getId().equals(user.getId())));
 
                 if (commentVote != null) {
                     commentDto.setCurUserHasVoted(true);
