@@ -17,8 +17,11 @@ public class CommentDto {
 
     private String fullName;
 
+    private Boolean isEdited;
+
     private Long voteDifference;
-     private Boolean curUserHasVoted;
+
+    private Boolean curUserHasVoted;
 
     private String curUserVoteType;
 
@@ -28,13 +31,14 @@ public class CommentDto {
     }
 
     public CommentDto(Long id, String content, Long userId, LocalDateTime createdAt,
-            String avatarUrl, String fullName, Long voteDifference) {
+            String avatarUrl, String fullName, Boolean isEdited, Long voteDifference) {
         this.id = id;
         this.content = content;
         this.userId = userId;
         this.createdAt = createdAt;
         this.avatarUrl = avatarUrl;
         this.fullName = fullName;
+        this.isEdited = isEdited;
         this.voteDifference = voteDifference;
     }
 
@@ -44,6 +48,10 @@ public class CommentDto {
 
     public Boolean getCurUserHasVoted() {
         return curUserHasVoted;
+    }
+
+    public Boolean getIsEdited() {
+        return isEdited;
     }
 
     public Long getId() {
@@ -108,5 +116,9 @@ public class CommentDto {
 
     public void setCurUserHasVoted(Boolean curUserHasVoted) {
         this.curUserHasVoted = curUserHasVoted;
+    }
+
+    public void setIsEdited(Boolean isEdited) {
+        this.isEdited = isEdited;
     }
 }

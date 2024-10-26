@@ -19,6 +19,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
                     c.createdAt AS createdAt,
                     p.avatarUrl AS avatarUrl,
                     u.fullName AS fullName,
+                    c.isEdited AS isEdited,
                     COALESCE(SUM(CASE WHEN v.voteType = 'UPVOTE' THEN 1 WHEN v.voteType = 'DOWNVOTE' THEN -1 ELSE 0 END), 0) AS voteDifference
                 )
                 FROM Comment c
@@ -38,6 +39,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
              c.id AS id, c.content AS content, u.id AS userId,
              c.createdAt AS createdAt, p.avatarUrl AS avatarUrl,
              u.fullName AS fullName,
+             c.isEdited AS isEdited,
              SUM(CASE WHEN v.voteType = 'UPVOTE' THEN 1 WHEN v.voteType = 'DOWNVOTE' THEN -1 ELSE 0 END) AS voteDifference
             ) FROM Comment c
             INNER JOIN c.topic t

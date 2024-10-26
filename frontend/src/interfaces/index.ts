@@ -8,6 +8,7 @@ export interface IComment {
   createdAt: string;
   avatarUrl: string;
   fullName: string;
+  isEdited: boolean;
   voteDifference: number;
   curUserVoteType: string;
   curUserHasVoted: boolean;
@@ -1795,6 +1796,15 @@ export interface ICreateVoteResponse {
   message: string;
   data: any;
 }
+
+export interface IUpdateCommentRequest {
+  token: string;
+  commentId: number;
+  userId: number;
+  content: string;
+}
+
+export interface IUpdateCommentResponse extends IBaseResponse {}
 
 export interface ICreateCommentResponse extends IBaseResponse {}
 

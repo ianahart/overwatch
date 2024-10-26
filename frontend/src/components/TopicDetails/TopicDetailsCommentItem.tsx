@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import { TbArrowBigDown, TbArrowBigUp } from 'react-icons/tb';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,6 +6,10 @@ import { IComment } from '../../interfaces';
 import Avatar from '../Shared/Avatar';
 import { initializeName } from '../../util';
 import { TRootState, useCreateVoteMutation } from '../../state/store';
+import TopicDetailsCommentItemVote from './TopicDetailsCommentItemVote';
+import TopicDetailsCommentItemActions from './TopicDetailsCommentItemActions';
+import { useState } from 'react';
+import TopicDetailsCommentItemForm from './TopicDetailsCommentItemForm';
 
 export interface ITopicDetailsCommentItemProps {
   comment: IComment;
@@ -17,6 +20,7 @@ const TopicDetailsCommentItem = ({ comment, updateCommentVote }: ITopicDetailsCo
   const navigate = useNavigate();
   const { user, token } = useSelector((store: TRootState) => store.user);
   const [createVoteMut] = useCreateVoteMutation();
+  const [isEditing, setIsEditing] = useState(false);
 
   const [firstName, lastName] = comment.fullName.split(' ');
 
@@ -37,6 +41,10 @@ const TopicDetailsCommentItem = ({ comment, updateCommentVote }: ITopicDetailsCo
       });
   };
 
+  const handleSetIsEditing = (editing: boolean): void => {
+    setIsEditing(editing);
+  };
+
   return (
     <div className="border my-4 p-2 rounded-lg border-gray-800">
       <div className="my-2">
@@ -49,32 +57,33 @@ const TopicDetailsCommentItem = ({ comment, updateCommentVote }: ITopicDetailsCo
           />
           <div className="ml-2">
             <h3>{comment.fullName}</h3>
+            {comment.isEdited && <p className="text-xs">(edited)</p>}
             <p className="text-xs">{dayjs(comment.createdAt).format('MM/DD/YYYY')}</p>
           </div>
         </div>
         <div className="my-2">
-          <p>{comment.content}</p>
+          {isEditing ? (
+            <TopicDetailsCommentItemForm
+              handleSetIsEditing={handleSetIsEditing}
+              commentId={comment.id}
+              content={comment.content}
+            />
+          ) : (
+            <p>{comment.content}</p>
+          )}
         </div>
         <div className="my-2">
-          <div className="m-2 flex items-center 2xl">
-            <div onClick={() => createVote('UPVOTE')} className="mx-1 cursor-pointer">
-              <TbArrowBigUp
-                className={`text-xl ${
-                  comment.curUserHasVoted && comment.curUserVoteType === 'UPVOTE' ? 'text-blue-400' : 'text-gray-400'
-                }`}
-              />
-            </div>
-            <div className="mx-1">
-              <p>{comment.voteDifference}</p>
-            </div>
-            <div onClick={() => createVote('DOWNVOTE')} className="mx-1 cursor-pointer">
-              <TbArrowBigDown
-                className={`text-xl ${
-                  comment.curUserHasVoted && comment.curUserVoteType === 'DOWNVOTE' ? 'text-blue-400' : 'text-gray-400'
-                }`}
-              />
-            </div>
-          </div>
+          <TopicDetailsCommentItemVote
+            curUserHasVoted={comment.curUserHasVoted}
+            curUserVoteType={comment.curUserVoteType}
+            voteDifference={comment.voteDifference}
+            createVote={createVote}
+          />
+        </div>
+        <div className="my-2">
+          {user.id === comment.userId && (
+            <TopicDetailsCommentItemActions handleSetIsEditing={handleSetIsEditing} commentId={comment.id} />
+          )}
         </div>
       </div>
     </div>
