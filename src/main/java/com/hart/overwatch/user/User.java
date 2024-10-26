@@ -31,6 +31,7 @@ import com.hart.overwatch.reportcomment.ReportComment;
 import com.hart.overwatch.repository.Repository;
 import com.hart.overwatch.review.Review;
 import com.hart.overwatch.reviewfeedback.ReviewFeedback;
+import com.hart.overwatch.savecomment.SaveComment;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.testimonial.Testimonial;
 import com.hart.overwatch.todocard.TodoCard;
@@ -248,6 +249,9 @@ public class User implements UserDetails {
     private List<ReportComment> reportedComments;
 
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<SaveComment> savedComments;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "setting_id", referencedColumnName = "id")
@@ -301,6 +305,10 @@ public class User implements UserDetails {
 
     public String getSlug() {
         return (firstName + lastName).toLowerCase();
+    }
+
+    public List<SaveComment> getSavedComments() {
+        return savedComments;
     }
 
     public List<BlockUser> getBlockedUsers() {
@@ -513,6 +521,10 @@ public class User implements UserDetails {
 
     public void setCheckListItems(List<CheckListItem> checkListItems) {
         this.checkListItems = checkListItems;
+    }
+
+    public void setSavedComments(List<SaveComment> savedComments) {
+        this.savedComments = savedComments;
     }
 
     public void setPinnedOwnerConnections(List<ConnectionPin> pinnedOwnerConnections) {

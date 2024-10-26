@@ -142,6 +142,7 @@ import { topicsApi } from './apis/topicsApi';
 import { commentsApi } from './apis/commentsApi';
 import { commentVotesApi } from './apis/commentVotesApi';
 import { reportCommentsApi } from './apis/reportedCommentsApi';
+import { saveCommentsApi } from './apis/savedCommentsApi';
 
 export const store = configureStore({
   reducer: {
@@ -197,6 +198,7 @@ export const store = configureStore({
     [commentsApi.reducerPath]: commentsApi.reducer,
     [commentVotesApi.reducerPath]: commentVotesApi.reducer,
     [reportCommentsApi.reducerPath]: reportCommentsApi.reducer,
+    [saveCommentsApi.reducerPath]: saveCommentsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -239,7 +241,8 @@ export const store = configureStore({
       .concat(topicsApi.middleware)
       .concat(commentsApi.middleware)
       .concat(commentVotesApi.middleware)
-      .concat(reportCommentsApi.middleware);
+      .concat(reportCommentsApi.middleware)
+      .concat(saveCommentsApi.middleware);
   },
 });
 
@@ -529,6 +532,8 @@ export { useCreateVoteMutation } from './apis/commentVotesApi';
 
 export { useCreateReportCommentMutation } from './apis/reportedCommentsApi';
 
+export { useCreateSaveCommentMutation } from './apis/savedCommentsApi';
+
 export {
   testimonialsApi,
   authsApi,
@@ -559,4 +564,5 @@ export {
   commentsApi,
   commentVotesApi,
   reportCommentsApi,
+  saveCommentsApi,
 };

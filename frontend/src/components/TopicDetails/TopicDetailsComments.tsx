@@ -96,6 +96,17 @@ const TopicDetailsComments = ({ topicId }: ITopicDetailsCommentsProps) => {
     setComments(updatedComments);
   };
 
+  const updateSavedComment = (commentId: number, curUserHasSaved: boolean) => {
+    const updatedComments = comments.map((comment) => {
+      if (comment.id === commentId) {
+        curUserHasSaved;
+        return { ...comment, curUserHasSaved };
+      }
+      return { ...comment };
+    });
+    setComments(updatedComments);
+  };
+
   return (
     <>
       <div className="my-4">
@@ -119,7 +130,14 @@ const TopicDetailsComments = ({ topicId }: ITopicDetailsCommentsProps) => {
         <div>
           {comments.map((comment) => {
             updateCommentVote;
-            return <TopicDetailsCommentItem key={comment.id} comment={comment} updateCommentVote={updateCommentVote} />;
+            return (
+              <TopicDetailsCommentItem
+                key={comment.id}
+                comment={comment}
+                updateCommentVote={updateCommentVote}
+                updateSavedComment={updateSavedComment}
+              />
+            );
           })}
         </div>
         <div className="flex items-center justify-center">

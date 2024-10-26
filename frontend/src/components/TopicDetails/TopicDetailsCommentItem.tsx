@@ -14,9 +14,10 @@ import TopicDetailsCommentItemForm from './TopicDetailsCommentItemForm';
 export interface ITopicDetailsCommentItemProps {
   comment: IComment;
   updateCommentVote: (commentId: number, voteType: string) => void;
+  updateSavedComment: (commentId: number, curUserHasSaved: boolean) => void;
 }
 
-const TopicDetailsCommentItem = ({ comment, updateCommentVote }: ITopicDetailsCommentItemProps) => {
+const TopicDetailsCommentItem = ({ comment, updateCommentVote, updateSavedComment }: ITopicDetailsCommentItemProps) => {
   const navigate = useNavigate();
   const { user, token } = useSelector((store: TRootState) => store.user);
   const [createVoteMut] = useCreateVoteMutation();
@@ -72,21 +73,25 @@ const TopicDetailsCommentItem = ({ comment, updateCommentVote }: ITopicDetailsCo
             <p>{comment.content}</p>
           )}
         </div>
-        <div className="my-2">
-          <TopicDetailsCommentItemVote
-            curUserHasVoted={comment.curUserHasVoted}
-            curUserVoteType={comment.curUserVoteType}
-            voteDifference={comment.voteDifference}
-            createVote={createVote}
-          />
-        </div>
-        <div className="my-2">
-          <TopicDetailsCommentItemActions
-            handleSetIsEditing={handleSetIsEditing}
-            commentId={comment.id}
-            commentUserId={comment.userId}
-            content={comment.content}
-          />
+        <div className="flex items-center justify-between">
+          <div className="my-2">
+            <TopicDetailsCommentItemVote
+              curUserHasVoted={comment.curUserHasVoted}
+              curUserVoteType={comment.curUserVoteType}
+              voteDifference={comment.voteDifference}
+              createVote={createVote}
+            />
+          </div>
+          <div className="my-2">
+            <TopicDetailsCommentItemActions
+              handleSetIsEditing={handleSetIsEditing}
+              commentId={comment.id}
+              commentUserId={comment.userId}
+              content={comment.content}
+              curUserHasSaved={comment.curUserHasSaved}
+              updateSavedComment={updateSavedComment}
+            />
+          </div>
         </div>
       </div>
     </div>
