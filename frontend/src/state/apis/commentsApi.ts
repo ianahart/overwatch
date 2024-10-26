@@ -4,6 +4,8 @@ import {
   ICreateCommentResponse,
   IGetCommentsRequest,
   IGetCommentsResponse,
+  IUpdateCommentRequest,
+  IUpdateCommentResponse,
 } from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
@@ -46,8 +48,22 @@ const commentsApi = createApi({
         },
         invalidatesTags: [{ type: 'Comment', id: 'LIST' }],
       }),
+      updateComment: builder.mutation<IUpdateCommentResponse, IUpdateCommentRequest>({
+        query: ({ token, userId, commentId, content }) => {
+          return {
+            url: `/comments/${commentId}`,
+            method: 'PATCH',
+            body: { userId, content },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+        invalidatesTags: [{ type: 'Comment', id: 'LIST' }],
+      }),
     };
   },
 });
-export const { useCreateCommentMutation, useFetchCommentsQuery, useLazyFetchCommentsQuery } = commentsApi;
+export const { useCreateCommentMutation, useFetchCommentsQuery, useLazyFetchCommentsQuery, useUpdateCommentMutation } =
+  commentsApi;
 export { commentsApi };

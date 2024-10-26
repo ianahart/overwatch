@@ -514,7 +514,12 @@ export {
 
 export { useLazyFetchTopicsQuery, useCreateTopicMutation, useFetchTopicQuery } from './apis/topicsApi';
 
-export { useCreateCommentMutation, useFetchCommentsQuery, useLazyFetchCommentsQuery } from './apis/commentsApi';
+export {
+  useUpdateCommentMutation,
+  useCreateCommentMutation,
+  useFetchCommentsQuery,
+  useLazyFetchCommentsQuery,
+} from './apis/commentsApi';
 
 export { useCreateVoteMutation } from './apis/commentVotesApi';
 

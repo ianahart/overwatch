@@ -42,6 +42,9 @@ public class Comment {
     @Column(name = "content", length = 400, nullable = false)
     private String content;
 
+    @Column(name = "is_edited")
+    private Boolean isEdited;
+
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
@@ -59,15 +62,18 @@ public class Comment {
 
     }
 
-    public Comment(Long id, LocalDateTime createdAt, LocalDateTime updatedAt, String content) {
+    public Comment(Long id, LocalDateTime createdAt, LocalDateTime updatedAt, String content,
+            Boolean isEdited) {
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.content = content;
+        this.isEdited = isEdited;
     }
 
-    public Comment(String content, User user, Topic topic) {
+    public Comment(String content, Boolean isEdited, User user, Topic topic) {
         this.content = content;
+        this.isEdited = isEdited;
         this.user = user;
         this.topic = topic;
     }
@@ -83,6 +89,10 @@ public class Comment {
 
     public Long getId() {
         return id;
+    }
+
+    public Boolean getIsEdited() {
+        return isEdited;
     }
 
     public User getUser() {
@@ -135,6 +145,10 @@ public class Comment {
 
     public void setCommentVotes(List<CommentVote> commentVotes) {
         this.commentVotes = commentVotes;
+    }
+
+    public void setIsEdited(Boolean isEdited) {
+        this.isEdited = isEdited;
     }
 
 };

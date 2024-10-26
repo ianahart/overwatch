@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.comment.dto.CommentDto;
 import com.hart.overwatch.comment.request.CreateCommentRequest;
+import com.hart.overwatch.comment.request.UpdateCommentRequest;
 import com.hart.overwatch.commentvote.CommentVote;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
@@ -19,6 +20,7 @@ import com.hart.overwatch.topic.TopicService;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.advice.BadRequestException;
+import com.hart.overwatch.advice.ForbiddenException;
 
 @Service
 public class CommentService {
@@ -50,8 +52,9 @@ public class CommentService {
         User user = userService.getUserById(request.getUserId());
         Topic topic = topicService.getTopicById(request.getTopicId());
         String content = Jsoup.clean(request.getContent(), Safelist.none());
+        Boolean isEdited = false;
 
-        Comment comment = new Comment(content, user, topic);
+        Comment comment = new Comment(content, isEdited, user, topic);
 
         commentRepository.save(comment);
     }
@@ -106,4 +109,23 @@ public class CommentService {
 
     }
 
+    public void updateComment(UpdateCommentRequest request, Long commentId) {
+        if (commentId == null) {
+            throw new BadRequestException("Missing commentId from request. Please try again");
+        }
+
+        User user = userService.getCurrentlyLoggedInUser();
+        Comment comment = getCommentById(commentId);
+
+        if (!user.getId().equals(comment.getUser().getId())) {
+            throw new ForbiddenException("Cannot update a comment that is not yours");
+        }
+
+        String content = Jsoup.clean(request.getContent(), Safelist.none());
+
+        comment.setContent(content);
+        comment.setIsEdited(true);
+
+        commentRepository.save(comment);
+    }
 }
