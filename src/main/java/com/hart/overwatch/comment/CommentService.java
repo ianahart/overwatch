@@ -128,4 +128,18 @@ public class CommentService {
 
         commentRepository.save(comment);
     }
+
+    public void deleteComment(Long commentId) {
+        if (commentId == null) {
+            throw new BadRequestException("Missing commentId from request. Please try again");
+        }
+
+        User user = userService.getCurrentlyLoggedInUser();
+        Comment comment = getCommentById(commentId);
+
+        if (!user.getId().equals(comment.getUser().getId())) {
+            throw new ForbiddenException("Cannot update a comment that is not yours");
+        }
+        commentRepository.delete(comment);
+    }
 }

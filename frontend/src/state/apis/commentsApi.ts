@@ -2,6 +2,8 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import {
   ICreateCommentRequest,
   ICreateCommentResponse,
+  IDeleteCommentRequest,
+  IDeleteCommentResponse,
   IGetCommentsRequest,
   IGetCommentsResponse,
   IUpdateCommentRequest,
@@ -61,9 +63,26 @@ const commentsApi = createApi({
         },
         invalidatesTags: [{ type: 'Comment', id: 'LIST' }],
       }),
+      deleteComment: builder.mutation<IDeleteCommentResponse, IDeleteCommentRequest>({
+        query: ({ token, commentId }) => {
+          return {
+            url: `/comments/${commentId}`,
+            method: 'DELETE',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+        invalidatesTags: [{ type: 'Comment', id: 'LIST' }],
+      }),
     };
   },
 });
-export const { useCreateCommentMutation, useFetchCommentsQuery, useLazyFetchCommentsQuery, useUpdateCommentMutation } =
-  commentsApi;
+export const {
+  useDeleteCommentMutation,
+  useCreateCommentMutation,
+  useFetchCommentsQuery,
+  useLazyFetchCommentsQuery,
+  useUpdateCommentMutation,
+} = commentsApi;
 export { commentsApi };

@@ -27,11 +27,11 @@ const TopicDetailsCommentItemForm = ({ handleSetIsEditing, commentId, content }:
     e.preventDefault();
     setError('');
 
-            if (newContent.trim().length === 0 || newContent.length > MAX_CONTENT_LENGTH) {
-                setError('Comment must be between 1 and 400 characters');
-                return;
-            }
-    
+    if (newContent.trim().length === 0 || newContent.length > MAX_CONTENT_LENGTH) {
+      setError('Comment must be between 1 and 400 characters');
+      return;
+    }
+
     const payload = { commentId, userId: user.id, token, content: newContent };
 
     updateComment(payload)
