@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import com.hart.overwatch.commentvote.CommentVote;
+import com.hart.overwatch.reportcomment.ReportComment;
 import com.hart.overwatch.topic.Topic;
 import com.hart.overwatch.user.User;
 import jakarta.persistence.CascadeType;
@@ -57,6 +58,10 @@ public class Comment {
             orphanRemoval = true)
     private List<CommentVote> commentVotes;
 
+    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<ReportComment> reportComments;
+
 
     public Comment() {
 
@@ -93,6 +98,10 @@ public class Comment {
 
     public Boolean getIsEdited() {
         return isEdited;
+    }
+
+    public List<ReportComment> getReportComments() {
+        return reportComments;
     }
 
     public User getUser() {
@@ -149,6 +158,10 @@ public class Comment {
 
     public void setIsEdited(Boolean isEdited) {
         this.isEdited = isEdited;
+    }
+
+    public void setReportComments(List<ReportComment> reportComments) {
+        this.reportComments = reportComments;
     }
 
 };

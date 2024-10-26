@@ -81,9 +81,12 @@ const TopicDetailsCommentItem = ({ comment, updateCommentVote }: ITopicDetailsCo
           />
         </div>
         <div className="my-2">
-          {user.id === comment.userId && (
-            <TopicDetailsCommentItemActions handleSetIsEditing={handleSetIsEditing} commentId={comment.id} />
-          )}
+          <TopicDetailsCommentItemActions
+            handleSetIsEditing={handleSetIsEditing}
+            commentId={comment.id}
+            commentUserId={comment.userId}
+            content={comment.content}
+          />
         </div>
       </div>
     </div>
