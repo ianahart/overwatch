@@ -141,6 +141,7 @@ import { blockedUsersApi } from './apis/blockedUsersApi';
 import { topicsApi } from './apis/topicsApi';
 import { commentsApi } from './apis/commentsApi';
 import { commentVotesApi } from './apis/commentVotesApi';
+import { reportCommentsApi } from './apis/reportedCommentsApi';
 
 export const store = configureStore({
   reducer: {
@@ -195,6 +196,7 @@ export const store = configureStore({
     [topicsApi.reducerPath]: topicsApi.reducer,
     [commentsApi.reducerPath]: commentsApi.reducer,
     [commentVotesApi.reducerPath]: commentVotesApi.reducer,
+    [reportCommentsApi.reducerPath]: reportCommentsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -236,7 +238,8 @@ export const store = configureStore({
       .concat(blockedUsersApi.middleware)
       .concat(topicsApi.middleware)
       .concat(commentsApi.middleware)
-      .concat(commentVotesApi.middleware);
+      .concat(commentVotesApi.middleware)
+      .concat(reportCommentsApi.middleware);
   },
 });
 
@@ -524,6 +527,8 @@ export {
 
 export { useCreateVoteMutation } from './apis/commentVotesApi';
 
+export { useCreateReportCommentMutation } from './apis/reportedCommentsApi';
+
 export {
   testimonialsApi,
   authsApi,
@@ -553,4 +558,5 @@ export {
   topicsApi,
   commentsApi,
   commentVotesApi,
+  reportCommentsApi,
 };

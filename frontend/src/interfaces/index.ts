@@ -1809,6 +1809,16 @@ export interface IDeleteCommentRequest {
   token: string;
 }
 
+export interface ICreateReportCommentRequest {
+  userId: number;
+  token: string;
+  commentId: number;
+  details: string;
+  reason: string;
+}
+
+export interface ICreateReportCommentResponse extends IBaseResponse {}
+
 export interface IDeleteCommentResponse extends IBaseResponse {}
 
 export interface IUpdateCommentResponse extends IBaseResponse {}

@@ -27,6 +27,7 @@ import com.hart.overwatch.paymentmethod.UserPaymentMethod;
 import com.hart.overwatch.phone.Phone;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.refreshtoken.RefreshToken;
+import com.hart.overwatch.reportcomment.ReportComment;
 import com.hart.overwatch.repository.Repository;
 import com.hart.overwatch.review.Review;
 import com.hart.overwatch.reviewfeedback.ReviewFeedback;
@@ -242,6 +243,10 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<CommentVote> commentVotes;
 
+    @OneToMany(mappedBy = "reportedBy", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<ReportComment> reportedComments;
+
 
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -300,6 +305,10 @@ public class User implements UserDetails {
 
     public List<BlockUser> getBlockedUsers() {
         return blockedUsers;
+    }
+
+    public List<ReportComment> getReportedComments() {
+        return reportedComments;
     }
 
     public List<Comment> getComments() {
@@ -684,6 +693,10 @@ public class User implements UserDetails {
 
     public void setTopics(List<Topic> topics) {
         this.topics = topics;
+    }
+
+    public void setReportedComments(List<ReportComment> reportedComments) {
+        this.reportedComments = reportedComments;
     }
 
     public String getUsername() {
