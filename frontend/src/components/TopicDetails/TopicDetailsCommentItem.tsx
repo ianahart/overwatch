@@ -10,14 +10,23 @@ import TopicDetailsCommentItemVote from './TopicDetailsCommentItemVote';
 import TopicDetailsCommentItemActions from './TopicDetailsCommentItemActions';
 import { useState } from 'react';
 import TopicDetailsCommentItemForm from './TopicDetailsCommentItemForm';
+import TopicDetailsCommentItemReactions from './TopicDetailsCommentItemReactions';
 
 export interface ITopicDetailsCommentItemProps {
   comment: IComment;
   updateCommentVote: (commentId: number, voteType: string) => void;
   updateSavedComment: (commentId: number, curUserHasSaved: boolean) => void;
+  updateCommentReaction: (emoji: string, commentId: number) => void;
+  removeCommentReaction: (emoji: string, commentId: number) => void;
 }
 
-const TopicDetailsCommentItem = ({ comment, updateCommentVote, updateSavedComment }: ITopicDetailsCommentItemProps) => {
+const TopicDetailsCommentItem = ({
+  comment,
+  updateCommentVote,
+  updateSavedComment,
+  updateCommentReaction,
+  removeCommentReaction,
+}: ITopicDetailsCommentItemProps) => {
   const navigate = useNavigate();
   const { user, token } = useSelector((store: TRootState) => store.user);
   const [createVoteMut] = useCreateVoteMutation();
@@ -89,9 +98,14 @@ const TopicDetailsCommentItem = ({ comment, updateCommentVote, updateSavedCommen
               commentUserId={comment.userId}
               content={comment.content}
               curUserHasSaved={comment.curUserHasSaved}
+              updateCommentReaction={updateCommentReaction}
               updateSavedComment={updateSavedComment}
+              removeCommentReaction={removeCommentReaction}
             />
           </div>
+        </div>
+        <div className="my-1">
+          <TopicDetailsCommentItemReactions reactions={comment.reactions} />
         </div>
       </div>
     </div>

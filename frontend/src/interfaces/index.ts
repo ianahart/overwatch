@@ -1,6 +1,11 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface IReaction {
+  emoji: string;
+  count: number;
+}
+
 export interface IComment {
   id: number;
   content: string;
@@ -13,6 +18,7 @@ export interface IComment {
   curUserVoteType: string;
   curUserHasVoted: boolean;
   curUserHasSaved: boolean;
+  reactions: IReaction[];
 }
 
 export interface ITag {
@@ -1823,6 +1829,33 @@ export interface ICreateSaveCommentRequest {
   userId: number;
   commentId: number;
 }
+
+export interface ICreateReactionRequest {
+  token: string;
+  userId: number;
+  commentId: number;
+  emoji: string | null;
+}
+
+export interface IGetReactionRequest {
+  token: string;
+  userId: number;
+  commentId: number;
+}
+
+export interface IGetReactionResponse {
+  message: string;
+  data: string | null;
+}
+
+export interface IDeleteReactionRequest {
+  token: string;
+  userId: number;
+  commentId: number;
+}
+export interface IDeleteReactionResponse extends IBaseResponse {}
+
+export interface ICreateReactionResponse extends IBaseResponse {}
 
 export interface ICreateSaveCommentResponse extends IBaseResponse {}
 

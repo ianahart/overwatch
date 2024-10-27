@@ -143,6 +143,7 @@ import { commentsApi } from './apis/commentsApi';
 import { commentVotesApi } from './apis/commentVotesApi';
 import { reportCommentsApi } from './apis/reportedCommentsApi';
 import { saveCommentsApi } from './apis/savedCommentsApi';
+import { reactionsApi } from './apis/reactionsApi';
 
 export const store = configureStore({
   reducer: {
@@ -199,6 +200,7 @@ export const store = configureStore({
     [commentVotesApi.reducerPath]: commentVotesApi.reducer,
     [reportCommentsApi.reducerPath]: reportCommentsApi.reducer,
     [saveCommentsApi.reducerPath]: saveCommentsApi.reducer,
+    [reactionsApi.reducerPath]: reactionsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -242,7 +244,8 @@ export const store = configureStore({
       .concat(commentsApi.middleware)
       .concat(commentVotesApi.middleware)
       .concat(reportCommentsApi.middleware)
-      .concat(saveCommentsApi.middleware);
+      .concat(saveCommentsApi.middleware)
+      .concat(reactionsApi.middleware);
   },
 });
 
@@ -534,6 +537,8 @@ export { useCreateReportCommentMutation } from './apis/reportedCommentsApi';
 
 export { useCreateSaveCommentMutation } from './apis/savedCommentsApi';
 
+export { useDeleteReactionMutation, useCreateReactionMutation, useFetchReactionQuery } from './apis/reactionsApi';
+
 export {
   testimonialsApi,
   authsApi,
@@ -565,4 +570,5 @@ export {
   commentVotesApi,
   reportCommentsApi,
   saveCommentsApi,
+  reactionsApi,
 };

@@ -77,10 +77,10 @@ public class CommentService {
                 if (commentVote != null) {
                     commentDto.setCurUserHasVoted(true);
                     commentDto.setCurUserVoteType(commentVote.getVoteType());
-
                 }
-
             }
+
+            commentDto.setReactions(comment.getGroupReactionsByComment());
         }
         return commentDtos;
     }
