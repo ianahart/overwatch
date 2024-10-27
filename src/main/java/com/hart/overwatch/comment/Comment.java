@@ -1,10 +1,13 @@
 package com.hart.overwatch.comment;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import com.hart.overwatch.commentvote.CommentVote;
+import com.hart.overwatch.reaction.Reaction;
+import com.hart.overwatch.reaction.dto.ReactionDto;
 import com.hart.overwatch.reportcomment.ReportComment;
 import com.hart.overwatch.savecomment.SaveComment;
 import com.hart.overwatch.topic.Topic;
@@ -67,6 +70,11 @@ public class Comment {
             orphanRemoval = true)
     private List<SaveComment> savedComments;
 
+    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Reaction> reactions;
+
+
     public Comment() {
 
     }
@@ -96,6 +104,17 @@ public class Comment {
                 .count();
     }
 
+    public List<ReactionDto> getGroupReactionsByComment() {
+        return getReactions().stream()
+                .collect(Collectors.groupingBy(reaction -> reaction.getEmoji())).entrySet().stream()
+                .map(entry -> new ReactionDto(entry.getKey(), entry.getValue().size()))
+                .collect(Collectors.toList());
+    }
+
+    public List<Reaction> getReactions() {
+        return reactions;
+    }
+
     public Long getId() {
         return id;
     }
@@ -114,6 +133,10 @@ public class Comment {
 
     public User getUser() {
         return user;
+    }
+
+    public void setReactions(List<Reaction> reactions) {
+        this.reactions = reactions;
     }
 
     public Topic getTopic() {

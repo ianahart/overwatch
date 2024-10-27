@@ -107,6 +107,48 @@ const TopicDetailsComments = ({ topicId }: ITopicDetailsCommentsProps) => {
     setComments(updatedComments);
   };
 
+  const removeCommentReaction = (emoji: string, commentId: number): void => {
+    const updateComments = comments.map((comment) => {
+      if (comment.id === commentId) {
+        const reactionIndex = comment.reactions.findIndex((reaction) => reaction.emoji === emoji);
+
+        if (reactionIndex >= 0) {
+          const reaction = comment.reactions[reactionIndex];
+          if (reaction.count - 1 <= 0) {
+            const reactions = comment.reactions.filter((r) => r.emoji !== emoji);
+            return { ...comment, reactions };
+          } else {
+            const reactions = comment.reactions.map((r, index) =>
+              index === reactionIndex ? { ...r, count: r.count - 1 } : r
+            );
+            return { ...comment, reactions };
+          }
+        }
+      }
+      return comment;
+    });
+    setComments(updateComments);
+  };
+
+  const updateCommentReaction = (emoji: string, commentId: number): void => {
+    const updateComments = comments.map((comment) => {
+      if (comment.id === commentId) {
+        const reactionIndex = comment.reactions.findIndex((reaction) => reaction.emoji === emoji);
+        if (reactionIndex < 0) {
+          const reactions = [...comment.reactions, { emoji, count: 1 }];
+          return { ...comment, reactions };
+        } else {
+          const reactions = comment.reactions.map((reaction, index) => {
+            return index === reactionIndex ? { ...reaction, count: reaction.count + 1 } : reaction;
+          });
+          return { ...comment, reactions };
+        }
+      }
+      return { ...comment };
+    });
+    setComments(updateComments);
+  };
+
   return (
     <>
       <div className="my-4">
@@ -136,6 +178,8 @@ const TopicDetailsComments = ({ topicId }: ITopicDetailsCommentsProps) => {
                 comment={comment}
                 updateCommentVote={updateCommentVote}
                 updateSavedComment={updateSavedComment}
+                updateCommentReaction={updateCommentReaction}
+                removeCommentReaction={removeCommentReaction}
               />
             );
           })}

@@ -1,6 +1,8 @@
 package com.hart.overwatch.comment.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import com.hart.overwatch.reaction.dto.ReactionDto;
 
 
 public class CommentDto {
@@ -27,6 +29,8 @@ public class CommentDto {
 
     private Boolean curUserHasSaved;
 
+    private List<ReactionDto> reactions;
+
 
     public CommentDto() {
 
@@ -46,6 +50,10 @@ public class CommentDto {
 
     public String getCurUserVoteType() {
         return curUserVoteType;
+    }
+
+    public List<ReactionDto> getReactions() {
+        return reactions;
     }
 
     public Boolean getCurUserHasVoted() {
@@ -130,5 +138,9 @@ public class CommentDto {
 
     public void setCurUserHasSaved(Boolean curUserHasSaved) {
         this.curUserHasSaved = curUserHasSaved;
+    }
+
+    public void setReactions(List<ReactionDto> reactions) {
+        this.reactions = reactions;
     }
 }
