@@ -14,6 +14,8 @@ public class TopicDto {
 
     private List<TagDto> tags;
 
+    private Integer totalCommentCount;
+
 
     public TopicDto() {
 
@@ -28,6 +30,10 @@ public class TopicDto {
 
     public Long getId() {
         return id;
+    }
+
+    public Integer getTotalCommentCount() {
+        return totalCommentCount;
     }
 
     public String getTitle() {
@@ -56,5 +62,9 @@ public class TopicDto {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void setTotalCommentCount(Integer totalCommentCount) {
+        this.totalCommentCount = totalCommentCount;
     }
 }

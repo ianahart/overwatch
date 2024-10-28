@@ -36,6 +36,7 @@ export interface ITopic {
   title: string;
   description: string;
   tags: ITag[];
+  totalCommentCount: number;
 }
 
 export interface INotificationSwitch {
