@@ -74,6 +74,7 @@ public class TopicService {
         List<TagDto> tagDtos = topic.getTags().stream()
                 .map(tag -> new TagDto(tag.getId(), tag.getName())).toList();
         topicDto.setTags(tagDtos);
+        topicDto.setTotalCommentCount(topic.getComments().size());
 
         return topicDto;
     }

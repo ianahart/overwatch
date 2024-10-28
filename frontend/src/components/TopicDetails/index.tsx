@@ -34,7 +34,7 @@ const TopicDetails = () => {
           <TopicDetailsHeader title={topic.title} />
           <TopicDetailsDescription description={topic.description} tags={topic.tags} />
           <hr className="border-gray-800" />
-          <TopicDetailsStats />
+          <TopicDetailsStats totalCommentCount={topic.totalCommentCount} />
           <hr className="border-gray-800" />
           <TopicDetailsCommentModal topicId={topic.id} />
           <TopicDetailsComments topicId={topic.id} />
