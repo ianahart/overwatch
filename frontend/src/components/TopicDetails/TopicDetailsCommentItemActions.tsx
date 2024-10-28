@@ -1,4 +1,4 @@
-import { FaBookmark, FaTrash } from 'react-icons/fa';
+import { FaBookmark, FaReply, FaTrash } from 'react-icons/fa';
 import { MdEdit } from 'react-icons/md';
 import { MdEmojiEmotions } from 'react-icons/md';
 import { useSelector } from 'react-redux';
@@ -7,11 +7,15 @@ import ToolTip from '../Shared/ToolTip';
 import { TRootState, useCreateSaveCommentMutation, useDeleteCommentMutation } from '../../state/store';
 import { IoMdFlag } from 'react-icons/io';
 import { useState } from 'react';
-import TopicDetailsReportCommentModal from './TopicDetailsReportCommentModal';
+import TopicDetailsReportCommentModalContent from './TopicDetailsReportCommentModalContent';
 import ClickAway from '../Shared/ClickAway';
 import TopicDetailsCommentReaction from './TopicDetailsCommentReaction';
+import TopicDetailsModal from './TopicDetailsModal';
+import TopicDetailsReplyModalContent from './TopicDetailsReplyModalContent';
 
 export interface ITopicDetailsCommentItemActionsProps {
+  currentUserFullName: string;
+  commentAuthorFullName: string;
   handleSetIsEditing: (editing: boolean) => void;
   commentId: number;
   commentUserId: number;
@@ -23,6 +27,8 @@ export interface ITopicDetailsCommentItemActionsProps {
 }
 
 const TopicDetailsCommentItemActions = ({
+  currentUserFullName,
+  commentAuthorFullName,
   handleSetIsEditing,
   commentId,
   commentUserId,
@@ -35,7 +41,7 @@ const TopicDetailsCommentItemActions = ({
   const { user, token } = useSelector((store: TRootState) => store.user);
   const [deleteComment] = useDeleteCommentMutation();
   const [saveComment] = useCreateSaveCommentMutation();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [openModal, setOpenModal] = useState<string | null>(null);
   const [isClickAwayOpen, setIsClickAwayOpen] = useState(false);
 
   const handleDeleteComment = (): void => {
@@ -53,13 +59,18 @@ const TopicDetailsCommentItemActions = ({
     setIsClickAwayOpen(false);
   };
 
-  const openReportCommentModal = (e: React.MouseEvent<HTMLDivElement>): void => {
+  const openReplyModal = (e: React.MouseEvent<HTMLDivElement>): void => {
     e.stopPropagation();
-    setIsModalOpen(true);
+    setOpenModal('reply');
   };
 
-  const closeReportCommentModal = (): void => {
-    setIsModalOpen(false);
+  const openReportModal = (e: React.MouseEvent<HTMLDivElement>): void => {
+    e.stopPropagation();
+    setOpenModal('report');
+  };
+
+  const closeModal = (): void => {
+    setOpenModal(null);
   };
 
   const handleOnSaveComment = (): void => {
@@ -119,17 +130,39 @@ const TopicDetailsCommentItemActions = ({
         </div>
       )}
       {user.id !== 0 && (
-        <div onClick={openReportCommentModal} className="mx-1 cursor-pointer">
+        <div onClick={openReplyModal} className="mx-1 cursor-pointer">
+          <ToolTip message="Reply">
+            <FaReply />
+          </ToolTip>
+          {openModal && (
+            <TopicDetailsModal closeModal={closeModal}>
+              <TopicDetailsReplyModalContent
+                currentUserFullName={currentUserFullName}
+                currentUserAvatarUrl={user.avatarUrl}
+                commentAuthorFullName={commentAuthorFullName}
+                currentUserId={user.id}
+                commentId={commentId}
+                comment={content}
+                closeModal={closeModal}
+              />
+            </TopicDetailsModal>
+          )}
+        </div>
+      )}
+      {user.id !== 0 && (
+        <div onClick={openReportModal} className="mx-1 cursor-pointer">
           <ToolTip message="Report">
             <IoMdFlag />
           </ToolTip>
-          {isModalOpen && (
-            <TopicDetailsReportCommentModal
-              currentUserId={user.id}
-              commentId={commentId}
-              content={content}
-              closeReportCommentModal={closeReportCommentModal}
-            />
+          {openModal === 'report' && (
+            <TopicDetailsModal closeModal={closeModal}>
+              <TopicDetailsReportCommentModalContent
+                currentUserId={user.id}
+                commentId={commentId}
+                content={content}
+                closeModal={closeModal}
+              />
+            </TopicDetailsModal>
           )}
         </div>
       )}

@@ -1873,6 +1873,15 @@ export interface IGetAllTopicsResponse {
   };
 }
 
+export interface ICreateReplyCommentRequest {
+  token: string;
+  userId: number;
+  commentId: number;
+  content: string;
+}
+
+export interface ICreateReplyCommentResponse extends IBaseResponse {}
+
 export interface IGetTopicsWithTagsRequest extends IGetAllTopicsRequest {
   query: string;
 }

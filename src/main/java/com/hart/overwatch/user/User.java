@@ -28,6 +28,7 @@ import com.hart.overwatch.phone.Phone;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.reaction.Reaction;
 import com.hart.overwatch.refreshtoken.RefreshToken;
+import com.hart.overwatch.replycomment.ReplyComment;
 import com.hart.overwatch.reportcomment.ReportComment;
 import com.hart.overwatch.repository.Repository;
 import com.hart.overwatch.review.Review;
@@ -259,6 +260,10 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<Reaction> reactions;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<ReplyComment> replyComments;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "setting_id", referencedColumnName = "id")
     private Setting setting;
@@ -307,6 +312,10 @@ public class User implements UserDetails {
 
     public String getAbbreviation() {
         return firstName.substring(0, 1).toUpperCase() + lastName.substring(0, 1).toUpperCase();
+    }
+
+    public List<ReplyComment> getReplyComments() {
+        return replyComments;
     }
 
     public String getSlug() {
@@ -707,6 +716,10 @@ public class User implements UserDetails {
 
     public void setLastActive(LocalDateTime lastActive) {
         this.lastActive = lastActive;
+    }
+
+    public void setReplyComments(List<ReplyComment> replyComments) {
+        this.replyComments = replyComments;
     }
 
     public void setReactions(List<Reaction> reactions) {

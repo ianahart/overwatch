@@ -3,6 +3,7 @@ export const topicState = {
   title: '',
   description: '',
   tags: [],
+  totalCommentCount: 0,
 };
 
 export const repositoryState = {
