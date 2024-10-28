@@ -60,4 +60,13 @@ public class TopicController {
                 topicService.getTopics(page, pageSize, direction)));
     }
 
+    @GetMapping(path = "/tags")
+    public ResponseEntity<GetAllTopicsResponse> getTopicsWithTags(@RequestParam("page") int page,
+            @RequestParam("pageSize") int pageSize, @RequestParam("direction") String direction,
+            @RequestParam("query") String query) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(new GetAllTopicsResponse("success",
+                topicService.getTopicsWithTags(page, pageSize, direction, query)));
+    }
+
 }

@@ -8,6 +8,8 @@ import {
   IGetTopicResponse,
   IGetTopicsRequest,
   IGetTopicsResponse,
+  IGetTopicsWithTagsRequest,
+  IGetTopicsWithTagsResponse,
 } from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
@@ -72,10 +74,26 @@ const topicsApi = createApi({
             ? [...result.data.items.map(({ id }) => ({ type: 'Topic', id })), { type: 'Topic', id: 'LIST' }]
             : [{ type: 'Topic', id: 'LIST' }],
       }),
+
+      fetchTopicsWithTags: builder.query<IGetTopicsWithTagsResponse, IGetTopicsWithTagsRequest>({
+        query: ({ query, page, pageSize, direction }) => {
+          return {
+            url: `/topics/tags?query=${query}&page=${page}&pageSize=${pageSize}&direction=${direction}`,
+            method: 'GET',
+            headers: {},
+          };
+        },
+        //@ts-ignore
+        providesTags: (result, error, arg) =>
+          result
+            ? [...result.data.items.map(({ id }) => ({ type: 'Topic', id })), { type: 'Topic', id: 'LIST' }]
+            : [{ type: 'Topic', id: 'LIST' }],
+      }),
     };
   },
 });
 export const {
+  useLazyFetchTopicsWithTagsQuery,
   useLazyFetchTopicsQuery,
   useFetchTopicsQuery,
   useCreateTopicMutation,

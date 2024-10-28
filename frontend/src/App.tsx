@@ -47,6 +47,7 @@ import ReviewFeedbackRoute from './components/Dashboard/Routes/User/Reviews/Revi
 import CreateCommunityTopicRoute from './routes/CreateCommunityTopicRoute';
 import NotFoundRoute from './routes/NotFoundRoute';
 import TopicDetailsRoute from './routes/TopicDetailsRoute';
+import TagsRoute from './routes/TagsRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -76,6 +77,7 @@ const router = createBrowserRouter(
           </RequireAuth>
         }
       />
+      <Route path="community/tags" element={<TagsRoute />} />
       <Route path="community/topics/:topicId" element={<TopicDetailsRoute />} />
       <Route
         path="/reviewer/repositories/:id"

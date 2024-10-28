@@ -1872,6 +1872,12 @@ export interface IGetAllTopicsResponse {
   };
 }
 
+export interface IGetTopicsWithTagsRequest extends IGetAllTopicsRequest {
+  query: string;
+}
+
+export interface IGetTopicsWithTagsResponse extends IGetAllTopicsResponse {}
+
 export interface IDeleteReactionResponse extends IBaseResponse {}
 
 export interface ICreateReactionResponse extends IBaseResponse {}

@@ -113,4 +113,21 @@ public class TopicService {
                 result.getTotalPages(), direction, result.getTotalElements());
     }
 
+
+    public PaginationDto<TopicDto> getTopicsWithTags(int page, int pageSize, String direction,
+            String query) {
+
+        Pageable pageable = this.paginationService.getPageable(page, pageSize, direction);
+
+        Page<Topic> result = this.topicRepository.findTopicWithTags(pageable, query);
+
+        List<TopicDto> topicDtos =
+                result.getContent().stream().map(this::convertToDto).collect(Collectors.toList());
+
+        return new PaginationDto<TopicDto>(topicDtos, result.getNumber(), pageSize,
+                result.getTotalPages(), direction, result.getTotalElements());
+    }
+
+
+
 }
