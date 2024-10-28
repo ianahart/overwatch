@@ -20,4 +20,10 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
     List<Topic> searchTopics(@Param("query") String query);
 
     Page<Topic> findAll(@Param("pageable") Pageable pageable);
+
+    @Query(value = """
+            SELECT t FROM Topic t JOIN t.tags tag WHERE tag.name = :query
+            """)
+    Page<Topic> findTopicWithTags(@Param("pageable") Pageable pageable,
+            @Param("query") String query);
 }
