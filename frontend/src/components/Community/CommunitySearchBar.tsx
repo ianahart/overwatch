@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useLazyFetchTopicsQuery } from '../../state/store';
+import { useLazySearchTopicsQuery } from '../../state/store';
 import { ITopic } from '../../interfaces';
 import ClickAway from '../Shared/ClickAway';
 import CommunitySearchTopicList from './CommunitySearchTopicList';
@@ -12,7 +12,7 @@ const CommunitySearchBar = ({ btnText }: ICommunitySearchBarProps) => {
   const [query, setQuery] = useState('');
   const [topics, setTopics] = useState<ITopic[]>([]);
   const [isOpen, setisOpen] = useState(false);
-  const [fetchTopics] = useLazyFetchTopicsQuery();
+  const [fetchTopics] = useLazySearchTopicsQuery();
   const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setisOpen(false);
@@ -46,7 +46,7 @@ const CommunitySearchBar = ({ btnText }: ICommunitySearchBarProps) => {
             className="border border-gray-800 bg-transparent h-9 rounded p-2 w-full"
           />
           {isOpen && (
-            <div className="absolute z-10 border border-gray-800 rounded p-2 w-full">
+            <div className="absolute z-10 bg-black border border-gray-800 rounded p-2 w-full">
               <ClickAway onClickAway={handleOnClickAway}>
                 <CommunitySearchTopicList topics={topics} />
               </ClickAway>

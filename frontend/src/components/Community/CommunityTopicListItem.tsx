@@ -2,11 +2,11 @@ import { useNavigate } from 'react-router-dom';
 import { ITopic } from '../../interfaces';
 import { shortenString } from '../../util';
 
-export interface ICommunitySearchTopicListItemProps {
+export interface ICommunityTopicListItemProps {
   topic: ITopic;
 }
 
-const CommunitySearchTopicListItem = ({ topic }: ICommunitySearchTopicListItemProps) => {
+const CommunityTopicListItem = ({ topic }: ICommunityTopicListItemProps) => {
   const navigate = useNavigate();
   const goToTopicPage = () => {
     navigate(`/community/topics/${topic.id}`);
@@ -29,4 +29,4 @@ const CommunitySearchTopicListItem = ({ topic }: ICommunitySearchTopicListItemPr
   );
 };
 
-export default CommunitySearchTopicListItem;
+export default CommunityTopicListItem;

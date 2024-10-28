@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.hart.overwatch.topic.request.CreateTopicRequest;
 import com.hart.overwatch.topic.response.CreateTopicResponse;
+import com.hart.overwatch.topic.response.GetAllTopicsResponse;
 import com.hart.overwatch.topic.response.GetTopicsResponse;
 import com.hart.overwatch.topic.response.GetTopicResponse;
 import com.hart.overwatch.topicmanagement.TopicManagementService;
@@ -32,23 +33,31 @@ public class TopicController {
         this.topicManagementService = topicManagementService;
     }
 
-    @GetMapping("/search")
+    @GetMapping(path = "/search")
     public ResponseEntity<GetTopicsResponse> searchTopics(@RequestParam("query") String query) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GetTopicsResponse("success", topicService.searchTopics(query)));
     }
 
-    @GetMapping("/{topicId}")
+    @GetMapping(path = "/{topicId}")
     public ResponseEntity<GetTopicResponse> getTopic(@PathVariable("topicId") Long topicId) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GetTopicResponse("success", topicService.getTopic(topicId)));
     }
 
-    @PostMapping("")
+    @PostMapping(path = "")
     public ResponseEntity<CreateTopicResponse> createTopic(
             @Valid @RequestBody CreateTopicRequest request) {
         topicManagementService.handleCreateTopic(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(new CreateTopicResponse("success"));
+    }
+
+    @GetMapping(path = "")
+    public ResponseEntity<GetAllTopicsResponse> getAllTopics(@RequestParam("page") int page,
+            @RequestParam("pageSize") int pageSize, @RequestParam("direction") String direction) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(new GetAllTopicsResponse("success",
+                topicService.getTopics(page, pageSize, direction)));
     }
 
 }

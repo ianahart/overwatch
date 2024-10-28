@@ -2,6 +2,8 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import {
   ICreateTopicRequest,
   ICreateTopicResponse,
+  IGetAllTopicsRequest,
+  IGetAllTopicsResponse,
   IGetTopicRequest,
   IGetTopicResponse,
   IGetTopicsRequest,
@@ -29,7 +31,7 @@ const topicsApi = createApi({
         providesTags: (result, _, arg) => (result ? [{ type: 'Topic', id: arg.topicId }] : []),
       }),
 
-      fetchTopics: builder.query<IGetTopicsResponse, IGetTopicsRequest>({
+      searchTopics: builder.query<IGetTopicsResponse, IGetTopicsRequest>({
         query: ({ query }) => {
           return {
             url: `/topics/search?query=${query}`,
@@ -56,8 +58,28 @@ const topicsApi = createApi({
         },
         invalidatesTags: [{ type: 'Topic', id: 'LIST' }],
       }),
+      fetchTopics: builder.query<IGetAllTopicsResponse, IGetAllTopicsRequest>({
+        query: ({ page, pageSize, direction }) => {
+          return {
+            url: `/topics?page=${page}&pageSize=${pageSize}&direction=${direction}`,
+            method: 'GET',
+            headers: {},
+          };
+        },
+        //@ts-ignore
+        providesTags: (result, error, arg) =>
+          result
+            ? [...result.data.items.map(({ id }) => ({ type: 'Topic', id })), { type: 'Topic', id: 'LIST' }]
+            : [{ type: 'Topic', id: 'LIST' }],
+      }),
     };
   },
 });
-export const { useCreateTopicMutation, useLazyFetchTopicsQuery, useFetchTopicQuery } = topicsApi;
+export const {
+  useLazyFetchTopicsQuery,
+  useFetchTopicsQuery,
+  useCreateTopicMutation,
+  useLazySearchTopicsQuery,
+  useFetchTopicQuery,
+} = topicsApi;
 export { topicsApi };
