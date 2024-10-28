@@ -521,7 +521,13 @@ export {
   useDeleteBlockedUserMutation,
 } from './apis/blockedUsersApi';
 
-export { useLazyFetchTopicsQuery, useCreateTopicMutation, useFetchTopicQuery } from './apis/topicsApi';
+export {
+  useFetchTopicsQuery,
+  useLazySearchTopicsQuery,
+  useCreateTopicMutation,
+  useFetchTopicQuery,
+  useLazyFetchTopicsQuery,
+} from './apis/topicsApi';
 
 export {
   useDeleteCommentMutation,

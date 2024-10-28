@@ -1,6 +1,7 @@
 import CommunityCreateTopicLink from './CommunityCreateTopicLink';
 import CommunityHeader from './CommunityHeader';
 import CommunitySearchBar from './CommunitySearchBar';
+import CommunityTopicList from './CommunityTopicList';
 
 const Community = () => {
   return (
@@ -14,6 +15,9 @@ const Community = () => {
       </div>
       <div className="my-8">
         <CommunitySearchBar btnText="Search" />
+      </div>
+      <div className="my-8">
+        <CommunityTopicList />
       </div>
     </div>
   );

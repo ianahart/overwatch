@@ -1853,6 +1853,25 @@ export interface IDeleteReactionRequest {
   userId: number;
   commentId: number;
 }
+
+export interface IGetAllTopicsRequest {
+  page: number;
+  pageSize: number;
+  direction: string;
+}
+
+export interface IGetAllTopicsResponse {
+  message: string;
+  data: {
+    items: ITopic[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
+}
+
 export interface IDeleteReactionResponse extends IBaseResponse {}
 
 export interface ICreateReactionResponse extends IBaseResponse {}

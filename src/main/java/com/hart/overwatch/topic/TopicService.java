@@ -1,11 +1,12 @@
 package com.hart.overwatch.topic;
 
 import java.util.List;
-import java.util.ArrayList;
 import java.util.stream.Collectors;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.topic.dto.TopicDto;
 import com.hart.overwatch.topic.request.CreateTopicRequest;
@@ -13,6 +14,8 @@ import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.pagination.PaginationService;
+import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.tag.dto.TagDto;
 
 @Service
@@ -22,10 +25,14 @@ public class TopicService {
 
     private final UserService userService;
 
+    private final PaginationService paginationService;
+
     @Autowired
-    public TopicService(TopicRepository topicRepository, UserService userService) {
+    public TopicService(TopicRepository topicRepository, UserService userService,
+            PaginationService paginationService) {
         this.topicRepository = topicRepository;
         this.userService = userService;
+        this.paginationService = paginationService;
     }
 
     public Topic getTopicById(Long topicId) {
@@ -92,4 +99,18 @@ public class TopicService {
 
         return convertToDto(topic);
     }
+
+    public PaginationDto<TopicDto> getTopics(int page, int pageSize, String direction) {
+
+        Pageable pageable = this.paginationService.getPageable(page, pageSize, direction);
+
+        Page<Topic> result = this.topicRepository.findAll(pageable);
+
+        List<TopicDto> topicDtos =
+                result.getContent().stream().map(this::convertToDto).collect(Collectors.toList());
+
+        return new PaginationDto<TopicDto>(topicDtos, result.getNumber(), pageSize,
+                result.getTotalPages(), direction, result.getTotalElements());
+    }
+
 }
