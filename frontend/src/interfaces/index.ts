@@ -1,9 +1,27 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface IReplyComment {
+  id: number;
+  content: string;
+  createdAt: string;
+  fullName: string;
+  avatarUrl: string;
+  userId: number;
+}
+
 export interface IReaction {
   emoji: string;
   count: number;
+}
+
+export interface IMinComment {
+  id: number;
+  content: string;
+  userId: number;
+  createdAt: string;
+  avatarUrl: string;
+  fullName: string;
 }
 
 export interface IComment {
@@ -385,6 +403,7 @@ export interface INotification {
   avatarUrl: string;
   notificationType: NotificationType;
   notificationRole: NotificationRole;
+  link: string;
 }
 
 export interface IPaginationState {
@@ -459,6 +478,7 @@ export interface ISetting {
   reviewInProgressNotifOn: boolean;
   reviewInCompleteNotifOn: boolean;
   reviewCompletedNotifOn: boolean;
+  commentReplyOn: boolean;
 }
 
 export interface ISkillsFormField {
@@ -1872,6 +1892,46 @@ export interface IGetAllTopicsResponse {
     totalElements: number;
   };
 }
+
+export interface ICreateReplyCommentRequest {
+  token: string;
+  userId: number;
+  commentId: number;
+  content: string;
+}
+
+export interface IGetCommentRequest {
+  token: string;
+  commentId: number;
+}
+
+export interface IGetCommentResponse {
+  message: string;
+  data: IMinComment;
+}
+
+export interface IGetReplyCommentsByUserRequest {
+  token: string;
+  userId: number;
+  commentId: number;
+  page: number;
+  pageSize: number;
+  direction: string;
+}
+
+export interface IGetReplyCommentsByUserResponse {
+  message: string;
+  data: {
+    items: IReplyComment[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
+}
+
+export interface ICreateReplyCommentResponse extends IBaseResponse {}
 
 export interface IGetTopicsWithTagsRequest extends IGetAllTopicsRequest {
   query: string;

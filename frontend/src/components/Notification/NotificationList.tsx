@@ -1,5 +1,6 @@
 import { INotification } from '../../interfaces';
 import dayjs from 'dayjs';
+import { Link } from 'react-router-dom';
 
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { AiOutlineClose } from 'react-icons/ai';
@@ -25,7 +26,17 @@ const NotificationList = ({ notifications, handleDeleteNotification, emitNotific
             </div>
             <div className="flex items-center">
               <Avatar initials="?.?" width="w-6" height="h-6" avatarUrl={notification.avatarUrl} />
-              <p className="text-xs ml-2 text-gray-400">{notification.text}</p>
+              <p className="text-xs ml-2 text-gray-400">
+                {notification.text}
+                {notification.link !== null && (
+                  <span className="text-xs text-blue-400 font-bold">
+                    <Link className="cursor-pointer" to={notification.link as string}>
+                      {' '}
+                      View here
+                    </Link>
+                  </span>
+                )}
+              </p>
             </div>
             {notification.notificationRole === NotificationRole.RECEIVER &&
               notification.notificationType === NotificationType.CONNECTION_REQUEST_PENDING && (

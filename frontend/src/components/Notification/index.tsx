@@ -1,6 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { over } from 'stompjs';
-import SockJS from 'sockjs-client';
 import { AiOutlineBell } from 'react-icons/ai';
 import { useSelector } from 'react-redux';
 import {
@@ -13,8 +11,7 @@ import { INotification, IPaginationState } from '../../interfaces';
 import { paginationState } from '../../data';
 import NotificationList from './NotificationList';
 import { NotificationType } from '../../enums';
-
-let stompClient: any = null;
+import { connectWebSocket, disconnectWebSocket, sendMessage, subscribeToTopic } from '../../util/WebSocketService';
 
 const Notifications = () => {
   const { user, token } = useSelector((store: TRootState) => store.user);
@@ -85,20 +82,8 @@ const Notifications = () => {
     }
   };
 
-  const connect = () => {
-    if (stompClient && stompClient.connected) {
-      console.log('WebSocket already connected');
-      stompClient.disconnect();
-    }
-
-    let Sock = new SockJS('http://localhost:8080/ws');
-    stompClient = over(Sock);
-
-    stompClient.connect({}, onConnected, onError);
-  };
-
   const onConnected = () => {
-    stompClient.subscribe(`/user/${user.id}/topic/notifications`, onNotification);
+    subscribeToTopic(`/user/${user.id}/topic/notifications`, onNotification);
   };
 
   const onNotification = () => {
@@ -128,12 +113,11 @@ const Notifications = () => {
 
   useEffect(() => {
     if (user.id !== 0) {
-      connect();
-    } else {
-      if (stompClient !== null) {
-        stompClient.disconnect();
-      }
+      connectWebSocket(onConnected, onError);
     }
+    return () => {
+      disconnectWebSocket();
+    };
   }, [user.id]);
 
   useEffect(() => {
@@ -151,13 +135,9 @@ const Notifications = () => {
   };
 
   const emitNotification = (notification: INotification) => {
-    if (stompClient && stompClient.connected) {
-      const { receiverId, senderId } = notification;
-      const payload = { receiverId, senderId, notificationType: NotificationType.CONNECTION_REQUEST_ACCEPTED };
-      stompClient.send('/api/v1/notify', {}, JSON.stringify(payload));
-    } else {
-      console.error('WebSocket is not connected');
-    }
+    const { receiverId, senderId } = notification;
+    const payload = { receiverId, senderId, notificationType: NotificationType.CONNECTION_REQUEST_ACCEPTED };
+    sendMessage('/api/v1/notify', JSON.stringify(payload));
   };
 
   return (

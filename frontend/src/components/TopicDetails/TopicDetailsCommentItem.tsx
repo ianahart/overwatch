@@ -93,6 +93,7 @@ const TopicDetailsCommentItem = ({
           </div>
           <div className="my-2">
             <TopicDetailsCommentItemActions
+              currentUserFullName={user.fullName}
               handleSetIsEditing={handleSetIsEditing}
               commentId={comment.id}
               commentUserId={comment.userId}
@@ -101,6 +102,7 @@ const TopicDetailsCommentItem = ({
               updateCommentReaction={updateCommentReaction}
               updateSavedComment={updateSavedComment}
               removeCommentReaction={removeCommentReaction}
+              commentAuthorFullName={comment.fullName}
             />
           </div>
         </div>

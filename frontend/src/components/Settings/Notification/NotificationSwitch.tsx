@@ -15,6 +15,7 @@ export interface INotifDetailsMapper {
   paymentAcknowledgementNotifOn: { name: string; details: string };
   requestPendingNotifOn: { name: string; details: string };
   requestAcceptedNotifOn: { name: string; details: string };
+  commentReplyOn: { name: string; details: string };
 }
 
 const NotificationSwitch = ({ propName, value, setting }: INotificationSwitchProps) => {
@@ -22,11 +23,13 @@ const NotificationSwitch = ({ propName, value, setting }: INotificationSwitchPro
   const [updateSettingsMut] = useUpdateSettingsMutation();
   const dispatch = useDispatch();
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.checked);
     const updatedSetting = { ...setting, [propName]: e.target.checked };
     updateSettingsMut({ setting: updatedSetting, token })
       .unwrap()
       .then((res) => {
         if (res.data !== null || res.data !== undefined) {
+          console.log(res.data);
           dispatch(updateSetting(res.data));
         }
       })
@@ -66,14 +69,20 @@ const NotificationSwitch = ({ propName, value, setting }: INotificationSwitchPro
       details:
         'Toggling this on and off will result in you seeing notifications regarding accepted connection requests.',
     },
+    commentReplyOn: {
+      name: 'Reply To Comments',
+      details: "Toggling this on and off will result in you not getting notifications if you're comment is replied to.",
+    },
   };
 
   const notifName = propName as keyof INotifDetailsMapper;
 
   return (
     <div className="flex items-center">
-      <label className="relative flex justify-between items-center group p-2 text-xl">
+      <label htmlFor={`switch${propName}`} className="relative flex justify-between items-center group p-2 text-xl">
         <input
+          id={`switch${propName}`}
+          name={`switch${propName}`}
           onChange={handleOnChange}
           checked={value}
           type="checkbox"

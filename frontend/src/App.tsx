@@ -48,6 +48,7 @@ import CreateCommunityTopicRoute from './routes/CreateCommunityTopicRoute';
 import NotFoundRoute from './routes/NotFoundRoute';
 import TopicDetailsRoute from './routes/TopicDetailsRoute';
 import TagsRoute from './routes/TagsRoute';
+import SingleReplyCommentRoute from './routes/SingleReplyCommentRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -74,6 +75,14 @@ const router = createBrowserRouter(
         element={
           <RequireAuth>
             <CreateCommunityTopicRoute />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="comments/:commentId"
+        element={
+          <RequireAuth>
+            <SingleReplyCommentRoute />
           </RequireAuth>
         }
       />

@@ -17,6 +17,7 @@ import com.hart.overwatch.comment.request.UpdateCommentRequest;
 import com.hart.overwatch.comment.response.CreateCommentResponse;
 import com.hart.overwatch.comment.response.DeleteCommentResponse;
 import com.hart.overwatch.comment.response.GetAllCommentResponse;
+import com.hart.overwatch.comment.response.GetCommentResponse;
 import com.hart.overwatch.comment.response.UpdateCommentResponse;
 import jakarta.validation.Valid;
 
@@ -59,5 +60,12 @@ public class CommentController {
             @PathVariable("commentId") Long commentId) {
         commentService.deleteComment(commentId);
         return ResponseEntity.status(HttpStatus.OK).body(new DeleteCommentResponse("success"));
+    }
+
+    @GetMapping(path = "/comments/{commentId}")
+    public ResponseEntity<GetCommentResponse> getComment(
+            @PathVariable("commentId") Long commentId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new GetCommentResponse("success", commentService.getComment(commentId)));
     }
 }

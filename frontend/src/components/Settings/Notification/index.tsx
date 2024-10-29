@@ -9,7 +9,7 @@ const Notification = () => {
   const { setting } = useSelector((store: TRootState) => store.setting);
   const switches = useMemo(() => {
     return Object.entries(setting).reduce((notifArray, [key, value]) => {
-      if (key.endsWith('NotifOn')) {
+      if (key.endsWith('On')) {
         notifArray.push({ key, value: value as boolean });
       }
       return notifArray;

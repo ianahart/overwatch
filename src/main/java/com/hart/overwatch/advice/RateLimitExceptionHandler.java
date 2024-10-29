@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class RateLimitExceptionHandler {
-    @ExceptionHandler(BadRequestException.class)
+    @ExceptionHandler(RateLimitException.class)
     @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
     @ResponseBody
-    public ErrorResponse handleBadRequestException(BadRequestException ex) {
+    public ErrorResponse handleBadRequestException(RateLimitException ex) {
 
         ErrorResponse response = new ErrorResponse();
         response.setMessage(ex.getMessage());

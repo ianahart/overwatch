@@ -29,16 +29,6 @@ public class NotificationWebSocketController {
     @SendTo("/topic/notifications")
     public void receiveNotification(@Payload CreateNotificationRequest request) {
         List<NotificationDto> notifications = this.notificationService.createNotification(request);
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println(notifications.size());
 
         for (NotificationDto notificationDto : notifications) {
             System.out.println(notificationDto.getText());

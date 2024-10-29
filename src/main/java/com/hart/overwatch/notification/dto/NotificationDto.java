@@ -21,19 +21,22 @@ public class NotificationDto {
 
     private NotificationRole notificationRole;
 
+    private String link;
+
 
     public NotificationDto() {
 
     }
 
     public NotificationDto(Long id, Timestamp createdAt, String text, Long receiverId,
-            Long senderId, String avatarUrl, NotificationType notificationType,
+            Long senderId, String link, String avatarUrl, NotificationType notificationType,
             NotificationRole notificationRole) {
         this.id = id;
         this.createdAt = createdAt;
         this.text = text;
         this.receiverId = receiverId;
         this.senderId = senderId;
+        this.link = link;
         this.avatarUrl = avatarUrl;
         this.notificationType = notificationType;
         this.notificationRole = notificationRole;
@@ -41,6 +44,10 @@ public class NotificationDto {
 
     public Long getId() {
         return id;
+    }
+
+    public String getLink() {
+        return link;
     }
 
     public String getText() {
@@ -101,5 +108,9 @@ public class NotificationDto {
 
     public void setNotificationRole(NotificationRole notificationRole) {
         this.notificationRole = notificationRole;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
     }
 }

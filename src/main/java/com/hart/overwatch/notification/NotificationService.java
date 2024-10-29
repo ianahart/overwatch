@@ -160,8 +160,14 @@ public class NotificationService {
                 deletePendingNotification(sender.getId(), receiver.getId(),
                         NotificationType.CONNECTION_REQUEST_PENDING);
                 break;
+            case COMMENT_REPLY:
+                if (receiverSetting.getCommentReplyOn()) {
+                    notificationText.put("receiver", String
+                            .format("%s replied to one of your comments", sender.getFullName()));
+                }
+                notificationText.put("sender", "");
+                break;
             default:
-
         }
         return notificationText;
     }
@@ -172,11 +178,17 @@ public class NotificationService {
     }
 
     private NotificationDto convertToDto(Notification savedNotification, String avatarUrl) {
-        return new NotificationDto(savedNotification.getId(), savedNotification.getCreatedAt(),
-                savedNotification.getText(), savedNotification.getReceiver().getId(),
-                savedNotification.getSender().getId(), avatarUrl,
-                savedNotification.getNotificationType(), savedNotification.getNotificationRole());
-
+        NotificationDto notificationDto = new NotificationDto();
+        notificationDto.setId(savedNotification.getId());
+        notificationDto.setCreatedAt(savedNotification.getCreatedAt());
+        notificationDto.setText(savedNotification.getText());
+        notificationDto.setReceiverId(savedNotification.getReceiver().getId());
+        notificationDto.setSenderId(savedNotification.getSender().getId());
+        notificationDto.setAvatarUrl(avatarUrl);
+        notificationDto.setNotificationType(savedNotification.getNotificationType());
+        notificationDto.setNotificationRole(savedNotification.getNotificationRole());
+        notificationDto.setLink(savedNotification.getLink());
+        return notificationDto;
     }
 
     @Transactional
@@ -209,14 +221,17 @@ public class NotificationService {
 
             Notification senderNotification = null;
             Notification receiverNotification = null;
+            String link = request.getLink().isPresent() ? request.getLink().get() : null;
             if (texts.get("sender") != null && texts.get("sender").length() > 0) {
-                senderNotification = new Notification(texts.get("sender"),
-                        request.getNotificationType(), receiver, sender, NotificationRole.SENDER);
+                senderNotification =
+                        new Notification(texts.get("sender"), request.getNotificationType(),
+                                receiver, sender, NotificationRole.SENDER, link);
             }
 
             if (texts.get("receiver") != null && texts.get("receiver").length() > 0) {
-                receiverNotification = new Notification(texts.get("receiver"),
-                        request.getNotificationType(), receiver, sender, NotificationRole.RECEIVER);
+                receiverNotification =
+                        new Notification(texts.get("receiver"), request.getNotificationType(),
+                                receiver, sender, NotificationRole.RECEIVER, link);
             }
 
 

@@ -8,6 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import com.hart.overwatch.commentvote.CommentVote;
 import com.hart.overwatch.reaction.Reaction;
 import com.hart.overwatch.reaction.dto.ReactionDto;
+import com.hart.overwatch.replycomment.ReplyComment;
 import com.hart.overwatch.reportcomment.ReportComment;
 import com.hart.overwatch.savecomment.SaveComment;
 import com.hart.overwatch.topic.Topic;
@@ -74,6 +75,10 @@ public class Comment {
             orphanRemoval = true)
     private List<Reaction> reactions;
 
+    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<ReplyComment> replyComments;
+
 
     public Comment() {
 
@@ -109,6 +114,10 @@ public class Comment {
                 .collect(Collectors.groupingBy(reaction -> reaction.getEmoji())).entrySet().stream()
                 .map(entry -> new ReactionDto(entry.getKey(), entry.getValue().size()))
                 .collect(Collectors.toList());
+    }
+
+    public List<ReplyComment> getReplyComments() {
+        return replyComments;
     }
 
     public List<Reaction> getReactions() {
@@ -197,6 +206,10 @@ public class Comment {
 
     public void setSavedComments(List<SaveComment> savedComments) {
         this.savedComments = savedComments;
+    }
+
+    public void setReplyComments(List<ReplyComment> replyComments) {
+        this.replyComments = replyComments;
     }
 
 };

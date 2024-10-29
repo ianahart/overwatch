@@ -57,6 +57,9 @@ public class Setting {
     @Column(name = "request_accepted_notif_on")
     private Boolean requestAcceptedNotifOn;
 
+    @Column(name = "comment_reply_on")
+    private Boolean commentReplyOn;
+
     @JsonIgnore
     @OneToOne(mappedBy = "setting")
     private User user;
@@ -68,7 +71,7 @@ public class Setting {
     public Setting(Long id, Timestamp createdAt, Timestamp updatedAt, Boolean mfaEnabled,
             Boolean reviewInProgressNotifOn, Boolean reviewInCompleteNotifOn,
             Boolean reviewCompletedNotifOn, Boolean paymentAcknowledgementNotifOn,
-            Boolean requestPendingNotifOn, Boolean requestAcceptedNotifOn) {
+            Boolean requestPendingNotifOn, Boolean requestAcceptedNotifOn, Boolean commentReplyOn) {
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -79,18 +82,20 @@ public class Setting {
         this.paymentAcknowledgementNotifOn = paymentAcknowledgementNotifOn;
         this.requestPendingNotifOn = requestPendingNotifOn;
         this.requestAcceptedNotifOn = requestAcceptedNotifOn;
+        this.commentReplyOn = commentReplyOn;
     }
 
 
     public Setting(Boolean reviewInProgressNotifOn, Boolean reviewInCompleteNotifOn,
             Boolean reviewCompletedNotifOn, Boolean paymentAcknowledgementNotifOn,
-            Boolean requestPendingNotifOn, Boolean requestAcceptedNotifOn) {
+            Boolean requestPendingNotifOn, Boolean requestAcceptedNotifOn, Boolean commentReplyOn) {
         this.reviewInProgressNotifOn = reviewInProgressNotifOn;
         this.reviewInCompleteNotifOn = reviewInCompleteNotifOn;
         this.reviewCompletedNotifOn = reviewCompletedNotifOn;
         this.paymentAcknowledgementNotifOn = paymentAcknowledgementNotifOn;
         this.requestPendingNotifOn = requestPendingNotifOn;
         this.requestAcceptedNotifOn = requestAcceptedNotifOn;
+        this.commentReplyOn = commentReplyOn;
     }
 
 
@@ -126,7 +131,6 @@ public class Setting {
         return paymentAcknowledgementNotifOn;
     }
 
-
     public Timestamp getCreatedAt() {
         return createdAt;
     }
@@ -136,6 +140,9 @@ public class Setting {
         return updatedAt;
     }
 
+    public Boolean getCommentReplyOn() {
+        return commentReplyOn;
+    }
 
     public User getUser() {
         return user;
@@ -185,5 +192,10 @@ public class Setting {
     public void setPaymentAcknowledgementNotifOn(Boolean paymentAcknowledgementNotifOn) {
         this.paymentAcknowledgementNotifOn = paymentAcknowledgementNotifOn;
     }
+
+    public void setCommentReplyOn(Boolean commentReplyOn) {
+        this.commentReplyOn = commentReplyOn;
+    }
+
 }
 
