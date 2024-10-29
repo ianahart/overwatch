@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { BsLightningCharge } from 'react-icons/bs';
 import { useSelector } from 'react-redux';
-import { over } from 'stompjs';
-import SockJS from 'sockjs-client';
 import { AiOutlineCheck } from 'react-icons/ai';
 
 import { NotificationType, RequestStatus } from '../../enums';
 import Avatar from '../Shared/Avatar';
+import { connectWebSocket, disconnectWebSocket, sendMessage } from '../../util/WebSocketService';
 import {
   TRootState,
   useCreateConnectionMutation,
@@ -22,8 +21,6 @@ export interface IConnectProps {
   abbreviation: string;
 }
 
-let stompClient: any = null;
-
 const Connect = ({ receiverId, senderId, fullName, avatarUrl, abbreviation }: IConnectProps) => {
   const shouldRun = useRef(true);
   const { token } = useSelector((store: TRootState) => store.user);
@@ -35,18 +32,6 @@ const Connect = ({ receiverId, senderId, fullName, avatarUrl, abbreviation }: IC
   const [connectionId, setConnectionId] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const points = ['Stay in touch easier', 'Get to know one another', 'Get help when you need it'];
-
-  const connect = () => {
-    if (stompClient && stompClient.connected) {
-      console.log('WebSocket already connected');
-      return;
-    }
-
-    let Sock = new SockJS('http://localhost:8080/ws');
-    stompClient = over(Sock);
-
-    stompClient.connect({}, onConnected, onError);
-  };
 
   const onConnected = () => {
     console.log('WebSocket connected');
@@ -67,25 +52,16 @@ const Connect = ({ receiverId, senderId, fullName, avatarUrl, abbreviation }: IC
   useEffect(() => {
     if (shouldRun.current) {
       shouldRun.current = false;
-      connect();
+      connectWebSocket(onConnected, onError);
     }
-
     return () => {
-      if (stompClient && stompClient.connected) {
-        stompClient.disconnect(() => {
-          console.log('WebSocket disconnected');
-        });
-      }
+      disconnectWebSocket();
     };
   }, []);
 
   const emitNotification = () => {
-    if (stompClient && stompClient.connected) {
-      const payload = { receiverId, senderId, notificationType: NotificationType.CONNECTION_REQUEST_PENDING };
-      stompClient.send('/api/v1/notify', {}, JSON.stringify(payload));
-    } else {
-      console.error('WebSocket is not connected');
-    }
+    const payload = { receiverId, senderId, notificationType: NotificationType.CONNECTION_REQUEST_PENDING };
+    sendMessage('/api/v1/notify', JSON.stringify(payload));
   };
 
   const handleConnectToReviewer = () => {

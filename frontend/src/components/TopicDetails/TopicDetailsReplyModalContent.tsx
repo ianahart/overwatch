@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
+import { over } from 'stompjs';
+import SockJS from 'sockjs-client';
 
 import { initializeName } from '../../util';
 import Avatar from '../Shared/Avatar';
@@ -7,6 +9,7 @@ import { IError } from '../../interfaces';
 import { TRootState, useCreateReplyCommentMutation } from '../../state/store';
 
 export interface ITopicDetailsReplyModalContentProps {
+  commentUserId: number;
   currentUserAvatarUrl: string;
   commentAuthorFullName: string;
   currentUserFullName: string;
@@ -16,7 +19,10 @@ export interface ITopicDetailsReplyModalContentProps {
   closeModal: () => void;
 }
 
+let stompClient: any = null;
+
 const TopicDetailsReplyModalContent = ({
+  commentUserId,
   currentUserAvatarUrl,
   commentAuthorFullName,
   currentUserFullName,
@@ -26,11 +32,46 @@ const TopicDetailsReplyModalContent = ({
   closeModal,
 }: ITopicDetailsReplyModalContentProps) => {
   const MAX_CONTENT_LENGTH = 400;
+  const shouldRun = useRef(true);
   const { token } = useSelector((store: TRootState) => store.user);
   const [createReplyComment] = useCreateReplyCommentMutation();
   const [firstName, lastName] = currentUserFullName.split(' ');
   const [content, setContent] = useState('');
   const [error, setError] = useState('');
+
+  const connect = () => {
+    if (stompClient && stompClient.connected) {
+      console.log('WebSocket already connected');
+      return;
+    }
+
+    let Sock = new SockJS(import.meta.env.VITE_WEBSOCKET_ENDPOINT);
+    stompClient = over(Sock);
+
+    stompClient.connect({}, onConnected, onError);
+  };
+
+  const onConnected = () => {
+    console.log('WebSocket connected');
+  };
+
+  const onError = (err: any) => {
+    console.error('WebSocket error:', err);
+  };
+
+  useEffect(() => {
+    if (shouldRun.current) {
+      shouldRun.current = false;
+      connect();
+    }
+    return () => {
+      if (stompClient && stompClient.connected) {
+        stompClient.disconnect(() => {
+          console.log('WebSocket disconnected');
+        });
+      }
+    };
+  }, []);
 
   const applyServerErrors = <T extends IError>(errors: T): void => {
     for (let prop in errors) {
