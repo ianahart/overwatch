@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.comment.dto.CommentDto;
+import com.hart.overwatch.comment.dto.MinCommentDto;
 import com.hart.overwatch.comment.request.CreateCommentRequest;
 import com.hart.overwatch.comment.request.UpdateCommentRequest;
 import com.hart.overwatch.commentvote.CommentVote;
@@ -144,5 +145,23 @@ public class CommentService {
             throw new ForbiddenException("Cannot update a comment that is not yours");
         }
         commentRepository.delete(comment);
+    }
+
+
+    private MinCommentDto convertToMinDto(Comment comment) {
+        MinCommentDto commentDto = new MinCommentDto();
+        commentDto.setId(comment.getId());
+        commentDto.setUserId(comment.getUser().getId());
+        commentDto.setContent(comment.getContent());
+        commentDto.setFullName(comment.getUser().getFullName());
+        commentDto.setCreatedAt(comment.getCreatedAt());
+        commentDto.setAvatarUrl(comment.getUser().getProfile().getAvatarUrl());
+        return commentDto;
+    }
+
+    public MinCommentDto getComment(Long commentId) {
+        Comment comment = getCommentById(commentId);
+
+        return convertToMinDto(comment);
     }
 }

@@ -1,5 +1,10 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { ICreateReplyCommentRequest, ICreateReplyCommentResponse } from '../../interfaces';
+import {
+  ICreateReplyCommentRequest,
+  ICreateReplyCommentResponse,
+  IGetReplyCommentsByUserRequest,
+  IGetReplyCommentsByUserResponse,
+} from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
 const replyCommentsApi = createApi({
@@ -8,6 +13,29 @@ const replyCommentsApi = createApi({
   tagTypes: ['ReplyComment'],
   endpoints(builder) {
     return {
+      fetchReplyCommentsByUser: builder.query<IGetReplyCommentsByUserResponse, IGetReplyCommentsByUserRequest>({
+        query: ({ userId, token, page, pageSize, direction, commentId }) => {
+          if (!userId || !token || !commentId) {
+            return '';
+          }
+          return {
+            url: `/comments/${commentId}/reply/user/${userId}?&page=${page}&pageSize=${pageSize}&direction=${direction}`,
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+        //@ts-ignore
+        providesTags: (result, error, arg) =>
+          result
+            ? [
+                ...result.data.items.map(({ id }) => ({ type: 'ReplyComment', id })),
+                { type: 'ReplyComment', id: 'LIST' },
+              ]
+            : [{ type: 'ReplyComment', id: 'LIST' }],
+      }),
+
       createReplyComment: builder.mutation<ICreateReplyCommentResponse, ICreateReplyCommentRequest>({
         query: ({ token, userId, commentId, content }) => {
           return {
@@ -24,5 +52,5 @@ const replyCommentsApi = createApi({
     };
   },
 });
-export const { useCreateReplyCommentMutation } = replyCommentsApi;
+export const { useLazyFetchReplyCommentsByUserQuery, useCreateReplyCommentMutation } = replyCommentsApi;
 export { replyCommentsApi };

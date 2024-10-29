@@ -1,3 +1,12 @@
+export const minCommentState = {
+  id: 0,
+  content: '',
+  userId: 0,
+  createdAt: '',
+  avatarUrl: '',
+  fullName: '',
+};
+
 export const topicState = {
   id: 0,
   title: '',

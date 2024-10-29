@@ -534,6 +534,7 @@ export {
 } from './apis/topicsApi';
 
 export {
+  useFetchCommentQuery,
   useDeleteCommentMutation,
   useUpdateCommentMutation,
   useCreateCommentMutation,
@@ -549,7 +550,7 @@ export { useCreateSaveCommentMutation } from './apis/savedCommentsApi';
 
 export { useDeleteReactionMutation, useCreateReactionMutation, useFetchReactionQuery } from './apis/reactionsApi';
 
-export { useCreateReplyCommentMutation } from './apis/replyCommentsApi';
+export { useLazyFetchReplyCommentsByUserQuery, useCreateReplyCommentMutation } from './apis/replyCommentsApi';
 
 export {
   testimonialsApi,

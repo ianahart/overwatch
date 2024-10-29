@@ -4,6 +4,8 @@ import {
   ICreateCommentResponse,
   IDeleteCommentRequest,
   IDeleteCommentResponse,
+  IGetCommentRequest,
+  IGetCommentResponse,
   IGetCommentsRequest,
   IGetCommentsResponse,
   IUpdateCommentRequest,
@@ -17,6 +19,20 @@ const commentsApi = createApi({
   tagTypes: ['Comment'],
   endpoints(builder) {
     return {
+      fetchComment: builder.query<IGetCommentResponse, IGetCommentRequest>({
+        query: ({ commentId, token }) => {
+          if (!commentId || !token) {
+            return '';
+          }
+          return {
+            url: `/comments/${commentId}`,
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+      }),
       fetchComments: builder.query<IGetCommentsResponse, IGetCommentsRequest>({
         query: ({ topicId, page, pageSize, direction, sort, token = '' }) => {
           if (topicId === undefined || !topicId) {
@@ -79,6 +95,7 @@ const commentsApi = createApi({
   },
 });
 export const {
+  useFetchCommentQuery,
   useDeleteCommentMutation,
   useCreateCommentMutation,
   useFetchCommentsQuery,
