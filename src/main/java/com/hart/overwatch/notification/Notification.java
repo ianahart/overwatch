@@ -40,6 +40,9 @@ public class Notification {
     @Column(name = "text", length = 200, nullable = false)
     private String text;
 
+    @Column(name = "link", nullable = true)
+    private String link;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "notification_type")
     private NotificationType notificationType;
@@ -62,34 +65,41 @@ public class Notification {
     }
 
     public Notification(Long id, Timestamp createdAt, Timestamp updatedAt, String text,
-            NotificationType notificationType, NotificationRole notificationRole) {
+            NotificationType notificationType, NotificationRole notificationRole, String link) {
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.text = text;
         this.notificationType = notificationType;
         this.notificationRole = notificationRole;
+        this.link = link;
     }
 
     public Notification(String text, NotificationType notificationType, User receiver, User sender,
-            NotificationRole notificationRole) {
+            NotificationRole notificationRole, String link) {
         this.text = text;
         this.notificationType = notificationType;
         this.receiver = receiver;
         this.sender = sender;
         this.notificationRole = notificationRole;
+        this.link = link;
     }
 
     public Notification(String text, NotificationType notificationType, User receiver,
-            NotificationRole notificationRole) {
+            NotificationRole notificationRole, String link) {
         this.text = text;
         this.notificationType = notificationType;
         this.receiver = receiver;
         this.notificationRole = notificationRole;
+        this.link = link;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public String getLink() {
+        return link;
     }
 
     public User getSender() {
@@ -150,6 +160,10 @@ public class Notification {
 
     public void setNotificationRole(NotificationRole notificationRole) {
         this.notificationRole = notificationRole;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
     }
 }
 

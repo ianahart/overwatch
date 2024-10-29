@@ -31,6 +31,7 @@ public class SettingService {
         setting.setReviewInCompleteNotifOn(true);
         setting.setReviewInProgressNotifOn(true);
         setting.setPaymentAcknowledgementNotifOn(true);
+        setting.setCommentReplyOn(true);
 
         this.settingRepository.save(setting);
 
@@ -111,6 +112,7 @@ public class SettingService {
                     .setReviewInProgressNotifOn(request.getSetting().getReviewInProgressNotifOn());
             currentUserSetting.setPaymentAcknowledgementNotifOn(
                     request.getSetting().getPaymentAcknowledgementNotifOn());
+            currentUserSetting.setCommentReplyOn(request.getSetting().getCommentReplyOn());
 
 
             this.settingRepository.save(currentUserSetting);
@@ -134,6 +136,7 @@ public class SettingService {
         settingDto.setPaymentAcknowledgementNotifOn(setting.getPaymentAcknowledgementNotifOn());
         settingDto.setRequestPendingNotifOn(setting.getRequestPendingNotifOn());
         settingDto.setRequestAcceptedNotifOn(setting.getRequestAcceptedNotifOn());
+        settingDto.setCommentReplyOn(setting.getCommentReplyOn());
 
         return settingDto;
     }

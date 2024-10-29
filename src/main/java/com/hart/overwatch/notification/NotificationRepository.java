@@ -30,7 +30,7 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
     @Query(value = """
             SELECT new com.hart.overwatch.notification.dto.NotificationDto(
             n.id AS id, n.createdAt AS createdAt, n.text AS text,
-            r.id AS receiverId, s.id AS senderId,
+            r.id AS receiverId, s.id AS senderId, n.link AS link,
             CASE
                 WHEN n.notificationRole = 'RECEIVER' THEN sp.avatarUrl
                 WHEN n.notificationRole = 'SENDER' THEN rp.avatarUrl

@@ -385,6 +385,7 @@ export interface INotification {
   avatarUrl: string;
   notificationType: NotificationType;
   notificationRole: NotificationRole;
+  link: string;
 }
 
 export interface IPaginationState {
@@ -459,6 +460,7 @@ export interface ISetting {
   reviewInProgressNotifOn: boolean;
   reviewInCompleteNotifOn: boolean;
   reviewCompletedNotifOn: boolean;
+  commentReplyOn: boolean;
 }
 
 export interface ISkillsFormField {

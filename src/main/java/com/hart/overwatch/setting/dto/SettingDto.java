@@ -24,6 +24,8 @@ public class SettingDto {
 
     private Boolean requestAcceptedNotifOn;
 
+    private Boolean commentReplyOn;
+
 
     public SettingDto() {
 
@@ -32,7 +34,7 @@ public class SettingDto {
     public SettingDto(Long id, Long userId, Boolean mfaEnabled, Timestamp createdAt,
             Boolean reviewInProgressNotifOn, Boolean reviewInCompleteNotifOn,
             Boolean reviewCompletedNotifOn, Boolean paymentAcknowledgementNotifOn,
-            Boolean requestPendingNotifOn, Boolean requestAcceptedNotifOn) {
+            Boolean requestPendingNotifOn, Boolean requestAcceptedNotifOn, Boolean commentReplyOn) {
         this.id = id;
         this.userId = userId;
         this.mfaEnabled = mfaEnabled;
@@ -43,6 +45,7 @@ public class SettingDto {
         this.paymentAcknowledgementNotifOn = paymentAcknowledgementNotifOn;
         this.requestPendingNotifOn = paymentAcknowledgementNotifOn;
         this.requestAcceptedNotifOn = requestAcceptedNotifOn;
+        this.commentReplyOn = commentReplyOn;
     }
 
     public Long getId() {
@@ -51,6 +54,10 @@ public class SettingDto {
 
     public Boolean getRequestPendingNotifOn() {
         return requestPendingNotifOn;
+    }
+
+    public Boolean getCommentReplyOn() {
+        return commentReplyOn;
     }
 
     public Boolean getRequestAcceptedNotifOn() {
@@ -123,5 +130,9 @@ public class SettingDto {
 
     public void setPaymentAcknowledgementNotifOn(Boolean paymentAcknowledgementNotifOn) {
         this.paymentAcknowledgementNotifOn = paymentAcknowledgementNotifOn;
+    }
+
+    public void setCommentReplyOn(Boolean commentReplyOn) {
+        this.commentReplyOn = commentReplyOn;
     }
 }

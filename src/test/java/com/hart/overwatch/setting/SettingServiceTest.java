@@ -93,7 +93,7 @@ public class SettingServiceTest {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         Boolean mfaEnabled = false;
         SettingDto settingDto = new SettingDto(setting.getId(), user.getId(), mfaEnabled, timestamp,
-                true, true, true, true, true, true);
+                true, true, true, true, true, true, true);
 
         when(settingRepository.fetchSettingById(setting.getId())).thenReturn(settingDto);
 

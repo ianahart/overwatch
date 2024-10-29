@@ -14,11 +14,11 @@ import TopicDetailsModal from './TopicDetailsModal';
 import TopicDetailsReplyModalContent from './TopicDetailsReplyModalContent';
 
 export interface ITopicDetailsCommentItemActionsProps {
+  commentUserId: number;
   currentUserFullName: string;
   commentAuthorFullName: string;
   handleSetIsEditing: (editing: boolean) => void;
   commentId: number;
-  commentUserId: number;
   content: string;
   curUserHasSaved: boolean;
   updateSavedComment: (commentId: number, curUserHasSaved: boolean) => void;
@@ -27,11 +27,11 @@ export interface ITopicDetailsCommentItemActionsProps {
 }
 
 const TopicDetailsCommentItemActions = ({
+  commentUserId,
   currentUserFullName,
   commentAuthorFullName,
   handleSetIsEditing,
   commentId,
-  commentUserId,
   content,
   curUserHasSaved,
   updateSavedComment,
@@ -137,6 +137,7 @@ const TopicDetailsCommentItemActions = ({
           {openModal && (
             <TopicDetailsModal closeModal={closeModal}>
               <TopicDetailsReplyModalContent
+                commentUserId={commentUserId}
                 currentUserFullName={currentUserFullName}
                 currentUserAvatarUrl={user.avatarUrl}
                 commentAuthorFullName={commentAuthorFullName}

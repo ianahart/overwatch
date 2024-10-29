@@ -1,12 +1,12 @@
 import { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { over } from 'stompjs';
-import SockJS from 'sockjs-client';
 
 import { initializeName } from '../../util';
 import Avatar from '../Shared/Avatar';
 import { IError } from '../../interfaces';
 import { TRootState, useCreateReplyCommentMutation } from '../../state/store';
+import { connectWebSocket, disconnectWebSocket, sendMessage } from '../../util/WebSocketService';
+import { NotificationType } from '../../enums';
 
 export interface ITopicDetailsReplyModalContentProps {
   commentUserId: number;
@@ -18,8 +18,6 @@ export interface ITopicDetailsReplyModalContentProps {
   comment: string;
   closeModal: () => void;
 }
-
-let stompClient: any = null;
 
 const TopicDetailsReplyModalContent = ({
   commentUserId,
@@ -39,18 +37,6 @@ const TopicDetailsReplyModalContent = ({
   const [content, setContent] = useState('');
   const [error, setError] = useState('');
 
-  const connect = () => {
-    if (stompClient && stompClient.connected) {
-      console.log('WebSocket already connected');
-      return;
-    }
-
-    let Sock = new SockJS(import.meta.env.VITE_WEBSOCKET_ENDPOINT);
-    stompClient = over(Sock);
-
-    stompClient.connect({}, onConnected, onError);
-  };
-
   const onConnected = () => {
     console.log('WebSocket connected');
   };
@@ -62,14 +48,10 @@ const TopicDetailsReplyModalContent = ({
   useEffect(() => {
     if (shouldRun.current) {
       shouldRun.current = false;
-      connect();
+      connectWebSocket(onConnected, onError);
     }
     return () => {
-      if (stompClient && stompClient.connected) {
-        stompClient.disconnect(() => {
-          console.log('WebSocket disconnected');
-        });
-      }
+      disconnectWebSocket();
     };
   }, []);
 
@@ -77,6 +59,16 @@ const TopicDetailsReplyModalContent = ({
     for (let prop in errors) {
       setError(errors[prop]);
     }
+  };
+
+  const emitNotification = (): void => {
+    const payload = {
+      receiverId: commentUserId,
+      senderId: currentUserId,
+      notificationType: NotificationType.COMMENT_REPLY,
+      link: `http://localhost:5173/comments/${commentId}/?sender=${currentUserId}&receiver=${commentUserId}`,
+    };
+    sendMessage('/api/v1/notify', JSON.stringify(payload));
   };
 
   const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
@@ -89,6 +81,9 @@ const TopicDetailsReplyModalContent = ({
     const payload = { userId: currentUserId, content, commentId, token };
     createReplyComment(payload)
       .unwrap()
+      .then(() => {
+        emitNotification();
+      })
       .then(() => {
         closeModal();
       })
