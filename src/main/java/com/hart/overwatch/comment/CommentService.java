@@ -82,6 +82,7 @@ public class CommentService {
             }
 
             commentDto.setReactions(comment.getGroupReactionsByComment());
+            commentDto.setReplyCommentsCount(comment.getReplyCommentsCount());
         }
         return commentDtos;
     }

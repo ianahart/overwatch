@@ -37,6 +37,7 @@ export interface IComment {
   curUserHasVoted: boolean;
   curUserHasSaved: boolean;
   reactions: IReaction[];
+  replyCommentsCount: number;
 }
 
 export interface ITag {
@@ -1930,6 +1931,46 @@ export interface IGetReplyCommentsByUserResponse {
     totalElements: number;
   };
 }
+
+export interface IGetReplyCommentsRequest {
+  token: string;
+  commentId: number;
+  page: number;
+  pageSize: number;
+  direction: string;
+}
+
+export interface IGetReplyCommentsResponse {
+  message: string;
+  data: {
+    items: IReplyComment[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
+}
+
+export interface IUpdateReplyCommentRequest {
+  token: string;
+  replyCommentId: number;
+  commentId: number;
+  content: string;
+}
+
+export interface IUpdateReplyCommentResponse {
+  message: string;
+  data: string;
+}
+
+export interface IDeleteReplyCommentRequest {
+  commentId: number;
+  token: string;
+  replyCommentId: number;
+}
+
+export interface IDeleteReplyCommentResponse extends IBaseResponse {}
 
 export interface ICreateReplyCommentResponse extends IBaseResponse {}
 

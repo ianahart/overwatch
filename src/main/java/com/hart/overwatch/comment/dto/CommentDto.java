@@ -31,6 +31,8 @@ public class CommentDto {
 
     private List<ReactionDto> reactions;
 
+    private Integer replyCommentsCount;
+
 
     public CommentDto() {
 
@@ -70,6 +72,10 @@ public class CommentDto {
 
     public Long getId() {
         return id;
+    }
+
+    public Integer getReplyCommentsCount() {
+        return replyCommentsCount;
     }
 
     public Long getVoteDifference() {
@@ -142,5 +148,9 @@ public class CommentDto {
 
     public void setReactions(List<ReactionDto> reactions) {
         this.reactions = reactions;
+    }
+
+    public void setReplyCommentsCount(Integer replyCommentsCount) {
+        this.replyCommentsCount = replyCommentsCount;
     }
 }
