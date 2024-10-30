@@ -1,17 +1,15 @@
-import dayjs from 'dayjs';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 import { IComment, IPaginationState, IReplyComment } from '../../interfaces';
-import Avatar from '../Shared/Avatar';
-import { initializeName } from '../../util';
 import { TRootState, useCreateVoteMutation, useLazyFetchReplyCommentsQuery } from '../../state/store';
 import TopicDetailsCommentItemVote from './TopicDetailsCommentItemVote';
 import TopicDetailsCommentItemActions from './TopicDetailsCommentItemActions';
 import TopicDetailsCommentItemForm from './TopicDetailsCommentItemForm';
 import TopicDetailsCommentItemReactions from './TopicDetailsCommentItemReactions';
 import ReplyCommentList from '../ReplyComment/ReplyCommentList';
+import CommentHeader from '../Comment/CommentHeader';
 
 export interface ITopicDetailsCommentItemProps {
   comment: IComment;
@@ -43,8 +41,6 @@ const TopicDetailsCommentItem = ({
   const [isEditing, setIsEditing] = useState(false);
   const [pag, setPag] = useState<IPaginationState>(pagState);
   const [replyComments, setReplyComments] = useState<IReplyComment[]>([]);
-
-  const [firstName, lastName] = comment.fullName.split(' ');
 
   const createVote = (voteType: string) => {
     if (user.id === 0) {
@@ -120,19 +116,8 @@ const TopicDetailsCommentItem = ({
     <div>
       <div className="border my-4 p-2 rounded-lg border-gray-800">
         <div className="my-2">
-          <div className="flex items-center">
-            <Avatar
-              height="h-9"
-              width="w-9"
-              avatarUrl={comment.avatarUrl}
-              initials={initializeName(firstName, lastName)}
-            />
-            <div className="ml-2">
-              <h3>{comment.fullName}</h3>
-              {comment.isEdited && <p className="text-xs">(edited)</p>}
-              <p className="text-xs">{dayjs(comment.createdAt).format('MM/DD/YYYY')}</p>
-            </div>
-          </div>
+          <CommentHeader comment={comment} />
+          {comment.isEdited && <p className="text-xs mt-1 text-green-400">(edited)</p>}
           <div className="my-2">
             {isEditing ? (
               <TopicDetailsCommentItemForm

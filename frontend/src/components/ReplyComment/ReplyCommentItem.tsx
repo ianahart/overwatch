@@ -1,12 +1,10 @@
-import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { IError, IMinComment, IReplyComment } from '../../interfaces';
-import Avatar from '../Shared/Avatar';
-import { initializeName } from '../../util';
 import { TRootState, useDeleteReplyCommentMutation, useUpdateReplyCommentMutation } from '../../state/store';
 import ReplyCommentActions from './ReplyCommentActions';
+import CommentHeader from '../Comment/CommentHeader';
 
 type IComment = IMinComment | IReplyComment;
 
@@ -24,7 +22,6 @@ const ReplyCommentItem = ({
   parentCommentId = 0,
 }: IReplyCommentItemProps) => {
   const MAX_CONTENT_LENGTH = 400;
-  const [first, last] = comment.fullName.split(' ');
   const [error, setError] = useState('');
   const [content, setContent] = useState(comment.content);
   const { user, token } = useSelector((store: TRootState) => store.user);
@@ -83,13 +80,7 @@ const ReplyCommentItem = ({
   return (
     <div className="my-8">
       <div className="border border-gray-800 p-2 rounded">
-        <div className="flex items-center">
-          <Avatar height="h-9" width="w-9" avatarUrl={comment.avatarUrl} initials={initializeName(first, last)} />
-          <div className="ml-2">
-            <p>{comment.fullName}</p>
-            <p className="text-xs">{dayjs(comment.createdAt).format('MM/D/YYYY')}</p>
-          </div>
-        </div>
+        <CommentHeader comment={comment} />
         <div className="my-8">
           {isEditing ? (
             <form onSubmit={handleOnSubmit}>
