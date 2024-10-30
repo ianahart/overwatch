@@ -6,7 +6,7 @@ import { TRootState, useFetchCommentQuery, useLazyFetchReplyCommentsByUserQuery 
 import { minCommentState } from '../../data';
 import { IMinComment, IReplyComment } from '../../interfaces';
 import OriginalComment from './OriginalComment';
-import CommentList from './CommentList';
+import ReplyCommentList from './ReplyCommentList';
 
 const ReplyComment = () => {
   const paginationState = {
@@ -81,7 +81,7 @@ const ReplyComment = () => {
           </div>
           {comment.id !== 0 && (
             <div className="my-2">
-              <CommentList replyComments={replyComments} />
+              <ReplyCommentList replyComments={replyComments} />
             </div>
           )}
 

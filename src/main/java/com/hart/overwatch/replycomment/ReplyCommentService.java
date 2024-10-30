@@ -13,9 +13,11 @@ import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.replycomment.dto.ReplyCommentDto;
 import com.hart.overwatch.replycomment.request.CreateReplyCommentRequest;
+import com.hart.overwatch.replycomment.request.UpdateReplyCommentRequest;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.advice.BadRequestException;
+import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.advice.RateLimitException;
 
@@ -74,18 +76,63 @@ public class ReplyCommentService {
         replyCommentRepository.save(replyComment);
     }
 
-    public PaginationDto<ReplyCommentDto> getReplyCommentsByUserAndComment(Long userId, Long commentId, int page,
-            int pageSize, String direction) {
+    public PaginationDto<ReplyCommentDto> getReplyCommentsByUserAndComment(Long userId,
+            Long commentId, int page, int pageSize, String direction) {
 
         Pageable pageable = this.paginationService.getPageable(page, pageSize, direction);
         Page<ReplyCommentDto> result = this.replyCommentRepository
                 .findReplyCommentsByUserIdAndCommentId(pageable, userId, commentId);
-
 
         return new PaginationDto<ReplyCommentDto>(result.getContent(), result.getNumber(), pageSize,
                 result.getTotalPages(), direction, result.getTotalElements());
 
     }
 
+
+    public PaginationDto<ReplyCommentDto> getReplyComments(Long commentId, int page, int pageSize,
+            String direction) {
+
+        Pageable pageable =
+                this.paginationService.getSortedPageable(page, pageSize, direction, "desc");
+        Page<ReplyCommentDto> result =
+                this.replyCommentRepository.findReplyCommentsByCommentId(pageable, commentId);
+
+        return new PaginationDto<ReplyCommentDto>(result.getContent(), result.getNumber(), pageSize,
+                result.getTotalPages(), direction, result.getTotalElements());
+
+    }
+
+    public String updateReplyComment(Long replyCommentId, UpdateReplyCommentRequest request) {
+
+        ReplyComment replyComment = getReplyCommentById(replyCommentId);
+        User user = userService.getCurrentlyLoggedInUser();
+
+        if (!user.getId().equals(replyComment.getUser().getId())) {
+            throw new ForbiddenException("Cannot edit another user's reply comment");
+        }
+
+        String content = Jsoup.clean(request.getContent(), Safelist.none());
+
+        if (replyComment.getContent().equals(content)) {
+            return content;
+        }
+
+        replyComment.setContent(content);
+
+        replyCommentRepository.save(replyComment);
+
+        return replyComment.getContent();
+    }
+
+    public void deleteReplyComment(Long replyCommentId) {
+        ReplyComment replyComment = getReplyCommentById(replyCommentId);
+        User user = userService.getCurrentlyLoggedInUser();
+
+        if (!user.getId().equals(replyComment.getUser().getId())) {
+            throw new ForbiddenException("Cannot delete another user's reply comment");
+        }
+
+        replyCommentRepository.delete(replyComment);
+    }
 
 }

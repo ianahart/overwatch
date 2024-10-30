@@ -1,6 +1,7 @@
 package com.hart.overwatch.comment;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
@@ -77,7 +78,7 @@ public class Comment {
 
     @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
             orphanRemoval = true)
-    private List<ReplyComment> replyComments;
+    private List<ReplyComment> replyComments = new ArrayList<>();
 
 
     public Comment() {
@@ -107,6 +108,10 @@ public class Comment {
     public int getDownVoteCount() {
         return (int) commentVotes.stream().filter(cv -> "DOWNVOTE".equals(cv.getVoteType()))
                 .count();
+    }
+
+    public int getReplyCommentsCount() {
+        return replyComments.size();
     }
 
     public List<ReactionDto> getGroupReactionsByComment() {

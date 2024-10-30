@@ -550,7 +550,13 @@ export { useCreateSaveCommentMutation } from './apis/savedCommentsApi';
 
 export { useDeleteReactionMutation, useCreateReactionMutation, useFetchReactionQuery } from './apis/reactionsApi';
 
-export { useLazyFetchReplyCommentsByUserQuery, useCreateReplyCommentMutation } from './apis/replyCommentsApi';
+export {
+  useDeleteReplyCommentMutation,
+  useUpdateReplyCommentMutation,
+  useLazyFetchReplyCommentsQuery,
+  useLazyFetchReplyCommentsByUserQuery,
+  useCreateReplyCommentMutation,
+} from './apis/replyCommentsApi';
 
 export {
   testimonialsApi,
