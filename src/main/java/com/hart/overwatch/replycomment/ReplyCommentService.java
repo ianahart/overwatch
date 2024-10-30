@@ -16,7 +16,6 @@ import com.hart.overwatch.replycomment.request.CreateReplyCommentRequest;
 import com.hart.overwatch.replycomment.request.UpdateReplyCommentRequest;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
-import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.advice.RateLimitException;

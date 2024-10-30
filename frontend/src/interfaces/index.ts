@@ -10,6 +10,8 @@ export interface IReplyComment {
   userId: number;
 }
 
+export interface ISaveComment extends IReplyComment {}
+
 export interface IReaction {
   emoji: string;
   count: number;
@@ -1969,6 +1971,33 @@ export interface IDeleteReplyCommentRequest {
   token: string;
   replyCommentId: number;
 }
+
+export interface IGetSaveCommentsRequest {
+  token: string;
+  userId: number;
+  page: number;
+  pageSize: number;
+  direction: string;
+}
+
+export interface IGetSaveCommentsResponse {
+  message: string;
+  data: {
+    items: ISaveComment[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
+}
+
+export interface IDeleteSaveCommentRequest {
+  token: string;
+  saveCommentId: number;
+}
+
+export interface IDeleteSaveCommentResponse extends IBaseResponse {}
 
 export interface IDeleteReplyCommentResponse extends IBaseResponse {}
 
