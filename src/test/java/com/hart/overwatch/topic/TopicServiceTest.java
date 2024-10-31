@@ -28,6 +28,7 @@ import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.tag.Tag;
+import com.hart.overwatch.topic.dto.TopicDto;
 import com.hart.overwatch.topic.request.CreateTopicRequest;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
@@ -151,6 +152,27 @@ public class TopicServiceTest {
         Assertions.assertThat(returnedTopic.getTitle()).isEqualTo(newTopic.getTitle());
         Assertions.assertThat(returnedTopic.getDescription()).isEqualTo(newTopic.getDescription());
         Assertions.assertThat(returnedTopic.getTags().size()).isEqualTo(newTopic.getTags().size());
+    }
+
+    @Test
+    public void TopicService_SearchTopics_ThrowBadRequestException() {
+        String query = null;
+
+        Assertions.assertThatThrownBy(() -> {
+            topicService.searchTopics(query);
+        }).isInstanceOf(BadRequestException.class).hasMessage("Please provide a search term");
+    }
+
+    @Test
+    public void TopicService_SearchTopics_ReturnListOfTopicDto() {
+        String query = "title";
+        String fuzzyQuery = query + ":*";
+
+        when(topicRepository.searchTopics(fuzzyQuery)).thenReturn(List.of(topic));
+
+        List<TopicDto> topicDtos = topicService.searchTopics(query);
+
+        Assertions.assertThat(topicDtos).hasSize(1);
     }
 }
 
