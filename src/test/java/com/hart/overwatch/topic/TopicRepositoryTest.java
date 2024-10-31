@@ -19,7 +19,6 @@ import static org.mockito.Mockito.when;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.tag.Tag;
@@ -47,7 +46,6 @@ public class TopicRepositoryTest {
 
     @PersistenceContext
     private EntityManager entityManager;
-
 
     private Topic topic;
 
@@ -84,18 +82,30 @@ public class TopicRepositoryTest {
         topic = createTopic(user);
         tags = createTags();
 
-        topic.getTags().addAll(tags);
-        tags.forEach(tag -> tag.getTopics().add(topic));
+        topic.setTags(tags);
+        tags.forEach(tag -> tag.setTopics(List.of(topic)));
     }
 
     @AfterEach
     public void tearDown() {
         System.out.println("Tearing down the test data...");
+        topic.getTags().clear();
+        topicRepository.save(topic);
         tagRepository.deleteAll();
         topicRepository.deleteAll();
         userRepository.deleteAll();
         entityManager.flush();
         entityManager.clear();
+    }
+
+    @Test
+    public void TopicRepository_FindByTitle_ReturnTopic() {
+        Topic returnedTopic = topicRepository.findByTitle(topic.getTitle());
+
+        Assertions.assertThat(returnedTopic).isNotNull();
+        Assertions.assertThat(returnedTopic.getTitle()).isEqualTo(topic.getTitle());
+
+
     }
 
 }
