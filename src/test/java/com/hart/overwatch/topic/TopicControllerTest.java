@@ -14,6 +14,7 @@ import com.hart.overwatch.tag.Tag;
 import com.hart.overwatch.tag.dto.TagDto;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.topic.dto.TopicDto;
+import com.hart.overwatch.topic.request.CreateTopicRequest;
 import com.hart.overwatch.topicmanagement.TopicManagementService;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
@@ -168,6 +169,23 @@ public class TopicControllerTest {
 
     }
 
+    @Test
+    public void TopicController_CreateTopic_ReturnCreateTopicResponse() throws Exception {
+        CreateTopicRequest request = new CreateTopicRequest();
+        request.setTitle("new title");
+        request.setDescription("new description");
+        request.setUserId(user.getId());
+        request.setTags(List.of("java", "spring boot"));
+
+        doNothing().when(topicManagementService).handleCreateTopic(request);
+
+        ResultActions response =
+                mockMvc.perform(post("/api/v1/topics").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
 
 
 }
