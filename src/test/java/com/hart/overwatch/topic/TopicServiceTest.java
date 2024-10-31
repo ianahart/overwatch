@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,6 +29,7 @@ import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.tag.Tag;
+import com.hart.overwatch.tag.dto.TagDto;
 import com.hart.overwatch.topic.dto.TopicDto;
 import com.hart.overwatch.topic.request.CreateTopicRequest;
 import com.hart.overwatch.user.Role;
@@ -173,6 +175,31 @@ public class TopicServiceTest {
         List<TopicDto> topicDtos = topicService.searchTopics(query);
 
         Assertions.assertThat(topicDtos).hasSize(1);
+    }
+
+    @Test
+    public void TopicService_GetTopic_ThrowBadRequestException() {
+        Long topicId = null;
+
+        Assertions.assertThatThrownBy(() -> {
+            topicService.getTopic(topicId);
+        }).isInstanceOf(BadRequestException.class).hasMessage("Missing topicId. Please try again");
+    }
+
+    @Test
+    public void TopicService_GetTopic_ReturnTopicDto() {
+        Long topicId = topic.getId();
+
+        when(topicRepository.findById(topicId)).thenReturn(Optional.of(topic));
+
+        TopicDto topicDto = topicService.getTopic(topicId);
+
+        Assertions.assertThat(topicDto.getId()).isEqualTo(topic.getId());
+        Assertions.assertThat(topicDto.getTitle()).isEqualTo(topic.getTitle());
+        Assertions.assertThat(topicDto.getDescription()).isEqualTo(topic.getDescription());
+        Assertions.assertThat(topicDto.getTags())
+          .extracting(TagDto::getName)
+          .containsAll(topic.getTags().stream().map(Tag::getName).collect(Collectors.toList()));
     }
 }
 
