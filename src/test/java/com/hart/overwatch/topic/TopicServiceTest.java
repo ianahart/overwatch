@@ -90,6 +90,28 @@ public class TopicServiceTest {
         tags.forEach(tag -> tag.setTopics(List.of(topic)));
     }
 
+    @Test
+    public void TopicService_GetTopicById_ThrowNotFoundException() {
+        Long nonExistentTopicId = 999L;
+        when(topicRepository.findById(nonExistentTopicId)).thenReturn(Optional.ofNullable(null));
+
+        Assertions.assertThatThrownBy(() -> {
+            topicService.getTopicById(nonExistentTopicId);
+        }).isInstanceOf(NotFoundException.class).hasMessage(
+                String.format("Cannot find a topic with the id %d", nonExistentTopicId));
+    }
+
+    @Test
+    public void TopicService_GetTopicById_ReturnTopic() {
+        Long topicId = topic.getId();
+
+        when(topicRepository.findById(topicId)).thenReturn(Optional.of(topic));
+
+        Topic returnedTopic = topicService.getTopicById(topicId);
+
+        Assertions.assertThat(returnedTopic).isNotNull();
+        Assertions.assertThat(returnedTopic.getId()).isEqualTo(topic.getId());
+    }
 
 }
 
