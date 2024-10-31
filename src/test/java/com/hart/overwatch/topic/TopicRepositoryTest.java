@@ -12,6 +12,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
@@ -123,6 +126,15 @@ public class TopicRepositoryTest {
         Assertions.assertThat(returnedTopics.get(0).getTitle()).isEqualTo(topic.getTitle());
     }
 
+    @Test
+    public void TopicRepository_FindAll_ReturnPageOfTopic() {
+        Pageable pageable = PageRequest.of(0, 10);
+
+        Page<Topic> returnedTopics = topicRepository.findAll(pageable);
+
+        Assertions.assertThat(returnedTopics).isNotEmpty();
+        Assertions.assertThat(returnedTopics.getContent().size()).isEqualTo(1);
+    }
 
 }
 
