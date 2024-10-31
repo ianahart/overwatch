@@ -1,13 +1,16 @@
 package com.hart.overwatch.topic;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.ArrayList;
+import java.util.Collections;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import com.hart.overwatch.config.DatabaseSetupService;
 import com.hart.overwatch.config.JwtService;
+import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.tag.Tag;
@@ -26,11 +29,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.Mockito.doNothing;
@@ -40,6 +47,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matchers;
 
 
 @ActiveProfiles("test")
@@ -185,6 +193,57 @@ public class TopicControllerTest {
 
         response.andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
+    private TopicDto convertToDto(Topic topic) {
+        TopicDto topicDto = new TopicDto();
+
+        topicDto.setId(topic.getId());
+        topicDto.setTitle(topic.getTitle());
+        topicDto.setDescription(topic.getDescription());
+        List<TagDto> tagDtos = topic.getTags().stream()
+                .map(tag -> new TagDto(tag.getId(), tag.getName())).toList();
+        topicDto.setTags(tagDtos);
+        topicDto.setTotalCommentCount(topic.getComments().size());
+
+        return topicDto;
+    }
+
+
+    @Test
+    public void TopicController_GetAllTopics_ReturnGetAllTopicsResponse() throws Exception {
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+
+        Pageable pageable = Pageable.ofSize(pageSize).withPage(page);
+
+        Page<Topic> pageResult = new PageImpl<>(Collections.singletonList(topic), pageable, 1);
+        List<TopicDto> topicDtos = List.of(createTopicDto(topic));
+
+        PaginationDto<TopicDto> expectedPaginationDto =
+                new PaginationDto<>(topicDtos, pageResult.getNumber(), pageSize,
+                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
+
+        when(topicService.getTopics(page, pageSize, direction)).thenReturn(expectedPaginationDto);
+
+        ResultActions response = mockMvc.perform(get("/api/v1/topics").param("page", "0")
+                .param("pageSize", "3").param("direction", "next"));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.items[0].id",
+                        CoreMatchers.is(topicDtos.get(0).getId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.items[0].title",
+                        CoreMatchers.is(topicDtos.get(0).getTitle())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.items[0].description",
+                        CoreMatchers.is(topicDtos.get(0).getDescription())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.items[0].tags",
+                        Matchers.hasSize(topicDtos.size())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.items[0].totalCommentCount",
+                        CoreMatchers.is(topicDtos.get(0).getTotalCommentCount())));
+
+
     }
 
 
