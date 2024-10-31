@@ -11,16 +11,10 @@ import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.tag.Tag;
-import com.hart.overwatch.todocard.TodoCard;
-import com.hart.overwatch.todocard.dto.TodoCardDto;
-import com.hart.overwatch.todolist.dto.TodoListDto;
-import com.hart.overwatch.todolist.request.CreateTodoListRequest;
-import com.hart.overwatch.todolist.request.ReorderTodoListRequest;
-import com.hart.overwatch.todolist.request.UpdateTodoListRequest;
 import com.hart.overwatch.token.TokenRepository;
+import com.hart.overwatch.topicmanagement.TopicManagementService;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
-import com.hart.overwatch.workspace.WorkSpace;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -59,6 +53,9 @@ public class TopicControllerTest {
 
     @MockBean
     private JwtService jwtService;
+
+    @MockBean
+    private TopicManagementService topicManagementService;
 
     @MockBean
     private DatabaseSetupService databaseSetupService;
@@ -109,6 +106,19 @@ public class TopicControllerTest {
 
         topic.setTags(tags);
         tags.forEach(tag -> tag.setTopics(List.of(topic)));
+    }
+
+    @Test
+    public void TopicController_SearchTopics_ReturnGetTopicsReponse() throws Exception {
+        String query = "title";
+
+
+        ResultActions response =
+                mockMvc.perform(get("/api/v1/topics/search").param("query", query));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+
     }
 }
 
