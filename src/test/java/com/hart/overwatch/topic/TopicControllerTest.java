@@ -11,7 +11,9 @@ import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.tag.Tag;
+import com.hart.overwatch.tag.dto.TagDto;
 import com.hart.overwatch.token.TokenRepository;
+import com.hart.overwatch.topic.dto.TopicDto;
 import com.hart.overwatch.topicmanagement.TopicManagementService;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
@@ -97,6 +99,18 @@ public class TopicControllerTest {
         return tagEntities;
     }
 
+
+    private TopicDto createTopicDto(Topic topic) {
+        TopicDto topicDto = new TopicDto();
+        topicDto.setId(topic.getId());
+        topicDto.setTitle(topic.getTitle());
+        topicDto.setDescription(topic.getDescription());
+        topicDto.setTotalCommentCount(1);
+        topicDto.setTags(List.of(new TagDto(2L, "java")));
+
+        return topicDto;
+    }
+
     @BeforeEach
     public void setUp() {
         databaseSetupService.createTsvectorTrigger();
@@ -112,14 +126,50 @@ public class TopicControllerTest {
     public void TopicController_SearchTopics_ReturnGetTopicsReponse() throws Exception {
         String query = "title";
 
+        TopicDto topicDto = createTopicDto(topic);
+
+        when(topicService.searchTopics(query)).thenReturn(List.of(topicDto));
 
         ResultActions response =
                 mockMvc.perform(get("/api/v1/topics/search").param("query", query));
 
         response.andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].id",
+                        CoreMatchers.is(topicDto.getId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].title",
+                        CoreMatchers.is(topicDto.getTitle())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].description",
+                        CoreMatchers.is(topicDto.getDescription())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].totalCommentCount",
+                        CoreMatchers.is(topicDto.getTotalCommentCount())));
 
     }
+
+    @Test
+    public void TopicController_GetTopic_ReturnGetTopicResponse() throws Exception {
+        Long topicId = topic.getId();
+
+        TopicDto topicDto = createTopicDto(topic);
+        when(topicService.getTopic(topicId)).thenReturn(topicDto);
+
+        ResultActions response = mockMvc.perform(get(String.format("/api/v1/topics/%d", topicId)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.id",
+                        CoreMatchers.is(topicDto.getId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.title",
+                        CoreMatchers.is(topicDto.getTitle())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.description",
+                        CoreMatchers.is(topicDto.getDescription())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.totalCommentCount",
+                        CoreMatchers.is(topicDto.getTotalCommentCount())));
+
+    }
+
+
+
 }
 
 
