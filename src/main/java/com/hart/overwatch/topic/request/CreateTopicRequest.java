@@ -55,5 +55,9 @@ public class CreateTopicRequest {
         this.userId = userId;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
 
 }
