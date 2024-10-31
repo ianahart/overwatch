@@ -79,8 +79,8 @@ public class TopicRepositoryTest {
 
     private List<Tag> createTags() {
         List<Tag> tagEntities = new ArrayList<>();
-        tagEntities.add(new Tag("Spring boot"));
-        tagEntities.add(new Tag("Java"));
+        tagEntities.add(new Tag("spring boot"));
+        tagEntities.add(new Tag("java"));
         tagRepository.saveAll(tagEntities);
         return tagEntities;
     }
@@ -136,6 +136,25 @@ public class TopicRepositoryTest {
         Assertions.assertThat(returnedTopics.getContent().size()).isEqualTo(1);
     }
 
+    @Test
+    public void TopicRepository_FindTopicWithTags_ReturnPageOfTopic() {
+        String query = "java";
+        Pageable pageable = PageRequest.of(0,10);
+
+        Page<Topic> returnedTopics = topicRepository.findTopicWithTags(pageable, query.toLowerCase());
+
+        Assertions.assertThat(returnedTopics).isNotEmpty();
+        Assertions.assertThat(returnedTopics.getContent().size()).isEqualTo(1);
+        List<Tag> retunedTagsFromTopic = returnedTopics.getContent().get(0).getTags();
+        List<String> tagNames = retunedTagsFromTopic.stream().map(tag -> tag.getName()).toList();
+        Assertions.assertThat(tagNames).contains(query);
+
+
+
+
+
+        
+    } 
 }
 
 
