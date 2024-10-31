@@ -28,6 +28,7 @@ import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.tag.Tag;
+import com.hart.overwatch.topic.request.CreateTopicRequest;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
@@ -113,5 +114,43 @@ public class TopicServiceTest {
         Assertions.assertThat(returnedTopic.getId()).isEqualTo(topic.getId());
     }
 
+    @Test
+    public void TopicService_CreateTopic_ThrowBadRequestExceptionAlreadyExists() {
+        CreateTopicRequest request =
+                new CreateTopicRequest("title", "description", List.of("spring boot", "java"));
+
+        when(topicRepository.findByTitle(request.getTitle())).thenReturn(topic);
+
+        Assertions.assertThatThrownBy(() -> {
+            topicService.createTopic(request);
+        }).isInstanceOf(BadRequestException.class).hasMessage(
+                String.format("A topic with the title %s already exists", request.getTitle()));
+    }
+
+    @Test
+    public void TopicService_CreateTopic_ReturnTopic() {
+        CreateTopicRequest request = new CreateTopicRequest("new title", "new description",
+                List.of("java", "spring boot"));
+        request.setUserId(user.getId());
+
+        when(topicRepository.findByTitle(request.getTitle())).thenReturn(null);
+
+        when(userService.getUserById(request.getUserId())).thenReturn(user);
+
+        Topic newTopic = new Topic(request.getTitle(), request.getDescription(), user);
+        topic.setId(2L);
+        topic.setTags(List.of(new Tag(3L, request.getTags().get(0)),
+                new Tag(4L, request.getTags().get(1))));
+
+        when(topicRepository.save(any(Topic.class))).thenReturn(newTopic);
+
+        Topic returnedTopic = topicService.createTopic(request);
+
+        Assertions.assertThat(returnedTopic).isNotNull();
+        Assertions.assertThat(returnedTopic.getId()).isEqualTo(newTopic.getId());
+        Assertions.assertThat(returnedTopic.getTitle()).isEqualTo(newTopic.getTitle());
+        Assertions.assertThat(returnedTopic.getDescription()).isEqualTo(newTopic.getDescription());
+        Assertions.assertThat(returnedTopic.getTags().size()).isEqualTo(newTopic.getTags().size());
+    }
 }
 
