@@ -2,7 +2,6 @@ package com.hart.overwatch.topic;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
-import static org.mockito.Mockito.when;
 
 
 import jakarta.persistence.EntityManager;
@@ -139,22 +136,17 @@ public class TopicRepositoryTest {
     @Test
     public void TopicRepository_FindTopicWithTags_ReturnPageOfTopic() {
         String query = "java";
-        Pageable pageable = PageRequest.of(0,10);
+        Pageable pageable = PageRequest.of(0, 10);
 
-        Page<Topic> returnedTopics = topicRepository.findTopicWithTags(pageable, query.toLowerCase());
+        Page<Topic> returnedTopics =
+                topicRepository.findTopicWithTags(pageable, query.toLowerCase());
 
         Assertions.assertThat(returnedTopics).isNotEmpty();
         Assertions.assertThat(returnedTopics.getContent().size()).isEqualTo(1);
         List<Tag> retunedTagsFromTopic = returnedTopics.getContent().get(0).getTags();
         List<String> tagNames = retunedTagsFromTopic.stream().map(tag -> tag.getName()).toList();
         Assertions.assertThat(tagNames).contains(query);
-
-
-
-
-
-        
-    } 
+    }
 }
 
 
