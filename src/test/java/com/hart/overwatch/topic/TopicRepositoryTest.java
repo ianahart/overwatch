@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import static org.mockito.Mockito.when;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import com.hart.overwatch.config.DatabaseSetupService;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.tag.Tag;
@@ -29,6 +31,7 @@ import com.hart.overwatch.user.UserRepository;
 
 @DataJpaTest
 @ActiveProfiles("test")
+@Import(DatabaseSetupService.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Sql(scripts = "classpath:reset_topic_sequences.sql",
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -43,6 +46,9 @@ public class TopicRepositoryTest {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    DatabaseSetupService databaseSetupService;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -78,6 +84,7 @@ public class TopicRepositoryTest {
 
     @BeforeEach
     public void setUp() {
+        databaseSetupService.createTsvectorTrigger();
         user = createUser();
         topic = createTopic(user);
         tags = createTags();
@@ -104,9 +111,18 @@ public class TopicRepositoryTest {
 
         Assertions.assertThat(returnedTopic).isNotNull();
         Assertions.assertThat(returnedTopic.getTitle()).isEqualTo(topic.getTitle());
-
-
     }
+
+    @Test
+    public void TopicRepository_SearchTopics_ReturnListOfTopic() {
+        String query = "title:*";
+        List<Topic> returnedTopics = topicRepository.searchTopics(query);
+
+        Assertions.assertThat(returnedTopics).isNotEmpty();
+        Assertions.assertThat(returnedTopics).hasSize(1);
+        Assertions.assertThat(returnedTopics.get(0).getTitle()).isEqualTo(topic.getTitle());
+    }
+
 
 }
 
