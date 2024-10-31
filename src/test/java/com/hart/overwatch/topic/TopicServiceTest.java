@@ -219,7 +219,6 @@ public class TopicServiceTest {
 
     @Test
     public void TopicService_GetTopics_ReturnPaginationDtoOfTopicDto() {
-        // Arrange
         int page = 0;
         int pageSize = 3;
         String direction = "next";
@@ -244,6 +243,35 @@ public class TopicServiceTest {
 
         Assertions.assertThat(actualPaginationDto).usingRecursiveComparison()
                 .isEqualTo(expectedPaginationDto);
+    }
+
+    @Test
+    public void GetTopicsWithTags_ReturnPaginationDtoOfTopicDto() {
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+
+        Pageable pageable = Pageable.ofSize(pageSize).withPage(page);
+        Topic topic = new Topic();
+        topic.setTitle("title");
+
+        Page<Topic> pageResult = new PageImpl<>(Collections.singletonList(topic), pageable, 1);
+
+        List<TopicDto> topicDtos = pageResult.getContent().stream().map(this::convertToDto)
+                .collect(Collectors.toList());
+        PaginationDto<TopicDto> expectedPaginationDto =
+                new PaginationDto<>(topicDtos, pageResult.getNumber(), pageSize,
+                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
+
+        when(paginationService.getPageable(page, pageSize, direction)).thenReturn(pageable);
+        when(topicRepository.findTopicWithTags(pageable, "title")).thenReturn(pageResult);
+
+        PaginationDto<TopicDto> actualPaginationDto =
+                topicService.getTopicsWithTags(page, pageSize, direction, "title");
+
+        Assertions.assertThat(actualPaginationDto).usingRecursiveComparison()
+                .isEqualTo(expectedPaginationDto);
+
     }
 }
 
