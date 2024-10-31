@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import org.assertj.core.api.Assertions;
@@ -26,6 +27,7 @@ import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.config.DatabaseSetupService;
 import com.hart.overwatch.pagination.PaginationService;
+import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.tag.Tag;
@@ -197,9 +199,51 @@ public class TopicServiceTest {
         Assertions.assertThat(topicDto.getId()).isEqualTo(topic.getId());
         Assertions.assertThat(topicDto.getTitle()).isEqualTo(topic.getTitle());
         Assertions.assertThat(topicDto.getDescription()).isEqualTo(topic.getDescription());
-        Assertions.assertThat(topicDto.getTags())
-          .extracting(TagDto::getName)
-          .containsAll(topic.getTags().stream().map(Tag::getName).collect(Collectors.toList()));
+        Assertions.assertThat(topicDto.getTags()).extracting(TagDto::getName).containsAll(
+                topic.getTags().stream().map(Tag::getName).collect(Collectors.toList()));
+    }
+
+    private TopicDto convertToDto(Topic topic) {
+        TopicDto topicDto = new TopicDto();
+
+        topicDto.setId(topic.getId());
+        topicDto.setTitle(topic.getTitle());
+        topicDto.setDescription(topic.getDescription());
+        List<TagDto> tagDtos = topic.getTags().stream()
+                .map(tag -> new TagDto(tag.getId(), tag.getName())).toList();
+        topicDto.setTags(tagDtos);
+        topicDto.setTotalCommentCount(topic.getComments().size());
+
+        return topicDto;
+    }
+
+    @Test
+    public void TopicService_GetTopics_ReturnPaginationDtoOfTopicDto() {
+        // Arrange
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+
+        Pageable pageable = Pageable.ofSize(pageSize).withPage(page);
+        Topic topic = new Topic();
+        topic.setTitle("title");
+
+        Page<Topic> pageResult = new PageImpl<>(Collections.singletonList(topic), pageable, 1);
+
+        List<TopicDto> topicDtos = pageResult.getContent().stream().map(this::convertToDto)
+                .collect(Collectors.toList());
+        PaginationDto<TopicDto> expectedPaginationDto =
+                new PaginationDto<>(topicDtos, pageResult.getNumber(), pageSize,
+                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
+
+        when(paginationService.getPageable(page, pageSize, direction)).thenReturn(pageable);
+        when(topicRepository.findAll(pageable)).thenReturn(pageResult);
+
+        PaginationDto<TopicDto> actualPaginationDto =
+                topicService.getTopics(page, pageSize, direction);
+
+        Assertions.assertThat(actualPaginationDto).usingRecursiveComparison()
+                .isEqualTo(expectedPaginationDto);
     }
 }
 
