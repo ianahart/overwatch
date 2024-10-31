@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import com.hart.overwatch.comment.dto.CommentDto;
 import com.hart.overwatch.commentvote.CommentVoteRepository;
 import com.hart.overwatch.config.DatabaseSetupService;
 import com.hart.overwatch.profile.Profile;
@@ -122,7 +123,6 @@ public class CommentRepositoryTest {
         tags = createTags();
         comments = createComments(user, topic);
 
-        topic.setComments(comments);
         topic.setTags(tags);
         tags.forEach(tag -> tag.setTopics(List.of(topic)));
     }
@@ -132,11 +132,26 @@ public class CommentRepositoryTest {
         System.out.println("Tearing down the test data...");
         topic.getTags().clear();
         topicRepository.save(topic);
+        commentRepository.deleteAll();
         tagRepository.deleteAll();
         topicRepository.deleteAll();
         userRepository.deleteAll();
         entityManager.flush();
         entityManager.clear();
+    }
+
+
+    @Test
+    public void CommentRepository_GetCommentsByTopicIdWithVoteDifference_ReturnPageOfCommentDto() {
+        Long topicId = topic.getId();
+        Pageable pageable = PageRequest.of(0,  10);
+
+        Page<CommentDto> result =
+                
+                commentRepository.getCommentsByTopicIdWithVoteDifference(topicId, pageable);
+
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getContent()).hasSize(comments.size());
     }
 
 }
