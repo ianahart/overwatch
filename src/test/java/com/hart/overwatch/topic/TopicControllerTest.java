@@ -5,9 +5,6 @@ import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.Collections;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
 import com.hart.overwatch.config.DatabaseSetupService;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
@@ -37,14 +34,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
@@ -242,10 +237,43 @@ public class TopicControllerTest {
                         Matchers.hasSize(topicDtos.size())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.items[0].totalCommentCount",
                         CoreMatchers.is(topicDtos.get(0).getTotalCommentCount())));
-
-
     }
 
+    @Test
+    public void TopicController_GetAllTopicsWithTags_ReturnGetAllTopicsResponse() throws Exception {
+        String query = "title";
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+
+        Pageable pageable = Pageable.ofSize(pageSize).withPage(page);
+
+        Page<Topic> pageResult = new PageImpl<>(Collections.singletonList(topic), pageable, 1);
+        List<TopicDto> topicDtos = List.of(createTopicDto(topic));
+
+        PaginationDto<TopicDto> expectedPaginationDto =
+                new PaginationDto<>(topicDtos, pageResult.getNumber(), pageSize,
+                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
+
+        when(topicService.getTopicsWithTags(page, pageSize, direction, query))
+                .thenReturn(expectedPaginationDto);
+
+        ResultActions response = mockMvc.perform(get("/api/v1/topics/tags").param("page", "0")
+                .param("pageSize", "3").param("direction", "next").param("query", query));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.items[0].id",
+                        CoreMatchers.is(topicDtos.get(0).getId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.items[0].title",
+                        CoreMatchers.is(topicDtos.get(0).getTitle())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.items[0].description",
+                        CoreMatchers.is(topicDtos.get(0).getDescription())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.items[0].tags",
+                        Matchers.hasSize(topicDtos.size())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.items[0].totalCommentCount",
+                        CoreMatchers.is(topicDtos.get(0).getTotalCommentCount())));
+    }
 
 }
 
