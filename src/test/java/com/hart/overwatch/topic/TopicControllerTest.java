@@ -1,7 +1,6 @@
 package com.hart.overwatch.topic;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.Collections;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,7 +38,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
@@ -189,21 +187,6 @@ public class TopicControllerTest {
         response.andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
-
-    private TopicDto convertToDto(Topic topic) {
-        TopicDto topicDto = new TopicDto();
-
-        topicDto.setId(topic.getId());
-        topicDto.setTitle(topic.getTitle());
-        topicDto.setDescription(topic.getDescription());
-        List<TagDto> tagDtos = topic.getTags().stream()
-                .map(tag -> new TagDto(tag.getId(), tag.getName())).toList();
-        topicDto.setTags(tagDtos);
-        topicDto.setTotalCommentCount(topic.getComments().size());
-
-        return topicDto;
-    }
-
 
     @Test
     public void TopicController_GetAllTopics_ReturnGetAllTopicsResponse() throws Exception {
