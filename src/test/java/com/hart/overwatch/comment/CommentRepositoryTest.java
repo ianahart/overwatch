@@ -144,11 +144,21 @@ public class CommentRepositoryTest {
     @Test
     public void CommentRepository_GetCommentsByTopicIdWithVoteDifference_ReturnPageOfCommentDto() {
         Long topicId = topic.getId();
-        Pageable pageable = PageRequest.of(0,  10);
+        Pageable pageable = PageRequest.of(0, 10);
 
         Page<CommentDto> result =
-                
                 commentRepository.getCommentsByTopicIdWithVoteDifference(topicId, pageable);
+
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getContent()).hasSize(comments.size());
+    }
+
+    @Test
+    public void CommentRepository_GetCommentsByTopicId_ReturnPageOfCommentDto() {
+        Long topicId = topic.getId();
+        Pageable pageable = PageRequest.of(0, 10);
+
+        Page<CommentDto> result = commentRepository.getCommentsByTopicId(topicId, pageable);
 
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result.getContent()).hasSize(comments.size());
