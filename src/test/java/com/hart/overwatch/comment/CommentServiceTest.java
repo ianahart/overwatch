@@ -340,6 +340,21 @@ public class CommentServiceTest {
         }).isInstanceOf(ForbiddenException.class)
                 .hasMessage("Cannot delete a comment that is not yours");
     }
+
+    @Test
+    public void CommentService_DeleteComment_ReturnNothing() {
+        Comment comment = comments.get(0);
+
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+        when(commentRepository.findById(comment.getId())).thenReturn(Optional.of(comment));
+        doNothing().when(commentRepository).delete(comment);
+
+        commentService.deleteComment(comment.getId());
+
+        verify(commentRepository, times(1)).delete(comment);
+
+        Assertions.assertThatNoException();
+    }
 }
 
 
