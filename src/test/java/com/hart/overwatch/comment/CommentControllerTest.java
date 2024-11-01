@@ -230,6 +230,18 @@ public class CommentControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 
+    @Test
+    public void CommentController_DeleteComment_ReturnDeleteCommentResponse() throws Exception {
+        Long commentId = comments.get(0).getId();
+
+        doNothing().when(commentService).deleteComment(commentId);
+
+        ResultActions response =
+                mockMvc.perform(delete(String.format("/api/v1/comments/%d", commentId)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
 
 }
 
