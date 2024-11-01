@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
 import org.assertj.core.api.Assertions;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +31,7 @@ import com.hart.overwatch.tag.Tag;
 import com.hart.overwatch.tag.dto.TagDto;
 import com.hart.overwatch.topic.Topic;
 import com.hart.overwatch.topic.TopicRepository;
+import com.hart.overwatch.topic.TopicService;
 import com.hart.overwatch.topic.dto.TopicDto;
 import com.hart.overwatch.topic.request.CreateTopicRequest;
 import com.hart.overwatch.user.Role;
@@ -45,6 +48,9 @@ public class TagServiceTest {
 
     @Mock
     TopicRepository topicRepository;
+
+    @Mock
+    TagRepository tagRepository;
 
     private Topic topic;
 
@@ -83,6 +89,28 @@ public class TagServiceTest {
         topic.setTags(tags);
         tags.forEach(tag -> tag.setTopics(List.of(topic)));
     }
+
+    @Test
+    public void TagService_CreateTags_With_New_Tags_ReturnNothing() {
+        List<String> newTags = List.of("javascript", "html");
+
+        Topic emptyTopic = new Topic();
+        emptyTopic.setId(2L);
+        emptyTopic.setTags(new ArrayList<>());
+
+        for (String newTag:   newTags) {
+            String cleanedTag = Jsoup.clean(newTag, Safelist.none());
+            when(tagRepository.findByName(cleanedTag)).thenReturn(Optional.ofNullable(null));
+        }
+
+        tagService.createTags(newTags, emptyTopic);
+
+        verify(tagRepository, times(2)).save(any(Tag.class));
+        Assertions.assertThat(emptyTopic.getTags().size()).isEqualTo(2);
+        Assertions.assertThat(emptyTopic.getTags().get(0).getName()).isEqualTo("javascript");
+        Assertions.assertThat(emptyTopic.getTags().get(1).getName()).isEqualTo("html");
+    }
+
 }
 
 
