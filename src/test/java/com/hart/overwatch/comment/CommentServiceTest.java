@@ -327,6 +327,19 @@ public class CommentServiceTest {
                 .hasMessage("Missing commentId from request. Please try again");
     }
 
+    @Test
+    public void CommentService_DeleteComment_ThrowForbiddenException() {
+        Comment comment = comments.get(0);
+        User forbiddenUser = new User();
+        forbiddenUser.setId(999L);
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(forbiddenUser);
+        when(commentRepository.findById(comment.getId())).thenReturn(Optional.of(comment));
+
+        Assertions.assertThatThrownBy(() -> {
+            commentService.deleteComment(comment.getId());
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("Cannot delete a comment that is not yours");
+    }
 }
 
 
