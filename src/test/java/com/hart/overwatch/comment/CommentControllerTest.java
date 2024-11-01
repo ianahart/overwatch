@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.comment.dto.CommentDto;
+import com.hart.overwatch.comment.dto.MinCommentDto;
 import com.hart.overwatch.comment.request.CreateCommentRequest;
 import com.hart.overwatch.comment.request.UpdateCommentRequest;
 import com.hart.overwatch.config.JwtService;
@@ -241,6 +242,37 @@ public class CommentControllerTest {
 
         response.andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
+    @Test
+    public void CommentController_GetComment_ReturnGetCommentResponse() throws Exception {
+        Comment comment = comments.get(0);
+
+        MinCommentDto minCommentDto = new MinCommentDto();
+        minCommentDto.setId(comment.getId());
+        minCommentDto.setUserId(comment.getUser().getId());
+        minCommentDto.setContent(comment.getContent());
+        minCommentDto.setCreatedAt(LocalDateTime.now());
+        minCommentDto.setAvatarUrl(comment.getUser().getProfile().getAvatarUrl());
+        minCommentDto.setFullName(comment.getUser().getFullName());
+
+        when(commentService.getComment(comment.getId())).thenReturn(minCommentDto);
+
+        ResultActions response =
+                mockMvc.perform(get(String.format("/api/v1/comments/%d", comment.getId())));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.id",
+                        CoreMatchers.is(comment.getId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.userId",
+                        CoreMatchers.is(comment.getUser().getId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.content",
+                        CoreMatchers.is(comment.getContent())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.avatarUrl",
+                        CoreMatchers.is(comment.getUser().getProfile().getAvatarUrl())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.fullName",
+                        CoreMatchers.is(comment.getUser().getFullName())));
     }
 
 }
