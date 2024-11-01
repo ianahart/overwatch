@@ -316,6 +316,17 @@ public class CommentServiceTest {
 
         Assertions.assertThatNoException();
     }
+
+    @Test
+    public void CommentService_DeleteComment_ThrowBadRequestException() {
+        Long commentId = null;
+
+        Assertions.assertThatThrownBy(() -> {
+            commentService.deleteComment(commentId);
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage("Missing commentId from request. Please try again");
+    }
+
 }
 
 
