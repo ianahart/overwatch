@@ -1,46 +1,86 @@
 package com.hart.overwatch.commentvote;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 import java.util.List;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import com.hart.overwatch.advice.BadRequestException;
+import java.util.Collections;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.comment.Comment;
 import com.hart.overwatch.comment.CommentService;
 import com.hart.overwatch.commentvote.request.CreateCommentVoteRequest;
+import com.hart.overwatch.config.DatabaseSetupService;
+import com.hart.overwatch.config.JwtService;
+import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.tag.Tag;
+import com.hart.overwatch.tag.dto.TagDto;
+import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.topic.Topic;
+import com.hart.overwatch.topic.dto.TopicDto;
+import com.hart.overwatch.topic.request.CreateTopicRequest;
+import com.hart.overwatch.topicmanagement.TopicManagementService;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matchers;
+
 
 @ActiveProfiles("test")
+@WebMvcTest(controllers = CommentVoteController.class)
+@AutoConfigureMockMvc(addFilters = false)
 @ExtendWith(MockitoExtension.class)
-public class CommentVoteServiceTest {
+public class CommentVoteControllerTest {
 
-    @InjectMocks
-    private CommentVoteService commentVoteService;
+    @Autowired
+    private MockMvc mockMvc;
 
-    @Mock
-    private CommentService commentService;
-
-    @Mock
+    @MockBean
     private CommentVoteRepository commentVoteRepository;
 
-    @Mock
+    @MockBean
+    private CommentVoteService commentVoteService;
+
+    @MockBean
+    private CommentService commentService;
+
+    @MockBean
     private UserService userService;
+
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private UserDetailsService userDetailsService;
+
+    @MockBean
+    private TokenRepository tokenRepository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     private Topic topic;
 
@@ -114,24 +154,10 @@ public class CommentVoteServiceTest {
         tags.forEach(tag -> tag.setTopics(List.of(topic)));
     }
 
-    @Test
-    public void CommentVoteService_CreateCommentVote_ThrowBadRequestException() {
-        CreateCommentVoteRequest request = new CreateCommentVoteRequest();
-        request.setCommentId(comment.getId());
-        request.setUserId(user.getId());
-        request.setVoteType("UPVOTE");
-
-        when(commentVoteRepository.findByCommentIdAndUserId(comment.getId(), user.getId()))
-                .thenReturn(true);
-
-        Assertions.assertThatThrownBy(() -> {
-            commentVoteService.createCommentVote(request);
-        }).isInstanceOf(BadRequestException.class)
-                .hasMessage("You have already voted on this comment");
-    }
 
     @Test
-    public void CommentVoteService_CreateCommentVote_ReturnNothing() {
+    public void CommentVoteController_CreateCommentVote_ReturnCreateCommentVoteResponse()
+            throws Exception {
         CreateCommentVoteRequest request = new CreateCommentVoteRequest();
         Comment commentWithoutVote = new Comment();
         commentWithoutVote.setId(2L);
@@ -139,25 +165,17 @@ public class CommentVoteServiceTest {
         request.setUserId(user.getId());
         request.setVoteType("UPVOTE");
 
-        when(commentVoteRepository.findByCommentIdAndUserId(commentWithoutVote.getId(),
-                user.getId())).thenReturn(false);
-        when(userService.getUserById(user.getId())).thenReturn(user);
-        when(commentService.getCommentById(commentWithoutVote.getId()))
-                .thenReturn(commentWithoutVote);
-        CommentVote newCommentVote = new CommentVote();
-        newCommentVote.setId(2L);
-        newCommentVote.setUser(user);
-        newCommentVote.setComment(commentWithoutVote);
-        when(commentVoteRepository.save(any(CommentVote.class))).thenReturn(new CommentVote());
+        doNothing().when(commentVoteService).createCommentVote(request);
 
-        commentVoteService.createCommentVote(request);
+        ResultActions response = mockMvc.perform(
+                post(String.format("/api/v1/comments/%d/votes", commentWithoutVote.getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
 
-        verify(commentVoteRepository, times(1)).save(any(CommentVote.class));
+        response.andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
 
-        Assertions.assertThatNoException();
     }
-
-
 }
 
 
