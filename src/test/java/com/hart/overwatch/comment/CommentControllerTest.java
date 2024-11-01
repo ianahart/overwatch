@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.comment.dto.CommentDto;
+import com.hart.overwatch.comment.request.CreateCommentRequest;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
@@ -192,7 +193,22 @@ public class CommentControllerTest {
                         CoreMatchers.is((int) expectedPaginationDto.getTotalElements())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.direction",
                         CoreMatchers.is(expectedPaginationDto.getDirection())));
+    }
 
+    @Test
+    public void CommentController_CreateComment_ReturnCreateCommentResponse() throws Exception {
+        CreateCommentRequest request = new CreateCommentRequest();
+        request.setUserId(user.getId());
+        request.setTopicId(topic.getId());
+        request.setContent("new content");
+
+        doNothing().when(commentService).createComment(request);
+
+        ResultActions response =
+                mockMvc.perform(post("/api/v1/comments").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+        response.andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 
 
