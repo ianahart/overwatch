@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.List;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import org.assertj.core.api.Assertions;
@@ -18,14 +19,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.comment.dto.CommentDto;
 import com.hart.overwatch.comment.request.CreateCommentRequest;
+import com.hart.overwatch.commentvote.CommentVote;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
+import com.hart.overwatch.reaction.Reaction;
+import com.hart.overwatch.reaction.dto.ReactionDto;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.tag.Tag;
 import com.hart.overwatch.topic.Topic;
@@ -91,19 +98,42 @@ public class CommentServiceTest {
         return tagEntities;
     }
 
+
     private List<Comment> createComments(User user, Topic topic) {
-        int numOfComments = 3;
+        int count = 3;
         List<Comment> comments = new ArrayList<>();
-        for (int i = 0; i < numOfComments; i++) {
+        for (int i = 0; i < count; i++) {
             Comment comment = new Comment();
             comment.setId(Long.valueOf(i + 1));
             comment.setTopic(topic);
             comment.setUser(user);
             comment.setContent(String.format("content-%d", i + 1));
             comment.setIsEdited(false);
+            comment.setCommentVotes(new ArrayList<>());
+            comment.setSavedComments(new ArrayList<>());
+            comment.setReactions(new ArrayList<>());
             comments.add(comment);
         }
         return comments;
+    }
+
+    private CommentDto convertToDto(Comment comment) {
+        CommentDto commentDto = new CommentDto();
+        commentDto.setId(comment.getId());
+        commentDto.setUserId(comment.getUser().getId());
+        commentDto.setContent(comment.getContent());
+        commentDto.setFullName(comment.getUser().getFullName());
+        commentDto.setIsEdited(comment.getIsEdited());
+        commentDto.setAvatarUrl(comment.getUser().getProfile().getAvatarUrl());
+        commentDto.setCreatedAt(LocalDateTime.now());
+        commentDto.setVoteDifference(2L);
+        commentDto.setReactions(List.of(new ReactionDto()));
+        commentDto.setCurUserVoteType("UPVOTE");
+        commentDto.setCurUserHasSaved(true);
+        commentDto.setCurUserHasVoted(true);
+        commentDto.setReplyCommentsCount(0);
+
+        return commentDto;
     }
 
     @BeforeEach
@@ -166,6 +196,73 @@ public class CommentServiceTest {
         verify(commentRepository, times(1)).save(any(Comment.class));
 
         Assertions.assertThatNoException();
+    }
+
+    @Test
+    public void CommentService_GetCommentsWithVoteDifference_ReturnPaginationOfCommentDto() {
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+        String sort = "vote";
+
+        Pageable pageable = Pageable.ofSize(pageSize).withPage(page);
+        List<CommentDto> commentDtos =
+                comments.stream().map(this::convertToDto).collect(Collectors.toList());
+        Page<CommentDto> pageResult = new PageImpl<>(commentDtos, pageable, commentDtos.size());
+
+        when(paginationService.getPageable(page, pageSize, direction)).thenReturn(pageable);
+        when(commentRepository.getCommentsByTopicIdWithVoteDifference(1L, pageable))
+                .thenReturn(pageResult);
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+
+        for (Comment comment : comments) {
+            when(commentRepository.findById(comment.getId())).thenReturn(Optional.of(comment));
+        }
+
+        PaginationDto<CommentDto> actualPaginationDto =
+                commentService.getComments(1L, page, pageSize, direction, sort);
+
+        Assertions.assertThat(actualPaginationDto).isNotNull();
+        Assertions.assertThat(actualPaginationDto.getItems()).hasSize(commentDtos.size());
+        CommentDto resultDto = actualPaginationDto.getItems().get(0);
+        Assertions.assertThat(resultDto.getCurUserVoteType()).isEqualTo("UPVOTE");
+        Assertions.assertThat(resultDto.getCurUserHasVoted()).isTrue();
+        Assertions.assertThat(resultDto.getCurUserHasSaved()).isFalse();
+        Assertions.assertThat(resultDto.getReplyCommentsCount()).isEqualTo(0);
+    }
+
+    @Test
+    public void CommentService_GetComments_ReturnPaginationOfCommentDto() {
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+        String sort = "asc";
+
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("id").ascending());
+        List<CommentDto> commentDtos =
+                comments.stream().map(this::convertToDto).collect(Collectors.toList());
+        Page<CommentDto> pageResult = new PageImpl<>(commentDtos, pageable, commentDtos.size());
+
+        when(paginationService.getSortedPageable(page, pageSize, direction, sort))
+                .thenReturn(pageable);
+        when(commentRepository.getCommentsByTopicId(eq(1L), any(Pageable.class)))
+                .thenReturn(pageResult);
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+
+        for (Comment comment : comments) {
+            when(commentRepository.findById(comment.getId())).thenReturn(Optional.of(comment));
+        }
+
+        PaginationDto<CommentDto> actualPaginationDto =
+                commentService.getComments(1L, page, pageSize, direction, sort);
+
+        Assertions.assertThat(actualPaginationDto).isNotNull();
+        Assertions.assertThat(actualPaginationDto.getItems()).hasSize(commentDtos.size());
+        CommentDto resultDto = actualPaginationDto.getItems().get(0);
+        Assertions.assertThat(resultDto.getCurUserVoteType()).isEqualTo("UPVOTE");
+        Assertions.assertThat(resultDto.getCurUserHasVoted()).isTrue();
+        Assertions.assertThat(resultDto.getCurUserHasSaved()).isFalse();
+        Assertions.assertThat(resultDto.getReplyCommentsCount()).isEqualTo(0);
     }
 }
 
