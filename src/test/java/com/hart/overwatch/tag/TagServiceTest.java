@@ -4,10 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Collections;
 import org.assertj.core.api.Assertions;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
@@ -17,26 +15,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import com.hart.overwatch.advice.BadRequestException;
-import com.hart.overwatch.advice.NotFoundException;
-import com.hart.overwatch.config.DatabaseSetupService;
-import com.hart.overwatch.pagination.PaginationService;
-import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
-import com.hart.overwatch.tag.Tag;
-import com.hart.overwatch.tag.dto.TagDto;
 import com.hart.overwatch.topic.Topic;
 import com.hart.overwatch.topic.TopicRepository;
-import com.hart.overwatch.topic.TopicService;
-import com.hart.overwatch.topic.dto.TopicDto;
-import com.hart.overwatch.topic.request.CreateTopicRequest;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
-import com.hart.overwatch.user.UserService;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
@@ -98,7 +82,7 @@ public class TagServiceTest {
         emptyTopic.setId(2L);
         emptyTopic.setTags(new ArrayList<>());
 
-        for (String newTag:   newTags) {
+        for (String newTag : newTags) {
             String cleanedTag = Jsoup.clean(newTag, Safelist.none());
             when(tagRepository.findByName(cleanedTag)).thenReturn(Optional.ofNullable(null));
         }
