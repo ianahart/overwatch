@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
 import org.assertj.core.api.Assertions;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.comment.request.CreateCommentRequest;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
@@ -123,8 +126,9 @@ public class CommentServiceTest {
                 .thenReturn(Optional.ofNullable(null));
 
         Assertions.assertThatThrownBy(() -> {
-           commentService.getCommentById(nonExistentCommentId);
-        }).isInstanceOf(NotFoundException.class).hasMessage(String.format("Could not find comment with the id %d", nonExistentCommentId));
+            commentService.getCommentById(nonExistentCommentId);
+        }).isInstanceOf(NotFoundException.class).hasMessage(
+                String.format("Could not find comment with the id %d", nonExistentCommentId));
     }
 
     @Test
@@ -139,6 +143,29 @@ public class CommentServiceTest {
         Assertions.assertThat(returnedComment.getId()).isEqualTo(comment.getId());
         Assertions.assertThat(returnedComment.getIsEdited()).isEqualTo(comment.getIsEdited());
         Assertions.assertThat(returnedComment.getContent()).isEqualTo(comment.getContent());
+    }
+
+    @Test
+    public void CommentService_CreateComment_ReturnNothing() {
+        CreateCommentRequest request = new CreateCommentRequest();
+        request.setUserId(user.getId());
+        request.setTopicId(topic.getId());
+        request.setContent("new comment here");
+
+        when(userService.getUserById(request.getUserId())).thenReturn(user);
+        when(topicService.getTopicById(request.getTopicId())).thenReturn(topic);
+        String content = Jsoup.clean(request.getContent(), Safelist.none());
+        Boolean isEdited = false;
+
+        Comment newComment = new Comment(content, isEdited, user, topic);
+
+        when(commentRepository.save(any(Comment.class))).thenReturn(newComment);
+
+        commentService.createComment(request);
+
+        verify(commentRepository, times(1)).save(any(Comment.class));
+
+        Assertions.assertThatNoException();
     }
 }
 

@@ -14,6 +14,10 @@ public class CreateCommentRequest {
     @Size(min = 1, max = 400, message = "A comment must be between 1 and 400 characters")
     private String content;
 
+    public CreateCommentRequest() {
+
+    }
+
     public CreateCommentRequest(Long userId, Long topicId, String content) {
         this.userId = userId;
         this.topicId = topicId;
