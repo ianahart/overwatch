@@ -8,6 +8,7 @@ import java.util.Collections;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.comment.dto.CommentDto;
 import com.hart.overwatch.comment.request.CreateCommentRequest;
+import com.hart.overwatch.comment.request.UpdateCommentRequest;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
@@ -208,6 +209,24 @@ public class CommentControllerTest {
                 mockMvc.perform(post("/api/v1/comments").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)));
         response.andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
+    @Test
+    public void CommentController_UpdateComment_ReturnUpdateCommentResponse() throws Exception {
+        Comment comment = comments.get(0);
+        UpdateCommentRequest request = new UpdateCommentRequest();
+        request.setUserId(user.getId());
+        request.setContent("updated content");
+
+        doNothing().when(commentService).updateComment(request, comment.getId());
+
+        ResultActions response =
+                mockMvc.perform(patch(String.format("/api/v1/comments/%d", comment.getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 
