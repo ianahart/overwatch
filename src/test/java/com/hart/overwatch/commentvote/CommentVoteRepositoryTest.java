@@ -11,9 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,8 +20,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import com.hart.overwatch.comment.Comment;
 import com.hart.overwatch.comment.CommentRepository;
-import com.hart.overwatch.comment.dto.CommentDto;
-import com.hart.overwatch.commentvote.CommentVoteRepository;
 import com.hart.overwatch.config.DatabaseSetupService;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.profile.ProfileRepository;
@@ -70,8 +65,6 @@ public class CommentVoteRepositoryTest {
     private Topic topic;
 
     private User user;
-
-    private User userTwo;
 
     private List<Tag> tags = new ArrayList<>();
 
@@ -133,7 +126,6 @@ public class CommentVoteRepositoryTest {
     @BeforeEach
     public void setUp() {
         user = createUser("john@gmail.com");
-        userTwo = createUser("jane@gmail.com");
         topic = createTopic(user);
         tags = createTags();
         comment = createComment(user, topic);
