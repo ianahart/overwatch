@@ -143,6 +143,32 @@ public class CommentVoteServiceTest {
                 .hasMessage("You have already voted on this comment");
     }
 
+    @Test
+    public void CommentVoteService_CreateCommentVote_ReturnNothing() {
+        CreateCommentVoteRequest request = new CreateCommentVoteRequest();
+        Comment commentWithoutVote = new Comment();
+        commentWithoutVote.setId(2L);
+        request.setCommentId(commentWithoutVote.getId());
+        request.setUserId(user.getId());
+        request.setVoteType("UPVOTE");
+
+        when(commentVoteRepository.findByCommentIdAndUserId(commentWithoutVote.getId(),
+                user.getId())).thenReturn(false);
+        when(userService.getUserById(user.getId())).thenReturn(user);
+        when(commentService.getCommentById(commentWithoutVote.getId()))
+                .thenReturn(commentWithoutVote);
+        CommentVote newCommentVote = new CommentVote();
+        newCommentVote.setId(2L);
+        newCommentVote.setUser(user);
+        newCommentVote.setComment(commentWithoutVote);
+        when(commentVoteRepository.save(any(CommentVote.class))).thenReturn(new CommentVote());
+
+        commentVoteService.createCommentVote(request);
+
+        verify(commentVoteRepository, times(1)).save(any(CommentVote.class));
+
+        Assertions.assertThatNoException();
+    }
 
 }
 
