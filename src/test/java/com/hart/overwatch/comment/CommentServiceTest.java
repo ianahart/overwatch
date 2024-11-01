@@ -27,6 +27,7 @@ import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.tag.Tag;
 import com.hart.overwatch.topic.Topic;
 import com.hart.overwatch.topic.TopicRepository;
+import com.hart.overwatch.topic.TopicService;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
@@ -40,7 +41,10 @@ public class CommentServiceTest {
     private CommentService commentService;
 
     @Mock
-    TopicRepository topicRepository;
+    CommentRepository commentRepository;
+
+    @Mock
+    TopicService topicService;
 
     @Mock
     private UserService userService;
@@ -73,7 +77,7 @@ public class CommentServiceTest {
 
     private Topic createTopic(User user) {
         Topic topicEntity = new Topic("title", "description", user);
-        topicRepository.save(topicEntity);
+        topicEntity.setId(1L);
         return topicEntity;
     }
 
@@ -110,6 +114,32 @@ public class CommentServiceTest {
         tags.forEach(tag -> tag.setTopics(List.of(topic)));
     }
 
+
+    @Test
+    public void CommentService_GetCommentById_ThrowNotFoundException() {
+        Long nonExistentCommentId = 999L;
+
+        when(commentRepository.findById(nonExistentCommentId))
+                .thenReturn(Optional.ofNullable(null));
+
+        Assertions.assertThatThrownBy(() -> {
+           commentService.getCommentById(nonExistentCommentId);
+        }).isInstanceOf(NotFoundException.class).hasMessage(String.format("Could not find comment with the id %d", nonExistentCommentId));
+    }
+
+    @Test
+    public void CommentService_GetCommentById_ReturnComment() {
+        Comment comment = comments.get(0);
+
+        when(commentRepository.findById(comment.getId())).thenReturn(Optional.of(comment));
+
+        Comment returnedComment = commentService.getCommentById(comment.getId());
+
+        Assertions.assertThat(returnedComment).isNotNull();
+        Assertions.assertThat(returnedComment.getId()).isEqualTo(comment.getId());
+        Assertions.assertThat(returnedComment.getIsEdited()).isEqualTo(comment.getIsEdited());
+        Assertions.assertThat(returnedComment.getContent()).isEqualTo(comment.getContent());
+    }
 }
 
 
