@@ -297,6 +297,25 @@ public class CommentServiceTest {
         }).isInstanceOf(ForbiddenException.class)
                 .hasMessage("Cannot update a comment that is not yours");
     }
+
+    @Test
+    public void CommentService_UpdateComment_ReturnNothing() {
+        Comment comment = comments.get(0);
+        UpdateCommentRequest request = new UpdateCommentRequest();
+        request.setUserId(user.getId());
+        request.setContent("updated-content");
+
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+        when(commentRepository.findById(comment.getId())).thenReturn(Optional.of(comment));
+        comment.setContent(Jsoup.clean(request.getContent(), Safelist.none()));
+        when(commentRepository.save(any(Comment.class))).thenReturn(comment);
+
+        commentService.updateComment(request, comment.getId());
+
+        verify(commentRepository, times(1)).save(any(Comment.class));
+
+        Assertions.assertThatNoException();
+    }
 }
 
 
