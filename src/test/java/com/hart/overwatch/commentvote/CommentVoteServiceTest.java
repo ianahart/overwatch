@@ -23,6 +23,7 @@ import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.comment.Comment;
 import com.hart.overwatch.comment.CommentService;
+import com.hart.overwatch.commentvote.request.CreateCommentVoteRequest;
 import com.hart.overwatch.config.DatabaseSetupService;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
@@ -47,6 +48,9 @@ public class CommentVoteServiceTest {
 
     @Mock
     private CommentService commentService;
+
+    @Mock
+    private CommentVoteRepository commentVoteRepository;
 
     @Mock
     private UserService userService;
@@ -121,6 +125,22 @@ public class CommentVoteServiceTest {
 
         topic.setTags(tags);
         tags.forEach(tag -> tag.setTopics(List.of(topic)));
+    }
+
+    @Test
+    public void CommentVoteService_CreateCommentVote_ThrowBadRequestException() {
+        CreateCommentVoteRequest request = new CreateCommentVoteRequest();
+        request.setCommentId(comment.getId());
+        request.setUserId(user.getId());
+        request.setVoteType("UPVOTE");
+
+        when(commentVoteRepository.findByCommentIdAndUserId(comment.getId(), user.getId()))
+                .thenReturn(true);
+
+        Assertions.assertThatThrownBy(() -> {
+            commentVoteService.createCommentVote(request);
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage("You have already voted on this comment");
     }
 
 
