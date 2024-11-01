@@ -143,7 +143,7 @@ public class CommentService {
         Comment comment = getCommentById(commentId);
 
         if (!user.getId().equals(comment.getUser().getId())) {
-            throw new ForbiddenException("Cannot update a comment that is not yours");
+            throw new ForbiddenException("Cannot delete a comment that is not yours");
         }
         commentRepository.delete(comment);
     }
