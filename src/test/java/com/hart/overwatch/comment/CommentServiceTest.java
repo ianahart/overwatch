@@ -24,6 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import com.hart.overwatch.advice.BadRequestException;
+import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.comment.dto.CommentDto;
 import com.hart.overwatch.comment.request.CreateCommentRequest;
@@ -277,6 +278,24 @@ public class CommentServiceTest {
             commentService.updateComment(request, commentId);
         }).isInstanceOf(BadRequestException.class)
                 .hasMessage("Missing commentId from request. Please try again");
+    }
+
+    @Test
+    public void CommentService_UpdateComment_ThrowForbiddenException() {
+        Comment comment = comments.get(0);
+        UpdateCommentRequest request = new UpdateCommentRequest();
+        request.setUserId(user.getId());
+        request.setContent("updated-content");
+
+        User forbiddenUser = new User();
+        forbiddenUser.setId(999L);
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(forbiddenUser);
+        when(commentRepository.findById(comment.getId())).thenReturn(Optional.of(comment));
+
+        Assertions.assertThatThrownBy(() -> {
+            commentService.updateComment(request, comment.getId());
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("Cannot update a comment that is not yours");
     }
 }
 
