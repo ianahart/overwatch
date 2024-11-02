@@ -3,27 +3,17 @@ package com.hart.overwatch.reportcomment;
 import java.util.List;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.comment.Comment;
-import com.hart.overwatch.comment.CommentService;
-import com.hart.overwatch.commentvote.request.CreateCommentVoteRequest;
-import com.hart.overwatch.config.DatabaseSetupService;
 import com.hart.overwatch.config.JwtService;
-import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.reportcomment.request.CreateReportCommentRequest;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.tag.Tag;
-import com.hart.overwatch.tag.dto.TagDto;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.topic.Topic;
-import com.hart.overwatch.topic.dto.TopicDto;
-import com.hart.overwatch.topic.request.CreateTopicRequest;
-import com.hart.overwatch.topicmanagement.TopicManagementService;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
-import com.hart.overwatch.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,9 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
@@ -43,11 +30,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import org.hamcrest.CoreMatchers;
-import org.hamcrest.Matchers;
 
 
 @ActiveProfiles("test")
@@ -147,7 +131,8 @@ public class ReportCommentControllerTest {
     }
 
     @Test
-    public void ReportCommentController_CreateReportComment_ReturnCreateReportCommentResponse() throws Exception{
+    public void ReportCommentController_CreateReportComment_ReturnCreateReportCommentResponse()
+            throws Exception {
         User otherUser = new User();
         otherUser.setId(2L);
         CreateReportCommentRequest request = new CreateReportCommentRequest();
@@ -157,11 +142,13 @@ public class ReportCommentControllerTest {
         request.setCommentId(comment.getId());
 
         doNothing().when(reportCommentService).createReportComment(request);
-        
-        ResultActions response = mockMvc.perform(post("/api/v1/report-comments").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(request)));
+
+        ResultActions response = mockMvc
+                .perform(post("/api/v1/report-comments").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
 
         response.andExpect(MockMvcResultMatchers.status().isCreated())
-            .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
 
     }
 }
