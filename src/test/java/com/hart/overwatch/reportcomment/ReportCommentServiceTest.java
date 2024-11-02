@@ -122,15 +122,40 @@ public class ReportCommentServiceTest {
         request.setUserId(user.getId());
         request.setCommentId(comment.getId());
 
-        when(reportCommentRepository.findReportCommentByCommentIdAndUserId(comment.getId(), user.getId())).thenReturn(true);
+        when(reportCommentRepository.findReportCommentByCommentIdAndUserId(comment.getId(),
+                user.getId())).thenReturn(true);
 
-        Assertions.assertThatThrownBy(() ->{
-             reportCommentService.createReportComment(request);
-        }).isInstanceOf(BadRequestException.class).hasMessage("You have already reported this comment");
+        Assertions.assertThatThrownBy(() -> {
+            reportCommentService.createReportComment(request);
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage("You have already reported this comment");
     }
 
+    @Test
+    public void ReportCommentService_CreateReportComment_ReturnNothing() {
+        CreateReportCommentRequest request = new CreateReportCommentRequest();
+        User otherUser = new User();
+        otherUser.setId(2L);
+        request.setDetails("details");
+        request.setReason(ReportReason.MISINFORMATION);
+        request.setCommentId(comment.getId());
+        request.setUserId(otherUser.getId());
+
+        when(reportCommentRepository.findReportCommentByCommentIdAndUserId(comment.getId(), otherUser.getId())).thenReturn(false);
+        when(userService.getUserById(otherUser.getId())).thenReturn(otherUser);
+        when(commentService.getCommentById(comment.getId())).thenReturn(comment);
+
+        ReportComment newReportComment = new ReportComment(request.getReason(), request.getDetails(), comment, otherUser);
+
+        when(reportCommentRepository.save(any(ReportComment.class))).thenReturn(newReportComment);
+
+        reportCommentService.createReportComment(request);
+
+        verify(reportCommentRepository, times(1)).save(any(ReportComment.class));
+        Assertions.assertThatNoException();
+
+    }
 
 }
-
 
 
