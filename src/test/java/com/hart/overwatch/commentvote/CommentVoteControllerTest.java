@@ -3,20 +3,14 @@ package com.hart.overwatch.commentvote;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.time.LocalDateTime;
+import static org.mockito.ArgumentMatchers.any;
 import java.util.ArrayList;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.comment.Comment;
-import com.hart.overwatch.comment.dto.CommentDto;
-import com.hart.overwatch.comment.dto.MinCommentDto;
-import com.hart.overwatch.comment.request.CreateCommentRequest;
-import com.hart.overwatch.comment.request.UpdateCommentRequest;
 import com.hart.overwatch.commentvote.request.CreateCommentVoteRequest;
 import com.hart.overwatch.config.JwtService;
-import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
-import com.hart.overwatch.reaction.dto.ReactionDto;
 import com.hart.overwatch.setting.Setting;
-import com.hart.overwatch.tag.Tag;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.topic.Topic;
 import com.hart.overwatch.user.Role;
@@ -34,6 +28,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -49,6 +44,7 @@ import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 
 
+@DirtiesContext
 @ActiveProfiles("test")
 @WebMvcTest(controllers = CommentVoteController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -127,7 +123,7 @@ public class CommentVoteControllerTest {
         CreateCommentVoteRequest request =
                 new CreateCommentVoteRequest(comment.getId(), user.getId(), "UPVOTE");
 
-        doNothing().when(commentVoteService).createCommentVote(request);
+        doNothing().when(commentVoteService).createCommentVote(any(CreateCommentVoteRequest.class));
 
         ResultActions response = mockMvc
                 .perform(post(String.format("/api/v1/comments/%d/votes", request.getCommentId()))
