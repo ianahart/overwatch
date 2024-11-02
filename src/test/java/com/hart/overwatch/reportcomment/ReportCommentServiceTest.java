@@ -16,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.comment.Comment;
 import com.hart.overwatch.comment.CommentService;
-import com.hart.overwatch.commentvote.request.CreateCommentVoteRequest;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.reportcomment.request.CreateReportCommentRequest;
 import com.hart.overwatch.setting.Setting;
@@ -141,11 +140,13 @@ public class ReportCommentServiceTest {
         request.setCommentId(comment.getId());
         request.setUserId(otherUser.getId());
 
-        when(reportCommentRepository.findReportCommentByCommentIdAndUserId(comment.getId(), otherUser.getId())).thenReturn(false);
+        when(reportCommentRepository.findReportCommentByCommentIdAndUserId(comment.getId(),
+                otherUser.getId())).thenReturn(false);
         when(userService.getUserById(otherUser.getId())).thenReturn(otherUser);
         when(commentService.getCommentById(comment.getId())).thenReturn(comment);
 
-        ReportComment newReportComment = new ReportComment(request.getReason(), request.getDetails(), comment, otherUser);
+        ReportComment newReportComment =
+                new ReportComment(request.getReason(), request.getDetails(), comment, otherUser);
 
         when(reportCommentRepository.save(any(ReportComment.class))).thenReturn(newReportComment);
 
