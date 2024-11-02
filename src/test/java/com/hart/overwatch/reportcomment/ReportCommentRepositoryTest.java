@@ -149,6 +149,14 @@ public class ReportCommentRepositoryTest {
         entityManager.flush();
         entityManager.clear();
     }
+
+    @Test
+    public void ReportCommentRepository_FindReportCommentByCommentIdAndUserId() {
+        Boolean reportCommentFound = reportCommentRepository
+                .findReportCommentByCommentIdAndUserId(comment.getId(), user.getId());
+
+        Assertions.assertThat(reportCommentFound).isTrue();
+    }
 }
 
 
