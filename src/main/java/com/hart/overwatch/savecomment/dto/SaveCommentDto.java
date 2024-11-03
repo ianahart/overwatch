@@ -29,6 +29,7 @@ public class SaveCommentDto {
         this.createdAt = createdAt;
         this.fullName = fullName;
         this.avatarUrl = avatarUrl;
+        this.userId = userId;
     }
 
     public Long getId() {
