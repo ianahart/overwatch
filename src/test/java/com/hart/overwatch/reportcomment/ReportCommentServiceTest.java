@@ -16,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.comment.Comment;
 import com.hart.overwatch.comment.CommentService;
-import com.hart.overwatch.commentvote.request.CreateCommentVoteRequest;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.reportcomment.request.CreateReportCommentRequest;
 import com.hart.overwatch.setting.Setting;
