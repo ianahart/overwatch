@@ -120,6 +120,16 @@ public class ReportCommentRepositoryTest {
         entityManager.clear();
     }
 
+    @Test
+    public void ReportCommentRepository_FindReportCommentByCommentIdAndUserId() {
+        Long commentId = comment.getId();
+        Long userId = user.getId();
+
+        Boolean exists =
+                reportCommentRepository.findReportCommentByCommentIdAndUserId(commentId, userId);
+
+        Assertions.assertThat(exists).isTrue();
+    }
 }
 
 
