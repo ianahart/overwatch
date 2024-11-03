@@ -1,15 +1,13 @@
-package com.hart.overwatch.commentvote;
+package com.hart.overwatch.reportcomment;
 
-import java.util.List;
-import java.util.stream.Collectors;
+
 import java.time.LocalDateTime;
-import static org.mockito.ArgumentMatchers.any;
 import java.util.ArrayList;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.comment.Comment;
-import com.hart.overwatch.commentvote.request.CreateCommentVoteRequest;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.profile.Profile;
+import com.hart.overwatch.reportcomment.request.CreateReportCommentRequest;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.topic.Topic;
@@ -23,9 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.annotation.DirtiesContext;
@@ -35,27 +30,22 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import org.hamcrest.CoreMatchers;
-import org.hamcrest.Matchers;
 
 
 @DirtiesContext
 @ActiveProfiles("test")
-@WebMvcTest(controllers = CommentVoteController.class)
+@WebMvcTest(controllers = ReportCommentController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @ExtendWith(MockitoExtension.class)
-public class CommentVoteControllerTest {
+public class ReportCommentControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private CommentVoteService commentVoteService;
+    private ReportCommentService reportCommentService;
 
     @MockBean
     private JwtService jwtService;
@@ -73,7 +63,7 @@ public class CommentVoteControllerTest {
 
     private Comment comment;
 
-    private CommentVote commentVote;
+    private ReportComment reportComment;
 
     private User createUser() {
         Boolean loggedIn = true;
@@ -102,11 +92,14 @@ public class CommentVoteControllerTest {
         return commentEntity;
     }
 
-
-    private CommentVote createCommentVote(User user, Comment comment) {
-        CommentVote commentVoteEntity = new CommentVote(comment, user, "UPVOTE");
-        commentVoteEntity.setId(1L);
-        return commentVoteEntity;
+    private ReportComment createReportComment(User user, Comment comment) {
+        ReportComment reportCommentEntity = new ReportComment();
+        reportCommentEntity.setId(1L);
+        reportCommentEntity.setReason(ReportReason.MISINFORMATION);
+        reportCommentEntity.setDetails("details");
+        reportCommentEntity.setComment(comment);
+        reportCommentEntity.setReportedBy(user);
+        return reportCommentEntity;
     }
 
     @BeforeEach
@@ -114,26 +107,32 @@ public class CommentVoteControllerTest {
         user = createUser();
         Topic topic = createTopic(user);
         comment = createComment(user, topic);
-        commentVote = createCommentVote(user, comment);
+        reportComment = createReportComment(user, comment);
+
     }
 
     @Test
-    public void CommentVoteController_CreateCommentVote_ReturnCommentVoteResponse()
+    public void ReportCommentControllerTest_CreateReportComment_ReturnCreateReportCommentResponse()
             throws Exception {
-        CreateCommentVoteRequest request =
-                new CreateCommentVoteRequest(comment.getId(), user.getId(), "UPVOTE");
+        CreateReportCommentRequest request = new CreateReportCommentRequest();
+        Comment newComment = new Comment();
+        newComment.setId(2L);
+        newComment.setContent("some content");
 
-        doNothing().when(commentVoteService).createCommentVote(any(CreateCommentVoteRequest.class));
+        request.setUserId(user.getId());
+        request.setCommentId(newComment.getId());
+        request.setDetails("details");
+        request.setReason(ReportReason.MISINFORMATION);
+
+        doNothing().when(reportCommentService).createReportComment(request);
 
         ResultActions response = mockMvc
-                .perform(post(String.format("/api/v1/comments/%d/votes", request.getCommentId()))
-                        .contentType(MediaType.APPLICATION_JSON)
+                .perform(post("/api/v1/report-comments").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)));
-
         response.andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
-    }
 
+    }
 
 }
 
