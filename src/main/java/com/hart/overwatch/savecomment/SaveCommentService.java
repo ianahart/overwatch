@@ -77,7 +77,7 @@ public class SaveCommentService {
 
     }
 
-    public void DeleteSaveComment(Long saveCommentId) {
+    public void deleteSaveComment(Long saveCommentId) {
         SaveComment saveComment = getSaveCommentById(saveCommentId);
         User user = userService.getCurrentlyLoggedInUser();
 
