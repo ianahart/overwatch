@@ -175,6 +175,33 @@ public class SaveCommentServiceTest {
         Assertions.assertThat(result.getTotalElements()).isEqualTo(1);
     }
 
+    @Test
+    public void SaveCommentService_DeleteSaveComment_ThrowForbiddenException() {
+        Long saveCommentId = saveComment.getId();
+        User forbiddenUser = new User();
+        forbiddenUser.setId(2L);
+
+        when(saveCommentRepository.findById(saveCommentId)).thenReturn(Optional.of(saveComment));
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(forbiddenUser);
+
+        Assertions.assertThatThrownBy(() -> {
+            saveCommentService.DeleteSaveComment(saveCommentId);
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("You cannot unsave a comment that is not yours");
+
+    }
+
+    @Test
+    public void SaveCommentService_DeleteSaveComment_ReturnNothing() {
+        when(saveCommentRepository.findById(saveComment.getId())).thenReturn(Optional.of(saveComment));
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+        doNothing().when(saveCommentRepository).delete(saveComment);
+
+        saveCommentService.DeleteSaveComment(saveComment.getId());
+
+        Assertions.assertThatNoException();
+        verify(saveCommentRepository, times(1)).delete(saveComment);
+    }
 
 }
 
