@@ -45,7 +45,7 @@ public class SaveCommentController {
     @DeleteMapping(path = "/{saveCommentId}")
     public ResponseEntity<DeleteSaveCommentResponse> deleteSaveComment(
             @PathVariable("saveCommentId") Long saveCommentId) {
-        saveCommentService.DeleteSaveComment(saveCommentId);
+        saveCommentService.deleteSaveComment(saveCommentId);
         return ResponseEntity.status(HttpStatus.OK).body(new DeleteSaveCommentResponse("success"));
     }
 }
