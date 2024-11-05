@@ -145,6 +145,43 @@ public class ReactionServiceTest {
 
         Assertions.assertThatNoException();
     }
+
+    @Test
+    public void ReactionService_GetReaction_ThrowBadRequestException() {
+        Long userId = user.getId();
+        Long commenId = null;
+
+        Assertions.assertThatThrownBy(() -> {
+            reactionService.getReaction(commenId, userId);
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage("Missing either comment id or user id");
+    }
+
+    @Test
+    public void ReationService_GetReaction_ReturnStringEmoji() {
+        Long commentId = comment.getId();
+        Long userId = user.getId();
+
+        when(reactionRepository.findByCommentIdAndUserId(commentId, userId)).thenReturn(reaction);
+
+        String result = reactionService.getReaction(commentId, userId);
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result).isEqualTo(reaction.getEmoji());
+    }
+
+    @Test
+    public void ReationService_GetReaction_ReturnNull() {
+        Comment newComment = new Comment();
+        newComment.setId(2L);
+        Long userId = user.getId();
+
+        when(reactionRepository.findByCommentIdAndUserId(newComment.getId(), userId))
+                .thenReturn(null);
+
+        String result = reactionService.getReaction(newComment.getId(), userId);
+        Assertions.assertThat(result).isNull();;
+    }
+
 }
 
 
