@@ -182,6 +182,32 @@ public class ReactionServiceTest {
         Assertions.assertThat(result).isNull();;
     }
 
+    @Test
+    public void ReactionService_DeleteReaction_ThrowBadRequestException() {
+        Long commentId = null;
+        Long userId = user.getId();
+
+        Assertions.assertThatThrownBy(() -> {
+            reactionService.deleteReaction(commentId, userId);
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage("Missing either comment id or user id");
+    }
+
+    @Test
+    public void ReactionService_DeleteReaction_ReturnNothing() {
+        Long commentId = comment.getId();
+        Long userId = user.getId();
+
+        when(reactionRepository.findByCommentIdAndUserId(commentId, userId)).thenReturn(reaction);
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+
+        doNothing().when(reactionRepository).delete(reaction);
+        reactionService.deleteReaction(commentId, userId);
+
+        Assertions.assertThatNoException();
+        verify(reactionRepository, times(1)).delete(reaction);
+    }
+
 }
 
 
