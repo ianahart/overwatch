@@ -10,6 +10,7 @@ import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.replycomment.dto.ReplyCommentDto;
+import com.hart.overwatch.replycomment.request.CreateReplyCommentRequest;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.topic.Topic;
@@ -222,6 +223,25 @@ public class ReplyCommentControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.direction",
                         CoreMatchers.is(expectedPaginationDto.getDirection())));
 
+    }
+
+    @Test
+    public void ReplyCommentController_CreateRepyComment_ReturnCreateReplyCommentResponse()
+            throws Exception {
+        CreateReplyCommentRequest request = new CreateReplyCommentRequest();
+        request.setUserId(user.getId());
+        request.setContent("new content");
+        Long commentId = comment.getId();
+
+        doNothing().when(replyCommentService).createReplyComment(request, commentId);
+
+        ResultActions response =
+                mockMvc.perform(post(String.format("/api/v1/comments/%d/reply", commentId))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 
 }
