@@ -31,7 +31,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
-import org.springframework.http.MediaTypeEditor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -263,7 +262,18 @@ public class ReplyCommentControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data",
                         CoreMatchers.is(request.getContent())));
+    }
 
+    @Test
+    public void ReplyCommentController_DeleteReplyComment_ReturnDeleteReplyCommentResponse()
+            throws Exception {
+
+        doNothing().when(replyCommentService).deleteReplyComment(replyComment.getId());
+
+        ResultActions response = mockMvc.perform(delete(String
+                .format("/api/v1/comments/%d/reply/%d", comment.getId(), replyComment.getId())));
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 
 }
