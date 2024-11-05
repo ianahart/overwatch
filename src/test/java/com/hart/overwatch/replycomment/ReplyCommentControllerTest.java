@@ -1,5 +1,7 @@
 package com.hart.overwatch.replycomment;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +13,7 @@ import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.replycomment.dto.ReplyCommentDto;
 import com.hart.overwatch.replycomment.request.CreateReplyCommentRequest;
+import com.hart.overwatch.replycomment.request.UpdateReplyCommentRequest;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.topic.Topic;
@@ -28,6 +31,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.http.MediaTypeEditor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -242,6 +246,24 @@ public class ReplyCommentControllerTest {
 
         response.andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
+    @Test
+    public void ReplyCommentController_UpdateReplyComment_ReturnUpdateReplyCommentResponse()
+            throws Exception {
+        UpdateReplyCommentRequest request = new UpdateReplyCommentRequest("updated content");
+        when(replyCommentService.updateReplyComment(anyLong(),
+                any(UpdateReplyCommentRequest.class))).thenReturn("updated content");
+
+        ResultActions response = mockMvc.perform(patch(String.format("/api/v1/comments/%d/reply/%d",
+                comment.getId(), replyComment.getId())).contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data",
+                        CoreMatchers.is(request.getContent())));
+
     }
 
 }
