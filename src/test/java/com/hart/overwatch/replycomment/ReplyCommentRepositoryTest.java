@@ -96,6 +96,7 @@ public class ReplyCommentRepositoryTest {
     private ReplyComment createReplyComment(User user, Comment comment) {
         LocalDateTime createdAt = LocalDateTime.now();
         ReplyComment replyCommentEntity = new ReplyComment();
+        replyCommentEntity.setIsEdited(false);
         replyCommentEntity.setContent("content");
         replyCommentEntity.setUser(user);
         replyCommentEntity.setComment(comment);
@@ -124,5 +125,15 @@ public class ReplyCommentRepositoryTest {
         userRepository.deleteAll();
         entityManager.flush();
         entityManager.clear();
+    }
+
+    @Test
+    public void countByUserIdAndCreatedAtAfter_ReturnInt() {
+        LocalDateTime fiveMinutesAgo = LocalDateTime.now().minusMinutes(5);
+        replyCommentRepository.save(new ReplyComment(false, "content", user, comment));
+        int replyCommentCount =
+                replyCommentRepository.countByUserIdAndCreatedAtAfter(user.getId(), fiveMinutesAgo);
+
+        Assertions.assertThat(replyCommentCount).isEqualTo(2);
     }
 }
