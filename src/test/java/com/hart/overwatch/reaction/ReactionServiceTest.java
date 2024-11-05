@@ -12,6 +12,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -103,7 +104,7 @@ public class ReactionServiceTest {
     }
 
     @Test
-    public void ReactionService_CreateReaction_ReturnNothing() {
+    public void ReactionService_CreateReaction_ThrowBadRequestException() {
         CreateReactionRequest request = new CreateReactionRequest();
         Long commentId = comment.getId();
         request.setUserId(user.getId());
@@ -116,7 +117,33 @@ public class ReactionServiceTest {
             reactionService.createReaction(request, commentId);
         }).isInstanceOf(BadRequestException.class).hasMessage("You already reacted with %s",
                 request.getEmoji());
+    }
 
+    @Test
+    public void ReactionService_CreateReaction_ReturnNothing() {
+        CreateReactionRequest request = new CreateReactionRequest();
+        Comment newComment = new Comment();
+        newComment.setId(2L);
+        Long commentId = newComment.getId();
+        request.setUserId(user.getId());
+        request.setEmoji("😢");
+
+        when(reactionRepository.existsByUserIdAndCommentId(request.getUserId(), commentId))
+                .thenReturn(false);
+        when(userService.getUserById(request.getUserId())).thenReturn(user);
+        when(commentService.getCommentById(commentId)).thenReturn(newComment);
+
+        reactionService.createReaction(request, commentId);
+
+        ArgumentCaptor<Reaction> reactionCaptor = ArgumentCaptor.forClass(Reaction.class);
+        verify(reactionRepository, times(1)).save(reactionCaptor.capture());
+
+        Reaction capturedReaction = reactionCaptor.getValue();
+        Assertions.assertThat(capturedReaction.getUser()).isEqualTo(user);
+        Assertions.assertThat(capturedReaction.getComment()).isEqualTo(newComment);
+        Assertions.assertThat(capturedReaction.getEmoji()).isEqualTo("😢");
+
+        Assertions.assertThatNoException();
     }
 }
 
