@@ -43,7 +43,7 @@ public class ReplyCommentController {
 
 
     @GetMapping(path = "/{commentId}/reply")
-    public ResponseEntity<GetReplyCommentsResponse> GetReplyCommentsByUserAndComment(
+    public ResponseEntity<GetReplyCommentsResponse> getReplyComments(
             @PathVariable("commentId") Long commentId, @RequestParam("page") int page,
             @RequestParam("pageSize") int pageSize, @RequestParam("direction") String direction) {
 
@@ -53,7 +53,7 @@ public class ReplyCommentController {
 
 
     @GetMapping(path = "/{commentId}/reply/user/{userId}")
-    public ResponseEntity<GetReplyCommentsByUserAndCommentResponse> GetReplyCommentsByUserAndComment(
+    public ResponseEntity<GetReplyCommentsByUserAndCommentResponse> getReplyCommentsByUserAndComment(
             @PathVariable("commentId") Long commentId, @PathVariable("userId") Long userId,
             @RequestParam("page") int page, @RequestParam("pageSize") int pageSize,
             @RequestParam("direction") String direction) {
@@ -73,8 +73,10 @@ public class ReplyCommentController {
                 replyCommentService.updateReplyComment(replyCommentId, request)));
     }
 
-    @DeleteMapping( path ="/{commentId}/reply/{replyCommentId}" )
-    public ResponseEntity<DeleteReplyCommentResponse> deleteReplyComment(@PathVariable("commentId") Long commentId, @PathVariable("replyCommentId") Long replyCommentId) {
+    @DeleteMapping(path = "/{commentId}/reply/{replyCommentId}")
+    public ResponseEntity<DeleteReplyCommentResponse> deleteReplyComment(
+            @PathVariable("commentId") Long commentId,
+            @PathVariable("replyCommentId") Long replyCommentId) {
         replyCommentService.deleteReplyComment(replyCommentId);
         return ResponseEntity.status(HttpStatus.OK).body(new DeleteReplyCommentResponse("success"));
     }
