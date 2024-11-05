@@ -25,6 +25,7 @@ import com.hart.overwatch.comment.Comment;
 import com.hart.overwatch.comment.CommentRepository;
 import com.hart.overwatch.config.DatabaseSetupService;
 import com.hart.overwatch.profile.Profile;
+import com.hart.overwatch.replycomment.dto.ReplyCommentDto;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.topic.Topic;
 import com.hart.overwatch.topic.TopicRepository;
@@ -128,12 +129,31 @@ public class ReplyCommentRepositoryTest {
     }
 
     @Test
-    public void countByUserIdAndCreatedAtAfter_ReturnInt() {
+    public void ReplyCommentRepository_CountByUserIdAndCreatedAtAfter_ReturnInt() {
         LocalDateTime fiveMinutesAgo = LocalDateTime.now().minusMinutes(5);
         replyCommentRepository.save(new ReplyComment(false, "content", user, comment));
         int replyCommentCount =
                 replyCommentRepository.countByUserIdAndCreatedAtAfter(user.getId(), fiveMinutesAgo);
 
         Assertions.assertThat(replyCommentCount).isEqualTo(2);
+    }
+
+    @Test
+    public void ReplyCommentRepository_FindReplyCommentsByCommentId_ReturnPageOfReplyCommentDto() {
+        Pageable pageable = PageRequest.of(0, 3);
+        Long commentId = comment.getId();
+
+        Page<ReplyCommentDto> result =
+                replyCommentRepository.findReplyCommentsByCommentId(pageable, commentId);
+
+        Assertions.assertThat(result).isNotEmpty();
+        Assertions.assertThat(result.getTotalElements()).isEqualTo(1);
+        ReplyCommentDto replyCommentDto = result.getContent().get(0);
+        Assertions.assertThat(replyCommentDto.getId()).isEqualTo(replyComment.getId());
+        Assertions.assertThat(replyCommentDto.getUserId())
+                .isEqualTo(replyComment.getUser().getId());
+        Assertions.assertThat(replyCommentDto.getContent()).isEqualTo(replyComment.getContent());
+        Assertions.assertThat(replyCommentDto.getFullName())
+                .isEqualTo(replyComment.getUser().getFullName());
     }
 }
