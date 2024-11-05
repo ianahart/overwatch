@@ -101,6 +101,7 @@ public class ReactionRepositoryTest {
         reactionEntity.setUser(user);
         reactionEntity.setComment(comment);
         reactionEntity.setCreatedAt(createdAt);
+        reactionRepository.save(reactionEntity);
 
         return reactionEntity;
 
@@ -124,6 +125,24 @@ public class ReactionRepositoryTest {
         userRepository.deleteAll();
         entityManager.flush();
         entityManager.clear();
+    }
+
+    @Test
+    public void ReactionRepositoryFindByCommentIdAndUserId_ReturnReaction() {
+        Long userId = user.getId();
+        Long commentId = comment.getId();
+
+        Reaction returnedReaction = reactionRepository.findByCommentIdAndUserId(commentId, userId);
+
+        Assertions.assertThat(returnedReaction).isNotNull();
+        Assertions.assertThat(returnedReaction.getComment().getId())
+                
+                .isEqualTo(reaction.getComment().getId());
+                
+        Assertions.assertThat(returnedReaction.getUser().getId())
+                .isEqualTo(reaction.getUser().getId());
+        Assertions.assertThat(returnedReaction.getEmoji()).isEqualTo(reaction.getEmoji());
+
     }
 }
 
