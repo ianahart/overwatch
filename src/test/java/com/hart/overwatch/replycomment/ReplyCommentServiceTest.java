@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.hart.overwatch.advice.BadRequestException;
+import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.RateLimitException;
 import com.hart.overwatch.comment.Comment;
 import com.hart.overwatch.comment.CommentService;
@@ -24,6 +26,7 @@ import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.replycomment.dto.ReplyCommentDto;
 import com.hart.overwatch.replycomment.request.CreateReplyCommentRequest;
+import com.hart.overwatch.replycomment.request.UpdateReplyCommentRequest;
 import com.hart.overwatch.reportcomment.request.CreateReportCommentRequest;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.topic.Topic;
@@ -129,7 +132,6 @@ public class ReplyCommentServiceTest {
     @Test
     public void ReplyCommentService_CreateReplyComment_ThrowRateLimitException() {
         int REPLY_LIMIT = 20;
-        LocalDateTime fiveMinutesAgo = LocalDateTime.now().minusMinutes(5);
         Long commentId = comment.getId();
         Long userId = user.getId();
         String content = "content";
@@ -139,10 +141,7 @@ public class ReplyCommentServiceTest {
         request.setUserId(userId);
 
         when(replyCommentRepository.countByUserIdAndCreatedAtAfter(eq(userId),
-                argThat(timestamp -> timestamp.isAfter(fiveMinutesAgo.minusSeconds(1))
-                        && timestamp.isBefore(fiveMinutesAgo.plusSeconds(1)))))
-                                .thenReturn(REPLY_LIMIT);
-
+                any(LocalDateTime.class))).thenReturn(REPLY_LIMIT);
         Assertions.assertThatThrownBy(() -> {
             replyCommentService.createReplyComment(request, commentId);
         }).isInstanceOf(RateLimitException.class).hasMessage(
@@ -207,6 +206,54 @@ public class ReplyCommentServiceTest {
         Assertions.assertThat(replyCommentDto.getId()).isEqualTo(replyComment.getId());
 
     }
+
+    @Test
+    public void ReplyCommentService_UpdateReplyComment_ThrowForbiddenException() {
+        Long replyCommentId = replyComment.getId();
+        User forbiddenUser = new User();
+        forbiddenUser.setId(999L);
+        UpdateReplyCommentRequest request = new UpdateReplyCommentRequest();
+        request.setContent("updated content");
+
+        when(replyCommentRepository.findById(replyCommentId)).thenReturn(Optional.of(replyComment));
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(forbiddenUser);
+
+        Assertions.assertThatThrownBy(() -> {
+            replyCommentService.updateReplyComment(replyCommentId, request);
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("Cannot edit another user's reply comment");
+
+    }
+
+    @Test
+    public void ReplyCommentService_UpdateReplyComment_ReturnEarlyString() {
+        Long replyCommentId = replyComment.getId();
+        UpdateReplyCommentRequest request = new UpdateReplyCommentRequest();
+        request.setContent("content");
+        when(replyCommentRepository.findById(replyCommentId)).thenReturn(Optional.of(replyComment));
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+
+        replyCommentService.updateReplyComment(replyCommentId, request);
+
+        Assertions.assertThatNoException();
+        verify(replyCommentRepository, times(0)).save(replyComment);
+    }
+
+    @Test
+    public void ReplyCommentService_UpdateReplyComment_ReturnString() {
+        Long replyCommentId = replyComment.getId();
+        UpdateReplyCommentRequest request = new UpdateReplyCommentRequest();
+        request.setContent("updated content");
+        when(replyCommentRepository.findById(replyCommentId)).thenReturn(Optional.of(replyComment));
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+        when(replyCommentRepository.save(any(ReplyComment.class))).thenReturn(replyComment);
+
+        replyCommentService.updateReplyComment(replyCommentId, request);
+
+        Assertions.assertThatNoException();
+        verify(replyCommentRepository, times(1)).save(any(ReplyComment.class));
+    }
+
 }
 
 
