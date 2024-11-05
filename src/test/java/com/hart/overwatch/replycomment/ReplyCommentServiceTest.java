@@ -6,6 +6,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +20,9 @@ import com.hart.overwatch.advice.RateLimitException;
 import com.hart.overwatch.comment.Comment;
 import com.hart.overwatch.comment.CommentService;
 import com.hart.overwatch.pagination.PaginationService;
+import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
+import com.hart.overwatch.replycomment.dto.ReplyCommentDto;
 import com.hart.overwatch.replycomment.request.CreateReplyCommentRequest;
 import com.hart.overwatch.reportcomment.request.CreateReportCommentRequest;
 import com.hart.overwatch.setting.Setting;
@@ -27,6 +31,9 @@ import com.hart.overwatch.topic.TopicService;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
@@ -98,6 +105,18 @@ public class ReplyCommentServiceTest {
 
     }
 
+    private ReplyCommentDto convertToDto(ReplyComment replyComment) {
+        ReplyCommentDto replyCommentDto = new ReplyCommentDto();
+        replyCommentDto.setId(replyComment.getId());
+        replyCommentDto.setUserId(replyComment.getUser().getId());
+        replyCommentDto.setContent(replyComment.getContent());
+        replyCommentDto.setFullName(replyComment.getUser().getFullName());
+        replyCommentDto.setAvatarUrl(replyComment.getUser().getProfile().getAvatarUrl());
+        replyCommentDto.setCreatedAt(LocalDateTime.now());
+
+        return replyCommentDto;
+    }
+
     @BeforeEach
     public void setUp() {
         user = createUser();
@@ -156,8 +175,36 @@ public class ReplyCommentServiceTest {
         replyCommentService.createReplyComment(request, commentId);
         Assertions.assertThatNoException();
         verify(replyCommentRepository, times(1)).save(any(ReplyComment.class));
+    }
 
+    @Test
+    public void ReplyCommentService_GetReplyComments_ReturnPaginationDtoOfReplyCommentDto() {
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
 
+        Pageable pageable = Pageable.ofSize(pageSize).withPage(page);
+        List<ReplyCommentDto> replyCommentDtos =
+                List.of(replyComment).stream().map(this::convertToDto).collect(Collectors.toList());
+        Page<ReplyCommentDto> pageResult =
+                new PageImpl<>(replyCommentDtos, pageable, replyCommentDtos.size());
+
+        when(paginationService.getSortedPageable(page, pageSize, direction, "desc"))
+                .thenReturn(pageable);
+        when(replyCommentRepository.findReplyCommentsByCommentId(pageable, comment.getId()))
+                .thenReturn(pageResult);
+
+        PaginationDto<ReplyCommentDto> result =
+                replyCommentService.getReplyComments(comment.getId(), page, pageSize, direction);
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getItems()).hasSize(replyCommentDtos.size());
+        ReplyCommentDto replyCommentDto = result.getItems().get(0);
+        Assertions.assertThat(replyCommentDto.getUserId())
+                .isEqualTo(replyComment.getUser().getId());
+        Assertions.assertThat(replyCommentDto.getContent()).isEqualTo(replyComment.getContent());
+        Assertions.assertThat(replyCommentDto.getFullName())
+                .isEqualTo(replyComment.getUser().getFullName());
+        Assertions.assertThat(replyCommentDto.getId()).isEqualTo(replyComment.getId());
 
     }
 }
