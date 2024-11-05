@@ -1,18 +1,13 @@
 package com.hart.overwatch.reaction;
 
-import java.util.List;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import static org.mockito.Mockito.doNothing;
 import com.hart.overwatch.comment.Comment;
 import com.hart.overwatch.config.JwtService;
-import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.reaction.request.CreateReactionRequest;
-import com.hart.overwatch.savecomment.dto.SaveCommentDto;
-import com.hart.overwatch.savecomment.request.CreateSaveCommentRequest;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.topic.Topic;
@@ -26,9 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.annotation.DirtiesContext;
