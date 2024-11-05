@@ -130,6 +130,36 @@ public class ReplyCommentServiceTest {
                 "You have exceed the amount of comments in a single timespan. Please wait before posting again");
     }
 
+
+    @Test
+    public void ReplyCommentService_CreateReplyComment_ReturnNothing() {
+        LocalDateTime fiveMinutesAgo = LocalDateTime.now().minusMinutes(5);
+        Long commentId = comment.getId();
+        Long userId = user.getId();
+        String content = "content";
+
+        CreateReplyCommentRequest request = new CreateReplyCommentRequest();
+        request.setContent(content);
+        request.setUserId(userId);
+
+        when(replyCommentRepository
+                .countByUserIdAndCreatedAtAfter(eq(request.getUserId()),
+                        argThat(timestamp -> timestamp.isAfter(fiveMinutesAgo.minusSeconds(1))
+                                && timestamp.isBefore(fiveMinutesAgo.plusSeconds(1)))))
+                                        .thenReturn(0);
+
+        when(userService.getUserById(request.getUserId())).thenReturn(user);
+        when(commentService.getCommentById(commentId)).thenReturn(comment);
+        ReplyComment newReplyComment = new ReplyComment(false, request.getContent(), user, comment);
+        when(replyCommentRepository.save(any(ReplyComment.class))).thenReturn(newReplyComment);
+
+        replyCommentService.createReplyComment(request, commentId);
+        Assertions.assertThatNoException();
+        verify(replyCommentRepository, times(1)).save(any(ReplyComment.class));
+
+
+
+    }
 }
 
 
