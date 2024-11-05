@@ -154,7 +154,19 @@ public class ReactionControllerTest {
 
            response.andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
 
+    @Test
+    public void ReactionController_DeleteReaction_ReturnDeleteReactionResponse() throws Exception {
+        Long commentId = comment.getId();
+        Long userId = user.getId();
+        doNothing().when(reactionService).deleteReaction(commentId, userId);
+
+        ResultActions response = mockMvc.perform(
+                delete(String.format("/api/v1/comments/%d/reactions/%d", commentId, userId)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 
 }
