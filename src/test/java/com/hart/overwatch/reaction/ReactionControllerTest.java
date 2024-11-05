@@ -147,5 +147,15 @@ public class ReactionControllerTest {
 
     }
 
+    @Test
+    public void ReactionController_GetReaction_ReturnGetReactionResponse() throws Exception{
+          when(reactionService.getReaction(comment.getId(), user.getId())).thenReturn("😢");
+           ResultActions response = mockMvc.perform(get(String.format("/api/v1/comments/%d/reactions", comment.getId())).param("userId", "1"));
+
+           response.andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+
+    }
+
 }
 
