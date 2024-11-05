@@ -136,13 +136,21 @@ public class ReactionRepositoryTest {
 
         Assertions.assertThat(returnedReaction).isNotNull();
         Assertions.assertThat(returnedReaction.getComment().getId())
-                
                 .isEqualTo(reaction.getComment().getId());
-                
         Assertions.assertThat(returnedReaction.getUser().getId())
                 .isEqualTo(reaction.getUser().getId());
         Assertions.assertThat(returnedReaction.getEmoji()).isEqualTo(reaction.getEmoji());
 
+    }
+
+    @Test
+    public void ReactionRepository_ExistsByUserIdAndCommentId_ReturnBooleanTrue() {
+        Long userId = user.getId();
+        Long commentId = comment.getId();
+
+        Boolean exists = reactionRepository.existsByUserIdAndCommentId(userId, commentId);
+
+        Assertions.assertThat(exists).isTrue();
     }
 }
 
