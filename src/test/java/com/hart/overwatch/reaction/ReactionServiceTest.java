@@ -20,6 +20,7 @@ import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.comment.Comment;
 import com.hart.overwatch.comment.CommentService;
 import com.hart.overwatch.profile.Profile;
+import com.hart.overwatch.reaction.request.CreateReactionRequest;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.topic.Topic;
 import com.hart.overwatch.user.Role;
@@ -32,7 +33,7 @@ import org.springframework.test.context.ActiveProfiles;
 public class ReactionServiceTest {
 
     @InjectMocks
-    private ReactionService ReactionService;
+    private ReactionService reactionService;
 
     @Mock
     ReactionRepository reactionRepository;
@@ -101,6 +102,22 @@ public class ReactionServiceTest {
         reaction = createReaction(user, comment);
     }
 
+    @Test
+    public void ReactionService_CreateReaction_ReturnNothing() {
+        CreateReactionRequest request = new CreateReactionRequest();
+        Long commentId = comment.getId();
+        request.setUserId(user.getId());
+        request.setEmoji("👍");
+
+        when(reactionRepository.existsByUserIdAndCommentId(request.getUserId(), commentId))
+                .thenReturn(true);
+
+        Assertions.assertThatThrownBy(() -> {
+            reactionService.createReaction(request, commentId);
+        }).isInstanceOf(BadRequestException.class).hasMessage("You already reacted with %s",
+                request.getEmoji());
+
+    }
 }
 
 
