@@ -254,6 +254,35 @@ public class ReplyCommentServiceTest {
         verify(replyCommentRepository, times(1)).save(any(ReplyComment.class));
     }
 
+    @Test
+    public void ReplyCommentService_DeleteReplyComment_ThrowForbiddenException() {
+        Long replyCommentId = replyComment.getId();
+        when(replyCommentRepository.findById(replyCommentId)).thenReturn(Optional.of(replyComment));
+        User forbiddenUser = new User();
+        forbiddenUser.setId(999L);
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(forbiddenUser);
+
+        Assertions.assertThatThrownBy(() -> {
+            replyCommentService.deleteReplyComment(replyCommentId);
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("Cannot delete another user's reply comment");
+    }
+
+    @Test
+    public void ReplyCommentService_DeleteReplyComment_ReturnNothing() {
+        Long replyCommentId = replyComment.getId();
+        when(replyCommentRepository.findById(replyCommentId)).thenReturn(Optional.of(replyComment));
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+        doNothing().when(replyCommentRepository).delete(replyComment);
+
+        replyCommentService.deleteReplyComment(replyCommentId);
+
+        Assertions.assertThatNoException();
+
+        verify(replyCommentRepository, times(1)).delete(replyComment);
+    }
+
+
 }
 
 
