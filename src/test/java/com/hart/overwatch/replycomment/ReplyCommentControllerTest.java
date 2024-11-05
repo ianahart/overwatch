@@ -10,7 +10,6 @@ import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.replycomment.dto.ReplyCommentDto;
-import com.hart.overwatch.reportcomment.request.CreateReportCommentRequest;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.topic.Topic;
@@ -181,6 +180,50 @@ public class ReplyCommentControllerTest {
                         CoreMatchers.is(expectedPaginationDto.getDirection())));
 
     }
+
+
+    @Test
+    public void ReplyCommentController_GetReplyCommentsByUserAndComment_ReturnGetReplyCommentsByUserAndCommentResponse()
+            throws Exception {
+        Long userId = user.getId();
+        Long commentId = comment.getId();
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+
+        Pageable pageable = Pageable.ofSize(pageSize).withPage(page);
+        List<ReplyCommentDto> replyCommentDtos =
+                List.of(replyComment).stream().map(this::convertToDto).collect(Collectors.toList());
+        Page<ReplyCommentDto> pageResult =
+                new PageImpl<>(replyCommentDtos, pageable, replyCommentDtos.size());
+        PaginationDto<ReplyCommentDto> expectedPaginationDto =
+                new PaginationDto<>(replyCommentDtos, pageResult.getNumber(), pageSize,
+                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
+
+        when(replyCommentService.getReplyCommentsByUserAndComment(userId, commentId, page, pageSize,
+                direction)).thenReturn(expectedPaginationDto);
+
+        ResultActions response = mockMvc
+                .perform(get(String.format("/api/v1/comments/%d/reply/user/%d", commentId, userId))
+                        .param("page", "0").param("pageSize", "3").param("direction", "next"));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.items[0].id",
+                        CoreMatchers.is(replyCommentDtos.get(0).getId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.page",
+                        CoreMatchers.is(expectedPaginationDto.getPage())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.items",
+                        Matchers.hasSize(replyCommentDtos.size())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.pageSize",
+                        CoreMatchers.is(expectedPaginationDto.getPageSize())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.totalElements",
+                        CoreMatchers.is((int) expectedPaginationDto.getTotalElements())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.direction",
+                        CoreMatchers.is(expectedPaginationDto.getDirection())));
+
+    }
+
 }
 
 
