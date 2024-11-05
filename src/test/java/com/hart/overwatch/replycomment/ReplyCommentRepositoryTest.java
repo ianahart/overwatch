@@ -156,4 +156,27 @@ public class ReplyCommentRepositoryTest {
         Assertions.assertThat(replyCommentDto.getFullName())
                 .isEqualTo(replyComment.getUser().getFullName());
     }
+
+    @Test
+    public void ReplyCommentRepository_FindReplyCommentsByUserIdAndCommentId_ReturnPageOfReplyCommentDto() {
+        int page = 0;
+        int pageSize = 3;
+        Long userId = user.getId();
+        Long commentId = comment.getId();
+        Pageable pageable = PageRequest.of(page, pageSize);
+
+        Page<ReplyCommentDto> result = replyCommentRepository
+                .findReplyCommentsByUserIdAndCommentId(pageable, userId, commentId);
+
+        Assertions.assertThat(result).isNotEmpty();
+        Assertions.assertThat(result.getTotalElements()).isEqualTo(1);
+        ReplyCommentDto replyCommentDto = result.getContent().get(0);
+        Assertions.assertThat(replyCommentDto.getId()).isEqualTo(replyComment.getId());
+        Assertions.assertThat(replyCommentDto.getUserId())
+                .isEqualTo(replyComment.getUser().getId());
+        Assertions.assertThat(replyCommentDto.getContent()).isEqualTo(replyComment.getContent());
+        Assertions.assertThat(replyCommentDto.getFullName())
+                .isEqualTo(replyComment.getUser().getFullName());
+
+    }
 }
