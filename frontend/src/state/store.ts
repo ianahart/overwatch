@@ -525,6 +525,8 @@ export {
 } from './apis/blockedUsersApi';
 
 export {
+  useUpdateTopicMutation,
+  useLazyFetchUserTopicsQuery,
   useLazyFetchTopicsWithTagsQuery,
   useFetchTopicsQuery,
   useLazySearchTopicsQuery,

@@ -7,6 +7,7 @@ import com.hart.overwatch.tag.TagService;
 import com.hart.overwatch.topic.Topic;
 import com.hart.overwatch.topic.TopicService;
 import com.hart.overwatch.topic.request.CreateTopicRequest;
+import com.hart.overwatch.topic.request.UpdateTopicRequest;
 
 @Service
 public class TopicManagementService {
@@ -28,4 +29,11 @@ public class TopicManagementService {
         Topic topic = topicService.createTopic(request);
         tagService.createTags(request.getTags(), topic);
     }
+
+    @Transactional
+    public void handleUpdateTopic(UpdateTopicRequest request, Long topicId) {
+        Topic topic = topicService.updateTopic(request, topicId);
+        tagService.updateTags(request.getTags(), topic);
+    }
+
 }

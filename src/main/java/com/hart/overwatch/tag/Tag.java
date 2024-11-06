@@ -1,6 +1,7 @@
 package com.hart.overwatch.tag;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Objects;
 import com.hart.overwatch.topic.Topic;
 import jakarta.persistence.Column;
@@ -26,7 +27,7 @@ public class Tag {
     private String name;
 
     @ManyToMany(mappedBy = "tags")
-    private List<Topic> topics;
+    private List<Topic> topics = new ArrayList<>();
 
 
     public Tag() {
