@@ -60,6 +60,16 @@ public class TopicController {
                 topicService.getTopics(page, pageSize, direction)));
     }
 
+
+    @GetMapping(path = "/users/{userId}")
+    public ResponseEntity<GetAllTopicsResponse> getAllUserTopics(
+            @PathVariable("userId") Long userId, @RequestParam("page") int page,
+            @RequestParam("pageSize") int pageSize, @RequestParam("direction") String direction) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(new GetAllTopicsResponse("success",
+                topicService.getAllUserTopics(userId, page, pageSize, direction)));
+    }
+
     @GetMapping(path = "/tags")
     public ResponseEntity<GetAllTopicsResponse> getTopicsWithTags(@RequestParam("page") int page,
             @RequestParam("pageSize") int pageSize, @RequestParam("direction") String direction,

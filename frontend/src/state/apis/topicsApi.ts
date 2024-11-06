@@ -10,6 +10,8 @@ import {
   IGetTopicsResponse,
   IGetTopicsWithTagsRequest,
   IGetTopicsWithTagsResponse,
+  IGetAllUserTopicsRequest,
+  IGetAllUserTopicsResponse,
 } from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
@@ -89,10 +91,27 @@ const topicsApi = createApi({
             ? [...result.data.items.map(({ id }) => ({ type: 'Topic', id })), { type: 'Topic', id: 'LIST' }]
             : [{ type: 'Topic', id: 'LIST' }],
       }),
+      fetchUserTopics: builder.query<IGetAllUserTopicsResponse, IGetAllUserTopicsRequest>({
+        query: ({ page, pageSize, direction, userId, token }) => {
+          return {
+            url: `/topics/users/${userId}?page=${page}&pageSize=${pageSize}&direction=${direction}`,
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+        //@ts-ignore
+        providesTags: (result, error, arg) =>
+          result
+            ? [...result.data.items.map(({ id }) => ({ type: 'Topic', id })), { type: 'Topic', id: 'LIST' }]
+            : [{ type: 'Topic', id: 'LIST' }],
+      }),
     };
   },
 });
 export const {
+  useLazyFetchUserTopicsQuery,
   useLazyFetchTopicsWithTagsQuery,
   useLazyFetchTopicsQuery,
   useFetchTopicsQuery,

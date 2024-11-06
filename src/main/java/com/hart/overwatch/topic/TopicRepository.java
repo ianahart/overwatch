@@ -7,13 +7,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import com.hart.overwatch.topic.dto.TopicDto;
 
 @Repository
 public interface TopicRepository extends JpaRepository<Topic, Long> {
 
     Topic findByTitle(String title);
 
+    Page<Topic> findAllByUserId(@Param("pageable") Pageable pageable, @Param("userId") Long userId);
 
     @Query(value = "SELECT * FROM topic t WHERE t.search_vector @@ to_tsquery(:query)",
             nativeQuery = true)

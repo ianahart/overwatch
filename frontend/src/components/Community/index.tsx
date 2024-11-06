@@ -7,10 +7,17 @@ import CommunitySearchBar from './CommunitySearchBar';
 import CommunityTopicList from './CommunityTopicList';
 import CommunityTopicSavedCommentList from './CommunityTopicSavedCommentList';
 import { TRootState } from '../../state/store';
+import CommunityActiveTab from './CommunityActiveTab';
+import CommunityUserTopicList from './CommunityUserTopicList';
 
 const Community = () => {
   const { user, token } = useSelector((store: TRootState) => store.user);
   const [activeTab, setActiveTab] = useState('topics');
+
+  const handleSetActiveTab = (tab: string): void => {
+    setActiveTab(tab);
+  };
+
   return (
     <div className="max-w-[1280px] mx-auto p-2 min-h-[100vh]">
       <CommunityHeader
@@ -24,24 +31,31 @@ const Community = () => {
         <CommunitySearchBar btnText="Search" />
       </div>
       <div className="flex items-center justify-center">
-        <button
-          onClick={() => setActiveTab('topics')}
-          className={`mx-4 ${activeTab === 'topics' ? 'font-bold text-green-400' : 'text-gray-400 font-normal'}`}
-        >
-          Topics
-        </button>
-        <button
-          onClick={() => setActiveTab('savedComments')}
-          className={`mx-4 ${activeTab === 'savedComments' ? 'font-bold text-green-400' : 'text-gray-400 font-normal'}`}
-        >
-          Saved Comments
-        </button>
+        <CommunityActiveTab
+          tab="topics"
+          activeTab={activeTab}
+          btnText="Topics"
+          handleSetActiveTab={handleSetActiveTab}
+        />
+        <CommunityActiveTab
+          tab="saveComments"
+          activeTab={activeTab}
+          btnText="Saved Comments"
+          handleSetActiveTab={handleSetActiveTab}
+        />
+        <CommunityActiveTab
+          tab="userTopics"
+          activeTab={activeTab}
+          btnText="Your Topics"
+          handleSetActiveTab={handleSetActiveTab}
+        />
       </div>
       <div className="my-8">
         {activeTab === 'topics' && <CommunityTopicList />}
         {activeTab === 'savedComments' && user.id !== 0 && (
           <CommunityTopicSavedCommentList userId={user.id} token={token} />
         )}
+        {activeTab === 'userTopics' && user.id !== 0 && <CommunityUserTopicList userId={user.id} token={token} />}
       </div>
     </div>
   );

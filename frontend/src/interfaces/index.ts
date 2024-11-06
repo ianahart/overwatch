@@ -1997,6 +1997,26 @@ export interface IDeleteSaveCommentRequest {
   saveCommentId: number;
 }
 
+export interface IGetAllUserTopicsRequest {
+  userId: number;
+  token: string;
+  page: number;
+  direction: string;
+  pageSize: number;
+}
+
+export interface IGetAllUserTopicsResponse {
+  message: string;
+  data: {
+    items: ITopic[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
+}
+
 export interface IDeleteSaveCommentResponse extends IBaseResponse {}
 
 export interface IDeleteReplyCommentResponse extends IBaseResponse {}
