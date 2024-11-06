@@ -1,5 +1,8 @@
 package com.hart.overwatch.tag;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.HashSet;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +45,34 @@ public class TagService {
                 topicRepository.save(topic);
             }
         }
+    }
+
+    public void updateTags(List<String> newTagNames, Topic topic) {
+
+        Set<Tag> existingTags = new HashSet<>(topic.getTags());
+
+        Set<Tag> newTags = new HashSet<>();
+        for (String tagName : newTagNames) {
+            Tag tag = tagRepository.findByName(tagName).orElseGet(() -> new Tag(tagName));
+
+            if (tag.getId() == null) {
+                tagRepository.save(tag);
+            }
+
+            newTags.add(tag);
+        }
+
+        Set<Tag> tagsToAdd = newTags.stream().filter(tag -> !existingTags.contains(tag))
+                .collect(Collectors.toSet());
+
+        Set<Tag> tagsToRemove = existingTags.stream().filter(tag -> !newTags.contains(tag))
+                .collect(Collectors.toSet());
+
+        tagsToAdd.forEach(tag -> topic.addTag(tag));
+
+        tagsToRemove.forEach(tag -> topic.removeTag(tag));
+
+        topicRepository.save(topic);
     }
 
 }

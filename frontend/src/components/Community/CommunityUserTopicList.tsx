@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { ITopic, IPaginationState } from '../../interfaces';
 import { useLazyFetchUserTopicsQuery } from '../../state/store';
 import CommunityTopicListItem from './CommunityTopicListItem';
@@ -49,7 +50,11 @@ const CommunityUserTopicList = ({ userId, token }: ICommunityUserTopicListProps)
     <div className="my-8">
       <div className="my-4 flex flex-col items-center">
         {topics.map((topic) => {
-          return <CommunityTopicListItem key={topic.id} topic={topic} />;
+          return (
+            <Link key={topic.id} to={`/community/topics/edit/${topic.id}`}>
+              <CommunityTopicListItem topic={topic} />
+            </Link>
+          );
         })}
       </div>
       <div className="flex items-center justify-center">

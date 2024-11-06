@@ -2017,6 +2017,18 @@ export interface IGetAllUserTopicsResponse {
   };
 }
 
+export interface IUpdateTopicRequest {
+  token: string;
+  userId: number;
+  topicId: number;
+  description: string;
+  tags: string[];
+}
+
+export interface IUpdateTopicResponse {
+  message: string;
+}
+
 export interface IDeleteSaveCommentResponse extends IBaseResponse {}
 
 export interface IDeleteReplyCommentResponse extends IBaseResponse {}

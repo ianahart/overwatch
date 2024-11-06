@@ -141,4 +141,14 @@ public class Topic {
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
+
+    public void addTag(Tag tag) {
+        this.tags.add(tag);
+        tag.getTopics().add(this);
+    }
+
+    public void removeTag(Tag tag) {
+        this.tags.remove(tag);
+        tag.getTopics().remove(this);
+    }
 }

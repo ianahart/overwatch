@@ -12,6 +12,8 @@ import {
   IGetTopicsWithTagsResponse,
   IGetAllUserTopicsRequest,
   IGetAllUserTopicsResponse,
+  IUpdateTopicResponse,
+  IUpdateTopicRequest,
 } from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
@@ -48,6 +50,20 @@ const topicsApi = createApi({
           result
             ? [...result.data.map(({ id }) => ({ type: 'Topic', id })), { type: 'Topic', id: 'LIST' }]
             : [{ type: 'Topic', id: 'LIST' }],
+      }),
+
+      updateTopic: builder.mutation<IUpdateTopicResponse, IUpdateTopicRequest>({
+        query: ({ token, userId, topicId, description, tags }) => {
+          return {
+            url: `/topics/${topicId}`,
+            method: 'PATCH',
+            body: { userId, description, tags },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+        invalidatesTags: [{ type: 'Topic', id: 'LIST' }],
       }),
       createTopic: builder.mutation<ICreateTopicResponse, ICreateTopicRequest>({
         query: ({ token, userId, title, description, tags }) => {
@@ -111,6 +127,7 @@ const topicsApi = createApi({
   },
 });
 export const {
+  useUpdateTopicMutation,
   useLazyFetchUserTopicsQuery,
   useLazyFetchTopicsWithTagsQuery,
   useLazyFetchTopicsQuery,

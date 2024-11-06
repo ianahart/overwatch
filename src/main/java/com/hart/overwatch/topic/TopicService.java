@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.topic.dto.TopicDto;
 import com.hart.overwatch.topic.request.CreateTopicRequest;
+import com.hart.overwatch.topic.request.UpdateTopicRequest;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.advice.BadRequestException;
@@ -45,6 +46,16 @@ public class TopicService {
 
         return existingTopic != null;
 
+    }
+
+    public Topic updateTopic(UpdateTopicRequest request, Long topicId) {
+        String description = Jsoup.clean(request.getDescription(), Safelist.none());
+        Topic topic = getTopicById(topicId);
+
+        topic.setDescription(description);
+        topicRepository.save(topic);
+
+        return topic;
     }
 
     public Topic createTopic(CreateTopicRequest request) {
@@ -130,7 +141,7 @@ public class TopicService {
     }
 
     public PaginationDto<TopicDto> getAllUserTopics(Long userId, int page, int pageSize,
-             String direction) {
+            String direction) {
 
         Pageable pageable = this.paginationService.getPageable(page, pageSize, direction);
 

@@ -49,6 +49,7 @@ import NotFoundRoute from './routes/NotFoundRoute';
 import TopicDetailsRoute from './routes/TopicDetailsRoute';
 import TagsRoute from './routes/TagsRoute';
 import SingleReplyCommentRoute from './routes/SingleReplyCommentRoute';
+import TopicEditRoute from './routes/TopicEditRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -87,6 +88,14 @@ const router = createBrowserRouter(
         }
       />
       <Route path="community/tags" element={<TagsRoute />} />
+      <Route
+        path="community/topics/edit/:topicId"
+        element={
+          <RequireAuth>
+            <TopicEditRoute />
+          </RequireAuth>
+        }
+      />
       <Route path="community/topics/:topicId" element={<TopicDetailsRoute />} />
       <Route
         path="/reviewer/repositories/:id"
