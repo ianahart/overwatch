@@ -348,6 +348,7 @@ export interface IRepositoryReview {
   reviewStartTime: string;
   reviewEndTime: string;
   feedback: string;
+  paymentPrice: number;
 }
 
 export interface IGitHubRepositoryPreview {

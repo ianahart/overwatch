@@ -35,6 +35,8 @@ public class RepositoryDto {
 
     private String feedback;
 
+    private Double paymentPrice; 
+
     public RepositoryDto() {
 
     }
@@ -42,7 +44,7 @@ public class RepositoryDto {
     public RepositoryDto(Long id, Long ownerId, Long reviewerId, String firstName, String lastName,
             String profileUrl, String repoName, String language, String repoUrl, String avatarUrl,
             LocalDateTime createdAt, RepositoryStatus status, LocalDateTime reviewStartTime,
-            LocalDateTime reviewEndTime, String feedback) {
+            LocalDateTime reviewEndTime, String feedback, Double paymentPrice) {
 
         this.id = id;
         this.ownerId = ownerId;
@@ -59,6 +61,7 @@ public class RepositoryDto {
         this.reviewStartTime = reviewStartTime;
         this.reviewEndTime = reviewEndTime;
         this.feedback = feedback;
+        this.paymentPrice = paymentPrice;
     }
 
     public Long getId() {
@@ -67,6 +70,10 @@ public class RepositoryDto {
 
     public String getFeedback() {
         return feedback;
+    }
+
+    public Double getPaymentPrice() {
+        return paymentPrice;
     }
 
     public LocalDateTime getReviewEndTime() {
@@ -179,5 +186,9 @@ public class RepositoryDto {
 
     public void setReviewStartTime(LocalDateTime reviewStartTime) {
         this.reviewStartTime = reviewStartTime;
+    }
+
+    public void setPaymentPrice(Double paymentPrice) {
+        this.paymentPrice = paymentPrice;
     }
 }

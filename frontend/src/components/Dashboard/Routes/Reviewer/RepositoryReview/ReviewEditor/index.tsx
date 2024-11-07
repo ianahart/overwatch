@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { createEditor, BaseEditor, Descendant } from 'slate';
 import { Slate, Editable, withReact, ReactEditor, RenderElementProps, RenderLeafProps } from 'slate-react';
@@ -141,6 +143,21 @@ const ReviewEditor = () => {
     }
   };
 
+  const initiateToast = () => {
+    toast.success('Go to the Get Paid Settings page to finalize your payment', {
+      position: 'top-center',
+      autoClose: 10000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      type: 'success',
+      theme: 'dark',
+      onClose: () => navigate(`/settings/${user.slug}/pay`),
+    });
+  };
+
   const handleOnClick = () => {
     const feedback = JSON.stringify(editor.children);
     const payload = { repositoryId: repository.id, status, feedback, token };
@@ -150,7 +167,11 @@ const ReviewEditor = () => {
         const { feedback, status } = res.data;
         dispatch(updateRepository({ status, feedback }));
         emitNotification();
-        navigate(`/dashboard/${user.slug}/reviewer/reviews`);
+        if (status === 'COMPLETED') {
+          initiateToast();
+        } else {
+          navigate(`/dashboard/${user.slug}/reviewer/reviews`);
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -184,6 +205,7 @@ const ReviewEditor = () => {
         </select>
       </div>
       <div className="my-8">
+        <ToastContainer />
         <button onClick={handleOnClick} className="btn max-w-[600px] w-full">
           Update Review
         </button>

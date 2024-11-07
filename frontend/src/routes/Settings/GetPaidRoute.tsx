@@ -1,5 +1,7 @@
+import GetPaid from '../../components/Settings/GetPaid';
+
 const GetPaidRoute = () => {
-  return <div>Get Paid Route</div>;
+  return <GetPaid />;
 };
 
 export default GetPaidRoute;
