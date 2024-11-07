@@ -66,7 +66,7 @@ public interface RepositoryRepository extends JpaRepository<Repository, Long> {
              o.lastName AS lastName, p.avatarUrl as profileUrl, r.repoName AS repoName,
              r.language AS language, r.repoUrl AS repoUrl, r.avatarUrl AS avatarUrl,
              r.createdAt AS createdAt, r.status AS status, r.reviewStartTime AS reviewStartTime,
-            r.reviewEndTime AS reviewEndTime, r.feedback AS feedback
+            r.reviewEndTime AS reviewEndTime, r.feedback AS feedback, r.paymentPrice AS paymentPrice
             ) FROM Repository r
             INNER JOIN r.reviewer re
             INNER JOIN r.owner o
@@ -86,7 +86,7 @@ public interface RepositoryRepository extends JpaRepository<Repository, Long> {
               o.lastName AS lastName, p.avatarUrl as profileUrl, r.repoName AS repoName,
               r.language AS language, r.repoUrl AS repoUrl, r.avatarUrl AS avatarUrl,
               r.createdAt AS createdAt, r.status AS status, r.reviewStartTime AS reviewStartTime, r.reviewEndTime AS reviewEndTime,
-               r.feedback AS feedback
+               r.feedback AS feedback, r.paymentPrice AS paymentPrice
              ) FROM Repository r
              INNER JOIN r.reviewer re
              INNER JOIN r.owner o
@@ -105,7 +105,7 @@ public interface RepositoryRepository extends JpaRepository<Repository, Long> {
              re.lastName AS lastName, p.avatarUrl as profileUrl, r.repoName AS repoName,
              r.language AS language, r.repoUrl AS repoUrl, r.avatarUrl AS avatarUrl,
              r.createdAt AS createdAt, r.status AS status, r.reviewStartTime AS reviewStartTime, r.reviewEndTime AS reviewEndTime,
-             r.feedback AS feedback
+             r.feedback AS feedback, r.paymentPrice AS paymentPrice
             ) FROM Repository r
             INNER JOIN r.reviewer re
             INNER JOIN r.owner o
@@ -124,7 +124,8 @@ public interface RepositoryRepository extends JpaRepository<Repository, Long> {
              r.id AS id, o.id AS ownerId, re.id AS reviewerId, re.firstName AS firstName,
              re.lastName AS lastName, p.avatarUrl as profileUrl, r.repoName AS repoName,
              r.language AS language, r.repoUrl AS repoUrl, r.avatarUrl AS avatarUrl,
-             r.createdAt AS createdAt, r.status AS status, r.reviewStartTime AS reviewStartTime, r.reviewEndTime AS reviewEndTime, r.feedback AS feedback
+             r.createdAt AS createdAt, r.status AS status, r.reviewStartTime AS reviewStartTime, r.reviewEndTime AS reviewEndTime, r.feedback AS feedback,
+             r.paymentPrice AS paymentPrice
 
             ) FROM Repository r
             INNER JOIN r.reviewer re

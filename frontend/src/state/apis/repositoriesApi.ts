@@ -109,6 +109,9 @@ const repositoriesApi = createApi({
       }),
       fetchRepositories: builder.query<IFetchRepositoriesResponse, IFetchRepositoriesRequest>({
         query: ({ token, page, pageSize, direction, sortFilter, statusFilter, languageFilter }) => {
+          if (token === '' || !token) {
+            return '';
+          }
           return {
             url: `/repositories?page=${page}&pageSize=${pageSize}&direction=${direction}&sort=${sortFilter}&status=${statusFilter}&language=${languageFilter}`,
             method: 'GET',
