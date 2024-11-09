@@ -1,5 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import {
+  IConnectStripeAccountRequest,
+  IConnectStripeAccountResponse,
   ICreatePaymentMethodRequest,
   ICreatePaymentMethodResponse,
   IDeletePaymentMethodRequest,
@@ -11,6 +13,7 @@ import { baseQueryWithReauth } from '../util';
 
 const paymentMethodsApi = createApi({
   reducerPath: 'paymentMethods',
+  tagTypes: ['PaymentMethods'],
   baseQuery: baseQueryWithReauth,
   endpoints(builder) {
     return {
@@ -55,10 +58,26 @@ const paymentMethodsApi = createApi({
         // @ts-ignore
         invalidatesTags: ['PaymentMethods'],
       }),
+      connectAccount: builder.mutation<IConnectStripeAccountResponse, IConnectStripeAccountRequest>({
+        query: ({ email, token, userId }) => {
+          return {
+            url: `/users/${userId}/payment-methods/connect`,
+            method: 'POST',
+            body: { email },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+      }),
     };
   },
 });
 
-export const { useDeletePaymentMethodMutation, useCreatePaymentMethodMutation, useFetchPaymentMethodQuery } =
-  paymentMethodsApi;
+export const {
+  useConnectAccountMutation,
+  useDeletePaymentMethodMutation,
+  useCreatePaymentMethodMutation,
+  useFetchPaymentMethodQuery,
+} = paymentMethodsApi;
 export { paymentMethodsApi };

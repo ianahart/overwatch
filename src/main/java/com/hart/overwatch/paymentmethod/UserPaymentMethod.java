@@ -66,6 +66,9 @@ public class UserPaymentMethod {
     @Column(name = "stripe_customer_id")
     private String stripeCustomerId;
 
+    @Column(name = "stripe_connect_account_id")
+    private String stripeConnectAccountId;
+
 
     @ManyToOne()
     @JoinColumn(name = "user_id", referencedColumnName = "id")
@@ -113,8 +116,18 @@ public class UserPaymentMethod {
         this.stripeCustomerId = stripeCustomerId;
     }
 
+
+    public UserPaymentMethod(User user, String stripeConnectAccountId) {
+        this.user = user;
+        this.stripeConnectAccountId = stripeConnectAccountId;
+    }
+
     public Long getId() {
         return id;
+    }
+
+    public String getStripeConnectAccountId() {
+        return stripeConnectAccountId;
     }
 
     public String getStripeCustomerId() {
@@ -231,6 +244,10 @@ public class UserPaymentMethod {
 
     public void setStripeCustomerId(String stripeCustomerId) {
         this.stripeCustomerId = stripeCustomerId;
+    }
+
+    public void setStripeConnectAccountId(String stripeConnectAccountId) {
+        this.stripeConnectAccountId = stripeConnectAccountId;
     }
 
 }

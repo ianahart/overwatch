@@ -2030,6 +2030,17 @@ export interface IUpdateTopicResponse {
   message: string;
 }
 
+export interface IConnectStripeAccountRequest {
+  userId: number;
+  token: string;
+  email: string;
+}
+
+export interface IConnectStripeAccountResponse {
+  message: string;
+  data: any;
+}
+
 export interface IDeleteSaveCommentResponse extends IBaseResponse {}
 
 export interface IDeleteReplyCommentResponse extends IBaseResponse {}

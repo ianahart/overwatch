@@ -14,6 +14,10 @@ public class UserPaymentMethodDto {
 
     private String name;
 
+    public UserPaymentMethodDto() {
+
+    }
+
     public UserPaymentMethodDto(Long id, String last4, String displayBrand, Long expMonth,
             Long expYear, String name) {
         this.id = id;
