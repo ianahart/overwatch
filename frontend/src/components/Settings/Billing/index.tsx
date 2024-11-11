@@ -9,6 +9,7 @@ import BillingForm from './BillingForm';
 import { TRootState, useConnectAccountMutation, useFetchPaymentMethodQuery } from '../../../state/store';
 import PaymentMethod from './PaymentMethod';
 import ReviewerConnectAccount from './Reviewer/ReviewerConnectAccount';
+import ReviewerDisconnectAccount from './Reviewer/ReviewerDisconnectAccount';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_API_KEY);
 
@@ -19,6 +20,7 @@ const paymentMethodState = {
   expMonth: 0,
   expYear: 0,
   name: '',
+  stripeEnabled: false,
 };
 
 const Billing = () => {
@@ -26,22 +28,22 @@ const Billing = () => {
   const [paymentMethod, setPaymentMethod] = useState(paymentMethodState);
   const { data } = useFetchPaymentMethodQuery({ userId: user.id, token });
   const [connectReviewerAccount] = useConnectAccountMutation();
-
-  const [hasBillingMethod, setHasBillingMethod] = useState(false);
   const [view, setView] = useState('main');
 
   const handleSetView = (newView: string): void => {
     setView(newView);
   };
 
-  const handleSetHasBillingMethod = (hasBillingMethod: boolean): void => {
-    setHasBillingMethod(hasBillingMethod);
+  const handleSetStripeEnabled = (stripeEnabled: boolean): void => {
+    setPaymentMethod((prevState) => ({
+      ...prevState,
+      stripeEnabled,
+    }));
   };
 
   useEffect(() => {
     if (data) {
       setPaymentMethod(data.data);
-      setHasBillingMethod(true);
     }
   }, [data]);
 
@@ -69,21 +71,29 @@ const Billing = () => {
       <div className=" my-4 rounded-lg border 1px solid border-gray-800 min-h-[200px] p-4">
         {user.role === 'USER' && (
           <>
-            {!hasBillingMethod && view === 'main' && <NoBillingMethod handleSetView={handleSetView} />}
-            {!hasBillingMethod && view === 'add' && <AddBillingMethod handleSetView={handleSetView} />}
-            {!hasBillingMethod && view === 'billing' && (
+            {!paymentMethod.stripeEnabled && view === 'main' && <NoBillingMethod handleSetView={handleSetView} />}
+            {!paymentMethod.stripeEnabled && view === 'add' && <AddBillingMethod handleSetView={handleSetView} />}
+            {!paymentMethod.stripeEnabled && view === 'billing' && (
               <Elements stripe={stripePromise} options={{ mode: 'setup', currency: 'usd' }}>
                 <BillingForm handleSetView={handleSetView} />
               </Elements>
             )}
-            {hasBillingMethod && paymentMethod.id !== 0 && (
-              <PaymentMethod handleSetHasBillingMethod={handleSetHasBillingMethod} data={paymentMethod} />
+            {paymentMethod.stripeEnabled && paymentMethod.id !== 0 && (
+              <PaymentMethod handleSetStripeEnabled={handleSetStripeEnabled} data={paymentMethod} />
             )}
           </>
         )}
         {user.role === 'REVIEWER' && (
           <>
-            <ReviewerConnectAccount handleConnectReviewerAccount={handleConnectReviewerAccount} />
+            {!paymentMethod.stripeEnabled && (
+              <ReviewerConnectAccount handleConnectReviewerAccount={handleConnectReviewerAccount} />
+            )}
+            {paymentMethod.stripeEnabled && paymentMethod.id !== 0 && (
+              <ReviewerDisconnectAccount
+                handleSetStripeEnabled={handleSetStripeEnabled}
+                paymentMethodId={paymentMethod.id}
+              />
+            )}
           </>
         )}
       </div>

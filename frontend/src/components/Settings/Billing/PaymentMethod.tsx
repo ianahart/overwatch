@@ -9,10 +9,10 @@ import { TRootState, useDeletePaymentMethodMutation } from '../../../state/store
 
 export interface IPaymentMethodProps {
   data: { id: number; last4: string; displayBrand: string; expYear: number; expMonth: number; name: string };
-  handleSetHasBillingMethod: (hasBillingMethod: boolean) => void;
+  handleSetStripeEnabled: (stripeEnabled: boolean) => void;
 }
 
-const PaymentMethod = ({ data, handleSetHasBillingMethod }: IPaymentMethodProps) => {
+const PaymentMethod = ({ data, handleSetStripeEnabled }: IPaymentMethodProps) => {
   const { token } = useSelector((store: TRootState) => store.user);
   const [deletePaymentMethod] = useDeletePaymentMethodMutation();
 
@@ -33,7 +33,7 @@ const PaymentMethod = ({ data, handleSetHasBillingMethod }: IPaymentMethodProps)
   const handleOnDeleteCustomer = () => {
     deletePaymentMethod({ token, id: data.id })
       .unwrap()
-      .then(() => handleSetHasBillingMethod(false));
+      .then(() => handleSetStripeEnabled(false));
   };
 
   return (

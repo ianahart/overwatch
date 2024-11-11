@@ -922,6 +922,7 @@ export interface IGetPaymentMethodResponse {
     expMonth: number;
     expYear: number;
     name: string;
+    stripeEnabled: boolean;
   };
 }
 

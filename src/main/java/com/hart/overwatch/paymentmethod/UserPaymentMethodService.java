@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.advice.NotFoundException;
@@ -117,9 +118,16 @@ public class UserPaymentMethodService {
     public UserPaymentMethodDto getUserPaymentMethods(Long userId) throws StripeException {
         try {
             UserPaymentMethod userPaymentMethod = getUserPaymentMethodByUserId(userId);
+            Boolean stripeEnabled = false;
 
             if (userPaymentMethod == null) {
                 throw new NotFoundException("A user payment method does not exist for this user");
+            }
+
+            if (userPaymentMethod.getUser().getRole() == Role.REVIEWER) {
+                stripeEnabled = true;
+                return new UserPaymentMethodDto(userPaymentMethod.getId(), null, null, null, null,
+                        null, stripeEnabled);
             }
 
 
@@ -130,16 +138,20 @@ public class UserPaymentMethodService {
             List<PaymentMethod> stripePaymentMethods = PaymentMethod.list(params).getData();
 
             if (stripePaymentMethods.isEmpty()) {
-                return new UserPaymentMethodDto();
+                UserPaymentMethodDto emptyUserPaymentMethod = new UserPaymentMethodDto();
+                emptyUserPaymentMethod.setStripeEnabled(stripeEnabled);
+                return emptyUserPaymentMethod;
             }
 
             PaymentMethod stripePaymentMethod = stripePaymentMethods.get(0);
 
+            stripeEnabled = true;
             return new UserPaymentMethodDto(userPaymentMethod.getId(),
                     stripePaymentMethod.getCard().getLast4(),
                     stripePaymentMethod.getCard().getBrand(),
                     stripePaymentMethod.getCard().getExpMonth(),
-                    stripePaymentMethod.getCard().getExpYear(), userPaymentMethod.getName());
+                    stripePaymentMethod.getCard().getExpYear(), userPaymentMethod.getName(),
+                    stripeEnabled);
 
 
         } catch (StripeException ex) {
@@ -153,11 +165,15 @@ public class UserPaymentMethodService {
 
             UserPaymentMethod userPaymentMethod = getUserPaymentMethodById(id);
 
-            Customer customer = Customer.retrieve(userPaymentMethod.getStripeCustomerId());
-            customer.delete();
+            if (userPaymentMethod.getUser().getRole() == Role.REVIEWER) {
+                Account resource = Account.retrieve(userPaymentMethod.getStripeConnectAccountId());
+                resource.delete();
+            } else {
+                Customer customer = Customer.retrieve(userPaymentMethod.getStripeCustomerId());
+                customer.delete();
 
+            }
             this.userPaymentMethodRepository.delete(userPaymentMethod);
-
 
         } catch (StripeException ex) {
             ex.printStackTrace();
