@@ -14,14 +14,21 @@ public class UserPaymentMethodDto {
 
     private String name;
 
+    private Boolean stripeEnabled;
+
+    public UserPaymentMethodDto() {
+
+    }
+
     public UserPaymentMethodDto(Long id, String last4, String displayBrand, Long expMonth,
-            Long expYear, String name) {
+            Long expYear, String name, Boolean stripeEnabled) {
         this.id = id;
         this.last4 = last4;
         this.displayBrand = displayBrand;
         this.expMonth = expMonth;
         this.expYear = expYear;
         this.name = name;
+        this.stripeEnabled = stripeEnabled;
     }
 
 
@@ -35,6 +42,10 @@ public class UserPaymentMethodDto {
 
     public String getLast4() {
         return last4;
+    }
+
+    public Boolean getStripeEnabled() {
+        return stripeEnabled;
     }
 
     public Long getExpYear() {
@@ -71,6 +82,10 @@ public class UserPaymentMethodDto {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setStripeEnabled(Boolean stripeEnabled) {
+        this.stripeEnabled = stripeEnabled;
     }
 
 }

@@ -6,8 +6,10 @@ import Header from '../Header';
 import NoBillingMethod from './NoBillingMethod';
 import AddBillingMethod from './AddBillingMethod';
 import BillingForm from './BillingForm';
-import { TRootState, useFetchPaymentMethodQuery } from '../../../state/store';
+import { TRootState, useConnectAccountMutation, useFetchPaymentMethodQuery } from '../../../state/store';
 import PaymentMethod from './PaymentMethod';
+import ReviewerConnectAccount from './Reviewer/ReviewerConnectAccount';
+import ReviewerDisconnectAccount from './Reviewer/ReviewerDisconnectAccount';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_API_KEY);
 
@@ -18,44 +20,81 @@ const paymentMethodState = {
   expMonth: 0,
   expYear: 0,
   name: '',
+  stripeEnabled: false,
 };
 
 const Billing = () => {
   const { user, token } = useSelector((store: TRootState) => store.user);
   const [paymentMethod, setPaymentMethod] = useState(paymentMethodState);
   const { data } = useFetchPaymentMethodQuery({ userId: user.id, token });
-
-  const [hasBillingMethod, setHasBillingMethod] = useState(false);
+  const [connectReviewerAccount] = useConnectAccountMutation();
   const [view, setView] = useState('main');
 
-  const handleSetView = (newView: string) => {
+  const handleSetView = (newView: string): void => {
     setView(newView);
   };
 
-  const handleSetHasBillingMethod = (hasBillingMethod: boolean) => {
-    setHasBillingMethod(hasBillingMethod);
+  const handleSetStripeEnabled = (stripeEnabled: boolean): void => {
+    setPaymentMethod((prevState) => ({
+      ...prevState,
+      stripeEnabled,
+    }));
   };
 
   useEffect(() => {
     if (data) {
       setPaymentMethod(data.data);
-      setHasBillingMethod(true);
     }
   }, [data]);
+
+  const completeOnBoarding = (onBoardingUrl: string): void => {
+    window.location.href = onBoardingUrl;
+  };
+
+  const handleConnectReviewerAccount = (): void => {
+    const payload = { userId: user.id, email: user.email, token };
+    connectReviewerAccount(payload)
+      .unwrap()
+      .then((res) => {
+        if (res.message === 'success') {
+          completeOnBoarding(res.data);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <div className="p-4">
       <Header heading="Billing & payments" />
       <div className=" my-4 rounded-lg border 1px solid border-gray-800 min-h-[200px] p-4">
-        {!hasBillingMethod && view === 'main' && <NoBillingMethod handleSetView={handleSetView} />}
-        {!hasBillingMethod && view === 'add' && <AddBillingMethod handleSetView={handleSetView} />}
-        {!hasBillingMethod && view === 'billing' && (
-          <Elements stripe={stripePromise} options={{ mode: 'setup', currency: 'usd' }}>
-            <BillingForm handleSetView={handleSetView} />
-          </Elements>
+        {user.role === 'USER' && (
+          <>
+            {!paymentMethod.stripeEnabled && view === 'main' && <NoBillingMethod handleSetView={handleSetView} />}
+            {!paymentMethod.stripeEnabled && view === 'add' && <AddBillingMethod handleSetView={handleSetView} />}
+            {!paymentMethod.stripeEnabled && view === 'billing' && (
+              <Elements stripe={stripePromise} options={{ mode: 'setup', currency: 'usd' }}>
+                <BillingForm handleSetView={handleSetView} />
+              </Elements>
+            )}
+            {paymentMethod.stripeEnabled && paymentMethod.id !== 0 && (
+              <PaymentMethod handleSetStripeEnabled={handleSetStripeEnabled} data={paymentMethod} />
+            )}
+          </>
         )}
-        {hasBillingMethod && paymentMethod.id !== 0 && (
-          <PaymentMethod handleSetHasBillingMethod={handleSetHasBillingMethod} data={paymentMethod} />
+        {user.role === 'REVIEWER' && (
+          <>
+            {!paymentMethod.stripeEnabled && (
+              <ReviewerConnectAccount handleConnectReviewerAccount={handleConnectReviewerAccount} />
+            )}
+            {paymentMethod.stripeEnabled && paymentMethod.id !== 0 && (
+              <ReviewerDisconnectAccount
+                handleSetStripeEnabled={handleSetStripeEnabled}
+                paymentMethodId={paymentMethod.id}
+              />
+            )}
+          </>
         )}
       </div>
     </div>

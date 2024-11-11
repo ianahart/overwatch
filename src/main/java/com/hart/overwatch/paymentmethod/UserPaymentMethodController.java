@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.hart.overwatch.paymentmethod.request.CreateConnectAccountRequest;
 import com.hart.overwatch.paymentmethod.request.CreateUserPaymentMethodRequest;
+import com.hart.overwatch.paymentmethod.response.CreateConnectAccountResponse;
 import com.hart.overwatch.paymentmethod.response.CreateUserPaymentMethodResponse;
 import com.hart.overwatch.paymentmethod.response.DeleteUserPaymentMethodResponse;
 import com.hart.overwatch.paymentmethod.response.GetUserPaymentMethodResponse;
@@ -52,5 +54,13 @@ public class UserPaymentMethodController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new DeleteUserPaymentMethodResponse("success"));
+    }
+
+    @PostMapping(path = "/users/{userId}/payment-methods/connect")
+    public ResponseEntity<CreateConnectAccountResponse> createReviewerStripeAccount(
+            @RequestBody CreateConnectAccountRequest request, @PathVariable("userId") Long userId)
+            throws StripeException {
+        return ResponseEntity.status(HttpStatus.CREATED).body(new CreateConnectAccountResponse(
+                "success", userPaymentMethodService.createReviewerStripeAccount(request, userId)));
     }
 }

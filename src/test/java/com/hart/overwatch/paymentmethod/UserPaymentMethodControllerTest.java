@@ -108,7 +108,7 @@ public class UserPaymentMethodControllerTest {
             throws Exception {
         UserPaymentMethodDto userPaymentMethodDto = new UserPaymentMethodDto(
                 userPaymentMethod.getId(), "4242", userPaymentMethod.getDisplayBrand(), 12L, 2028L,
-                userPaymentMethod.getName());
+                userPaymentMethod.getName(), true);
 
 
         when(userPaymentMethodService.getUserPaymentMethods(user.getId()))

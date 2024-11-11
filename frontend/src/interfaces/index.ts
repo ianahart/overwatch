@@ -922,6 +922,7 @@ export interface IGetPaymentMethodResponse {
     expMonth: number;
     expYear: number;
     name: string;
+    stripeEnabled: boolean;
   };
 }
 
@@ -2028,6 +2029,17 @@ export interface IUpdateTopicRequest {
 
 export interface IUpdateTopicResponse {
   message: string;
+}
+
+export interface IConnectStripeAccountRequest {
+  userId: number;
+  token: string;
+  email: string;
+}
+
+export interface IConnectStripeAccountResponse {
+  message: string;
+  data: any;
 }
 
 export interface IDeleteSaveCommentResponse extends IBaseResponse {}
