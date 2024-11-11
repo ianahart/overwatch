@@ -2,10 +2,21 @@ import { useSelector } from 'react-redux';
 import { AiOutlineInfoCircle } from 'react-icons/ai';
 
 import DashboardAvatar from '../../../DashboardAvatar';
-import { TRootState } from '../../../../../state/store';
+import { TRootState, useFetchPaymentMethodQuery } from '../../../../../state/store';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const ChosenReviewer = () => {
+  const navigate = useNavigate();
+  const { token, user } = useSelector((store: TRootState) => store.user);
   const { selectedReviewer } = useSelector((store: TRootState) => store.addReview);
+  const { data, error } = useFetchPaymentMethodQuery({ token, userId: user.id });
+
+  useEffect(() => {
+    if (error) {
+      navigate(`/settings/${user.slug}/billing?toast=show`);
+    }
+  }, [data, navigate, error]);
 
   return (
     <>

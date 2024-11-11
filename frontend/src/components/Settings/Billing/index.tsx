@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
+import { ToastContainer, toast } from 'react-toastify';
+import { useSearchParams } from 'react-router-dom';
+import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from 'react-redux';
 import Header from '../Header';
 import NoBillingMethod from './NoBillingMethod';
@@ -24,11 +27,33 @@ const paymentMethodState = {
 };
 
 const Billing = () => {
+  const [searchParams] = useSearchParams();
+  const showToast = searchParams.get('toast') === 'show' ? true : false;
   const { user, token } = useSelector((store: TRootState) => store.user);
   const [paymentMethod, setPaymentMethod] = useState(paymentMethodState);
   const { data } = useFetchPaymentMethodQuery({ userId: user.id, token });
   const [connectReviewerAccount] = useConnectAccountMutation();
   const [view, setView] = useState('main');
+
+  useEffect(() => {
+    if (showToast) {
+      initiateToast();
+    }
+  }, [showToast]);
+
+  const initiateToast = () => {
+    toast.success('You need to add a payment method before adding a review.', {
+      position: 'top-center',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      type: 'warning',
+      theme: 'dark',
+    });
+  };
 
   const handleSetView = (newView: string): void => {
     setView(newView);
@@ -97,6 +122,7 @@ const Billing = () => {
           </>
         )}
       </div>
+      <ToastContainer />
     </div>
   );
 };
