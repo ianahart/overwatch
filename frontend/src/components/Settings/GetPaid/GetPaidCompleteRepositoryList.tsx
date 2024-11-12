@@ -21,7 +21,7 @@ const GetPaidCompleteRepositoryList = () => {
 
   useEffect(() => {
     paginateCompletedRepositories('next', true);
-  }, []);
+  }, [token]);
 
   const paginateCompletedRepositories = (dir: string, initial = false) => {
     const payload = {
@@ -47,7 +47,7 @@ const GetPaidCompleteRepositoryList = () => {
           totalElements,
         }));
 
-        setRepositories(items);
+        setRepositories(items.filter((item) => item.status !== 'PAID'));
       })
       .catch((err) => {
         console.log(err);

@@ -37,7 +37,10 @@ import com.hart.overwatch.paymentmethod.request.CreateUserPaymentMethodRequest;
 import com.hart.overwatch.paymentmethod.request.TransferCustomerMoneyToReviewerRequest;
 import com.hart.overwatch.profile.dto.FullPackageDto;
 import com.hart.overwatch.repository.Repository;
+import com.hart.overwatch.repository.RepositoryRepository;
 import com.hart.overwatch.repository.RepositoryService;
+import com.hart.overwatch.repository.RepositoryStatus;
+import com.hart.overwatch.stripepaymentintent.StripePaymentIntentService;
 
 @Service
 public class UserPaymentMethodService {
@@ -54,12 +57,16 @@ public class UserPaymentMethodService {
 
     private final RepositoryService repositoryService;
 
+    private final StripePaymentIntentService stripePaymentIntentService;
+
     @Autowired
     public UserPaymentMethodService(UserPaymentMethodRepository userPaymentMethodRepository,
-            UserService userService, RepositoryService repositoryService) {
+            UserService userService, RepositoryService repositoryService,
+            StripePaymentIntentService stripePaymentIntentService) {
         this.userPaymentMethodRepository = userPaymentMethodRepository;
         this.userService = userService;
         this.repositoryService = repositoryService;
+        this.stripePaymentIntentService = stripePaymentIntentService;
     }
 
     private UserPaymentMethod getUserPaymentMethodById(Long userPaymentMethodId) {
@@ -292,8 +299,15 @@ public class UserPaymentMethodService {
         long applicationFee = calculatePlatformFee(
                 Math.round(Double.parseDouble(selectedPackage.getPrice()) * 100));
 
-        return createPaymentIntent(stripeCustomerId, reviewerStripeAccountId, applicationFee,
-                selectedPackage, owner.getId(), reviewer.getId());
+        PaymentIntent paymentIntent = createPaymentIntent(stripeCustomerId, reviewerStripeAccountId,
+                applicationFee, selectedPackage, owner.getId(), reviewer.getId());
+
+        if ("succeeded".equals(paymentIntent.getStatus())) {
+            repositoryService.updateStatus(request.getRepositoryId(), RepositoryStatus.PAID);
+            stripePaymentIntentService.createStripePaymentIntent(owner, reviewer, paymentIntent, applicationFee); 
+        }
+
+        return paymentIntent;
     }
 
     private long calculatePlatformFee(long price) {

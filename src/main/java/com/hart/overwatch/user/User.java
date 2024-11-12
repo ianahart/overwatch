@@ -35,6 +35,7 @@ import com.hart.overwatch.review.Review;
 import com.hart.overwatch.reviewfeedback.ReviewFeedback;
 import com.hart.overwatch.savecomment.SaveComment;
 import com.hart.overwatch.setting.Setting;
+import com.hart.overwatch.stripepaymentintent.StripePaymentIntent;
 import com.hart.overwatch.testimonial.Testimonial;
 import com.hart.overwatch.todocard.TodoCard;
 import com.hart.overwatch.todolist.TodoList;
@@ -264,6 +265,14 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<ReplyComment> replyComments;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<StripePaymentIntent> userStripePaymentIntents;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<StripePaymentIntent> reviewierStripePaymentIntents;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "setting_id", referencedColumnName = "id")
     private Setting setting;
@@ -440,6 +449,14 @@ public class User implements UserDetails {
 
     public List<Review> getAuthorReviews() {
         return authorReviews;
+    }
+
+    public List<StripePaymentIntent> getUserStripePaymentIntents() {
+        return userStripePaymentIntents;
+    }
+
+    public List<StripePaymentIntent> getReviewierStripePaymentIntents() {
+        return reviewierStripePaymentIntents;
     }
 
     public List<Review> getReviewerReviews() {
@@ -736,6 +753,15 @@ public class User implements UserDetails {
 
     public void setReportedComments(List<ReportComment> reportedComments) {
         this.reportedComments = reportedComments;
+    }
+
+    public void setUserStripePaymentIntents(List<StripePaymentIntent> userStripePaymentIntents) {
+        this.userStripePaymentIntents = userStripePaymentIntents;
+    }
+
+    public void setReviewierStripePaymentIntents(
+            List<StripePaymentIntent> reviewierStripePaymentIntents) {
+        this.reviewierStripePaymentIntents = reviewierStripePaymentIntents;
     }
 
     public String getUsername() {
