@@ -1,8 +1,15 @@
 import { useSelector } from 'react-redux';
-import { TRootState, useLazyFetchRepositoriesQuery } from '../../../state/store';
+import { useEffect, useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+
+import 'react-toastify/dist/ReactToastify.css';
+import {
+  TRootState,
+  useLazyFetchRepositoriesQuery,
+  useTransferCustomerMoneyToReviewerMutation,
+} from '../../../state/store';
 import { repositoryPaginationState } from '../../../data';
 import { IPaginationState, IRepositoryReview } from '../../../interfaces';
-import { useEffect, useState } from 'react';
 import GetPaidCompleteRepositoryListItem from './GetPaidCompleteRepositoryListItem';
 
 const GetPaidCompleteRepositoryList = () => {
@@ -10,6 +17,7 @@ const GetPaidCompleteRepositoryList = () => {
   const { token } = useSelector((store: TRootState) => store.user);
   const [repositories, setRepositories] = useState<IRepositoryReview[]>([]);
   const [fetchRepositories] = useLazyFetchRepositoriesQuery();
+  const [transferCustomMoneyToReviewer] = useTransferCustomerMoneyToReviewerMutation();
 
   useEffect(() => {
     paginateCompletedRepositories('next', true);
@@ -46,11 +54,45 @@ const GetPaidCompleteRepositoryList = () => {
       });
   };
 
+  const initiateToast = () => {
+    toast.success('Congratulations, you have been successfully paid!', {
+      position: 'bottom-center',
+      autoClose: 7000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'dark',
+    });
+  };
+
+  const transferMoneyBetweenParties = (repositoryId: number, ownerId: number, reviewerId: number): void => {
+    const payload = { repositoryId, ownerId, reviewerId, token };
+    transferCustomMoneyToReviewer(payload)
+      .unwrap()
+      .then((res) => {
+        console.log(res);
+        setRepositories((prevState) => prevState.filter((repository) => repository.id !== repositoryId));
+        initiateToast();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div className="mt-12 mb-12">
       <ul>
         {repositories.map((repository) => {
-          return <GetPaidCompleteRepositoryListItem key={repository.id} repository={repository} />;
+          transferMoneyBetweenParties;
+          return (
+            <GetPaidCompleteRepositoryListItem
+              key={repository.id}
+              repository={repository}
+              transferMoneyBetweenParties={transferMoneyBetweenParties}
+            />
+          );
         })}
       </ul>
       <div className="flex items-center text-gray-400 justify-center">
@@ -66,6 +108,7 @@ const GetPaidCompleteRepositoryList = () => {
           </button>
         )}
       </div>
+      <ToastContainer />
     </div>
   );
 };

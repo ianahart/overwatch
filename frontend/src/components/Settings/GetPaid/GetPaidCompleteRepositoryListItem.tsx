@@ -6,9 +6,13 @@ import dayjs from 'dayjs';
 
 export interface IGetPaidCompleteRepositoryListItemProps {
   repository: IRepositoryReview;
+  transferMoneyBetweenParties: (repositoryId: number, ownerId: number, reviewerId: number) => void;
 }
 
-const GetPaidCompleteRepositoryListItem = ({ repository }: IGetPaidCompleteRepositoryListItemProps) => {
+const GetPaidCompleteRepositoryListItem = ({
+  repository,
+  transferMoneyBetweenParties,
+}: IGetPaidCompleteRepositoryListItemProps) => {
   return (
     <li className="my-4 border p-1 rounded border-gray-800">
       <div className="flex items-end justify-between">
@@ -45,7 +49,12 @@ const GetPaidCompleteRepositoryListItem = ({ repository }: IGetPaidCompleteRepos
         </div>
         <div className="flex flex-col">
           <p className="text-green-400">+ ${repository.paymentPrice}</p>
-          <button className="btn !bg-blue-400">Get paid</button>
+          <button
+            onClick={() => transferMoneyBetweenParties(repository.id, repository.ownerId, repository.reviewerId)}
+            className="btn !bg-blue-400"
+          >
+            Get paid
+          </button>
         </div>
       </div>
     </li>
