@@ -11,13 +11,14 @@ import {
 import { repositoryPaginationState } from '../../../data';
 import { IPaginationState, IRepositoryReview } from '../../../interfaces';
 import GetPaidCompleteRepositoryListItem from './GetPaidCompleteRepositoryListItem';
+import Spinner from '../../Shared/Spinner';
 
 const GetPaidCompleteRepositoryList = () => {
   const [pag, setPag] = useState<IPaginationState>(repositoryPaginationState);
   const { token } = useSelector((store: TRootState) => store.user);
   const [repositories, setRepositories] = useState<IRepositoryReview[]>([]);
   const [fetchRepositories] = useLazyFetchRepositoriesQuery();
-  const [transferCustomMoneyToReviewer] = useTransferCustomerMoneyToReviewerMutation();
+  const [transferCustomMoneyToReviewer, { isLoading }] = useTransferCustomerMoneyToReviewerMutation();
 
   useEffect(() => {
     paginateCompletedRepositories('next', true);
@@ -46,7 +47,6 @@ const GetPaidCompleteRepositoryList = () => {
           totalPages,
           totalElements,
         }));
-
         setRepositories(items.filter((item) => item.status !== 'PAID'));
       })
       .catch((err) => {
@@ -83,18 +83,25 @@ const GetPaidCompleteRepositoryList = () => {
 
   return (
     <div className="mt-12 mb-12">
-      <ul>
-        {repositories.map((repository) => {
-          transferMoneyBetweenParties;
-          return (
-            <GetPaidCompleteRepositoryListItem
-              key={repository.id}
-              repository={repository}
-              transferMoneyBetweenParties={transferMoneyBetweenParties}
-            />
-          );
-        })}
-      </ul>
+      {isLoading && (
+        <div className="my-8 flex justify-center">
+          <Spinner message="Completing transaction. Please wait." />
+        </div>
+      )}
+      {!isLoading && (
+        <ul>
+          {repositories.map((repository) => {
+            transferMoneyBetweenParties;
+            return (
+              <GetPaidCompleteRepositoryListItem
+                key={repository.id}
+                repository={repository}
+                transferMoneyBetweenParties={transferMoneyBetweenParties}
+              />
+            );
+          })}
+        </ul>
+      )}
       <div className="flex items-center text-gray-400 justify-center">
         {pag.page > 0 && (
           <button onClick={() => paginateCompletedRepositories('prev')} className="mx-2">
