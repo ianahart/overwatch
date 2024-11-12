@@ -8,6 +8,8 @@ import {
   IDeletePaymentMethodResponse,
   IGetPaymentMethodRequest,
   IGetPaymentMethodResponse,
+  ITransferCustomerMoneyToReviewerRequest,
+  ITransferCustomerMoneyToReviewerResponse,
 } from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
@@ -58,6 +60,23 @@ const paymentMethodsApi = createApi({
         // @ts-ignore
         invalidatesTags: ['PaymentMethods'],
       }),
+      transferCustomerMoneyToReviewer: builder.mutation<
+        ITransferCustomerMoneyToReviewerResponse,
+        ITransferCustomerMoneyToReviewerRequest
+      >({
+        query: ({ ownerId, token, reviewerId, repositoryId }) => {
+          return {
+            url: `/payment-methods`,
+            method: 'POST',
+            body: { reviewerId, ownerId, repositoryId },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+        // @ts-ignore
+        invalidatesTags: ['PaymentMethods'],
+      }),
       connectAccount: builder.mutation<IConnectStripeAccountResponse, IConnectStripeAccountRequest>({
         query: ({ email, token, userId }) => {
           return {
@@ -75,6 +94,7 @@ const paymentMethodsApi = createApi({
 });
 
 export const {
+  useTransferCustomerMoneyToReviewerMutation,
   useConnectAccountMutation,
   useDeletePaymentMethodMutation,
   useCreatePaymentMethodMutation,

@@ -12,11 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.hart.overwatch.paymentmethod.request.CreateConnectAccountRequest;
 import com.hart.overwatch.paymentmethod.request.CreateUserPaymentMethodRequest;
+import com.hart.overwatch.paymentmethod.request.TransferCustomerMoneyToReviewerRequest;
 import com.hart.overwatch.paymentmethod.response.CreateConnectAccountResponse;
 import com.hart.overwatch.paymentmethod.response.CreateUserPaymentMethodResponse;
 import com.hart.overwatch.paymentmethod.response.DeleteUserPaymentMethodResponse;
 import com.hart.overwatch.paymentmethod.response.GetUserPaymentMethodResponse;
+import com.hart.overwatch.paymentmethod.response.TransferCustomerMoneyToReviewerResponse;
 import com.stripe.exception.StripeException;
+import jakarta.validation.Valid;
 
 
 @RestController
@@ -62,5 +65,14 @@ public class UserPaymentMethodController {
             throws StripeException {
         return ResponseEntity.status(HttpStatus.CREATED).body(new CreateConnectAccountResponse(
                 "success", userPaymentMethodService.createReviewerStripeAccount(request, userId)));
+    }
+
+    @PostMapping(path = "/payment-methods")
+    public ResponseEntity<TransferCustomerMoneyToReviewerResponse> payoutReviewer(
+            @Valid @RequestBody TransferCustomerMoneyToReviewerRequest request)
+            throws StripeException {
+        userPaymentMethodService.payoutReviewer(request);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new TransferCustomerMoneyToReviewerResponse("success"));
     }
 }

@@ -383,6 +383,7 @@ export {
   useRemoveAvatarMutation,
 } from './apis/profilesApi';
 export {
+  useTransferCustomerMoneyToReviewerMutation,
   useConnectAccountMutation,
   useFetchPaymentMethodQuery,
   useCreatePaymentMethodMutation,

@@ -306,5 +306,11 @@ public class RepositoryService {
 
         return repositoryRepository.findOwnersByReviewerId(reviewerId, startOfMonth, endOfMonth);
     }
+
+    public void updateStatus(Long repositoryId, RepositoryStatus status) {
+        Repository repository = getRepositoryById(repositoryId);
+        repository.setStatus(status);
+        repositoryRepository.save(repository);
+    }
 }
 

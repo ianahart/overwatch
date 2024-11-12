@@ -4,12 +4,19 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.Account;
 import com.stripe.model.AccountLink;
 import com.stripe.model.Customer;
+import com.stripe.model.PaymentIntent;
 import com.stripe.model.PaymentMethod;
+import com.stripe.model.PaymentMethodCollection;
 import com.stripe.param.AccountLinkCreateParams;
 import com.stripe.param.CustomerCreateParams;
+import com.stripe.param.PaymentIntentCreateParams;
 import com.stripe.param.PaymentMethodAttachParams;
+import com.stripe.param.PaymentMethodListParams.Type;
 import com.stripe.param.PaymentMethodListParams;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import org.jsoup.Jsoup;
@@ -27,6 +34,13 @@ import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.paymentmethod.dto.UserPaymentMethodDto;
 import com.hart.overwatch.paymentmethod.request.CreateConnectAccountRequest;
 import com.hart.overwatch.paymentmethod.request.CreateUserPaymentMethodRequest;
+import com.hart.overwatch.paymentmethod.request.TransferCustomerMoneyToReviewerRequest;
+import com.hart.overwatch.profile.dto.FullPackageDto;
+import com.hart.overwatch.repository.Repository;
+import com.hart.overwatch.repository.RepositoryRepository;
+import com.hart.overwatch.repository.RepositoryService;
+import com.hart.overwatch.repository.RepositoryStatus;
+import com.hart.overwatch.stripepaymentintent.StripePaymentIntentService;
 
 @Service
 public class UserPaymentMethodService {
@@ -38,13 +52,21 @@ public class UserPaymentMethodService {
 
 
     private final UserPaymentMethodRepository userPaymentMethodRepository;
+
     private final UserService userService;
+
+    private final RepositoryService repositoryService;
+
+    private final StripePaymentIntentService stripePaymentIntentService;
 
     @Autowired
     public UserPaymentMethodService(UserPaymentMethodRepository userPaymentMethodRepository,
-            UserService userService) {
+            UserService userService, RepositoryService repositoryService,
+            StripePaymentIntentService stripePaymentIntentService) {
         this.userPaymentMethodRepository = userPaymentMethodRepository;
         this.userService = userService;
+        this.repositoryService = repositoryService;
+        this.stripePaymentIntentService = stripePaymentIntentService;
     }
 
     private UserPaymentMethod getUserPaymentMethodById(Long userPaymentMethodId) {
@@ -216,5 +238,90 @@ public class UserPaymentMethodService {
 
         AccountLink accountLink = generateAccountLink(account.getId());
         return accountLink.getUrl();
+    }
+
+
+    private FullPackageDto retrievePackage(Repository repository, User reviewer) {
+        FullPackageDto basic = reviewer.getProfile().getBasic();
+        FullPackageDto standard = reviewer.getProfile().getStandard();
+        FullPackageDto pro = reviewer.getProfile().getPro();
+
+        List<FullPackageDto> packages = Arrays.asList(basic, standard, pro);
+
+        packages = packages.stream().filter(
+                pack -> Double.valueOf(pack.getPrice()).equals(repository.getPaymentPrice()))
+                .collect(Collectors.toList());
+
+        if (packages.isEmpty()) {
+            throw new BadRequestException("Missing package selection");
+        }
+        return packages.get(0);
+    }
+
+
+    private PaymentIntent createPaymentIntent(String stripeCustomerId,
+            String reviewerStripeAccountId, long applicationFee, FullPackageDto selectedPackage,
+            Long ownerId, Long reviewerId) throws StripeException {
+
+        double selectedPackagePrice = Double.parseDouble(selectedPackage.getPrice());
+        long selectedPackagePriceInCents = Math.round(selectedPackagePrice * 100);
+
+        String paymentMethodId = getPaymentMethodIdForCustomer(stripeCustomerId);
+
+        PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
+                .setCustomer(stripeCustomerId).setDescription(selectedPackage.getDescription())
+                .putMetadata("userId", ownerId.toString())
+                .putMetadata("reviewerId", reviewerId.toString())
+                .setAmount(selectedPackagePriceInCents).setCurrency("usd").setConfirm(true)
+                .setTransferData(PaymentIntentCreateParams.TransferData.builder()
+                        .setDestination(reviewerStripeAccountId)
+                        .setAmount(selectedPackagePriceInCents - applicationFee).build())
+                .setPaymentMethod(paymentMethodId)
+                .setAutomaticPaymentMethods(PaymentIntentCreateParams.AutomaticPaymentMethods
+                        .builder().setEnabled(true).build())
+                .setReturnUrl(stripeReturnUrl).build();
+
+        return PaymentIntent.create(params);
+    }
+
+    public PaymentIntent payoutReviewer(TransferCustomerMoneyToReviewerRequest request)
+            throws StripeException {
+        User reviewer = userService.getUserById(request.getReviewerId());
+        User owner = userService.getUserById(request.getOwnerId());
+        Repository repository = repositoryService.getRepositoryById(request.getRepositoryId());
+
+        FullPackageDto selectedPackage = retrievePackage(repository, reviewer);
+
+        String stripeCustomerId = owner.getUserPaymentMethods().get(0).getStripeCustomerId();
+        String reviewerStripeAccountId =
+                reviewer.getUserPaymentMethods().get(0).getStripeConnectAccountId();
+
+        long applicationFee = calculatePlatformFee(
+                Math.round(Double.parseDouble(selectedPackage.getPrice()) * 100));
+
+        PaymentIntent paymentIntent = createPaymentIntent(stripeCustomerId, reviewerStripeAccountId,
+                applicationFee, selectedPackage, owner.getId(), reviewer.getId());
+
+        if ("succeeded".equals(paymentIntent.getStatus())) {
+            repositoryService.updateStatus(request.getRepositoryId(), RepositoryStatus.PAID);
+            stripePaymentIntentService.createStripePaymentIntent(owner, reviewer, paymentIntent, applicationFee); 
+        }
+
+        return paymentIntent;
+    }
+
+    private long calculatePlatformFee(long price) {
+        return (long) (price * 0.10);
+    }
+
+    private String getPaymentMethodIdForCustomer(String stripeCustomerId) throws StripeException {
+        PaymentMethodCollection paymentMethods = PaymentMethod.list(PaymentMethodListParams
+                .builder().setCustomer(stripeCustomerId).setType(Type.CARD).build());
+
+        if (!paymentMethods.getData().isEmpty()) {
+            return paymentMethods.getData().get(0).getId();
+        } else {
+            throw new BadRequestException("No payment methods found for the customer");
+        }
     }
 }

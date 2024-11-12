@@ -2042,6 +2042,18 @@ export interface IConnectStripeAccountResponse {
   data: any;
 }
 
+export interface ITransferCustomerMoneyToReviewerRequest {
+  token: string;
+  reviewerId: number;
+  ownerId: number;
+  repositoryId: number;
+}
+
+export interface ITransferCustomerMoneyToReviewerResponse {
+  message: string;
+  data: any;
+}
+
 export interface IDeleteSaveCommentResponse extends IBaseResponse {}
 
 export interface IDeleteReplyCommentResponse extends IBaseResponse {}
