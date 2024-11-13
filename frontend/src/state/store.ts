@@ -145,6 +145,8 @@ import { reportCommentsApi } from './apis/reportedCommentsApi';
 import { saveCommentsApi } from './apis/savedCommentsApi';
 import { reactionsApi } from './apis/reactionsApi';
 import { replyCommentsApi } from './apis/replyCommentsApi';
+import { stripePaymentIntentsApi } from './apis/stripePaymentIntentsApi';
+import { stripePaymentRefundsApi } from './apis/stripePaymentRefundsApi';
 
 export const store = configureStore({
   reducer: {
@@ -203,6 +205,8 @@ export const store = configureStore({
     [saveCommentsApi.reducerPath]: saveCommentsApi.reducer,
     [reactionsApi.reducerPath]: reactionsApi.reducer,
     [replyCommentsApi.reducerPath]: replyCommentsApi.reducer,
+    [stripePaymentIntentsApi.reducerPath]: stripePaymentIntentsApi.reducer,
+    [stripePaymentRefundsApi.reducerPath]: stripePaymentRefundsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -248,7 +252,9 @@ export const store = configureStore({
       .concat(reportCommentsApi.middleware)
       .concat(saveCommentsApi.middleware)
       .concat(reactionsApi.middleware)
-      .concat(replyCommentsApi.middleware);
+      .concat(replyCommentsApi.middleware)
+      .concat(stripePaymentIntentsApi.middleware)
+      .concat(stripePaymentRefundsApi.middleware);
   },
 });
 
@@ -566,6 +572,10 @@ export {
   useCreateReplyCommentMutation,
 } from './apis/replyCommentsApi';
 
+export { useLazyFetchPaymentIntentsQuery } from './apis/stripePaymentIntentsApi';
+
+export { useCreatePaymentRefundMutation } from './apis/stripePaymentRefundsApi';
+
 export {
   testimonialsApi,
   authsApi,
@@ -599,4 +609,6 @@ export {
   saveCommentsApi,
   reactionsApi,
   replyCommentsApi,
+  stripePaymentIntentsApi,
+  stripePaymentRefundsApi,
 };

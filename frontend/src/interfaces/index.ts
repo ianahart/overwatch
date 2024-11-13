@@ -1,6 +1,17 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface IPaymentIntent {
+  id: number;
+  amount: number;
+  currency: string;
+  fullName: string;
+  reviewerId: number;
+  avatarUrl: string;
+  createdAt: string;
+  status: string;
+}
+
 export interface IReplyComment {
   id: number;
   content: string;
@@ -2052,6 +2063,37 @@ export interface ITransferCustomerMoneyToReviewerRequest {
 export interface ITransferCustomerMoneyToReviewerResponse {
   message: string;
   data: any;
+}
+
+export interface IGetAllStripePaymentIntentsResponse {
+  message: string;
+  data: {
+    items: IPaymentIntent[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
+}
+
+export interface IGetAllStripePaymentIntentsRequest {
+  userId: number;
+  token: string;
+  page: number;
+  pageSize: number;
+  direction: string;
+}
+
+export interface ICreatePaymentRefundRequest {
+  token: string;
+  userId: number;
+  stripePaymentIntentId: number;
+  reason: string;
+}
+
+export interface ICreatePaymentRefundResponse {
+  message: string;
 }
 
 export interface IDeleteSaveCommentResponse extends IBaseResponse {}

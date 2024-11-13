@@ -3,15 +3,19 @@ package com.hart.overwatch.stripepaymentintent;
 import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import com.hart.overwatch.stripepaymentrefund.StripePaymentRefund;
 import com.hart.overwatch.user.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Table;
@@ -65,6 +69,9 @@ public class StripePaymentIntent {
     @ManyToOne
     @JoinColumn(name = "reviewer_id", referencedColumnName = "id", nullable = false)
     private User reviewer;
+
+    @OneToOne(mappedBy = "stripePaymentIntent", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private StripePaymentRefund stripePaymentRefund;
 
     public StripePaymentIntent() {
 
