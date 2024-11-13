@@ -63,3 +63,7 @@ export const initializeName = (firstName: string, lastName: string): string => {
   }
   return firstName.slice(0, 1).toUpperCase() + '.' + lastName.slice(0, 1).toUpperCase();
 };
+
+export const convertCentsToDollars = (cents: number): number => {
+  return cents / 100.0;
+};

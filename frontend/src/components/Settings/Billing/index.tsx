@@ -13,6 +13,7 @@ import { TRootState, useConnectAccountMutation, useFetchPaymentMethodQuery } fro
 import PaymentMethod from './PaymentMethod';
 import ReviewerConnectAccount from './Reviewer/ReviewerConnectAccount';
 import ReviewerDisconnectAccount from './Reviewer/ReviewerDisconnectAccount';
+import CompletedPayments from './User/CompletedPayments';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_API_KEY);
 
@@ -93,19 +94,22 @@ const Billing = () => {
   return (
     <div className="p-4">
       <Header heading="Billing & payments" />
-      <div className=" my-4 rounded-lg border 1px solid border-gray-800 min-h-[200px] p-4">
+      <div className=" my-4 rounded-lg min-h-[200px] p-4">
         {user.role === 'USER' && (
           <>
-            {!paymentMethod.stripeEnabled && view === 'main' && <NoBillingMethod handleSetView={handleSetView} />}
-            {!paymentMethod.stripeEnabled && view === 'add' && <AddBillingMethod handleSetView={handleSetView} />}
-            {!paymentMethod.stripeEnabled && view === 'billing' && (
-              <Elements stripe={stripePromise} options={{ mode: 'setup', currency: 'usd' }}>
-                <BillingForm handleSetView={handleSetView} />
-              </Elements>
-            )}
-            {paymentMethod.stripeEnabled && paymentMethod.id !== 0 && (
-              <PaymentMethod handleSetStripeEnabled={handleSetStripeEnabled} data={paymentMethod} />
-            )}
+            <div className="rounded-lg border 1pb xolis border-gray-800 p-2">
+              {!paymentMethod.stripeEnabled && view === 'main' && <NoBillingMethod handleSetView={handleSetView} />}
+              {!paymentMethod.stripeEnabled && view === 'add' && <AddBillingMethod handleSetView={handleSetView} />}
+              {!paymentMethod.stripeEnabled && view === 'billing' && (
+                <Elements stripe={stripePromise} options={{ mode: 'setup', currency: 'usd' }}>
+                  <BillingForm handleSetView={handleSetView} />
+                </Elements>
+              )}
+              {paymentMethod.stripeEnabled && paymentMethod.id !== 0 && (
+                <PaymentMethod handleSetStripeEnabled={handleSetStripeEnabled} data={paymentMethod} />
+              )}
+            </div>
+            <CompletedPayments userId={user.id} token={token} />
           </>
         )}
         {user.role === 'REVIEWER' && (
