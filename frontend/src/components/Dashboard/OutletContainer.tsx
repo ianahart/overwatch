@@ -4,7 +4,7 @@ import DashboardAvatar from './DashboardAvatar';
 import { TRootState } from '../../state/store';
 import { Outlet } from 'react-router-dom';
 
-const ReviewerOutletContainer = () => {
+const OutletContainer = () => {
   const { user } = useSelector((store: TRootState) => store.user);
 
   return (
@@ -25,4 +25,4 @@ const ReviewerOutletContainer = () => {
   );
 };
 
-export default ReviewerOutletContainer;
+export default OutletContainer;

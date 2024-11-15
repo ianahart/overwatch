@@ -1,4 +1,4 @@
-import UserOutletContainer from './UserOutletContainer';
+import OutletContainer from './OutletContainer';
 import UserSidebarNavigation from './UserSidebarNavigation';
 
 const UserDashboard = () => {
@@ -6,7 +6,7 @@ const UserDashboard = () => {
     <div className="md:max-w-[1450px] w-full mx-auto mt-8">
       <div className="md:flex bg-gray-900 p-2 rounded">
         <UserSidebarNavigation />
-        <UserOutletContainer />
+        <OutletContainer />
       </div>
     </div>
   );

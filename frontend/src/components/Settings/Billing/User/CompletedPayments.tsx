@@ -15,10 +15,10 @@ const CompletedPayments = ({ userId, token }: ICompletedPaymentsProps) => {
   const [fetchPaymentIntents] = useLazyFetchPaymentIntentsQuery();
 
   useEffect(() => {
-    paginateCompletedRepositories('next', true);
+    paginateCompletedPayments('next', true);
   }, [token]);
 
-  const paginateCompletedRepositories = (dir: string, initial = false) => {
+  const paginateCompletedPayments = (dir: string, initial = false) => {
     const payload = {
       token,
       page: initial ? -1 : pag.page,
@@ -74,13 +74,13 @@ const CompletedPayments = ({ userId, token }: ICompletedPaymentsProps) => {
       </div>
       <div className="flex items-center text-gray-400 justify-center">
         {pag.page > 0 && (
-          <button onClick={() => paginateCompletedRepositories('prev')} className="mx-2">
+          <button onClick={() => paginateCompletedPayments('prev')} className="mx-2">
             Prev
           </button>
         )}
         <p className="mx-2">{pag.page + 1}</p>
         {pag.page < pag.totalPages - 1 && (
-          <button onClick={() => paginateCompletedRepositories('next')} className="mx-2">
+          <button onClick={() => paginateCompletedPayments('next')} className="mx-2">
             Next
           </button>
         )}

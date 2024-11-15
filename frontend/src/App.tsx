@@ -50,6 +50,10 @@ import TopicDetailsRoute from './routes/TopicDetailsRoute';
 import TagsRoute from './routes/TagsRoute';
 import SingleReplyCommentRoute from './routes/SingleReplyCommentRoute';
 import TopicEditRoute from './routes/TopicEditRoute';
+import AdminDashboardRoute from './routes/Dashboard/AdminDashboardRoute';
+import RequireAdminUser from './components/Guard/RequireAuthAdmin';
+import RefundRoute from './routes/Dashboard/Admin/RefundRoute';
+import FlaggedCommentRoute from './routes/Dashboard/Admin/FlaggedCommentRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -105,7 +109,31 @@ const router = createBrowserRouter(
           </RequireAuth>
         }
       />
-
+      <Route
+        path="/admin/dashboard/:slug"
+        element={
+          <RequireAdminUser>
+            <AdminDashboardRoute />
+          </RequireAdminUser>
+        }
+      >
+        <Route
+          path="refunds"
+          element={
+            <RequireAdminUser>
+              <RefundRoute />
+            </RequireAdminUser>
+          }
+        />
+        <Route
+          path="flagged-comments"
+          element={
+            <RequireAdminUser>
+              <FlaggedCommentRoute />
+            </RequireAdminUser>
+          }
+        />
+      </Route>
       <Route
         path="dashboard/:slug"
         element={

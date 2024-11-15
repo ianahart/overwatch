@@ -1,6 +1,19 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface IRefund {
+  id: number;
+  adminNotes: string;
+  amount: number;
+  currency: string;
+  reason: string;
+  status: string;
+  stripePaymentIntentId: number;
+  createdAt: string;
+  userId: number;
+  fullName: string;
+}
+
 export interface IPaymentIntent {
   id: number;
   amount: number;
@@ -2090,6 +2103,39 @@ export interface ICreatePaymentRefundRequest {
   userId: number;
   stripePaymentIntentId: number;
   reason: string;
+}
+
+export interface IGetAllStripePaymentRefundRequest {
+  token: string;
+  userId: number;
+  page: number;
+  pageSize: number;
+  direction: string;
+}
+
+export interface IGetAllStripePaymentRefundResponse {
+  message: string;
+  data: {
+    items: IRefund[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
+}
+
+export interface IUpdatePaymentRefundRequest {
+  id: number;
+  token: string;
+  userId: number;
+  adminNotes: string;
+  stripePaymentIntentId: number;
+  status: string;
+}
+
+export interface IUpdatePaymentRefundResponse {
+  message: string;
 }
 
 export interface ICreatePaymentRefundResponse {
