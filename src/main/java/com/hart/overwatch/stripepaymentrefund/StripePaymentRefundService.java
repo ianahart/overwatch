@@ -160,7 +160,7 @@ public class StripePaymentRefundService {
         if (request.getStatus().equals("approve") && stripePaymentRefund.getRefundId() == null) {
             approveRefund(stripePaymentIntent, stripePaymentRefund, adminNotes);
         } else {
-            throw new BadRequestException("You have already been refunded");
+            throw new BadRequestException("They have already been refunded");
         }
     }
 }
