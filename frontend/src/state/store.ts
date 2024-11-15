@@ -574,7 +574,11 @@ export {
 
 export { useLazyFetchPaymentIntentsQuery } from './apis/stripePaymentIntentsApi';
 
-export { useCreatePaymentRefundMutation } from './apis/stripePaymentRefundsApi';
+export {
+  useUpdatePaymentRefundMutation,
+  useLazyFetchPaymentRefundsQuery,
+  useCreatePaymentRefundMutation,
+} from './apis/stripePaymentRefundsApi';
 
 export {
   testimonialsApi,

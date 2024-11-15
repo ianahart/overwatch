@@ -38,12 +38,14 @@ const CompletedPaymentItem = ({ paymentIntent, handleUpdateStatus }: ICompletedP
           <span className="text-xs ml-2">{paymentIntent.currency}</span>
         </p>
         <div className="mx-2">
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="text-xs text-gray-400 border p-2 rounded border-gray-800"
-          >
-            Ask for refund
-          </button>
+          {paymentIntent.status !== 'REFUNDED' && (
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="text-xs text-gray-400 border p-2 rounded border-gray-800"
+            >
+              Ask for refund
+            </button>
+          )}
         </div>
       </div>
       {isModalOpen && (

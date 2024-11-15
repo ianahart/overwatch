@@ -41,7 +41,8 @@ public class SecurityConfig {
                         req -> req.requestMatchers("/api/v1/auth/**", "ws/**", "wss/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/topics/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/v1/topics/**")
-                                .authenticated().anyRequest().authenticated()
+                                .authenticated().requestMatchers("/api/v1/admin/**")
+                                .hasRole("ADMIN").anyRequest().authenticated()
 
                 ).sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(this.authenticationProvider)
