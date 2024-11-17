@@ -38,6 +38,10 @@ public class ReportComment {
     @Column(name = "report_reason", nullable = false)
     private ReportReason reason;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "report_status")
+    private ReportStatus status;
+
     @ManyToOne()
     @JoinColumn(name = "reported_by_user_id", nullable = false, referencedColumnName = "id")
     private User reportedBy;
@@ -50,14 +54,18 @@ public class ReportComment {
 
     }
 
-    public ReportComment(Long id, LocalDateTime createdAt, ReportReason reason, String details) {
+    public ReportComment(Long id, LocalDateTime createdAt, ReportReason reason, String details,
+            ReportStatus status) {
         this.id = id;
         this.createdAt = createdAt;
         this.reason = reason;
         this.details = details;
+        this.status = status;
     }
 
-    public ReportComment(ReportReason reason, String details, Comment comment, User reportedBy) {
+    public ReportComment(ReportStatus status, ReportReason reason, String details, Comment comment,
+            User reportedBy) {
+        this.status = status;
         this.reason = reason;
         this.details = details;
         this.comment = comment;
@@ -66,6 +74,10 @@ public class ReportComment {
 
     public Long getId() {
         return id;
+    }
+
+    public ReportStatus getStatus() {
+        return status;
     }
 
     public String getDetails() {
@@ -110,5 +122,9 @@ public class ReportComment {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public void setStatus(ReportStatus status) {
+        this.status = status;
     }
 }

@@ -54,7 +54,6 @@ const RefundModal = ({ refund, handleCloseModal }: IRefundModalProps) => {
       id: refund.id,
       status: approvalStatus as string,
     };
-    console.log(payload);
     updatePaymentRefund(payload)
       .unwrap()
       .then((res) => {
