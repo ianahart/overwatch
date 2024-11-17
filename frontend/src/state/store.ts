@@ -554,7 +554,11 @@ export {
 
 export { useCreateVoteMutation } from './apis/commentVotesApi';
 
-export { useCreateReportCommentMutation } from './apis/reportedCommentsApi';
+export {
+  useDeleteReportCommentMutation,
+  useLazyFetchReportCommentsQuery,
+  useCreateReportCommentMutation,
+} from './apis/reportedCommentsApi';
 
 export {
   useDeleteSaveCommentMutation,

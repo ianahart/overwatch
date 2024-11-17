@@ -17,6 +17,7 @@ import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.topic.Topic;
 import com.hart.overwatch.topic.TopicService;
+import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.advice.BadRequestException;
@@ -142,7 +143,7 @@ public class CommentService {
         User user = userService.getCurrentlyLoggedInUser();
         Comment comment = getCommentById(commentId);
 
-        if (!user.getId().equals(comment.getUser().getId())) {
+        if (!(user.getRole() == Role.ADMIN || user.getId().equals(comment.getUser().getId()))) {
             throw new ForbiddenException("Cannot delete a comment that is not yours");
         }
         commentRepository.delete(comment);

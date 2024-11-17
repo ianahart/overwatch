@@ -134,6 +134,7 @@ public class ReportCommentServiceTest {
 
         ReportComment newReportComment = new ReportComment();
         newReportComment.setId(1L);
+        newReportComment.setStatus(ReportStatus.ACTIVE);
         newReportComment.setDetails(request.getDetails());
         newReportComment.setReason(ReportReason.MISINFORMATION);
         newReportComment.setReportedBy(user);

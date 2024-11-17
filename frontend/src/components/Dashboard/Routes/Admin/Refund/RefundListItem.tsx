@@ -2,7 +2,8 @@ import dayjs from 'dayjs';
 import { IRefund } from '../../../../../interfaces';
 import { convertCentsToDollars } from '../../../../../util';
 import { useState } from 'react';
-import RefundModal from './RefundModal';
+import RefundModalDetails from './RefundModalDetails';
+import DetailsModal from '../DetailsModal';
 
 export interface IRefundListItemProps {
   refund: IRefund;
@@ -41,7 +42,11 @@ const RefundListItem = ({ refund }: IRefundListItemProps) => {
             Refund Details
           </button>
         </div>
-        {isModalOpen && <RefundModal refund={refund} handleCloseModal={handleCloseModal} />}
+        {isModalOpen && (
+          <DetailsModal handleCloseModal={handleCloseModal}>
+            <RefundModalDetails refund={refund} handleCloseModal={handleCloseModal} />
+          </DetailsModal>
+        )}
       </div>
     </div>
   );

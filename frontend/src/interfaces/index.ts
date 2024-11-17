@@ -1,6 +1,18 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface IReportComment {
+  id: number;
+  details: string;
+  reason: string;
+  status: string;
+  reportedBy: string;
+  createdAt: string;
+  content: string;
+  commentAvatarUrl: string;
+  topicTitle: string;
+}
+
 export interface IRefund {
   id: number;
   adminNotes: string;
@@ -2133,6 +2145,32 @@ export interface IUpdatePaymentRefundRequest {
   stripePaymentIntentId: number;
   status: string;
 }
+
+export interface IGetAllReportCommentRequest {
+  token: string;
+  page: number;
+  pageSize: number;
+  direction: string;
+}
+
+export interface IGetAllReportCommentResponse {
+  message: string;
+  data: {
+    items: IReportComment[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
+}
+
+export interface IDeleteReportCommentRequest {
+  id: number;
+  token: string;
+}
+
+export interface IDeleteReportCommentResponse extends IBaseResponse {}
 
 export interface IUpdatePaymentRefundResponse {
   message: string;
