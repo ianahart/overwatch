@@ -17,10 +17,10 @@ public interface ReportCommentRepository extends JpaRepository<ReportComment, Lo
             rb.fullName AS reportedBy, rc.createdAt AS createdAt, c.content AS content,
             p.avatarUrl AS commentAvatarUrl, t.title AS topicTitle
             ) FROM ReportComment rc
-            INNER JOIN rc.comment c
-            INNER JOIN rc.comment.user u
-            INNER JOIN rc.comment.user.profile p
-            INNER JOIN rc.comment.topic t
+            LEFT JOIN rc.comment c
+            LEFT JOIN rc.comment.user u
+            LEFT JOIN rc.comment.user.profile p
+            LEFT JOIN rc.comment.topic t
             INNER JOIN rc.reportedBy rb
             """)
     Page<ReportCommentDto> getReportComments(@Param("pageable") Pageable pageable);
