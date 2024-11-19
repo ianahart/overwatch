@@ -54,10 +54,12 @@ import AdminDashboardRoute from './routes/Dashboard/AdminDashboardRoute';
 import RequireAdminUser from './components/Guard/RequireAuthAdmin';
 import RefundRoute from './routes/Dashboard/Admin/RefundRoute';
 import FlaggedCommentRoute from './routes/Dashboard/Admin/FlaggedCommentRoute';
+import HomeRoute from './routes/HomeRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootLayout />}>
+      <Route index element={<HomeRoute />} />
       <Route path="about" element={<AboutRoute />} />
       <Route
         path="github/success"
