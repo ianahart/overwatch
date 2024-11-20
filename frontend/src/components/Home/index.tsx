@@ -1,9 +1,11 @@
 import HeroSection from './HeroSection';
+import KeyFeaturesSection from './KeyFeaturesSection';
 
 const Home = () => {
   return (
-    <div className="min-h-[100vh]">
+    <div>
       <HeroSection />
+      <KeyFeaturesSection />
     </div>
   );
 };

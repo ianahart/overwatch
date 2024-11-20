@@ -1,10 +1,17 @@
 import { Link } from 'react-router-dom';
+import { useSpring, animated } from 'react-spring';
 import SectionContainer from '../SectionContainer';
 
 const HeroSection = () => {
+  const springs = useSpring({
+    from: { opacity: 0 },
+    to: { opacity: 1 },
+    config: { duration: 1000 },
+  });
+
   return (
     <SectionContainer>
-      <div className="text-gray-400 mt-10">
+      <animated.div style={springs} className="text-gray-400 mt-10 min-h-[1000px]">
         <div className="flex justify-center">
           <h2 className="text-green-400 text-4xl font-bold font-display tracking-wider">OverWatch</h2>
         </div>
@@ -31,7 +38,7 @@ const HeroSection = () => {
             alt="reviewer's dashboard code review"
           />
         </div>
-      </div>
+      </animated.div>
     </SectionContainer>
   );
 };
