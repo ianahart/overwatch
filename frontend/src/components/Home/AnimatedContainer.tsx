@@ -1,26 +1,25 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSpring, animated } from 'react-spring';
 
-export interface IKeyFeatureContainerProps {
+export interface IAnimatedContainerProps {
   children: React.ReactNode;
   side: string;
 }
 
-const KeyFeatureContainer = ({ children, side }: IKeyFeatureContainerProps) => {
+const AnimatedContainer = ({ children, side }: IAnimatedContainerProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const divRef = useRef<HTMLDivElement | null>(null);
-  const isVisibleProperties = side === 'right' ? 'translate3d(-25px, 100px, 0)' : 'translate3d(25px,-100px, 0)';
+  const animatedProperties = side === 'right' ? 'translate3d(-25px, 100px, 0)' : 'translate3d(25px,-100px, 0)';
 
   const springs = useSpring({
     opacity: isVisible ? 1 : 0,
-    transform: isVisible ? 'translate3d(0,0,0)' : isVisibleProperties,
+    transform: isVisible ? 'translate3d(0,0,0)' : animatedProperties,
     config: { duration: 500 },
   });
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        console.log(entry);
         if (entry.isIntersecting) {
           console.log('run');
           setIsVisible(true);
@@ -48,4 +47,4 @@ const KeyFeatureContainer = ({ children, side }: IKeyFeatureContainerProps) => {
   );
 };
 
-export default KeyFeatureContainer;
+export default AnimatedContainer;
