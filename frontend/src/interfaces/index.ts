@@ -1,6 +1,20 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface IAppTestimonial {
+  id: number;
+  firstName: string;
+  developerType: string;
+  content: string;
+  avatarUrl: string;
+}
+
+export interface IMinAppTestimonial {
+  id: number;
+  developerType: string;
+  content: string;
+}
+
 export interface IGalleryPhoto {
   id: number;
   title: string;
@@ -2176,7 +2190,42 @@ export interface IDeleteReportCommentRequest {
   token: string;
 }
 
-export interface IDeleteReportCommentResponse extends IBaseResponse {}
+export interface ICreateAppTestimonialRequest {
+  userId: number;
+  token: string;
+  developerType: string;
+  content: string;
+}
+export interface IUpdateAppTestimonialRequest {
+  id: number;
+  userId: number;
+  token: string;
+  developerType: string;
+  content: string;
+}
+
+export interface IGetAppTestimonialResponse {
+  message: string;
+  data: IMinAppTestimonial;
+}
+
+export interface IGetAppTestimonialRequest {
+  token: string;
+}
+
+export interface IDeleteAppTestimonialRequest {
+  token: string;
+  id: number;
+}
+
+export interface IGetAllAppTestimonialsRequest {
+  pageSize: number;
+}
+
+export interface IGetAllAppTestimonialsResponse {
+  message: string;
+  data: IAppTestimonial[];
+}
 
 export interface IUpdatePaymentRefundResponse {
   message: string;
@@ -2186,15 +2235,23 @@ export interface ICreatePaymentRefundResponse {
   message: string;
 }
 
+export interface IGetTopicsWithTagsRequest extends IGetAllTopicsRequest {
+  query: string;
+}
+
 export interface IDeleteSaveCommentResponse extends IBaseResponse {}
 
 export interface IDeleteReplyCommentResponse extends IBaseResponse {}
 
 export interface ICreateReplyCommentResponse extends IBaseResponse {}
 
-export interface IGetTopicsWithTagsRequest extends IGetAllTopicsRequest {
-  query: string;
-}
+export interface IDeleteAppTestimonialResponse extends IBaseResponse {}
+
+export interface IUpdateAppTestimonialResponse extends IBaseResponse {}
+
+export interface ICreateAppTestimonialResponse extends IBaseResponse {}
+
+export interface IDeleteReportCommentResponse extends IBaseResponse {}
 
 export interface IGetTopicsWithTagsResponse extends IGetAllTopicsResponse {}
 

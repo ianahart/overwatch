@@ -86,9 +86,9 @@ const GallerySection = () => {
             <p className="text-gray-400">{photos[currentPhotoIndex].title}</p>
           </div>
           <div className="flex justify-center">
-            {photos.map((_, index) => {
+            {photos.map((photo, index) => {
               return (
-                <div className="mx-2">
+                <div key={photo.id} className="mx-2">
                   <div
                     className={`border rounded-full ${
                       index === currentPhotoIndex ? 'border-yellow-400 h-5 w-5' : 'border-gray-800 h-4 w-4'

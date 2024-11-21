@@ -147,6 +147,7 @@ import { reactionsApi } from './apis/reactionsApi';
 import { replyCommentsApi } from './apis/replyCommentsApi';
 import { stripePaymentIntentsApi } from './apis/stripePaymentIntentsApi';
 import { stripePaymentRefundsApi } from './apis/stripePaymentRefundsApi';
+import { appTestimonialsApi } from './apis/appTestimonialsApi';
 
 export const store = configureStore({
   reducer: {
@@ -207,6 +208,7 @@ export const store = configureStore({
     [replyCommentsApi.reducerPath]: replyCommentsApi.reducer,
     [stripePaymentIntentsApi.reducerPath]: stripePaymentIntentsApi.reducer,
     [stripePaymentRefundsApi.reducerPath]: stripePaymentRefundsApi.reducer,
+    [appTestimonialsApi.reducerPath]: appTestimonialsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -254,7 +256,8 @@ export const store = configureStore({
       .concat(reactionsApi.middleware)
       .concat(replyCommentsApi.middleware)
       .concat(stripePaymentIntentsApi.middleware)
-      .concat(stripePaymentRefundsApi.middleware);
+      .concat(stripePaymentRefundsApi.middleware)
+      .concat(appTestimonialsApi.middleware);
   },
 });
 
@@ -585,6 +588,14 @@ export {
 } from './apis/stripePaymentRefundsApi';
 
 export {
+  useFetchAppTestimonialsQuery,
+  useDeleteAppTestimonialMutation,
+  useUpdateAppTestimonialMutation,
+  useFetchAppTestimonialQuery,
+  useCreateAppTestimonialMutation,
+} from './apis/appTestimonialsApi';
+
+export {
   testimonialsApi,
   authsApi,
   heartbeatApi,
@@ -619,4 +630,5 @@ export {
   replyCommentsApi,
   stripePaymentIntentsApi,
   stripePaymentRefundsApi,
+  appTestimonialsApi,
 };
