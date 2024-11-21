@@ -1,4 +1,3 @@
-/// <reference types="vite-plugin-svgr/client" />
 import KeyFeatureSvgOne from '../../../assets/key-features-01.svg?react';
 import KeyFeatureSvgTwo from '../../../assets/key-features-02.svg?react';
 import KeyFeatureSvgThree from '../../../assets/key-features-03.svg?react';

@@ -1,3 +1,4 @@
+/// <reference types="vite-plugin-svgr/client" />
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
 import RootLayout from './layouts/RootLayout';
 import AboutRoute from './routes/AboutRoute';
