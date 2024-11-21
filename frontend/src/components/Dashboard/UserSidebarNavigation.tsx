@@ -2,8 +2,7 @@ import { useSelector } from 'react-redux';
 import { GoCodeReview } from 'react-icons/go';
 import { VscOpenPreview } from 'react-icons/vsc';
 import { GiCheckboxTree } from 'react-icons/gi';
-import { VscGraphLine } from 'react-icons/vsc';
-import { FaNewspaper } from 'react-icons/fa';
+import { FaRegHandshake } from 'react-icons/fa';
 
 import DashboardTitle from './DashboardTitle';
 import { TRootState } from '../../state/store';
@@ -15,7 +14,7 @@ const UserSidebarNavigation = () => {
     { path: 'user/add-review', label: 'Get a review', id: 1, icon: <VscOpenPreview /> },
     { path: 'user/reviews', label: 'Your Reviews', id: 2, icon: <GoCodeReview /> },
     { path: `/settings/${user.slug}/connects`, label: 'Your Connects', id: 3, icon: <GiCheckboxTree /> },
-    { path: 'user/guides', label: 'Guides', id: 5, icon: <FaNewspaper /> },
+    { path: 'user/testimonials', label: 'Testimonials', id: 4, icon: <FaRegHandshake /> },
   ];
 
   return (

@@ -2176,6 +2176,15 @@ export interface IDeleteReportCommentRequest {
   token: string;
 }
 
+export interface ICreateAppTestimonialRequest {
+  userId: number;
+  token: string;
+  developerType: string;
+  content: string;
+}
+
+export interface ICreateAppTestimonialResponse extends IBaseResponse {}
+
 export interface IDeleteReportCommentResponse extends IBaseResponse {}
 
 export interface IUpdatePaymentRefundResponse {

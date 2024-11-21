@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.hart.overwatch.activity.Activity;
+import com.hart.overwatch.apptestimonial.AppTestimonial;
 import com.hart.overwatch.blockuser.BlockUser;
 import com.hart.overwatch.chatmessage.ChatMessage;
 import com.hart.overwatch.checklist.CheckList;
@@ -273,6 +274,11 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<StripePaymentIntent> reviewierStripePaymentIntents;
 
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<AppTestimonial> appTestimonials;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "setting_id", referencedColumnName = "id")
     private Setting setting;
@@ -333,6 +339,10 @@ public class User implements UserDetails {
 
     public List<SaveComment> getSavedComments() {
         return savedComments;
+    }
+
+    public List<AppTestimonial> getAppTestimonials() {
+        return appTestimonials;
     }
 
     public List<Reaction> getReactions() {
@@ -757,6 +767,10 @@ public class User implements UserDetails {
 
     public void setUserStripePaymentIntents(List<StripePaymentIntent> userStripePaymentIntents) {
         this.userStripePaymentIntents = userStripePaymentIntents;
+    }
+
+    public void setAppTestimonials(List<AppTestimonial> appTestimonials) {
+        this.appTestimonials = appTestimonials;
     }
 
     public void setReviewierStripePaymentIntents(

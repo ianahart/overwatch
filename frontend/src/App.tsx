@@ -56,6 +56,7 @@ import RequireAdminUser from './components/Guard/RequireAuthAdmin';
 import RefundRoute from './routes/Dashboard/Admin/RefundRoute';
 import FlaggedCommentRoute from './routes/Dashboard/Admin/FlaggedCommentRoute';
 import HomeRoute from './routes/HomeRoute';
+import AppTestimonialRoute from './routes/Dashboard/User/AppTestimonialRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -192,6 +193,14 @@ const router = createBrowserRouter(
           element={
             <RequireAuthUser>
               <ReviewsRoute />
+            </RequireAuthUser>
+          }
+        />
+        <Route
+          path="user/testimonials"
+          element={
+            <RequireAuthUser>
+              <AppTestimonialRoute />
             </RequireAuthUser>
           }
         />

@@ -1,3 +1,12 @@
+export const developerTypes = [
+  { label: 'Frontend Developer', value: 'Frontend Developer', id: 'frontenddeveloper' },
+  { label: 'Backend Developer', value: 'Backend Developer', id: 'backenddeveloper' },
+  { label: 'FullStack Developer', value: 'FullStack Developer', id: 'fullstackdeveloper' },
+  { label: 'Software Engineer', value: 'Software Engineer', id: 'softwareengineer' },
+  { label: 'Web Developer', value: 'Web Developer', id: 'webdeveloper' },
+  { label: 'Software Developer', value: 'Software Developer', id: 'softwaredeveloper' },
+];
+
 export const landingPageGalleryPhotos = [
   {
     id: 1,
