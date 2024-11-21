@@ -40,7 +40,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         req -> req.requestMatchers("/api/v1/auth/**", "ws/**", "wss/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/topics/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/v1/topics/**")
+                                .requestMatchers(HttpMethod.GET, "/api/v1/app-testimonials/**")
+                                .permitAll().requestMatchers(HttpMethod.POST, "/api/v1/topics/**")
                                 .authenticated().requestMatchers("/api/v1/admin/**")
                                 .hasRole("ADMIN").anyRequest().authenticated()
 

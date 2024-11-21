@@ -4,6 +4,8 @@ import {
   ICreateAppTestimonialResponse,
   IDeleteAppTestimonialRequest,
   IDeleteAppTestimonialResponse,
+  IGetAllAppTestimonialsResponse,
+  IGetAllAppTestimonialsRequest,
   IGetAppTestimonialRequest,
   IGetAppTestimonialResponse,
   IUpdateAppTestimonialRequest,
@@ -70,10 +72,25 @@ const appTestimonialsApi = createApi({
         },
         invalidatesTags: [{ type: 'AppTestimonial', id: 'LIST' }],
       }),
+      fetchAppTestimonials: builder.query<IGetAllAppTestimonialsResponse, IGetAllAppTestimonialsRequest>({
+        query: ({ pageSize }) => {
+          return {
+            url: `/app-testimonials?pageSize=${pageSize}`,
+            method: 'GET',
+            headers: {},
+          };
+        },
+        //@ts-ignore
+        providesTags: (result, error, arg) =>
+          result
+            ? [...result.data.map(({ id }) => ({ type: 'AppTestimonial', id })), { type: 'AppTestimonial', id: 'LIST' }]
+            : [{ type: 'AppTestimonial', id: 'LIST' }],
+      }),
     };
   },
 });
 export const {
+  useFetchAppTestimonialsQuery,
   useDeleteAppTestimonialMutation,
   useUpdateAppTestimonialMutation,
   useCreateAppTestimonialMutation,

@@ -3,6 +3,7 @@ import GallerySection from './GallerySection';
 import HeroSection from './HeroSection';
 import KeyFeaturesSection from './KeyFeaturesSection';
 import StepsSection from './StepsSection';
+import TestimonialSection from './TestimonialSections';
 
 const Home = () => {
   return (
@@ -12,6 +13,7 @@ const Home = () => {
       <StepsSection />
       <BenefitsSection />
       <GallerySection />
+      <TestimonialSection />
     </div>
   );
 };
