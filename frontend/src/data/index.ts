@@ -1,3 +1,36 @@
+export const landingPageGalleryPhotos = [
+  {
+    id: 1,
+    title: 'Kanban Options',
+    src: 'https://res.cloudinary.com/dap5r6vfu/image/upload/v1732043901/overwatch/trello-options_mssue9.png',
+  },
+  {
+    id: 2,
+    title: 'Kanboard Board',
+    src: 'https://res.cloudinary.com/dap5r6vfu/image/upload/v1732043898/overwatch/main-trello_cv5ty1.png',
+  },
+  {
+    id: 3,
+    title: 'Explore Topics',
+    src: 'https://res.cloudinary.com/dap5r6vfu/image/upload/v1732043898/overwatch/single_view_community_glefic.png',
+  },
+  {
+    id: 4,
+    title: 'Reviewer Profiles',
+    src: 'https://res.cloudinary.com/dap5r6vfu/image/upload/v1732043898/overwatch/explore-single-view_tmpdo4.png',
+  },
+  {
+    id: 5,
+    title: 'Explore Reviewers',
+    src: 'https://res.cloudinary.com/dap5r6vfu/image/upload/v1732043898/overwatch/explore-page_ussp5l.png',
+  },
+  {
+    id: 6,
+    title: 'Explore The Community Side Of OverWatch',
+    src: 'https://res.cloudinary.com/dap5r6vfu/image/upload/v1732043898/overwatch/community_g1qg2g.png',
+  },
+];
+
 export const minCommentState = {
   id: 0,
   content: '',
