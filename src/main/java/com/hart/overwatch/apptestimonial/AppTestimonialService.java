@@ -93,4 +93,15 @@ public class AppTestimonialService {
 
         appTestimonialRepository.save(appTestimonial);
     }
+
+    public void deleteAppTestimonial(Long appTestimonialId) {
+        User user = userService.getCurrentlyLoggedInUser();
+        AppTestimonial appTestimonial = getAppTestimonialById(appTestimonialId);
+
+        if (!user.getId().equals(appTestimonial.getUser().getId())) {
+            throw new ForbiddenException("You cannot update another user's testimonial");
+        }
+
+        appTestimonialRepository.delete(appTestimonial);
+    }
 }

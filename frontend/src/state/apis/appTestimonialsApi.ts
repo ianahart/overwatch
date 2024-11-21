@@ -2,6 +2,8 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import {
   ICreateAppTestimonialRequest,
   ICreateAppTestimonialResponse,
+  IDeleteAppTestimonialRequest,
+  IDeleteAppTestimonialResponse,
   IGetAppTestimonialRequest,
   IGetAppTestimonialResponse,
   IUpdateAppTestimonialRequest,
@@ -42,6 +44,19 @@ const appTestimonialsApi = createApi({
         },
         invalidatesTags: [{ type: 'AppTestimonial', id: 'LIST' }],
       }),
+      deleteAppTestimonial: builder.mutation<IDeleteAppTestimonialResponse, IDeleteAppTestimonialRequest>({
+        query: ({ token, id }) => {
+          return {
+            url: `/app-testimonials/${id}`,
+            method: 'DELETE',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+        invalidatesTags: [{ type: 'AppTestimonial', id: 'LIST' }],
+      }),
+
       createAppTestimonial: builder.mutation<ICreateAppTestimonialResponse, ICreateAppTestimonialRequest>({
         query: ({ developerType, content, token, userId }) => {
           return {
@@ -58,6 +73,10 @@ const appTestimonialsApi = createApi({
     };
   },
 });
-export const { useUpdateAppTestimonialMutation, useCreateAppTestimonialMutation, useFetchAppTestimonialQuery } =
-  appTestimonialsApi;
+export const {
+  useDeleteAppTestimonialMutation,
+  useUpdateAppTestimonialMutation,
+  useCreateAppTestimonialMutation,
+  useFetchAppTestimonialQuery,
+} = appTestimonialsApi;
 export { appTestimonialsApi };

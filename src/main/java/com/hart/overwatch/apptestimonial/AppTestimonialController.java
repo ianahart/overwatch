@@ -3,6 +3,7 @@ package com.hart.overwatch.apptestimonial;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.hart.overwatch.apptestimonial.request.CreateAppTestimonialRequest;
 import com.hart.overwatch.apptestimonial.response.CreateAppTestimonialResponse;
+import com.hart.overwatch.apptestimonial.response.DeleteAppTestimonialResponse;
 import com.hart.overwatch.apptestimonial.response.GetSingleAppTestimonialResponse;
 import com.hart.overwatch.apptestimonial.response.UpdateAppTestimonialResponse;
 import jakarta.validation.Valid;
@@ -49,5 +51,13 @@ public class AppTestimonialController {
         appTestimonialService.updateAppTestimonial(request, appTestimonialId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new UpdateAppTestimonialResponse("success"));
+    }
+
+    @DeleteMapping(path = "/{appTestimonialId}")
+    public ResponseEntity<DeleteAppTestimonialResponse> deleteAppTestimonial(
+            @PathVariable("appTestimonialId") Long appTestimonialId) {
+        appTestimonialService.deleteAppTestimonial(appTestimonialId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new DeleteAppTestimonialResponse("success"));
     }
 }

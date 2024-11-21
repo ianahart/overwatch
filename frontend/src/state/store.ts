@@ -588,6 +588,7 @@ export {
 } from './apis/stripePaymentRefundsApi';
 
 export {
+  useDeleteAppTestimonialMutation,
   useUpdateAppTestimonialMutation,
   useFetchAppTestimonialQuery,
   useCreateAppTestimonialMutation,

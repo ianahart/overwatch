@@ -2205,6 +2205,13 @@ export interface IGetAppTestimonialRequest {
   token: string;
 }
 
+export interface IDeleteAppTestimonialRequest {
+  token: string;
+  id: number;
+}
+
+export interface IDeleteAppTestimonialResponse extends IBaseResponse {}
+
 export interface IUpdateAppTestimonialResponse extends IBaseResponse {}
 
 export interface ICreateAppTestimonialResponse extends IBaseResponse {}

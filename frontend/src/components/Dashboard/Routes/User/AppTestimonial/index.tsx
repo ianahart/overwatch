@@ -10,6 +10,7 @@ import {
   TRootState,
   useCreateAppTestimonialMutation,
   useFetchAppTestimonialQuery,
+  useDeleteAppTestimonialMutation,
   useUpdateAppTestimonialMutation,
 } from '../../../../../state/store';
 
@@ -18,6 +19,7 @@ const AppTestimonial = () => {
   const { user, token } = useSelector((store: TRootState) => store.user);
   const [createAppTestimonial] = useCreateAppTestimonialMutation();
   const [updateAppTestimonial] = useUpdateAppTestimonialMutation();
+  const [deleteAppTestimonial] = useDeleteAppTestimonialMutation();
   const { data } = useFetchAppTestimonialQuery({ token });
   const [showSubmitBtn, setShowSubmitBtn] = useState(false);
   const [developerType, setDeveloperType] = useState('');
@@ -110,6 +112,26 @@ const AppTestimonial = () => {
       });
   };
 
+  const handleDeleteAppTestimonial = (): void => {
+    const payload = { token, id: data?.data.id as number };
+    deleteAppTestimonial(payload)
+      .unwrap()
+      .then((res) => {
+        console.log(res);
+        resetState();
+      })
+      .catch((err) => {
+        applyErrors(err.data);
+      });
+  };
+
+  const resetState = (): void => {
+    setShowSubmitBtn(false);
+    setDeveloperType('');
+    setContent('');
+    setIsEditing(false);
+  };
+
   const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     setErrors([]);
@@ -194,10 +216,19 @@ const AppTestimonial = () => {
               </div>
             )}
             {showSubmitBtn && (
-              <animated.div style={springs} className="my-6">
+              <animated.div style={springs} className="my-6 flex justify-between">
                 <button type="submit" className="btn">
                   {isEditing ? 'Update' : 'Submit'}
                 </button>
+                {isEditing && (
+                  <button
+                    onClick={handleDeleteAppTestimonial}
+                    className="text-red-400 border border-red-300 rounded p-1"
+                    type="button"
+                  >
+                    Delete
+                  </button>
+                )}
               </animated.div>
             )}
           </form>
