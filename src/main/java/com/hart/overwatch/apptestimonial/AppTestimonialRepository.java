@@ -9,6 +9,13 @@ import org.springframework.stereotype.Repository;
 public interface AppTestimonialRepository extends JpaRepository<AppTestimonial, Long> {
 
     @Query(value = """
+          SELECT at FROM AppTestimonial at
+          INNER JOIN at.user u
+          WHERE u.id = :userId
+        """)
+    AppTestimonial getAppTestimonialByUserId(@Param("userId") Long userId);
+
+    @Query(value = """
             SELECT EXISTS(SELECT 1 FROM AppTestimonial at
                 INNER JOIN at.user u
                 WHERE u.id = :userId

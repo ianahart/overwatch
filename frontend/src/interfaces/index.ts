@@ -1,6 +1,12 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface IMinAppTestimonial {
+  id: number;
+  developerType: string;
+  content: string;
+}
+
 export interface IGalleryPhoto {
   id: number;
   title: string;
@@ -2182,6 +2188,24 @@ export interface ICreateAppTestimonialRequest {
   developerType: string;
   content: string;
 }
+export interface IUpdateAppTestimonialRequest {
+  id: number;
+  userId: number;
+  token: string;
+  developerType: string;
+  content: string;
+}
+
+export interface IGetAppTestimonialResponse {
+  message: string;
+  data: IMinAppTestimonial;
+}
+
+export interface IGetAppTestimonialRequest {
+  token: string;
+}
+
+export interface IUpdateAppTestimonialResponse extends IBaseResponse {}
 
 export interface ICreateAppTestimonialResponse extends IBaseResponse {}
 

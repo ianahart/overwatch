@@ -4,17 +4,24 @@ import { ToastContainer, toast } from 'react-toastify';
 import { animated, useSpring } from 'react-spring';
 import { useSelector } from 'react-redux';
 
-import { developerTypes as options } from '../../../../../data';
+import { developerTypes } from '../../../../../data';
 import { IError } from '../../../../../interfaces';
-import { TRootState, useCreateAppTestimonialMutation } from '../../../../../state/store';
+import {
+  TRootState,
+  useCreateAppTestimonialMutation,
+  useFetchAppTestimonialQuery,
+  useUpdateAppTestimonialMutation,
+} from '../../../../../state/store';
 
 const AppTestimonial = () => {
   const MAX_CONTENT_LENGTH = 200;
   const { user, token } = useSelector((store: TRootState) => store.user);
   const [createAppTestimonial] = useCreateAppTestimonialMutation();
+  const [updateAppTestimonial] = useUpdateAppTestimonialMutation();
+  const { data } = useFetchAppTestimonialQuery({ token });
   const [showSubmitBtn, setShowSubmitBtn] = useState(false);
-  const [selectedOption, setSelectedOption] = useState('');
-  const [testimonial, setTestimonial] = useState('');
+  const [developerType, setDeveloperType] = useState('');
+  const [content, setContent] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const springs = useSpring({
@@ -23,23 +30,32 @@ const AppTestimonial = () => {
     config: { duration: 300 },
   });
 
-  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, inputType: string) => {
-    if (inputType === 'testimonial') {
-      setTestimonial(e.target.value);
-      return;
+  useEffect(() => {
+    if (data !== undefined) {
+      const { developerType, content } = data.data;
+      setDeveloperType(developerType);
+      setContent(content);
+      setIsEditing(true);
     }
-    if (inputType === 'option') {
-      setSelectedOption(e.target.value);
-    }
-  };
+  }, [data]);
 
   useEffect(() => {
-    if (selectedOption.trim().length > 0 && testimonial.trim().length > 0) {
+    if (developerType.trim().length > 0 && content.trim().length > 0) {
       setShowSubmitBtn(true);
     } else {
       setShowSubmitBtn(false);
     }
-  }, [selectedOption, testimonial]);
+  }, [developerType, content]);
+
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, inputType: string) => {
+    if (inputType === 'content') {
+      setContent(e.target.value);
+      return;
+    }
+    if (inputType === 'developerType') {
+      setDeveloperType(e.target.value);
+    }
+  };
 
   const applyErrors = <T extends IError>(data: T): void => {
     for (let prop in data) {
@@ -48,12 +64,50 @@ const AppTestimonial = () => {
   };
 
   const canSubmit = () => {
-    if (testimonial.length > MAX_CONTENT_LENGTH) {
+    if (content.length > MAX_CONTENT_LENGTH) {
       const error = `Testimonial must be between 1 and ${MAX_CONTENT_LENGTH} characters`;
       setErrors((prevState) => [...prevState, error]);
       return false;
     }
     return true;
+  };
+
+  const handleUpdateAppTestimonial = (): void => {
+    const payload = {
+      id: data?.data.id as number,
+      userId: user.id,
+      token,
+      content,
+      developerType,
+    };
+
+    updateAppTestimonial(payload)
+      .unwrap()
+      .then((res) => {
+        console.log(res);
+        initiateToast();
+      })
+      .catch((err) => {
+        applyErrors(err.data);
+      });
+  };
+
+  const handleCreateAppTestimonial = (): void => {
+    const payload = {
+      userId: user.id,
+      token,
+      content,
+      developerType,
+    };
+    createAppTestimonial(payload)
+      .unwrap()
+      .then(() => {
+        initiateToast();
+      })
+      .catch((err) => {
+        console.log(err);
+        applyErrors(err.data);
+      });
   };
 
   const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
@@ -63,27 +117,19 @@ const AppTestimonial = () => {
     if (!canSubmit()) {
       return;
     }
-    const payload = {
-      userId: user.id,
-      token,
-      content: testimonial,
-      developerType: selectedOption,
-    };
 
-    createAppTestimonial(payload)
-      .unwrap()
-      .then((res) => {
-        console.log(res);
-        initiateToast();
-      })
-      .catch((err) => {
-        console.log(err);
-        applyErrors(err.data);
-      });
+    if (isEditing) {
+      handleUpdateAppTestimonial();
+    } else {
+      handleCreateAppTestimonial();
+    }
   };
 
   const initiateToast = () => {
-    toast.success('Your testimonial has been recorded. Thank you!', {
+    const message = isEditing
+      ? 'Your testimonial has been updated. Thank you!'
+      : 'Your testimonial has been recorded. Thank you!';
+    toast.success(message, {
       position: 'bottom-center',
       autoClose: 5000,
       hideProgressBar: false,
@@ -107,19 +153,19 @@ const AppTestimonial = () => {
           <form onSubmit={handleOnSubmit}>
             <div>
               <p className="text-gray-400 my-2">What type of developer are you?</p>
-              {options.map((option) => {
+              {developerTypes.map((dt) => {
                 return (
-                  <div key={option.id} className="my-2">
+                  <div key={dt.id} className="my-2">
                     <input
-                      onChange={(e) => handleOnChange(e, 'option')}
-                      value={option.value}
+                      onChange={(e) => handleOnChange(e, 'developerType')}
+                      value={dt.value}
                       className="mr-2"
                       type="radio"
-                      id={option.id}
+                      id={dt.id}
                       name="options"
-                      checked={selectedOption === option.value}
+                      checked={developerType === dt.value}
                     />
-                    <label htmlFor={option.id}>{option.label}</label>
+                    <label htmlFor={dt.id}>{dt.label}</label>
                   </div>
                 );
               })}
@@ -129,8 +175,8 @@ const AppTestimonial = () => {
                 Share your story
               </label>
               <textarea
-                onChange={(e) => handleOnChange(e, 'testimonial')}
-                value={testimonial}
+                onChange={(e) => handleOnChange(e, 'content')}
+                value={content}
                 id="testimonial"
                 name="testimonial"
                 className="min-h-24 p-1 resize-none border rounded border-gray-800 bg-transparent"
@@ -150,7 +196,7 @@ const AppTestimonial = () => {
             {showSubmitBtn && (
               <animated.div style={springs} className="my-6">
                 <button type="submit" className="btn">
-                  Submit
+                  {isEditing ? 'Update' : 'Submit'}
                 </button>
               </animated.div>
             )}

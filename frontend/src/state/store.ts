@@ -587,7 +587,11 @@ export {
   useCreatePaymentRefundMutation,
 } from './apis/stripePaymentRefundsApi';
 
-export { useCreateAppTestimonialMutation } from './apis/appTestimonialsApi';
+export {
+  useUpdateAppTestimonialMutation,
+  useFetchAppTestimonialQuery,
+  useCreateAppTestimonialMutation,
+} from './apis/appTestimonialsApi';
 
 export {
   testimonialsApi,
