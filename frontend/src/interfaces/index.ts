@@ -1,6 +1,12 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface IGalleryPhoto {
+  id: number;
+  title: string;
+  src: string;
+}
+
 export interface IReportComment {
   id: number;
   details: string;
