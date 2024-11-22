@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.apptestimonial.dto.AppTestimonialDto;
+import com.hart.overwatch.apptestimonial.dto.MinAppTestimonialDto;
 import com.hart.overwatch.apptestimonial.request.CreateAppTestimonialRequest;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.profile.Profile;
@@ -28,6 +29,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -118,6 +120,28 @@ public class AppTestimonialControllerTest {
         response.andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
 
+    }
+
+    @Test
+    public void AppTestimonialController_GetAppTestimonial_ReturnGetSingleAppTestimonialResponse()
+            throws Exception {
+
+        MinAppTestimonialDto minAppTestimonialDto = new MinAppTestimonialDto();
+        minAppTestimonialDto.setId(appTestimonial.getId());
+        minAppTestimonialDto.setContent(appTestimonial.getContent());
+        minAppTestimonialDto.setDeveloperType(appTestimonial.getDeveloperType());
+        when(appTestimonialService.getAppTestimonial()).thenReturn(minAppTestimonialDto);
+
+        ResultActions response = mockMvc.perform((get("/api/v1/app-testimonials/single")));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.id",
+                        CoreMatchers.is(minAppTestimonialDto.getId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.content",
+                        CoreMatchers.is(minAppTestimonialDto.getContent())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.developerType",
+                        CoreMatchers.is(minAppTestimonialDto.getDeveloperType())));
     }
 
 
