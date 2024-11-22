@@ -57,12 +57,14 @@ import RefundRoute from './routes/Dashboard/Admin/RefundRoute';
 import FlaggedCommentRoute from './routes/Dashboard/Admin/FlaggedCommentRoute';
 import HomeRoute from './routes/HomeRoute';
 import AppTestimonialRoute from './routes/Dashboard/User/AppTestimonialRoute';
+import ContactRoute from './routes/ContactRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootLayout />}>
       <Route index element={<HomeRoute />} />
       <Route path="about" element={<AboutRoute />} />
+      <Route path="contact" element={<ContactRoute />} />
       <Route
         path="github/success"
         element={
