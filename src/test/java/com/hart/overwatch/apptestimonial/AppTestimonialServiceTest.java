@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.apptestimonial.dto.AppTestimonialDto;
 import com.hart.overwatch.apptestimonial.dto.MinAppTestimonialDto;
 import com.hart.overwatch.apptestimonial.request.CreateAppTestimonialRequest;
 import com.hart.overwatch.comment.Comment;
@@ -29,6 +31,10 @@ import com.hart.overwatch.topic.TopicService;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
@@ -68,6 +74,17 @@ public class AppTestimonialServiceTest {
         appTestimonialEntity.setUser(user);
 
         return appTestimonialEntity;
+    }
+
+    private AppTestimonialDto convertToDto(AppTestimonial appTestimonial) {
+        AppTestimonialDto appTestimonialDto = new AppTestimonialDto();
+        appTestimonialDto.setId(appTestimonial.getId());
+        appTestimonialDto.setContent(appTestimonial.getContent());
+        appTestimonialDto.setDeveloperType(appTestimonial.getDeveloperType());
+        appTestimonialDto.setFirstName(appTestimonial.getUser().getFirstName());
+        appTestimonialDto.setAvatarUrl(appTestimonial.getUser().getProfile().getAvatarUrl());
+
+        return appTestimonialDto;
     }
 
     @BeforeEach
@@ -203,12 +220,39 @@ public class AppTestimonialServiceTest {
     }
 
     @Test
-    public void AppTestimonial_GetAppTestimonials_ThrowBadRequestException() {
+    public void AppTestimonialService_GetAppTestimonials_ThrowBadRequestException() {
         Integer pageSize = null;
 
         Assertions.assertThatThrownBy(() -> {
             appTestimonialService.getAppTestimonials(pageSize);
         }).isInstanceOf(BadRequestException.class).hasMessage("Missing page size requirement");
+    }
+
+    @Test
+    public void AppTestimonialService_GetAppTestimonials_ReturnListofAppTestimonialDto() {
+        Integer pageSize = 2;
+        List<AppTestimonialDto> appTestimonialDtos = List.of(convertToDto(appTestimonial));
+        Pageable pageable = PageRequest.of(0, pageSize);
+        Page<AppTestimonialDto> pageResult =
+                new PageImpl<>(appTestimonialDtos, pageable, appTestimonialDtos.size());
+
+        when(appTestimonialRepository.getAppTestimonials(pageable)).thenReturn(pageResult);
+
+        List<AppTestimonialDto> result = appTestimonialService.getAppTestimonials(pageSize);
+
+        Assertions.assertThat(result).isNotEmpty();
+        Assertions.assertThat(result).hasSize(1);
+
+        AppTestimonialDto returnedDto = result.get(0);
+
+        Assertions.assertThat(returnedDto.getId()).isEqualTo(appTestimonial.getId());
+        Assertions.assertThat(returnedDto.getContent()).isEqualTo(appTestimonial.getContent());
+        Assertions.assertThat(returnedDto.getDeveloperType())
+                .isEqualTo(appTestimonial.getDeveloperType());
+        Assertions.assertThat(returnedDto.getAvatarUrl())
+                .isEqualTo(appTestimonial.getUser().getProfile().getAvatarUrl());
+        Assertions.assertThat(returnedDto.getFirstName())
+                .isEqualTo(appTestimonial.getUser().getFirstName());
     }
 
 }
