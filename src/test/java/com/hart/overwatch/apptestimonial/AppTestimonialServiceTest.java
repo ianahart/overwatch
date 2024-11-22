@@ -189,6 +189,18 @@ public class AppTestimonialServiceTest {
         }).isInstanceOf(ForbiddenException.class)
                 .hasMessage("You cannot delete another user's testimonial");
     }
+
+    @Test
+    public void AppTestimonialService_DeleteAppTestimonial_ReturnNothing() {
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+        when(appTestimonialRepository.findById(appTestimonial.getId())).thenReturn(Optional.of(appTestimonial));
+        doNothing().when(appTestimonialRepository).delete(appTestimonial);
+
+        appTestimonialService.deleteAppTestimonial(appTestimonial.getId());
+
+        Assertions.assertThatNoException();
+        verify(appTestimonialRepository, times(1)).delete(appTestimonial);
+    }
 }
 
 
