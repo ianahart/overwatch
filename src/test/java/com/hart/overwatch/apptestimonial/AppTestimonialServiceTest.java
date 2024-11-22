@@ -201,6 +201,16 @@ public class AppTestimonialServiceTest {
         Assertions.assertThatNoException();
         verify(appTestimonialRepository, times(1)).delete(appTestimonial);
     }
+
+    @Test
+    public void AppTestimonial_GetAppTestimonials_ThrowBadRequestException() {
+        Integer pageSize = null;
+
+        Assertions.assertThatThrownBy(() -> {
+            appTestimonialService.getAppTestimonials(pageSize);
+        }).isInstanceOf(BadRequestException.class).hasMessage("Missing page size requirement");
+    }
+
 }
 
 
