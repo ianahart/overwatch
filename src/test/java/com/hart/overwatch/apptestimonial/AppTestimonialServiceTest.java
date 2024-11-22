@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.apptestimonial.dto.MinAppTestimonialDto;
+import com.hart.overwatch.apptestimonial.request.CreateAppTestimonialRequest;
 import com.hart.overwatch.comment.Comment;
 import com.hart.overwatch.comment.CommentService;
 import com.hart.overwatch.profile.Profile;
@@ -67,7 +68,6 @@ public class AppTestimonialServiceTest {
         return appTestimonialEntity;
     }
 
-
     @BeforeEach
     public void setUp() {
         user = createUser();
@@ -95,6 +95,21 @@ public class AppTestimonialServiceTest {
         Assertions.assertThat(minAppTestimonialDto.getId()).isEqualTo(appTestimonial.getId());
         Assertions.assertThat(minAppTestimonialDto.getContent()).isEqualTo(appTestimonial.getContent());
         Assertions.assertThat(minAppTestimonialDto.getDeveloperType()).isEqualTo(appTestimonial.getDeveloperType());
+    }
+
+    @Test
+    public void AppTestimonialService_CreateAppTestimonial_ThrowBadRequestException() {
+        CreateAppTestimonialRequest request = new CreateAppTestimonialRequest();
+        request.setUserId(user.getId());
+        request.setContent("new content");
+        request.setDeveloperType("Frontend Developer");
+
+        when(appTestimonialRepository.existsByUserId(user.getId())).thenReturn(true);
+
+        Assertions.assertThatThrownBy(() -> {
+            appTestimonialService.createAppTestimonial(request);
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage("You have already submitted a testimonial for OverWatch");
     }
 }
 
