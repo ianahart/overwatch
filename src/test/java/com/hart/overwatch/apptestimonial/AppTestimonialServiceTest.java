@@ -174,6 +174,21 @@ public class AppTestimonialServiceTest {
         Assertions.assertThatNoException();
         verify(appTestimonialRepository, times(1)).save(any(AppTestimonial.class));
     }
+
+    @Test
+    public void AppTestimonialService_DeleteAppTestimonial_ThrowForbiddenException() {
+        Long appTestimonialId = appTestimonial.getId();
+        User forbiddenUser = new User();
+        forbiddenUser.setId(2L);
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(forbiddenUser);
+        when(appTestimonialRepository.findById(appTestimonialId))
+                .thenReturn(Optional.of(appTestimonial));
+
+        Assertions.assertThatThrownBy(() -> {
+            appTestimonialService.deleteAppTestimonial(appTestimonialId);
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("You cannot delete another user's testimonial");
+    }
 }
 
 
