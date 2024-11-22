@@ -58,6 +58,7 @@ import FlaggedCommentRoute from './routes/Dashboard/Admin/FlaggedCommentRoute';
 import HomeRoute from './routes/HomeRoute';
 import AppTestimonialRoute from './routes/Dashboard/User/AppTestimonialRoute';
 import ContactRoute from './routes/ContactRoute';
+import PrivacyPolicyRoute from './routes/PrivacyPolicyRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -65,6 +66,7 @@ const router = createBrowserRouter(
       <Route index element={<HomeRoute />} />
       <Route path="about" element={<AboutRoute />} />
       <Route path="contact" element={<ContactRoute />} />
+      <Route path="privacy-policy" element={<PrivacyPolicyRoute />} />
       <Route
         path="github/success"
         element={
