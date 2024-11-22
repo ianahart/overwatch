@@ -2,6 +2,7 @@ package com.hart.overwatch.apptestimonial;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.apptestimonial.dto.AppTestimonialDto;
 import com.hart.overwatch.apptestimonial.dto.MinAppTestimonialDto;
@@ -174,6 +175,31 @@ public class AppTestimonialControllerTest {
         response.andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
 
+    }
+
+    @Test
+    public void AppTestimonialController_GetAppTestimonials_ReturnGetAllAppTestimonialsResponse()
+            throws Exception {
+        Integer pageSize = 2;
+        List<AppTestimonialDto> appTestimonialDtos = List.of(convertToDto(appTestimonial));
+
+        when(appTestimonialService.getAppTestimonials(pageSize)).thenReturn(appTestimonialDtos);
+
+        ResultActions response =
+                mockMvc.perform(get("/api/v1/app-testimonials", appTestimonial.getId())
+                        .param("pageSize", pageSize.toString()));
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].id",
+                        CoreMatchers.is(appTestimonial.getId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].content",
+                        CoreMatchers.is(appTestimonial.getContent())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].developerType",
+                        CoreMatchers.is(appTestimonial.getDeveloperType())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].avatarUrl",
+                        CoreMatchers.is(appTestimonial.getUser().getProfile().getAvatarUrl())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].firstName",
+                        CoreMatchers.is(appTestimonial.getUser().getFirstName())));
     }
 
 }
