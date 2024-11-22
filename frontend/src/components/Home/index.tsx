@@ -1,4 +1,5 @@
 import BenefitsSection from './BenefitsSection';
+import FooterSection from './FooterSection';
 import GallerySection from './GallerySection';
 import HeroSection from './HeroSection';
 import KeyFeaturesSection from './KeyFeaturesSection';
@@ -16,6 +17,7 @@ const Home = () => {
       <GallerySection />
       <TestimonialSection />
       <SignUpSection />
+      <FooterSection />
     </div>
   );
 };
