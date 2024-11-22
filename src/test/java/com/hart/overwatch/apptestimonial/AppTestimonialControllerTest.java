@@ -160,9 +160,21 @@ public class AppTestimonialControllerTest {
                         .content(objectMapper.writeValueAsString(request)));
         response.andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
-
     }
 
+    @Test
+    public void AppTestimonialController_DeleteAppTestimonial_ReturnDeleteAppTestimonialResponse()
+            throws Exception {
+        Long appTestimonialId = appTestimonial.getId();
+
+        doNothing().when(appTestimonialService).deleteAppTestimonial(appTestimonialId);
+
+        ResultActions response = mockMvc.perform(
+                delete(String.format("/api/v1/app-testimonials/%d", appTestimonial.getId())));
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+
+    }
 
 }
 
