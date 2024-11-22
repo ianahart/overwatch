@@ -111,6 +111,27 @@ public class AppTestimonialServiceTest {
         }).isInstanceOf(BadRequestException.class)
                 .hasMessage("You have already submitted a testimonial for OverWatch");
     }
+
+    @Test
+    public void AppTestimonialService_CreateAppTestimonial_ReturnNothing() {
+        CreateAppTestimonialRequest request = new CreateAppTestimonialRequest();
+        User userWithoutAppTestimonial = new User();
+        userWithoutAppTestimonial.setId(2L);
+        request.setUserId(userWithoutAppTestimonial.getId());
+        request.setContent("new content");
+        request.setDeveloperType("Frontend Developer");
+
+        when(appTestimonialRepository.existsByUserId(userWithoutAppTestimonial.getId()))
+                .thenReturn(false);
+        when(userService.getUserById(userWithoutAppTestimonial.getId()))
+                .thenReturn(userWithoutAppTestimonial);
+        when(appTestimonialRepository.save(any(AppTestimonial.class)))
+                .thenReturn(new AppTestimonial());
+
+        appTestimonialService.createAppTestimonial(request);
+        Assertions.assertThatNoException();
+        verify(appTestimonialRepository, times(1)).save(any(AppTestimonial.class));
+    }
 }
 
 
