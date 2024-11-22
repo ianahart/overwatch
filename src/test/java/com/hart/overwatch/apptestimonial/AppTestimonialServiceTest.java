@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.apptestimonial.dto.MinAppTestimonialDto;
 import com.hart.overwatch.comment.Comment;
 import com.hart.overwatch.comment.CommentService;
 import com.hart.overwatch.profile.Profile;
@@ -81,6 +82,19 @@ public class AppTestimonialServiceTest {
         Assertions.assertThatThrownBy(() -> {
             appTestimonialService.getAppTestimonial();
         }).isInstanceOf(NotFoundException.class).hasMessage("You don't seem to have written a testimonial yet");
+    }
+
+    @Test
+    public void AppTestimonialService_GetAppTestimonial_ReturnMinAppTestimonialDto() {
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+        when(appTestimonialRepository.getAppTestimonialByUserId(user.getId())).thenReturn(appTestimonial);
+
+        MinAppTestimonialDto minAppTestimonialDto = appTestimonialService.getAppTestimonial();
+
+        Assertions.assertThat(minAppTestimonialDto).isNotNull();
+        Assertions.assertThat(minAppTestimonialDto.getId()).isEqualTo(appTestimonial.getId());
+        Assertions.assertThat(minAppTestimonialDto.getContent()).isEqualTo(appTestimonial.getContent());
+        Assertions.assertThat(minAppTestimonialDto.getDeveloperType()).isEqualTo(appTestimonial.getDeveloperType());
     }
 }
 
