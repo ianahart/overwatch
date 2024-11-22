@@ -57,12 +57,18 @@ import RefundRoute from './routes/Dashboard/Admin/RefundRoute';
 import FlaggedCommentRoute from './routes/Dashboard/Admin/FlaggedCommentRoute';
 import HomeRoute from './routes/HomeRoute';
 import AppTestimonialRoute from './routes/Dashboard/User/AppTestimonialRoute';
+import ContactRoute from './routes/ContactRoute';
+import PrivacyPolicyRoute from './routes/PrivacyPolicyRoute';
+import TermsRoute from './routes/TermsRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootLayout />}>
       <Route index element={<HomeRoute />} />
       <Route path="about" element={<AboutRoute />} />
+      <Route path="contact" element={<ContactRoute />} />
+      <Route path="privacy-policy" element={<PrivacyPolicyRoute />} />
+      <Route path="terms-of-service" element={<TermsRoute />} />
       <Route
         path="github/success"
         element={
