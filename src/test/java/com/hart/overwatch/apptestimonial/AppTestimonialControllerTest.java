@@ -4,13 +4,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.apptestimonial.dto.AppTestimonialDto;
-import com.hart.overwatch.comment.Comment;
+import com.hart.overwatch.apptestimonial.request.CreateAppTestimonialRequest;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.profile.Profile;
-import com.hart.overwatch.reportcomment.request.CreateReportCommentRequest;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.token.TokenRepository;
-import com.hart.overwatch.topic.Topic;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +29,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import org.hamcrest.CoreMatchers;
 
 
@@ -102,31 +103,24 @@ public class AppTestimonialControllerTest {
         appTestimonial = createAppTestimonial(user);
     }
 
+    @Test
+    public void AppTestimonialController_CreateAppTestimonial_ReturnCreateAppTestimonialResponse()
+            throws Exception {
+        CreateAppTestimonialRequest request = new CreateAppTestimonialRequest();
+        request.setUserId(user.getId());
+        request.setContent("new content");
+        request.setDeveloperType("Frontend Developer");
+
+        doNothing().when(appTestimonialService).createAppTestimonial(request);
+        ResultActions response = mockMvc
+                .perform(post("/api/v1/app-testimonials").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+        response.andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+
+    }
 
 
-    // @Test
-    // public void
-    // ReportCommentControllerTest_CreateReportComment_ReturnCreateReportCommentResponse()
-    // throws Exception {
-    // CreateReportCommentRequest request = new CreateReportCommentRequest();
-    // Comment newComment = new Comment();
-    // newComment.setId(2L);
-    // newComment.setContent("some content");
-    //
-    // request.setUserId(user.getId());
-    // request.setCommentId(newComment.getId());
-    // request.setDetails("details");
-    // request.setReason(ReportReason.MISINFORMATION);
-    //
-    // doNothing().when(reportCommentService).createReportComment(request);
-    //
-    // ResultActions response = mockMvc
-    // .perform(post("/api/v1/report-comments").contentType(MediaType.APPLICATION_JSON)
-    // .content(objectMapper.writeValueAsString(request)));
-    // response.andExpect(MockMvcResultMatchers.status().isCreated())
-    // .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
-    //
-    // }
 
 }
 
