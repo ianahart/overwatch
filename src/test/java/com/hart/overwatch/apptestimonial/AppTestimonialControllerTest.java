@@ -144,6 +144,24 @@ public class AppTestimonialControllerTest {
                         CoreMatchers.is(minAppTestimonialDto.getDeveloperType())));
     }
 
+    @Test
+    public void AppTestimonialController_UpdateAppTestimonial_ReturnUpdateAppTestimonialResponse()
+            throws Exception {
+        CreateAppTestimonialRequest request = new CreateAppTestimonialRequest();
+        request.setUserId(user.getId());
+        request.setContent("updated content");
+        request.setDeveloperType("Backend Develpoer");
+
+        doNothing().when(appTestimonialService).updateAppTestimonial(request,
+                appTestimonial.getId());
+        ResultActions response = mockMvc
+                .perform(patch(String.format("/api/v1/app-testimonials/%d", appTestimonial.getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+
+    }
 
 
 }
