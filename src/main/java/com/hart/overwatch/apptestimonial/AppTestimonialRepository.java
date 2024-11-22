@@ -19,7 +19,7 @@ public interface AppTestimonialRepository extends JpaRepository<AppTestimonial, 
             INNER JOIN at.user u
             INNER JOIN at.user.profile p
             """)
-    Page<AppTestimonialDto> getTestimonials(@Param("pageable") Pageable pageable);
+    Page<AppTestimonialDto> getAppTestimonials(@Param("pageable") Pageable pageable);
 
     @Query(value = """
               SELECT at FROM AppTestimonial at

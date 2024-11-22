@@ -115,7 +115,7 @@ public class AppTestimonialService {
             throw new BadRequestException("Missing page size requirement");
         }
         Pageable pageable = PageRequest.of(0, pageSize);
-        Page<AppTestimonialDto> result = appTestimonialRepository.getTestimonials(pageable);
+        Page<AppTestimonialDto> result = appTestimonialRepository.getAppTestimonials(pageable);
 
         return result.getContent();
     }
