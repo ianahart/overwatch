@@ -104,7 +104,7 @@ public class AppTestimonialService {
         AppTestimonial appTestimonial = getAppTestimonialById(appTestimonialId);
 
         if (!user.getId().equals(appTestimonial.getUser().getId())) {
-            throw new ForbiddenException("You cannot update another user's testimonial");
+            throw new ForbiddenException("You cannot delete another user's testimonial");
         }
 
         appTestimonialRepository.delete(appTestimonial);
@@ -115,7 +115,7 @@ public class AppTestimonialService {
             throw new BadRequestException("Missing page size requirement");
         }
         Pageable pageable = PageRequest.of(0, pageSize);
-        Page<AppTestimonialDto> result = appTestimonialRepository.getTestimonials(pageable);
+        Page<AppTestimonialDto> result = appTestimonialRepository.getAppTestimonials(pageable);
 
         return result.getContent();
     }
