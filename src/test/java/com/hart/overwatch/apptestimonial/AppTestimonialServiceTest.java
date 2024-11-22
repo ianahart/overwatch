@@ -155,6 +155,25 @@ public class AppTestimonialServiceTest {
         }).isInstanceOf(ForbiddenException.class)
                 .hasMessage("You cannot update another user's testimonial");
     }
+
+    @Test
+    public void AppTestimonialService_UpdateAppTestimonial_ReturnNothing() {
+        Long appTestimonialId = appTestimonial.getId();
+        CreateAppTestimonialRequest request = new CreateAppTestimonialRequest();
+        request.setUserId(user.getId());
+        request.setContent("updated content");
+        request.setDeveloperType("Backend Developer");
+
+        when(userService.getUserById(user.getId())).thenReturn(user);
+        when(appTestimonialRepository.findById(appTestimonialId))
+                .thenReturn(Optional.of(appTestimonial));
+        when(appTestimonialRepository.save(any(AppTestimonial.class))).thenReturn(appTestimonial);
+
+        appTestimonialService.updateAppTestimonial(request, appTestimonialId);
+
+        Assertions.assertThatNoException();
+        verify(appTestimonialRepository, times(1)).save(any(AppTestimonial.class));
+    }
 }
 
 
