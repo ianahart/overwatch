@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.hart.overwatch.advice.BadRequestException;
+import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.apptestimonial.dto.MinAppTestimonialDto;
 import com.hart.overwatch.apptestimonial.request.CreateAppTestimonialRequest;
@@ -131,6 +133,27 @@ public class AppTestimonialServiceTest {
         appTestimonialService.createAppTestimonial(request);
         Assertions.assertThatNoException();
         verify(appTestimonialRepository, times(1)).save(any(AppTestimonial.class));
+    }
+
+    @Test
+    public void AppTestimonialService_UpdateAppTestimonial_ThrowForbiddenException() {
+        User forbiddenUser = new User();
+        forbiddenUser.setId(2L);
+        Long appTestimonialId = appTestimonial.getId();
+        CreateAppTestimonialRequest request = new CreateAppTestimonialRequest();
+        request.setUserId(forbiddenUser.getId());
+        request.setContent("updated content");
+        request.setDeveloperType("Backend Developer");
+
+        when(userService.getUserById(forbiddenUser.getId())).thenReturn(forbiddenUser);
+        when(appTestimonialRepository.findById(appTestimonialId))
+                .thenReturn(Optional.of(appTestimonial));
+
+        Assertions.assertThatThrownBy(() -> {
+            appTestimonialService.updateAppTestimonial(request, appTestimonialId);
+
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("You cannot update another user's testimonial");
     }
 }
 
