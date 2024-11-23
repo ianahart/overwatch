@@ -579,7 +579,10 @@ export {
   useCreateReplyCommentMutation,
 } from './apis/replyCommentsApi';
 
-export { useLazyFetchPaymentIntentsQuery } from './apis/stripePaymentIntentsApi';
+export {
+  useLazyFetchUserPaymentIntentsQuery,
+  useLazyFetchAllPaymentIntentsQuery,
+} from './apis/stripePaymentIntentsApi';
 
 export {
   useUpdatePaymentRefundMutation,

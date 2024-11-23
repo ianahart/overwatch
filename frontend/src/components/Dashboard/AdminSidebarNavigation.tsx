@@ -1,12 +1,14 @@
 import { FaComment, FaMoneyBill } from 'react-icons/fa';
+import { GrTransaction } from 'react-icons/gr';
 
 import DashboardTitle from './DashboardTitle';
 import DashboardNavigationLink from './DashboardNavigationLink';
 
 const AdminSidebarNaivigation = () => {
   const links = [
-    { path: 'refunds', label: 'Refunds', id: 1, icon: <FaMoneyBill /> },
-    { path: 'flagged-comments', label: 'Flagged Comments', id: 2, icon: <FaComment /> },
+    { path: 'flagged-comments', label: 'Flagged Comments', id: 1, icon: <FaComment /> },
+    { path: 'refunds', label: 'Refunds', id: 2, icon: <FaMoneyBill /> },
+    { path: 'transactions', label: 'Transactions', id: 3, icon: <GrTransaction /> },
   ];
 
   return (

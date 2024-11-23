@@ -1,5 +1,6 @@
 package com.hart.overwatch.stripepaymentintent;
 
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -7,16 +8,16 @@ import com.hart.overwatch.email.EmailQueueService;
 import com.hart.overwatch.email.request.EmailRequest;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
+import com.hart.overwatch.stripepaymentintent.dto.FullStripePaymentIntentDto;
 import com.hart.overwatch.stripepaymentintent.dto.StripePaymentIntentDto;
+import com.hart.overwatch.stripepaymentintent.dto.StripePaymentIntentSearchResultDto;
+import com.hart.overwatch.stripepaymentintent.projection.StripePaymentIntentApplicationFeeProjection;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.user.User;
-import com.hart.overwatch.user.UserService;
 import com.stripe.model.PaymentIntent;
 
 @Service
 public class StripePaymentIntentService {
-
-    private final UserService userService;
 
     private final StripePaymentIntentRepository stripePaymentIntentRepository;
 
@@ -25,10 +26,8 @@ public class StripePaymentIntentService {
     private final PaginationService paginationService;
 
 
-    public StripePaymentIntentService(UserService userService,
-            StripePaymentIntentRepository stripePaymentIntentRepository,
+    public StripePaymentIntentService(StripePaymentIntentRepository stripePaymentIntentRepository,
             EmailQueueService emailQueueService, PaginationService paginationService) {
-        this.userService = userService;
         this.stripePaymentIntentRepository = stripePaymentIntentRepository;
         this.emailQueueService = emailQueueService;
         this.paginationService = paginationService;
@@ -79,7 +78,7 @@ public class StripePaymentIntentService {
         }
     }
 
-    public PaginationDto<StripePaymentIntentDto> getStripePaymentIntents(Long userId, int page,
+    public PaginationDto<StripePaymentIntentDto> getUserStripePaymentIntents(Long userId, int page,
             int pageSize, String direction) {
 
         Pageable pageable = this.paginationService.getPageable(page, pageSize, direction);
@@ -99,4 +98,33 @@ public class StripePaymentIntentService {
             stripePaymentIntentRepository.save(stripePaymentIntent);
         }
     }
+
+    private Long getTotalRevenue() {
+        List<StripePaymentIntentApplicationFeeProjection> applicationFees =
+                stripePaymentIntentRepository.findAllBy();
+        if (applicationFees.isEmpty()) {
+            return 0L;
+        }
+        return applicationFees.stream()
+                .map(StripePaymentIntentApplicationFeeProjection::getApplicationFee)
+                .reduce(0L, (a, b) -> a + b);
+    }
+
+    public StripePaymentIntentSearchResultDto getAllStripePaymentIntents(String search,
+            int page, int pageSize, String direction) {
+
+        Pageable pageable = this.paginationService.getPageable(page, pageSize, direction);
+
+        String searchQuery = search.equals("all") ? "" : search.toLowerCase();
+        Page<FullStripePaymentIntentDto> data = this.stripePaymentIntentRepository
+                .getStripePaymentIntentsBySearch(pageable, searchQuery);
+
+        Long totalRevenue = getTotalRevenue();
+
+        PaginationDto<FullStripePaymentIntentDto> result =
+                new PaginationDto<FullStripePaymentIntentDto>(data.getContent(), data.getNumber(),
+                        pageSize, data.getTotalPages(), direction, data.getTotalElements());
+        return new StripePaymentIntentSearchResultDto(result, totalRevenue);
+    }
+
 }

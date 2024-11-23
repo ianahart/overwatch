@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { IPaginationState, IPaymentIntent } from '../../../../interfaces';
 import { repositoryPaginationState } from '../../../../data';
-import { useLazyFetchPaymentIntentsQuery } from '../../../../state/store';
+import { useLazyFetchUserPaymentIntentsQuery } from '../../../../state/store';
 import CompletedPaymentItem from './CompletedPaymentItem';
 
 export interface ICompletedPaymentsProps {
@@ -12,7 +12,7 @@ export interface ICompletedPaymentsProps {
 const CompletedPayments = ({ userId, token }: ICompletedPaymentsProps) => {
   const [pag, setPag] = useState<IPaginationState>(repositoryPaginationState);
   const [paymentIntents, setPaymentIntents] = useState<IPaymentIntent[]>([]);
-  const [fetchPaymentIntents] = useLazyFetchPaymentIntentsQuery();
+  const [fetchPaymentIntents] = useLazyFetchUserPaymentIntentsQuery();
 
   useEffect(() => {
     paginateCompletedPayments('next', true);

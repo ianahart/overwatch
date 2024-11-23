@@ -1,5 +1,10 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { IGetAllStripePaymentIntentsRequest, IGetAllStripePaymentIntentsResponse } from '../../interfaces';
+import {
+  IGetAllStripePaymentIntentsRequest,
+  IGetAllStripePaymentIntentsResponse,
+  IGetUserStripePaymentIntentsRequest,
+  IGetUserStripePaymentIntentsResponse,
+} from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
 const stripePaymentIntentsApi = createApi({
@@ -8,13 +13,13 @@ const stripePaymentIntentsApi = createApi({
   tagTypes: ['PaymentItent'],
   endpoints(builder) {
     return {
-      fetchPaymentIntents: builder.query<IGetAllStripePaymentIntentsResponse, IGetAllStripePaymentIntentsRequest>({
-        query: ({ token, page, pageSize, direction, userId }) => {
-          if (!token || !userId) {
+      fetchAllPaymentIntents: builder.query<IGetAllStripePaymentIntentsResponse, IGetAllStripePaymentIntentsRequest>({
+        query: ({ token, page, pageSize, direction, search }) => {
+          if (!token || !search) {
             return '';
           }
           return {
-            url: `/users/${userId}/payment-intents?&page=${page}&pageSize=${pageSize}&direction=${direction}`,
+            url: `/admin/payment-intents?&page=${page}&pageSize=${pageSize}&direction=${direction}&search=${search}`,
             method: 'GET',
             headers: {
               Authorization: `Bearer ${token}`,
@@ -25,13 +30,38 @@ const stripePaymentIntentsApi = createApi({
         providesTags: (result, error, arg) =>
           result
             ? [
-                ...result.data.items.map(({ id }) => ({ type: 'PaymentItent', id })),
+                ...result.data.result.items.map(({ id }) => ({ type: 'PaymentItent', id })),
                 { type: 'PaymentItent', id: 'LIST' },
               ]
             : [{ type: 'PaymentItent', id: 'LIST' }],
       }),
+
+      fetchUserPaymentIntents: builder.query<IGetUserStripePaymentIntentsResponse, IGetUserStripePaymentIntentsRequest>(
+        {
+          query: ({ token, page, pageSize, direction, userId }) => {
+            if (!token || !userId) {
+              return '';
+            }
+            return {
+              url: `/users/${userId}/payment-intents?&page=${page}&pageSize=${pageSize}&direction=${direction}`,
+              method: 'GET',
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            };
+          },
+          //@ts-ignore
+          providesTags: (result, error, arg) =>
+            result
+              ? [
+                  ...result.data.items.map(({ id }) => ({ type: 'PaymentItent', id })),
+                  { type: 'PaymentItent', id: 'LIST' },
+                ]
+              : [{ type: 'PaymentItent', id: 'LIST' }],
+        }
+      ),
     };
   },
 });
-export const { useLazyFetchPaymentIntentsQuery } = stripePaymentIntentsApi;
+export const { useLazyFetchAllPaymentIntentsQuery, useLazyFetchUserPaymentIntentsQuery } = stripePaymentIntentsApi;
 export { stripePaymentIntentsApi };

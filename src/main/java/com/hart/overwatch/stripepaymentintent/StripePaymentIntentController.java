@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.hart.overwatch.stripepaymentintent.response.GetAllSearchStripePaymentIntentResponse;
 import com.hart.overwatch.stripepaymentintent.response.GetAllStripePaymentIntentResponse;
 
 @RestController
@@ -20,13 +21,21 @@ public class StripePaymentIntentController {
     }
 
     @GetMapping(path = "/users/{userId}/payment-intents")
-    public ResponseEntity<GetAllStripePaymentIntentResponse> getStripePaymentIntents(
+    public ResponseEntity<GetAllStripePaymentIntentResponse> getUserStripePaymentIntents(
             @PathVariable("userId") Long userId, @RequestParam("page") int page,
             @RequestParam("pageSize") int pageSize, @RequestParam("direction") String direction) {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GetAllStripePaymentIntentResponse("success", stripePaymentIntentService
-                        .getStripePaymentIntents(userId, page, pageSize, direction)));
+                        .getUserStripePaymentIntents(userId, page, pageSize, direction)));
     }
 
+    @GetMapping(path = "/admin/payment-intents")
+    public ResponseEntity<GetAllSearchStripePaymentIntentResponse> getSearchStripePaymentIntents(
+            @RequestParam("search") String search, @RequestParam("page") int page,
+            @RequestParam("pageSize") int pageSize, @RequestParam("direction") String direction) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new GetAllSearchStripePaymentIntentResponse("success", stripePaymentIntentService
+                        .getAllStripePaymentIntents(search, page, pageSize, direction)));
+    }
 }
