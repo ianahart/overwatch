@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
@@ -284,6 +285,7 @@ public class UserPaymentMethodService {
         return PaymentIntent.create(params);
     }
 
+    @Transactional
     public PaymentIntent payoutReviewer(TransferCustomerMoneyToReviewerRequest request)
             throws StripeException {
         User reviewer = userService.getUserById(request.getReviewerId());
@@ -291,6 +293,7 @@ public class UserPaymentMethodService {
         Repository repository = repositoryService.getRepositoryById(request.getRepositoryId());
 
         FullPackageDto selectedPackage = retrievePackage(repository, reviewer);
+
 
         String stripeCustomerId = owner.getUserPaymentMethods().get(0).getStripeCustomerId();
         String reviewerStripeAccountId =
@@ -304,7 +307,8 @@ public class UserPaymentMethodService {
 
         if ("succeeded".equals(paymentIntent.getStatus())) {
             repositoryService.updateStatus(request.getRepositoryId(), RepositoryStatus.PAID);
-            stripePaymentIntentService.createStripePaymentIntent(owner, reviewer, paymentIntent, applicationFee); 
+            stripePaymentIntentService.createStripePaymentIntent(owner, reviewer, paymentIntent,
+                    applicationFee);
         }
 
         return paymentIntent;

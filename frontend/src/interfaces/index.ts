@@ -1,6 +1,23 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface IPaymentIntentTransaction {
+  [key: string]: string | number;
+  id: number;
+  amount: number;
+  applicationFee: number;
+  createdAt: string;
+  currency: string;
+  description: string;
+  status: string;
+  userFullName: string;
+  userEmail: string;
+  reviewerFullName: string;
+  reviewerEmail: string;
+  userId: number;
+  reviewerId: number;
+}
+
 export interface IAppTestimonial {
   id: number;
   firstName: string;
@@ -2110,7 +2127,7 @@ export interface ITransferCustomerMoneyToReviewerResponse {
   data: any;
 }
 
-export interface IGetAllStripePaymentIntentsResponse {
+export interface IGetUserStripePaymentIntentsResponse {
   message: string;
   data: {
     items: IPaymentIntent[];
@@ -2122,12 +2139,48 @@ export interface IGetAllStripePaymentIntentsResponse {
   };
 }
 
-export interface IGetAllStripePaymentIntentsRequest {
+export interface IGetUserStripePaymentIntentsRequest {
   userId: number;
   token: string;
   page: number;
   pageSize: number;
   direction: string;
+}
+
+export interface IGetUserStripePaymentIntentsResponse {
+  message: string;
+  data: {
+    items: IPaymentIntent[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
+}
+
+export interface IGetAllStripePaymentIntentsResponse {
+  message: string;
+
+  data: {
+    result: {
+      items: IPaymentIntentTransaction[];
+      page: number;
+      pageSize: number;
+      totalPages: number;
+      direction: string;
+      totalElements: number;
+    };
+    revenue: number;
+  };
+}
+
+export interface IGetAllStripePaymentIntentsRequest {
+  token: string;
+  page: number;
+  pageSize: number;
+  direction: string;
+  search: string;
 }
 
 export interface ICreatePaymentRefundRequest {

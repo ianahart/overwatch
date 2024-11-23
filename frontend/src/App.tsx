@@ -60,6 +60,7 @@ import AppTestimonialRoute from './routes/Dashboard/User/AppTestimonialRoute';
 import ContactRoute from './routes/ContactRoute';
 import PrivacyPolicyRoute from './routes/PrivacyPolicyRoute';
 import TermsRoute from './routes/TermsRoute';
+import TransactionRoute from './routes/Dashboard/Admin/TransactionRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -140,6 +141,14 @@ const router = createBrowserRouter(
           element={
             <RequireAdminUser>
               <FlaggedCommentRoute />
+            </RequireAdminUser>
+          }
+        />
+        <Route
+          path="transactions"
+          element={
+            <RequireAdminUser>
+              <TransactionRoute />
             </RequireAdminUser>
           }
         />
