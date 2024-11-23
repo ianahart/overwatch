@@ -21,6 +21,8 @@ const TransactionList = () => {
   const [pag, setPag] = useState<IPaginationState>(paginationState);
   const [transactions, setTransactions] = useState<IPaymentIntentTransaction[]>([]);
   const [totalRevenue, setTotalRevenue] = useState<number | null>(null);
+  const [search, setSearch] = useState('');
+  const [error, setError] = useState('');
   const [fetchTransactions] = useLazyFetchAllPaymentIntentsQuery();
 
   useEffect(() => {
@@ -33,13 +35,12 @@ const TransactionList = () => {
       page: initial ? -1 : pag.page,
       pageSize: pag.pageSize,
       direction: dir,
-      search: 'all',
+      search: search.trim().length === 0 ? 'all' : search,
     };
 
     fetchTransactions(payload)
       .unwrap()
       .then((res) => {
-        console.log(res);
         const { direction, items, page, pageSize, totalElements, totalPages } = res.data.result;
         setPag((prevState) => ({
           ...prevState,
@@ -86,8 +87,52 @@ const TransactionList = () => {
     }
   };
 
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setSearch(e.target.value);
+  };
+
+  const canSearch = (value: string): boolean => {
+    const MAX_LENGTH = 200;
+    if (value.length > MAX_LENGTH) {
+      const validationError = `Name must be between 1 and ${MAX_LENGTH} characters`;
+      setError(validationError);
+      return false;
+    }
+    return true;
+  };
+
+  const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+    e.preventDefault();
+    setError('');
+
+    if (!canSearch(search)) {
+      return;
+    }
+    setPag(paginationState);
+    paginateTransactions('next', true);
+  };
+
   return (
     <div className="my-8 p-2">
+      <div className="flex justify-end">
+        <form onSubmit={handleOnSubmit}>
+          {error.length > 0 && <p className="text-sm text-red-300 my-1">{error}</p>}
+          <div className="flex justify-end">
+            <label className="hidden" htmlFor="search">
+              Search
+            </label>
+            <input
+              onChange={handleOnChange}
+              value={search}
+              id="search"
+              name="search"
+              placeholder="Enter A Name..."
+              className="h-10 border rounded border-gray-700 bg-transparent"
+            />
+            <button className="ml-2 btn !bg-blue-400">Search</button>
+          </div>
+        </form>
+      </div>
       <div className="flex justify-center">
         <h3 className="text-gray-400 text-xl">
           Total Revenue: <span className="text-green-400 ml-1">+${totalRevenue}</span>

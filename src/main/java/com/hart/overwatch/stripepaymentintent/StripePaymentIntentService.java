@@ -1,6 +1,8 @@
 package com.hart.overwatch.stripepaymentintent;
 
 import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -110,12 +112,13 @@ public class StripePaymentIntentService {
                 .reduce(0L, (a, b) -> a + b);
     }
 
-    public StripePaymentIntentSearchResultDto getAllStripePaymentIntents(String search,
-            int page, int pageSize, String direction) {
+    public StripePaymentIntentSearchResultDto getAllStripePaymentIntents(String search, int page,
+            int pageSize, String direction) {
 
         Pageable pageable = this.paginationService.getPageable(page, pageSize, direction);
 
-        String searchQuery = search.equals("all") ? "" : search.toLowerCase();
+        String searchQuery =
+                search.equals("all") ? "" : Jsoup.clean(search.toLowerCase(), Safelist.none());
         Page<FullStripePaymentIntentDto> data = this.stripePaymentIntentRepository
                 .getStripePaymentIntentsBySearch(pageable, searchQuery);
 
