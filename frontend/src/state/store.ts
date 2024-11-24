@@ -213,7 +213,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: ['profileSetup/updateAvatar'],
+        ignoredActions: ['profileSetup/updateAvatar', 'stripePaymentIntent/exportPaymentIntentsToPdf'],
         ignoredPaths: ['profileSetup.avatar.value'],
       },
     })
@@ -580,6 +580,7 @@ export {
 } from './apis/replyCommentsApi';
 
 export {
+  useLazyExportPaymentIntentsToPdfQuery,
   useLazyFetchUserPaymentIntentsQuery,
   useLazyFetchAllPaymentIntentsQuery,
 } from './apis/stripePaymentIntentsApi';

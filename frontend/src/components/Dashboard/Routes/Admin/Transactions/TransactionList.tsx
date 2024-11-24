@@ -1,11 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-
-import { IPaginationState, IPaymentIntentTransaction } from '../../../../../interfaces';
-import { TRootState, useLazyFetchAllPaymentIntentsQuery } from '../../../../../state/store';
-import TableHeader from './TableHeader';
 import { nanoid } from 'nanoid';
 import dayjs from 'dayjs';
+import { CiExport } from 'react-icons/ci';
+
+import { IPaginationState, IPaymentIntentTransaction } from '../../../../../interfaces';
+import {
+  TRootState,
+  useLazyExportPaymentIntentsToPdfQuery,
+  useLazyFetchAllPaymentIntentsQuery,
+} from '../../../../../state/store';
+import TableHeader from './TableHeader';
 import { convertCentsToDollars } from '../../../../../util';
 
 const TransactionList = () => {
@@ -24,6 +29,7 @@ const TransactionList = () => {
   const [search, setSearch] = useState('');
   const [error, setError] = useState('');
   const [fetchTransactions] = useLazyFetchAllPaymentIntentsQuery();
+  const [exportToPdf] = useLazyExportPaymentIntentsToPdfQuery();
 
   useEffect(() => {
     paginateTransactions('next', true);
@@ -112,8 +118,44 @@ const TransactionList = () => {
     paginateTransactions('next', true);
   };
 
+  const generatePdf = async () => {
+    setError('');
+    try {
+      let page = null;
+      if (pag.direction === 'next') {
+        page = pag.page > 0 ? pag.page - 1 : -1;
+      } else {
+        page = pag.page > 0 ? pag.page + 1 : -1;
+      }
+
+      const payload = {
+        token,
+        page,
+        pageSize: pag.pageSize,
+        direction: pag.direction,
+        search: search.trim().length === 0 ? 'all' : search,
+      };
+
+      await exportToPdf(payload);
+    } catch (err) {
+      console.log(err);
+      setError('Failed to download PDF');
+    }
+  };
+
   return (
     <div className="my-8 p-2">
+      <div className="flex justify-start">
+        <div className="my-2">
+          <button
+            onClick={generatePdf}
+            className="flex items-center btn !text-gray-400 !bg-transparent border border-gray-700"
+          >
+            <CiExport className="mr-1" />
+            Generate PDF
+          </button>
+        </div>
+      </div>
       <div className="flex justify-end">
         <form onSubmit={handleOnSubmit}>
           {error.length > 0 && <p className="text-sm text-red-300 my-1">{error}</p>}
@@ -140,27 +182,31 @@ const TransactionList = () => {
       </div>
       <div className="my-6 overflow-x-auto">
         <table className="border-collapse w-full rounded">
-          <tr>
-            {Object.entries(headerMapping).map(([key, val]) => {
-              return <TableHeader key={key} heading={val} />;
+          <thead>
+            <tr>
+              {Object.entries(headerMapping).map(([key, val]) => {
+                return <TableHeader key={key} heading={val} />;
+              })}
+            </tr>
+          </thead>
+          <tbody>
+            {transactions.map((row) => {
+              return (
+                <tr key={row.id}>
+                  {Object.keys(headerMapping).map((column) => {
+                    return (
+                      <td
+                        className={`${column === 'applicationFee' ? 'text-green-400' : 'text-gray-400'}`}
+                        key={nanoid()}
+                      >
+                        {formatColumnData(column, row[column])}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
             })}
-          </tr>
-          {transactions.map((row) => {
-            return (
-              <tr key={row.id}>
-                {Object.keys(headerMapping).map((column) => {
-                  return (
-                    <td
-                      className={`${column === 'applicationFee' ? 'text-green-400' : 'text-gray-400'}`}
-                      key={nanoid()}
-                    >
-                      {formatColumnData(column, row[column])}
-                    </td>
-                  );
-                })}
-              </tr>
-            );
-          })}
+          </tbody>
         </table>
       </div>
       <div className="flex items-center text-gray-400 justify-center">

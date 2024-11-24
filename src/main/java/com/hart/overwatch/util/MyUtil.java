@@ -2,6 +2,9 @@ package com.hart.overwatch.util;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public final class MyUtil {
@@ -67,5 +70,16 @@ public final class MyUtil {
         return readableDate;
     }
 
+    public static String convertCentsToDollars(Long cents) {
+        double dollars = cents / 100.0;
+        return String.format("$%.2f", dollars);
+    }
+
+    public static String formatDate(LocalDateTime dateTime) {
+        ZonedDateTime zonedDateTime = dateTime.atZone(ZoneId.systemDefault());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss z");
+
+        return zonedDateTime.format(formatter);
+    }
 }
 
