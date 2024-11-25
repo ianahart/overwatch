@@ -13,6 +13,36 @@ const stripePaymentIntentsApi = createApi({
   tagTypes: ['PaymentItent'],
   endpoints(builder) {
     return {
+      exportPaymentIntentsToCsv: builder.query<void, IGetAllStripePaymentIntentsRequest>({
+        queryFn: async ({ token, page, pageSize, direction, search }, _queryApi, _extraOptions, baseQuery) => {
+          if (!token || !search) {
+            return { error: { status: 400, data: 'Invalid request parameters' } };
+          }
+          const result = await baseQuery({
+            url: `/admin/payment-intents/export-csv?&page=${page}&pageSize=${pageSize}&direction=${direction}&search=${search}`,
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            responseHandler: (response) => response.blob(),
+          });
+
+          if (result.error) {
+            return { error: result.error };
+          }
+
+          const blob = result.data as Blob;
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'transactions.csv';
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          return { data: undefined };
+        },
+      }),
+
       exportPaymentIntentsToPdf: builder.query<void, IGetAllStripePaymentIntentsRequest>({
         queryFn: async ({ token, page, pageSize, direction, search }, _queryApi, _extraOptions, baseQuery) => {
           if (!token || !search) {
@@ -95,6 +125,7 @@ const stripePaymentIntentsApi = createApi({
   },
 });
 export const {
+  useLazyExportPaymentIntentsToCsvQuery,
   useLazyFetchAllPaymentIntentsQuery,
   useLazyFetchUserPaymentIntentsQuery,
   useLazyExportPaymentIntentsToPdfQuery,
