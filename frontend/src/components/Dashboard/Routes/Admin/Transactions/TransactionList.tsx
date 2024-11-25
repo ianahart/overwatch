@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { nanoid } from 'nanoid';
 import dayjs from 'dayjs';
-import { CiExport } from 'react-icons/ci';
+import { FaFileCsv, FaFilePdf } from 'react-icons/fa';
 
 import { IPaginationState, IPaymentIntentTransaction } from '../../../../../interfaces';
 import {
   TRootState,
+  useLazyExportPaymentIntentsToCsvQuery,
   useLazyExportPaymentIntentsToPdfQuery,
   useLazyFetchAllPaymentIntentsQuery,
 } from '../../../../../state/store';
@@ -30,6 +31,7 @@ const TransactionList = () => {
   const [error, setError] = useState('');
   const [fetchTransactions] = useLazyFetchAllPaymentIntentsQuery();
   const [exportToPdf] = useLazyExportPaymentIntentsToPdfQuery();
+  const [exportToCsv] = useLazyExportPaymentIntentsToCsvQuery();
 
   useEffect(() => {
     paginateTransactions('next', true);
@@ -118,16 +120,20 @@ const TransactionList = () => {
     paginateTransactions('next', true);
   };
 
+  const determineCurrentPage = (): number => {
+    let page = null;
+    if (pag.direction === 'next') {
+      page = pag.page > 0 ? pag.page - 1 : -1;
+    } else {
+      page = pag.page > 0 ? pag.page + 1 : -1;
+    }
+    return page;
+  };
+
   const generatePdf = async () => {
     setError('');
     try {
-      let page = null;
-      if (pag.direction === 'next') {
-        page = pag.page > 0 ? pag.page - 1 : -1;
-      } else {
-        page = pag.page > 0 ? pag.page + 1 : -1;
-      }
-
+      const page = determineCurrentPage();
       const payload = {
         token,
         page,
@@ -143,15 +149,44 @@ const TransactionList = () => {
     }
   };
 
+  const generateCSV = async () => {
+    setError('');
+    try {
+      const page = determineCurrentPage();
+      const payload = {
+        token,
+        page,
+        pageSize: pag.pageSize,
+        direction: pag.direction,
+        search: search.trim().length === 0 ? 'all' : search,
+      };
+
+      await exportToCsv(payload);
+    } catch (err) {
+      console.log(err);
+      setError('Failed to download PDF');
+    }
+  };
+
   return (
     <div className="my-8 p-2">
       <div className="flex justify-start">
-        <div className="my-2">
+        <div className="my-2 mr-1">
+          <button
+            onClick={generateCSV}
+            className="flex items-center btn !text-gray-400 !bg-transparent border border-gray-700"
+          >
+            <FaFileCsv className="mr-1" />
+            Generate CSV
+          </button>
+        </div>
+
+        <div className="my-2 mx-1">
           <button
             onClick={generatePdf}
             className="flex items-center btn !text-gray-400 !bg-transparent border border-gray-700"
           >
-            <CiExport className="mr-1" />
+            <FaFilePdf className="mr-1" />
             Generate PDF
           </button>
         </div>
@@ -169,7 +204,7 @@ const TransactionList = () => {
               id="search"
               name="search"
               placeholder="Enter A Name..."
-              className="h-10 border rounded border-gray-700 bg-transparent"
+              className="h-10 border rounded border-gray-700 bg-transparent p-2"
             />
             <button className="ml-2 btn !bg-blue-400">Search</button>
           </div>

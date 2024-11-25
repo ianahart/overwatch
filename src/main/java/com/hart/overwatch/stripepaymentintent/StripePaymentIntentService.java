@@ -1,6 +1,7 @@
 package com.hart.overwatch.stripepaymentintent;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
@@ -16,6 +17,7 @@ import com.hart.overwatch.stripepaymentintent.dto.StripePaymentIntentDto;
 import com.hart.overwatch.stripepaymentintent.dto.StripePaymentIntentSearchResultDto;
 import com.hart.overwatch.stripepaymentintent.projection.StripePaymentIntentApplicationFeeProjection;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.csv.CsvFileService;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.util.MyUtil;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -40,12 +42,16 @@ public class StripePaymentIntentService {
 
     private final PaginationService paginationService;
 
+    private final CsvFileService csvFileService;
+
 
     public StripePaymentIntentService(StripePaymentIntentRepository stripePaymentIntentRepository,
-            EmailQueueService emailQueueService, PaginationService paginationService) {
+            EmailQueueService emailQueueService, PaginationService paginationService,
+            CsvFileService csvFileService) {
         this.stripePaymentIntentRepository = stripePaymentIntentRepository;
         this.emailQueueService = emailQueueService;
         this.paginationService = paginationService;
+        this.csvFileService = csvFileService;
     }
 
     public StripePaymentIntent getStripePaymentIntentById(Long stripePaymentIntentId) {
@@ -235,6 +241,17 @@ public class StripePaymentIntentService {
         appendTransactionsToPdf(document, transactions);
 
         document.close();
+    }
+
+    public Path exportStripePaymentIntentsToCsv(String search, int page, int pageSize,
+            String direction) throws IOException {
+
+        StripePaymentIntentSearchResultDto result =
+                getAllStripePaymentIntents(search, page, pageSize, direction);
+        List<FullStripePaymentIntentDto> data = result.getResult().getItems();
+
+        String fileName = "transactions.csv";
+        return csvFileService.generateCsvFile(fileName, data);
     }
 
 }
