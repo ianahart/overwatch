@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.user.dto.UserDto;
@@ -16,6 +17,7 @@ import com.hart.overwatch.user.request.DeleteUserRequest;
 import com.hart.overwatch.user.request.UpdateUserPasswordRequest;
 import com.hart.overwatch.user.request.UpdateUserRequest;
 import com.hart.overwatch.user.response.DeleteUserResponse;
+import com.hart.overwatch.user.response.GetReviewersResponse;
 import com.hart.overwatch.user.response.UpdateUserPasswordResponse;
 import com.hart.overwatch.user.response.UpdateUserResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,6 +35,13 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping(path = "/search")
+    public ResponseEntity<GetReviewersResponse> searchReviewers(
+            @RequestParam("search") String search, @RequestParam("page") int page,
+            @RequestParam("pageSize") int pageSize, @RequestParam("direction") String direction) {
+        return ResponseEntity.status(HttpStatus.OK).body(new GetReviewersResponse("success",
+                userService.searchReviewers(search, page, pageSize, direction)));
+    }
 
     @GetMapping("/sync")
     public ResponseEntity<UserDto> syncUser(HttpServletRequest request) {

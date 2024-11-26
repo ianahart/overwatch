@@ -1,6 +1,12 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface IReviewer {
+  id: number;
+  fullName: string;
+  avatarUrl: string;
+}
+
 export interface ITeam {
   id: number;
   userId: number;
@@ -2319,6 +2325,26 @@ export interface IGetAllTeamsResponse {
   message: string;
   data: {
     items: ITeam[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
+}
+
+export interface IGetAllReviewersRequest {
+  search: string;
+  token: string;
+  page: number;
+  pageSize: number;
+  direction: string;
+}
+
+export interface IGetAllReviewersResponse {
+  message: string;
+  data: {
+    items: IReviewer[];
     page: number;
     pageSize: number;
     totalPages: number;

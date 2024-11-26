@@ -397,6 +397,7 @@ export {
   useVerifyOTPMutation,
 } from './apis/authsApi';
 export {
+  useLazyFetchReviewersQuery,
   useSyncUserQuery,
   useUpdateUserMutation,
   useUpdateUserPasswordMutation,
