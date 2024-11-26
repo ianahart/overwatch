@@ -1,6 +1,14 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface ITeam {
+  id: number;
+  userId: number;
+  totalTeams: number;
+  teamName: string;
+  teamDescription: string;
+}
+
 export interface IPaymentIntentTransaction {
   [key: string]: string | number;
   id: number;
@@ -2291,6 +2299,35 @@ export interface ICreatePaymentRefundResponse {
 export interface IGetTopicsWithTagsRequest extends IGetAllTopicsRequest {
   query: string;
 }
+
+export interface ICreateTeamRequest {
+  token: string;
+  userId: number;
+  teamName: string;
+  teamDescription: string;
+}
+
+export interface IGetAllTeamsRequest {
+  token: string;
+  userId: number;
+  page: number;
+  pageSize: number;
+  direction: string;
+}
+
+export interface IGetAllTeamsResponse {
+  message: string;
+  data: {
+    items: ITeam[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
+}
+
+export interface ICreateTeamResponse extends IBaseResponse {}
 
 export interface IDeleteSaveCommentResponse extends IBaseResponse {}
 

@@ -1,5 +1,7 @@
+import Teams from '../../components/Teams';
+
 const TeamsRoute = () => {
-  return <div>teams route</div>;
+  return <Teams />;
 };
 
 export default TeamsRoute;

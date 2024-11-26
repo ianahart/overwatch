@@ -37,6 +37,7 @@ import com.hart.overwatch.reviewfeedback.ReviewFeedback;
 import com.hart.overwatch.savecomment.SaveComment;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.stripepaymentintent.StripePaymentIntent;
+import com.hart.overwatch.team.Team;
 import com.hart.overwatch.testimonial.Testimonial;
 import com.hart.overwatch.todocard.TodoCard;
 import com.hart.overwatch.todolist.TodoList;
@@ -279,6 +280,11 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<AppTestimonial> appTestimonials;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Team> teams;
+
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "setting_id", referencedColumnName = "id")
     private Setting setting;
@@ -331,6 +337,10 @@ public class User implements UserDetails {
 
     public List<ReplyComment> getReplyComments() {
         return replyComments;
+    }
+
+    public List<Team> getTeams() {
+        return teams;
     }
 
     public String getSlug() {
@@ -771,6 +781,10 @@ public class User implements UserDetails {
 
     public void setAppTestimonials(List<AppTestimonial> appTestimonials) {
         this.appTestimonials = appTestimonials;
+    }
+
+    public void setTeams(List<Team> teams) {
+        this.teams = teams;
     }
 
     public void setReviewierStripePaymentIntents(
