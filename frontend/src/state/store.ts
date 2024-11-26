@@ -6,6 +6,15 @@ import { updateSignInField, clearSignInForm, signInReducer } from './slices/sign
 import { userReducer, updateUser, updateTokens, clearUser, updateUserAndTokens } from './slices/userSlice';
 import { settingReducer, updateSetting, clearSetting } from './slices/settingSlice';
 import {
+  teamReducer,
+  clearAdminTeams,
+  clearTeamPagination,
+  setTeamPagination,
+  setCurrentTeam,
+  setAdminTeams,
+  clearTeams,
+} from './slices/teamSlice';
+import {
   toggleLabel,
   setLabels,
   updateWorkSpaceProperty,
@@ -148,6 +157,7 @@ import { replyCommentsApi } from './apis/replyCommentsApi';
 import { stripePaymentIntentsApi } from './apis/stripePaymentIntentsApi';
 import { stripePaymentRefundsApi } from './apis/stripePaymentRefundsApi';
 import { appTestimonialsApi } from './apis/appTestimonialsApi';
+import { teamsApi } from './apis/teamsApi';
 
 export const store = configureStore({
   reducer: {
@@ -168,6 +178,7 @@ export const store = configureStore({
     signup: signUpReducer,
     signin: signInReducer,
     user: userReducer,
+    team: teamReducer,
     [authsApi.reducerPath]: authsApi.reducer,
     [usersApi.reducerPath]: usersApi.reducer,
     [heartbeatApi.reducerPath]: heartbeatApi.reducer,
@@ -209,6 +220,7 @@ export const store = configureStore({
     [stripePaymentIntentsApi.reducerPath]: stripePaymentIntentsApi.reducer,
     [stripePaymentRefundsApi.reducerPath]: stripePaymentRefundsApi.reducer,
     [appTestimonialsApi.reducerPath]: appTestimonialsApi.reducer,
+    [teamsApi.reducerPath]: teamsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -261,7 +273,8 @@ export const store = configureStore({
       .concat(replyCommentsApi.middleware)
       .concat(stripePaymentIntentsApi.middleware)
       .concat(stripePaymentRefundsApi.middleware)
-      .concat(appTestimonialsApi.middleware);
+      .concat(appTestimonialsApi.middleware)
+      .concat(teamsApi.middleware);
   },
 });
 
@@ -271,6 +284,12 @@ export type TRootState = ReturnType<typeof store.getState>;
 export type TAppDispatch = typeof store.dispatch;
 
 export {
+  clearAdminTeams,
+  clearTeamPagination,
+  setTeamPagination,
+  setCurrentTeam,
+  setAdminTeams,
+  clearTeams,
   updateSignUpField,
   updateRole,
   openMobile,
@@ -604,6 +623,8 @@ export {
   useCreateAppTestimonialMutation,
 } from './apis/appTestimonialsApi';
 
+export { useFetchTeamsQuery, useLazyFetchTeamsQuery, useCreateTeamMutation } from './apis/teamsApi';
+
 export {
   testimonialsApi,
   authsApi,
@@ -640,4 +661,5 @@ export {
   stripePaymentIntentsApi,
   stripePaymentRefundsApi,
   appTestimonialsApi,
+  teamsApi,
 };

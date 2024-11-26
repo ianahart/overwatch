@@ -61,6 +61,10 @@ import ContactRoute from './routes/ContactRoute';
 import PrivacyPolicyRoute from './routes/PrivacyPolicyRoute';
 import TermsRoute from './routes/TermsRoute';
 import TransactionRoute from './routes/Dashboard/Admin/TransactionRoute';
+import InvitationRoute from './routes/Settings/Teams/InvitationRoute';
+import AddTeamMemberRoute from './routes/Settings/Teams/AddTeamMemberRoute';
+import TeamMessageRoute from './routes/Settings/Teams/TeamMessageRoute';
+import TeamPostRoute from './routes/Settings/Teams/TeamPostRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -381,7 +385,40 @@ const router = createBrowserRouter(
               <TeamsRoute />
             </RequireAuth>
           }
-        />
+        >
+          <Route
+            path=":teamId/invitations"
+            element={
+              <RequireAuthReviewer>
+                <InvitationRoute />
+              </RequireAuthReviewer>
+            }
+          />
+          <Route
+            path=":teamId/add"
+            element={
+              <RequireAuthReviewer>
+                <AddTeamMemberRoute />
+              </RequireAuthReviewer>
+            }
+          />
+          <Route
+            path=":teamId/messages"
+            element={
+              <RequireAuthReviewer>
+                <TeamMessageRoute />
+              </RequireAuthReviewer>
+            }
+          />
+          <Route
+            path=":teamId/posts"
+            element={
+              <RequireAuthReviewer>
+                <TeamPostRoute />
+              </RequireAuthReviewer>
+            }
+          />
+        </Route>
         <Route
           path="security"
           element={
