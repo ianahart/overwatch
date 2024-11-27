@@ -5,10 +5,9 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { IReviewer } from '../../../interfaces';
-import { TRootState, useLazyFetchReviewersQuery } from '../../../state/store';
+import { TRootState, useCreateTeamInvitationMutation, useLazyFetchReviewersQuery } from '../../../state/store';
 import Avatar from '../../Shared/Avatar';
 import { useParams } from 'react-router-dom';
-import { useCreateTeamInvitationMutation } from '../../../state/apis/teamInvitationsApi';
 
 const AddTeamMemberSearchBar = () => {
   const paginationState = {

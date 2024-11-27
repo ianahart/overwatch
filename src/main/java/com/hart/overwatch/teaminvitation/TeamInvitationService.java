@@ -1,13 +1,18 @@
 package com.hart.overwatch.teaminvitation;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.team.Team;
 import com.hart.overwatch.team.TeamService;
+import com.hart.overwatch.teaminvitation.dto.TeamInvitationDto;
 import com.hart.overwatch.teaminvitation.request.CreateTeamInvitationRequest;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.advice.BadRequestException;
+import com.hart.overwatch.pagination.PaginationService;
+import com.hart.overwatch.pagination.dto.PaginationDto;
 
 @Service
 public class TeamInvitationService {
@@ -18,12 +23,15 @@ public class TeamInvitationService {
 
     private final TeamService teamService;
 
+    private final PaginationService paginationService;
+
     @Autowired
     public TeamInvitationService(TeamInvitationRepository teamInvitationRepository,
-            UserService userService, TeamService teamService) {
+            UserService userService, TeamService teamService, PaginationService paginationService) {
         this.teamInvitationRepository = teamInvitationRepository;
         this.userService = userService;
         this.teamService = teamService;
+        this.paginationService = paginationService;
     }
 
     private boolean alreadySentTeamInvitation(Long senderId, Long receiverId, Long teamId) {
@@ -53,4 +61,17 @@ public class TeamInvitationService {
 
         teamInvitationRepository.save(teamInvitation);
     }
+
+    public PaginationDto<TeamInvitationDto> getReceiverTeamInvitations(Long receiverId, int page,
+            int pageSize, String direction) {
+
+        Pageable pageable = this.paginationService.getPageable(page, pageSize, direction);
+
+        Page<TeamInvitationDto> result =
+                this.teamInvitationRepository.getTeamInvitationsByReceiverId(pageable, receiverId);
+
+        return new PaginationDto<TeamInvitationDto>(result.getContent(), result.getNumber(),
+                pageSize, result.getTotalPages(), direction, result.getTotalElements());
+    }
+
 }

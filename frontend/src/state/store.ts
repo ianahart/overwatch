@@ -630,6 +630,12 @@ export {
 export { useFetchTeamsQuery, useLazyFetchTeamsQuery, useCreateTeamMutation } from './apis/teamsApi';
 
 export {
+  useFetchTeamInvitationsQuery,
+  useLazyFetchTeamInvitationsQuery,
+  useCreateTeamInvitationMutation,
+} from './apis/teamInvitationsApi';
+
+export {
   testimonialsApi,
   authsApi,
   heartbeatApi,
