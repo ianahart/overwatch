@@ -18,6 +18,8 @@ import com.hart.overwatch.advice.BadRequestException;
 @Service
 public class TeamService {
 
+    private final Long MAX_TEAMS = 10L;
+
     private final TeamRepository teamRepository;
 
     private final UserService userService;
@@ -46,6 +48,11 @@ public class TeamService {
         String teamName = Jsoup.clean(request.getTeamName(), Safelist.none());
         String teamDescription = Jsoup.clean(request.getTeamDescription(), Safelist.none());
         Long userId = request.getUserId();
+
+        if (teamRepository.getTeamCountByUserId(userId) >= MAX_TEAMS) {
+            throw new BadRequestException(String
+                    .format("You have already added the maximum amount of teams (%d)", MAX_TEAMS));
+        }
 
         if (!canCreateTeam(userId, teamName.toLowerCase())) {
             throw new BadRequestException(

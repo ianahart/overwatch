@@ -1,16 +1,21 @@
 package com.hart.overwatch.team;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import com.hart.overwatch.teaminvitation.TeamInvitation;
 import com.hart.overwatch.user.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
@@ -42,6 +47,12 @@ public class Team {
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
+    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<TeamInvitation> teamInvitations;
+
+
+
     public Team() {
 
     }
@@ -67,6 +78,10 @@ public class Team {
 
     public User getUser() {
         return user;
+    }
+
+    public List<TeamInvitation> getTeamInvitations() {
+        return teamInvitations;
     }
 
     public String getTeamName() {
@@ -107,6 +122,10 @@ public class Team {
 
     public void setTeamDescription(String teamDescription) {
         this.teamDescription = teamDescription;
+    }
+
+    public void setTeamInvitations(List<TeamInvitation> teamInvitations) {
+        this.teamInvitations = teamInvitations;
     }
 }
 

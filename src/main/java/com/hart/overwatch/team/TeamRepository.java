@@ -12,6 +12,14 @@ import com.hart.overwatch.team.dto.TeamDto;
 public interface TeamRepository extends JpaRepository<Team, Long> {
 
     @Query(value = """
+            SELECT COUNT (t.id) AS totalTeams
+            FROM Team t
+            INNER JOIN t.user u
+            WHERE u.id = :userId
+            """)
+    Long getTeamCountByUserId(@Param("userId") Long userId);
+
+    @Query(value = """
              SELECT NEW com.hart.overwatch.team.dto.TeamDto(
              t.id AS id, u.id AS userId, t.teamName AS teamName,
              t.teamDescription AS teamDescription,

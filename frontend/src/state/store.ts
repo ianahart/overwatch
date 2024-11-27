@@ -158,6 +158,7 @@ import { stripePaymentIntentsApi } from './apis/stripePaymentIntentsApi';
 import { stripePaymentRefundsApi } from './apis/stripePaymentRefundsApi';
 import { appTestimonialsApi } from './apis/appTestimonialsApi';
 import { teamsApi } from './apis/teamsApi';
+import { teamInvitationsApi } from './apis/teamInvitationsApi';
 
 export const store = configureStore({
   reducer: {
@@ -221,6 +222,7 @@ export const store = configureStore({
     [stripePaymentRefundsApi.reducerPath]: stripePaymentRefundsApi.reducer,
     [appTestimonialsApi.reducerPath]: appTestimonialsApi.reducer,
     [teamsApi.reducerPath]: teamsApi.reducer,
+    [teamInvitationsApi.reducerPath]: teamInvitationsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -274,7 +276,8 @@ export const store = configureStore({
       .concat(stripePaymentIntentsApi.middleware)
       .concat(stripePaymentRefundsApi.middleware)
       .concat(appTestimonialsApi.middleware)
-      .concat(teamsApi.middleware);
+      .concat(teamsApi.middleware)
+      .concat(teamInvitationsApi.middleware);
   },
 });
 
@@ -663,4 +666,5 @@ export {
   stripePaymentRefundsApi,
   appTestimonialsApi,
   teamsApi,
+  teamInvitationsApi,
 };

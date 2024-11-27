@@ -1,10 +1,14 @@
 import { useCallback, useState } from 'react';
 import { debounce } from 'lodash';
 import { useSelector } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { IReviewer } from '../../../interfaces';
 import { TRootState, useLazyFetchReviewersQuery } from '../../../state/store';
 import Avatar from '../../Shared/Avatar';
+import { useParams } from 'react-router-dom';
+import { useCreateTeamInvitationMutation } from '../../../state/apis/teamInvitationsApi';
 
 const AddTeamMemberSearchBar = () => {
   const paginationState = {
@@ -14,11 +18,14 @@ const AddTeamMemberSearchBar = () => {
     direction: 'next',
     totalElements: 0,
   };
-  const { token } = useSelector((store: TRootState) => store.user);
+  const { teamId } = useParams();
+  const { token, user } = useSelector((store: TRootState) => store.user);
   const [pag, setPag] = useState(paginationState);
-  const [inputValue, setInputValue] = useState<string>('');
+  const [inputValue, setInputValue] = useState('');
+  const [error, setError] = useState('');
   const [reviewers, setReviewers] = useState<IReviewer[]>([]);
   const [fetchReviewers] = useLazyFetchReviewersQuery();
+  const [createTeamInvitation] = useCreateTeamInvitationMutation();
 
   const preformDebounce = debounce((query) => {
     applySearch(query, false);
@@ -60,12 +67,39 @@ const AddTeamMemberSearchBar = () => {
       .catch((err) => console.log(err));
   };
 
+  const initiateToast = (reviewerName: string): void => {
+    toast.success(`You sent a team invitation to ${reviewerName}!`, {
+      position: 'bottom-center',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'dark',
+    });
+  };
+
   const handleOnClick = (reviewer: IReviewer): void => {
-    console.log(reviewer);
+    const payload = { token, senderId: user.id, receiverId: reviewer.id, teamId: Number.parseInt(teamId as string) };
+
+    createTeamInvitation(payload)
+      .unwrap()
+      .then(() => {
+        initiateToast(reviewer.fullName);
+      })
+      .catch((err) => {
+        setError(err.data.message);
+      });
   };
 
   return (
     <div className="flex flex-col">
+      {error.length > 0 && (
+        <div>
+          <p className="text-sm text-red-300">{error}</p>
+        </div>
+      )}
       <label htmlFor="search">Lookup a reviewer</label>
       <div className="w-full">
         <input
@@ -95,6 +129,7 @@ const AddTeamMemberSearchBar = () => {
           )}
         </div>
       )}
+      <ToastContainer />
     </div>
   );
 };

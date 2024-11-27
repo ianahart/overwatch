@@ -38,6 +38,7 @@ import com.hart.overwatch.savecomment.SaveComment;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.stripepaymentintent.StripePaymentIntent;
 import com.hart.overwatch.team.Team;
+import com.hart.overwatch.teaminvitation.TeamInvitation;
 import com.hart.overwatch.testimonial.Testimonial;
 import com.hart.overwatch.todocard.TodoCard;
 import com.hart.overwatch.todolist.TodoList;
@@ -284,6 +285,14 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<Team> teams;
 
+    @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<TeamInvitation> senderTeamInvitations;
+
+    @OneToMany(mappedBy = "receiver", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<TeamInvitation> receiverTeamInvitations;
+
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "setting_id", referencedColumnName = "id")
@@ -369,6 +378,15 @@ public class User implements UserDetails {
 
     public List<Comment> getComments() {
         return comments;
+    }
+
+
+    public List<TeamInvitation> getReceiverTeamInvitations() {
+        return receiverTeamInvitations;
+    }
+
+    public List<TeamInvitation> getSenderTeamInvitations() {
+        return senderTeamInvitations;
     }
 
     public List<BlockUser> getBlockerUsers() {
@@ -777,6 +795,14 @@ public class User implements UserDetails {
 
     public void setUserStripePaymentIntents(List<StripePaymentIntent> userStripePaymentIntents) {
         this.userStripePaymentIntents = userStripePaymentIntents;
+    }
+
+    public void setSenderTeamInvitations(List<TeamInvitation> senderTeamInvitations) {
+        this.senderTeamInvitations = senderTeamInvitations;
+    }
+
+    public void setReceiverTeamInvitations(List<TeamInvitation> receiverTeamInvitations) {
+        this.receiverTeamInvitations = receiverTeamInvitations;
     }
 
     public void setAppTestimonials(List<AppTestimonial> appTestimonials) {

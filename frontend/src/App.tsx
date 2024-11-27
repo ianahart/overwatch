@@ -387,7 +387,7 @@ const router = createBrowserRouter(
           }
         >
           <Route
-            path=":teamId/invitations"
+            path="invitations"
             element={
               <RequireAuthReviewer>
                 <InvitationRoute />

@@ -2353,6 +2353,15 @@ export interface IGetAllReviewersResponse {
   };
 }
 
+export interface ICreateTeamInvitationRequest {
+  token: string;
+  senderId: number;
+  receiverId: number;
+  teamId: number;
+}
+
+export interface ICreateTeamInvitationResponse extends IBaseResponse {}
+
 export interface ICreateTeamResponse extends IBaseResponse {}
 
 export interface IDeleteSaveCommentResponse extends IBaseResponse {}

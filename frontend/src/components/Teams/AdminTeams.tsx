@@ -10,6 +10,7 @@ import {
   clearAdminTeams,
   setCurrentTeam,
 } from '../../state/store';
+import { AiOutlineTeam } from 'react-icons/ai';
 
 const AdminTeams = () => {
   const { adminTeams, adminTeamPagination, currentTeam } = useSelector((store: TRootState) => store.team);
@@ -96,7 +97,10 @@ const AdminTeams = () => {
         {adminTeams.map((adminTeam) => {
           return (
             <div onClick={() => changeCurrentTeam(adminTeam.id)} className="my-1 cursor-pointer" key={adminTeam.id}>
-              <p className="hover:text-gray-500">{adminTeam.teamName}</p>
+              <p className="hover:text-gray-500 flex items-center">
+                <AiOutlineTeam className="mr-1" />
+                {adminTeam.teamName}
+              </p>
             </div>
           );
         })}
