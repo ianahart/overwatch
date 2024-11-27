@@ -5,6 +5,7 @@ export interface ITeamInvitiation {
   id: number;
   senderId: number;
   receiverId: number;
+  teamId: number;
   status: string;
   senderAvatarUrl: string;
   senderFullName: string;
@@ -2395,6 +2396,15 @@ export interface IDeleteTeamInvitationRequest {
   token: string;
   teamInvitationId: number;
 }
+
+export interface IUpdateTeamInvitationRequest {
+  token: string;
+  teamInvitationId: number;
+  teamId: number;
+  userId: number;
+}
+
+export interface IUpdateTeamInvitationResponse extends IBaseResponse {}
 
 export interface IDeleteTeamInvitationResponse extends IBaseResponse {}
 

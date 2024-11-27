@@ -11,6 +11,8 @@ public class TeamInvitationDto {
 
     private Long receiverId;
 
+    private Long teamId;
+
     private InvitationStatus status;
 
     private String senderAvatarUrl;
@@ -25,12 +27,13 @@ public class TeamInvitationDto {
 
     }
 
-    public TeamInvitationDto(Long id, Long senderId, Long receiverId, InvitationStatus status,
-            String senderAvatarUrl, String senderFullName, String teamName,
+    public TeamInvitationDto(Long id, Long senderId, Long receiverId, Long teamId,
+            InvitationStatus status, String senderAvatarUrl, String senderFullName, String teamName,
             LocalDateTime createdAt) {
         this.id = id;
         this.senderId = senderId;
         this.receiverId = receiverId;
+        this.teamId = teamId;
         this.status = status;
         this.senderAvatarUrl = senderAvatarUrl;
         this.senderFullName = senderFullName;
@@ -45,6 +48,10 @@ public class TeamInvitationDto {
 
     public String getTeamName() {
         return teamName;
+    }
+
+    public Long getTeamId() {
+        return teamId;
     }
 
     public Long getSenderId() {
@@ -101,5 +108,9 @@ public class TeamInvitationDto {
 
     public void setTeamName(String teamName) {
         this.teamName = teamName;
+    }
+
+    public void setTeamId(Long teamId) {
+        this.teamId = teamId;
     }
 }

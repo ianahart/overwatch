@@ -13,7 +13,7 @@ public interface TeamInvitationRepository extends JpaRepository<TeamInvitation, 
 
     @Query(value = """
             SELECT NEW com.hart.overwatch.teaminvitation.dto.TeamInvitationDto(
-             ti.id AS id, s.id AS senderId, r.id AS receiverId, ti.status AS status,
+             ti.id AS id, s.id AS senderId, r.id AS receiverId, t.id AS teamId, ti.status AS status,
              p.avatarUrl AS senderAvatarUrl, s.fullName AS senderFullName, t.teamName as teamName,
              ti.createdAt AS createdAt
             ) FROM TeamInvitation ti
@@ -22,6 +22,7 @@ public interface TeamInvitationRepository extends JpaRepository<TeamInvitation, 
             INNER JOIN ti.sender.profile p
             INNER JOIN ti.team t
             WHERE r.id = :receiverId
+            AND ti.status = 'PENDING'
             """)
     Page<TeamInvitationDto> getTeamInvitationsByReceiverId(@Param("pageable") Pageable pageable,
             @Param("receiverId") Long receiverId);

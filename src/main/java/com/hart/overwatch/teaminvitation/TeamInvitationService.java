@@ -4,10 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import com.hart.overwatch.team.Team;
 import com.hart.overwatch.team.TeamService;
 import com.hart.overwatch.teaminvitation.dto.TeamInvitationDto;
 import com.hart.overwatch.teaminvitation.request.CreateTeamInvitationRequest;
+import com.hart.overwatch.teammember.TeamMemberService;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.advice.BadRequestException;
@@ -27,13 +29,17 @@ public class TeamInvitationService {
 
     private final PaginationService paginationService;
 
+    private final TeamMemberService teamMemberService;
+
     @Autowired
     public TeamInvitationService(TeamInvitationRepository teamInvitationRepository,
-            UserService userService, TeamService teamService, PaginationService paginationService) {
+            UserService userService, TeamService teamService, PaginationService paginationService,
+            TeamMemberService teamMemberService) {
         this.teamInvitationRepository = teamInvitationRepository;
         this.userService = userService;
         this.teamService = teamService;
         this.paginationService = paginationService;
+        this.teamMemberService = teamMemberService;
     }
 
     private TeamInvitation getTeamInvitationByTeamInvitationId(Long teamInvitationId) {
@@ -92,6 +98,18 @@ public class TeamInvitationService {
         }
 
         teamInvitationRepository.delete(teamInvitation);
+    }
+
+    @Transactional
+    public void updateTeamInvitation(Long teamId, Long teamInvitationId, Long userId) {
+
+        TeamInvitation teamInvitation = getTeamInvitationByTeamInvitationId(teamInvitationId);
+
+        teamInvitation.setStatus(InvitationStatus.ACCEPTED);
+
+        teamInvitationRepository.save(teamInvitation);
+
+        teamMemberService.createTeamMember(teamId, userId);
     }
 
 }

@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { ITeamInvitiation } from '../../../interfaces';
 import { initializeName } from '../../../util';
 import Avatar from '../../Shared/Avatar';
-import { TRootState, useDeleteTeamInvitationMutation } from '../../../state/store';
+import { TRootState, useDeleteTeamInvitationMutation, useUpdateTeamInvitationMutation } from '../../../state/store';
 import dayjs from 'dayjs';
 
 export interface IIInvitationItemProps {
@@ -12,17 +12,29 @@ export interface IIInvitationItemProps {
 const InvitationItem = ({ teamInvitation }: IIInvitationItemProps) => {
   const { token } = useSelector((store: TRootState) => store.user);
   const [deleteTeamInvitation] = useDeleteTeamInvitationMutation();
+  const [updateTeamInvitation] = useUpdateTeamInvitationMutation();
   const [firstName, lastName] = teamInvitation.senderFullName.split(' ');
 
-  const handleOnAcceptTeamInvitation = (): void => {};
+  const handleOnAcceptTeamInvitation = (): void => {
+    const payload = {
+      token,
+      teamInvitationId: teamInvitation.id,
+      teamId: teamInvitation.teamId,
+      userId: teamInvitation.receiverId,
+    };
+    updateTeamInvitation(payload)
+      .unwrap()
+      .then(() => {})
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const handleOnIgnoreTeamInvitation = (): void => {
     const payload = { token, teamInvitationId: teamInvitation.id };
     deleteTeamInvitation(payload)
       .unwrap()
-      .then((res) => {
-        console.log(res);
-      })
+      .then(() => {})
       .catch((err) => {
         console.log(err);
       });
@@ -40,7 +52,7 @@ const InvitationItem = ({ teamInvitation }: IIInvitationItemProps) => {
         <div>
           <h3 className="text-sm font-bold ml-2">{teamInvitation.senderFullName}</h3>
 
-          <small className="ml-2">{dayjs(teamInvitation.createdAt).format('mm/dd/YYYY')}</small>
+          <small className="ml-2">{dayjs(teamInvitation.createdAt).format('MM/DD/YYYY')}</small>
           <p className="text-sm ml-2">
             has sent you a team inivitation to join a team called{' '}
             <span className="text-sm font-bold">{teamInvitation.teamName}</span>

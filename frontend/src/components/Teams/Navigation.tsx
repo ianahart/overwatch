@@ -9,6 +9,7 @@ const Navigation = () => {
   const nonTeamLinks = [{ id: 1, text: 'View Invitations', href: `/settings/${user.slug}/teams/invitations` }];
 
   const teamLinks = [
+    { id: 1, text: 'View Invitations', href: `/settings/${user.slug}/teams/invitations` },
     { id: 2, text: 'Add Team Member', href: `/settings/${user.slug}/teams/${currentTeam}/add` },
     { id: 3, text: 'Messages', href: `/settings/${user.slug}/teams/${currentTeam}/messages` },
     { id: 4, text: 'Posts', href: `/settings/${user.slug}/teams/${currentTeam}/posts` },

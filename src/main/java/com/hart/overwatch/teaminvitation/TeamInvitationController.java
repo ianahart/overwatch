@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,9 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.hart.overwatch.teaminvitation.request.CreateTeamInvitationRequest;
+import com.hart.overwatch.teaminvitation.request.UpdateTeamInvitationRequest;
 import com.hart.overwatch.teaminvitation.response.CreateTeamInvitationResponse;
 import com.hart.overwatch.teaminvitation.response.DeleteTeamInvitationResponse;
 import com.hart.overwatch.teaminvitation.response.GetTeamInvitationsResponse;
+import com.hart.overwatch.teaminvitation.response.UpdateTeamInvitationResponse;
 import jakarta.validation.Valid;
 
 @RestController
@@ -53,6 +56,16 @@ public class TeamInvitationController {
         teamInvitationService.deleteTeamInvitation(teamInvitationId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new DeleteTeamInvitationResponse("success"));
+    }
+
+    @PatchMapping(path = "/{teamId}/invitations/{teamInvitationId}")
+    public ResponseEntity<UpdateTeamInvitationResponse> updateTeamInvitation(
+            @PathVariable("teamId") Long teamId,
+            @PathVariable("teamInvitationId") Long teamInvitationId,
+            @Valid @RequestBody UpdateTeamInvitationRequest request) {
+        teamInvitationService.updateTeamInvitation(teamId, teamInvitationId, request.getUserId());
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new UpdateTeamInvitationResponse("success"));
     }
 
 }

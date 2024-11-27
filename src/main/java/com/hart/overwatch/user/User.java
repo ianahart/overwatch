@@ -39,6 +39,7 @@ import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.stripepaymentintent.StripePaymentIntent;
 import com.hart.overwatch.team.Team;
 import com.hart.overwatch.teaminvitation.TeamInvitation;
+import com.hart.overwatch.teammember.TeamMember;
 import com.hart.overwatch.testimonial.Testimonial;
 import com.hart.overwatch.todocard.TodoCard;
 import com.hart.overwatch.todolist.TodoList;
@@ -293,6 +294,11 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<TeamInvitation> receiverTeamInvitations;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<TeamMember> teamMembers;
+
+
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "setting_id", referencedColumnName = "id")
@@ -439,6 +445,10 @@ public class User implements UserDetails {
 
     public Location getLocation() {
         return location;
+    }
+
+    public List<TeamMember> getTeamMembers() {
+        return teamMembers;
     }
 
     public List<Label> getLabels() {
@@ -619,6 +629,10 @@ public class User implements UserDetails {
 
     public void setLabels(List<Label> labels) {
         this.labels = labels;
+    }
+
+    public void setTeamMembers(List<TeamMember> teamMembers) {
+        this.teamMembers = teamMembers;
     }
 
     public void setWorkSpaces(List<WorkSpace> workSpaces) {
@@ -804,6 +818,7 @@ public class User implements UserDetails {
     public void setReceiverTeamInvitations(List<TeamInvitation> receiverTeamInvitations) {
         this.receiverTeamInvitations = receiverTeamInvitations;
     }
+
 
     public void setAppTestimonials(List<AppTestimonial> appTestimonials) {
         this.appTestimonials = appTestimonials;
