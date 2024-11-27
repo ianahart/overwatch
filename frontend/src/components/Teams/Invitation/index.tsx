@@ -1,5 +1,11 @@
+import InvitationList from './InvitationList';
+
 const Invitation = () => {
-  return <div> invitation page</div>;
+  return (
+    <>
+      <InvitationList />
+    </>
+  );
 };
 
 export default Invitation;

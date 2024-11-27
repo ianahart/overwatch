@@ -1,6 +1,24 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface ITeamInvitiation {
+  id: number;
+  senderId: number;
+  receiverId: number;
+  teamId: number;
+  status: string;
+  senderAvatarUrl: string;
+  senderFullName: string;
+  createdAt: string;
+  teamName: string;
+}
+
+export interface IReviewer {
+  id: number;
+  fullName: string;
+  avatarUrl: string;
+}
+
 export interface ITeam {
   id: number;
   userId: number;
@@ -2326,6 +2344,71 @@ export interface IGetAllTeamsResponse {
     totalElements: number;
   };
 }
+
+export interface IGetAllReviewersRequest {
+  search: string;
+  token: string;
+  page: number;
+  pageSize: number;
+  direction: string;
+}
+
+export interface IGetAllReviewersResponse {
+  message: string;
+  data: {
+    items: IReviewer[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
+}
+
+export interface ICreateTeamInvitationRequest {
+  token: string;
+  senderId: number;
+  receiverId: number;
+  teamId: number;
+}
+
+export interface IGetAllTeamInvitationsRequest {
+  token: string;
+  userId: number;
+  page: number;
+  pageSize: number;
+  direction: string;
+}
+
+export interface IGetAllTeamInvitationsResponse {
+  message: string;
+  data: {
+    items: ITeamInvitiation[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
+}
+
+export interface IDeleteTeamInvitationRequest {
+  token: string;
+  teamInvitationId: number;
+}
+
+export interface IUpdateTeamInvitationRequest {
+  token: string;
+  teamInvitationId: number;
+  teamId: number;
+  userId: number;
+}
+
+export interface IUpdateTeamInvitationResponse extends IBaseResponse {}
+
+export interface IDeleteTeamInvitationResponse extends IBaseResponse {}
+
+export interface ICreateTeamInvitationResponse extends IBaseResponse {}
 
 export interface ICreateTeamResponse extends IBaseResponse {}
 

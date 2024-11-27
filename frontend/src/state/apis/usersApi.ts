@@ -1,5 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import {
+  IGetAllReviewersRequest,
+  IGetAllReviewersResponse,
   ISyncUserResponse,
   IUpdateUserPasswordResponse,
   IUpdateUserPasswordRequest,
@@ -74,10 +76,29 @@ const usersApi = createApi({
           };
         },
       }),
+      fetchReviewers: builder.query<IGetAllReviewersResponse, IGetAllReviewersRequest>({
+        query: ({ search, token, page, pageSize, direction }) => {
+          if (!search || !token) {
+            return '';
+          }
+          return {
+            url: `/users/search?search=${search}&page=${page}&pageSize=${pageSize}&direction=${direction}`,
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+      }),
     };
   },
 });
 
-export const { useSyncUserQuery, useUpdateUserPasswordMutation, useDeleteUserMutation, useUpdateUserMutation } =
-  usersApi;
+export const {
+  useLazyFetchReviewersQuery,
+  useSyncUserQuery,
+  useUpdateUserPasswordMutation,
+  useDeleteUserMutation,
+  useUpdateUserMutation,
+} = usersApi;
 export { usersApi };

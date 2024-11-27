@@ -4,9 +4,12 @@ import java.security.Key;
 import java.util.Optional;
 
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.pagination.PaginationService;
+import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.token.TokenService;
+import com.hart.overwatch.user.dto.ReviewerDto;
 import com.hart.overwatch.user.dto.UpdateUserDto;
 import com.hart.overwatch.user.dto.UserDto;
 import com.hart.overwatch.user.request.UpdateUserRequest;
@@ -16,6 +19,8 @@ import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,15 +39,17 @@ public class UserService {
     private String secretKey;
 
     private final UserRepository userRepository;
+
     private final PasswordEncoder passwordEncoder;
-    private final TokenService tokenService;
+
+    private final PaginationService paginationService;
 
     @Autowired
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder,
-            TokenService tokenService) {
+            PaginationService paginationService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.tokenService = tokenService;
+        this.paginationService = paginationService;
     }
 
     public boolean userExistsByEmail(String email) {
@@ -182,4 +189,17 @@ public class UserService {
 
         }
     }
+
+    public PaginationDto<ReviewerDto> searchReviewers(String search, int page, int pageSize,
+            String direction) {
+
+        Pageable pageable = this.paginationService.getPageable(page, pageSize, direction);
+
+        Page<ReviewerDto> result =
+                this.userRepository.getReviewersBySearch(pageable, search.toLowerCase());
+
+        return new PaginationDto<ReviewerDto>(result.getContent(), result.getNumber(), pageSize,
+                result.getTotalPages(), direction, result.getTotalElements());
+    }
+
 }
