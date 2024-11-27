@@ -1,5 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import {
+  IDeleteTeamInvitationRequest,
+  IDeleteTeamInvitationResponse,
   ICreateTeamInvitationRequest,
   ICreateTeamInvitationResponse,
   IGetAllTeamInvitationsRequest,
@@ -13,6 +15,21 @@ const teamInvitationsApi = createApi({
   tagTypes: ['TeamInvitation'],
   endpoints(builder) {
     return {
+      deleteTeamInvitation: builder.mutation<IDeleteTeamInvitationResponse, IDeleteTeamInvitationRequest>({
+        query: ({ teamInvitationId, token }) => ({
+          url: `teams/invitations/${teamInvitationId}`,
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }),
+        //@ts-ignore
+        invalidatesTags: (_, error, { teamInvitationId }) => [
+          { type: 'TeamInvitation', id: teamInvitationId },
+          { type: 'TeamInvitation', id: 'LIST' },
+        ],
+      }),
+
       fetchTeamInvitations: builder.query<IGetAllTeamInvitationsResponse, IGetAllTeamInvitationsRequest>({
         query: ({ userId, token, page, pageSize, direction }) => {
           if (userId === 0 || userId === null) {
@@ -52,6 +69,10 @@ const teamInvitationsApi = createApi({
     };
   },
 });
-export const { useCreateTeamInvitationMutation, useFetchTeamInvitationsQuery, useLazyFetchTeamInvitationsQuery } =
-  teamInvitationsApi;
+export const {
+  useDeleteTeamInvitationMutation,
+  useCreateTeamInvitationMutation,
+  useFetchTeamInvitationsQuery,
+  useLazyFetchTeamInvitationsQuery,
+} = teamInvitationsApi;
 export { teamInvitationsApi };

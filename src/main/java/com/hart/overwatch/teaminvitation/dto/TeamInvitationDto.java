@@ -17,25 +17,26 @@ public class TeamInvitationDto {
 
     private String senderFullName;
 
-    private LocalDateTime createdAt;
-
     private String teamName;
+
+    private LocalDateTime createdAt;
 
     public TeamInvitationDto() {
 
     }
 
     public TeamInvitationDto(Long id, Long senderId, Long receiverId, InvitationStatus status,
-            String senderAvatarUrl, String senderFullName, LocalDateTime createdAt,
-            String teamName) {
+            String senderAvatarUrl, String senderFullName, String teamName,
+            LocalDateTime createdAt) {
         this.id = id;
         this.senderId = senderId;
         this.receiverId = receiverId;
         this.status = status;
         this.senderAvatarUrl = senderAvatarUrl;
         this.senderFullName = senderFullName;
-        this.createdAt = createdAt;
         this.teamName = teamName;
+        this.createdAt = createdAt;
+
     }
 
     public Long getId() {

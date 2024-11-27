@@ -2391,6 +2391,13 @@ export interface IGetAllTeamInvitationsResponse {
   };
 }
 
+export interface IDeleteTeamInvitationRequest {
+  token: string;
+  teamInvitationId: number;
+}
+
+export interface IDeleteTeamInvitationResponse extends IBaseResponse {}
+
 export interface ICreateTeamInvitationResponse extends IBaseResponse {}
 
 export interface ICreateTeamResponse extends IBaseResponse {}

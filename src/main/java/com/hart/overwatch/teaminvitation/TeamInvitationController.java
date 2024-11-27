@@ -3,6 +3,7 @@ package com.hart.overwatch.teaminvitation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.hart.overwatch.teaminvitation.request.CreateTeamInvitationRequest;
 import com.hart.overwatch.teaminvitation.response.CreateTeamInvitationResponse;
+import com.hart.overwatch.teaminvitation.response.DeleteTeamInvitationResponse;
 import com.hart.overwatch.teaminvitation.response.GetTeamInvitationsResponse;
 import jakarta.validation.Valid;
 
@@ -43,6 +45,14 @@ public class TeamInvitationController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GetTeamInvitationsResponse("success", teamInvitationService
                         .getReceiverTeamInvitations(userId, page, pageSize, direction)));
+    }
+
+    @DeleteMapping(path = "/invitations/{teamInvitationId}")
+    public ResponseEntity<DeleteTeamInvitationResponse> deleteTeamInvitation(
+            @PathVariable("teamInvitationId") Long teamInvitationId) {
+        teamInvitationService.deleteTeamInvitation(teamInvitationId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new DeleteTeamInvitationResponse("success"));
     }
 
 }

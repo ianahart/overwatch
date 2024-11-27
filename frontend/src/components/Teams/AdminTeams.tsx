@@ -88,7 +88,7 @@ const AdminTeams = () => {
 
   const changeCurrentTeam = (teamId: number): void => {
     dispatch(setCurrentTeam(teamId));
-    navigate(`/settings/${user.slug}/teams/${currentTeam}/invitations`);
+    navigate(`/settings/${user.slug}/teams/${currentTeam}/posts`);
   };
   return (
     <div>

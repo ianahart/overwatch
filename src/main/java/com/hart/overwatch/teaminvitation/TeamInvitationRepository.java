@@ -14,7 +14,8 @@ public interface TeamInvitationRepository extends JpaRepository<TeamInvitation, 
     @Query(value = """
             SELECT NEW com.hart.overwatch.teaminvitation.dto.TeamInvitationDto(
              ti.id AS id, s.id AS senderId, r.id AS receiverId, ti.status AS status,
-             p.avatarUrl AS senderAvatarUrl, s.fullName AS senderFullName, t.teamName as teamName
+             p.avatarUrl AS senderAvatarUrl, s.fullName AS senderFullName, t.teamName as teamName,
+             ti.createdAt AS createdAt
             ) FROM TeamInvitation ti
             INNER JOIN ti.sender s
             INNER JOIN ti.receiver r
