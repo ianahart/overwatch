@@ -1,5 +1,6 @@
 import AdminTeams from './AdminTeams';
 import CreateTeamBtn from './CreateTeamBtn';
+import TeamMemberTeams from './TeamMemberTeams';
 
 const Sidebar = () => {
   return (
@@ -8,6 +9,9 @@ const Sidebar = () => {
       <CreateTeamBtn />
       <div className="my-4">
         <AdminTeams />
+      </div>
+      <div className="my-4">
+        <TeamMemberTeams />
       </div>
     </div>
   );

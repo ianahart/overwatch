@@ -86,9 +86,13 @@ const AdminTeams = () => {
       });
   };
 
+  useEffect(() => {
+    if (currentTeam !== 0) {
+      navigate(`/settings/${user.slug}/teams/${currentTeam}/posts`);
+    }
+  }, [currentTeam]);
   const changeCurrentTeam = (teamId: number): void => {
     dispatch(setCurrentTeam(teamId));
-    navigate(`/settings/${user.slug}/teams/${currentTeam}/posts`);
   };
   return (
     <div>
@@ -98,7 +102,7 @@ const AdminTeams = () => {
           return (
             <div onClick={() => changeCurrentTeam(adminTeam.id)} className="my-1 cursor-pointer" key={adminTeam.id}>
               <p className="hover:text-gray-500 flex items-center">
-                <AiOutlineTeam className="mr-1" />
+                <AiOutlineTeam className="mr-1 text-green-400" />
                 {adminTeam.teamName}
               </p>
             </div>

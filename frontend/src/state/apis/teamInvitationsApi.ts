@@ -27,7 +27,7 @@ const teamInvitationsApi = createApi({
           },
         }),
         //@ts-ignore
-        invalidatesTags: (_, error, { teamInvitationId }) => [
+        invalidatesTags: (_, error, { teamInvitationId, teamId }) => [
           { type: 'TeamInvitation', id: teamInvitationId },
           { type: 'TeamInvitation', id: 'LIST' },
           { type: 'TeamMember', id: 'LIST' },

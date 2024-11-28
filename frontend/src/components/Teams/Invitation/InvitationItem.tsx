@@ -1,8 +1,17 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ITeamInvitiation } from '../../../interfaces';
 import { initializeName } from '../../../util';
 import Avatar from '../../Shared/Avatar';
-import { TRootState, useDeleteTeamInvitationMutation, useUpdateTeamInvitationMutation } from '../../../state/store';
+import {
+  TRootState,
+  removeTeamInvitation,
+  useDeleteTeamInvitationMutation,
+  useLazyFetchTeamMemberTeamsQuery,
+  useUpdateTeamInvitationMutation,
+  setTeamMemberTeams,
+  clearTeamPagination,
+  setTeamPagination,
+} from '../../../state/store';
 import dayjs from 'dayjs';
 
 export interface IIInvitationItemProps {
@@ -10,31 +19,54 @@ export interface IIInvitationItemProps {
 }
 
 const InvitationItem = ({ teamInvitation }: IIInvitationItemProps) => {
-  const { token } = useSelector((store: TRootState) => store.user);
+  const dispatch = useDispatch();
+  const { token, user } = useSelector((store: TRootState) => store.user);
+  const { teamMemberTeamPagination } = useSelector((store: TRootState) => store.team);
   const [deleteTeamInvitation] = useDeleteTeamInvitationMutation();
   const [updateTeamInvitation] = useUpdateTeamInvitationMutation();
+  const [fetchTeamMemberTeams] = useLazyFetchTeamMemberTeamsQuery();
   const [firstName, lastName] = teamInvitation.senderFullName.split(' ');
 
-  const handleOnAcceptTeamInvitation = (): void => {
-    const payload = {
-      token,
-      teamInvitationId: teamInvitation.id,
-      teamId: teamInvitation.teamId,
-      userId: teamInvitation.receiverId,
-    };
-    updateTeamInvitation(payload)
-      .unwrap()
-      .then(() => {})
-      .catch((err) => {
-        console.log(err);
-      });
+  const handleOnAcceptTeamInvitation = async (): Promise<void> => {
+    try {
+      const payload = {
+        token,
+        teamInvitationId: teamInvitation.id,
+        teamId: teamInvitation.teamId,
+        userId: teamInvitation.receiverId,
+      };
+
+      await updateTeamInvitation(payload).unwrap();
+      dispatch(removeTeamInvitation(teamInvitation.id));
+      dispatch(clearTeamPagination('member'));
+
+      const refetchPayload = { ...teamMemberTeamPagination, userId: user.id, token };
+      const fetchResponse = await fetchTeamMemberTeams(refetchPayload);
+      if (fetchResponse.isSuccess) {
+        const { direction, items, page, pageSize, totalElements, totalPages } = fetchResponse.data.data;
+        const newPagination = {
+          ...teamMemberTeamPagination,
+          direction,
+          page,
+          totalElements,
+          totalPages,
+          pageSize,
+        };
+        dispatch(setTeamPagination({ pagination: newPagination, paginationType: 'member' }));
+        dispatch(setTeamMemberTeams({ team: items, reset: true }));
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const handleOnIgnoreTeamInvitation = (): void => {
     const payload = { token, teamInvitationId: teamInvitation.id };
     deleteTeamInvitation(payload)
       .unwrap()
-      .then(() => {})
+      .then(() => {
+        dispatch(removeTeamInvitation(teamInvitation.id));
+      })
       .catch((err) => {
         console.log(err);
       });
