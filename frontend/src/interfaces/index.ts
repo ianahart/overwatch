@@ -1,6 +1,16 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface ITeamMessage {
+  fullName: string;
+  createdAt: string;
+  text: string;
+  avatarUrl: string;
+  id: number;
+  userId: number;
+  teamId: number;
+}
+
 export interface ITeamInvitiation {
   id: number;
   senderId: number;
@@ -2435,6 +2445,16 @@ export interface IGetTeamMemberTeamResponse {
 export interface IDeleteTeamMemberRequest {
   token: string;
   teamMemberId: number;
+}
+
+export interface IGetAllTeamMessagesRequest {
+  token: string;
+  currentTeam: number;
+}
+
+export interface IGetAllTeamMessagesResponse {
+  message: string;
+  data: ITeamMessage[];
 }
 
 export interface IDeleteTeamMemberResponse extends IBaseResponse {}

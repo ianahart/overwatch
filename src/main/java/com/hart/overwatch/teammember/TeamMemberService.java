@@ -1,5 +1,7 @@
 package com.hart.overwatch.teammember;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -91,5 +93,16 @@ public class TeamMemberService {
         }
         teamMemberRepository.delete(teamMember);
     }
+
+    public List<Long> getTeamMemberIds(Team team) {
+        List<TeamMember> teamMembers = teamMemberRepository.findTeamMemberByTeamId(team.getId());
+        if (teamMembers.isEmpty()) {
+            return null;
+        }
+        return teamMembers.stream().filter(teamMember -> teamMember.getUser().getLoggedIn())
+                .map(teamMember -> teamMember.getUser().getId()).collect(Collectors.toList());
+    }
+
+
 
 }

@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { IPaginationState, ITeam, ITeamInvitiation, ITeamMemberTeam } from '../../interfaces';
+import { IPaginationState, ITeam, ITeamInvitiation, ITeamMemberTeam, ITeamMessage } from '../../interfaces';
 import { clearUser } from '../store';
 
 interface IUpdatTeamMemberTeam {
@@ -15,6 +15,7 @@ interface IUpdateTeamInvitation {
 interface ITeamState {
   currentTeam: number;
   adminTeams: ITeam[];
+  teamMessages: ITeamMessage[];
   teamInvitations: ITeamInvitiation[];
   teamMemberTeams: ITeamMemberTeam[];
   adminTeamPagination: IPaginationState;
@@ -38,6 +39,7 @@ const paginationState = {
 const initialState: ITeamState = {
   currentTeam: 0,
   adminTeams: [],
+  teamMessages: [],
   teamInvitations: [],
   teamMemberTeams: [],
   teamInvitationPagination: paginationState,
@@ -67,6 +69,16 @@ const teamSlice = createSlice({
 
     setCurrentTeam: (state, action: PayloadAction<number>) => {
       state.currentTeam = action.payload;
+      state.teamMessages = [];
+      // CLEAR ALL STATE HERE BECAUSE CHANGING CURRENT TEAM MEANS TO RESET ALL STATE
+    },
+
+    addTeamMessage: (state, action: PayloadAction<ITeamMessage>) => {
+      state.teamMessages = [action.payload, ...state.teamMessages];
+    },
+
+    setTeamMessages: (state, action: PayloadAction<ITeamMessage[]>) => {
+      state.teamMessages = [...state.teamMessages, ...action.payload];
     },
 
     removeTeamInvitation: (state, action: PayloadAction<number>) => {
@@ -135,6 +147,8 @@ const teamSlice = createSlice({
 });
 
 export const {
+  addTeamMessage,
+  setTeamMessages,
   clearTeamMemberTeams,
   setTeamMemberTeams,
   clearAdminTeams,

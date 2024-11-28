@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import com.hart.overwatch.teaminvitation.TeamInvitation;
 import com.hart.overwatch.teammember.TeamMember;
+import com.hart.overwatch.teammessage.TeamMessage;
 import com.hart.overwatch.user.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -56,6 +57,9 @@ public class Team {
             orphanRemoval = true)
     private List<TeamMember> teamMembers;
 
+    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<TeamMessage> teamMessages;
 
 
     public Team() {
@@ -83,6 +87,10 @@ public class Team {
 
     public User getUser() {
         return user;
+    }
+
+    public List<TeamMessage> getTeamMessages() {
+        return teamMessages;
     }
 
     public List<TeamInvitation> getTeamInvitations() {
@@ -139,6 +147,10 @@ public class Team {
 
     public void setTeamMembers(List<TeamMember> teamMembers) {
         this.teamMembers = teamMembers;
+    }
+
+    public void setTeamMessages(List<TeamMessage> teamMessages) {
+        this.teamMessages = teamMessages;
     }
 }
 

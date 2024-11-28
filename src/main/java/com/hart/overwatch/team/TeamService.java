@@ -67,6 +67,7 @@ public class TeamService {
     }
 
 
+
     public PaginationDto<TeamDto> getTeams(Long userId, int page, int pageSize, String direction) {
 
         Pageable pageable = this.paginationService.getPageable(page, pageSize, direction);
