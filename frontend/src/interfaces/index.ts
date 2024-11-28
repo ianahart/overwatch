@@ -19,6 +19,13 @@ export interface IReviewer {
   avatarUrl: string;
 }
 
+export interface ITeamMemberTeam {
+  id: number;
+  userId: number;
+  teamId: number;
+  teamName: string;
+}
+
 export interface ITeam {
   id: number;
   userId: number;
@@ -2402,6 +2409,27 @@ export interface IUpdateTeamInvitationRequest {
   teamInvitationId: number;
   teamId: number;
   userId: number;
+}
+
+export interface IGetTeamMemberTeamRequest {
+  token: string;
+  userId: number;
+  page: number;
+  pageSize: number;
+  direction: string;
+}
+
+export interface IGetTeamMemberTeamResponse {
+  message: string;
+  data: {
+    items: ITeamMemberTeam[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
+  totalTeamMemberTeams: number;
 }
 
 export interface IUpdateTeamInvitationResponse extends IBaseResponse {}

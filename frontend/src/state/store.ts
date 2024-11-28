@@ -7,12 +7,17 @@ import { userReducer, updateUser, updateTokens, clearUser, updateUserAndTokens }
 import { settingReducer, updateSetting, clearSetting } from './slices/settingSlice';
 import {
   teamReducer,
+  clearTeamMemberTeams,
+  setTeamMemberTeams,
   clearAdminTeams,
   clearTeamPagination,
   setTeamPagination,
   setCurrentTeam,
   setAdminTeams,
   clearTeams,
+  clearTeamInvitations,
+  setTeamInvitations,
+  removeTeamInvitation,
 } from './slices/teamSlice';
 import {
   toggleLabel,
@@ -159,6 +164,7 @@ import { stripePaymentRefundsApi } from './apis/stripePaymentRefundsApi';
 import { appTestimonialsApi } from './apis/appTestimonialsApi';
 import { teamsApi } from './apis/teamsApi';
 import { teamInvitationsApi } from './apis/teamInvitationsApi';
+import { teamMembersApi } from './apis/teamMembersApi';
 
 export const store = configureStore({
   reducer: {
@@ -223,6 +229,7 @@ export const store = configureStore({
     [appTestimonialsApi.reducerPath]: appTestimonialsApi.reducer,
     [teamsApi.reducerPath]: teamsApi.reducer,
     [teamInvitationsApi.reducerPath]: teamInvitationsApi.reducer,
+    [teamMembersApi.reducerPath]: teamMembersApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -277,7 +284,8 @@ export const store = configureStore({
       .concat(stripePaymentRefundsApi.middleware)
       .concat(appTestimonialsApi.middleware)
       .concat(teamsApi.middleware)
-      .concat(teamInvitationsApi.middleware);
+      .concat(teamInvitationsApi.middleware)
+      .concat(teamMembersApi.middleware);
   },
 });
 
@@ -287,6 +295,10 @@ export type TRootState = ReturnType<typeof store.getState>;
 export type TAppDispatch = typeof store.dispatch;
 
 export {
+  clearTeamInvitations,
+  setTeamInvitations,
+  clearTeamMemberTeams,
+  setTeamMemberTeams,
   clearAdminTeams,
   clearTeamPagination,
   setTeamPagination,
@@ -377,6 +389,7 @@ export {
   reorderTodoCards,
   setLabels,
   toggleLabel,
+  removeTeamInvitation,
 };
 
 export {
@@ -637,6 +650,8 @@ export {
   useCreateTeamInvitationMutation,
 } from './apis/teamInvitationsApi';
 
+export { useLazyFetchTeamMemberTeamsQuery, useFetchTeamMemberTeamsQuery } from './apis/teamMembersApi';
+
 export {
   testimonialsApi,
   authsApi,
@@ -675,4 +690,5 @@ export {
   appTestimonialsApi,
   teamsApi,
   teamInvitationsApi,
+  teamMembersApi,
 };
