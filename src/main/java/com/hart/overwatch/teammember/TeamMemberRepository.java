@@ -7,9 +7,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import com.hart.overwatch.teammember.dto.TeamMemberTeamDto;
+import java.util.List;
 
 @Repository
 public interface TeamMemberRepository extends JpaRepository<TeamMember, Long> {
+
+    List<TeamMember> findTeamMemberByTeamId(@Param("teamId") Long teamId);
 
     @Query(value = """
             SELECT COUNT(tm.id) FROM TeamMember tm

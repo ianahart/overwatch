@@ -7,6 +7,8 @@ import { userReducer, updateUser, updateTokens, clearUser, updateUserAndTokens }
 import { settingReducer, updateSetting, clearSetting } from './slices/settingSlice';
 import {
   teamReducer,
+  setTeamMessages,
+  addTeamMessage,
   clearTeamMemberTeams,
   setTeamMemberTeams,
   clearAdminTeams,
@@ -165,6 +167,7 @@ import { appTestimonialsApi } from './apis/appTestimonialsApi';
 import { teamsApi } from './apis/teamsApi';
 import { teamInvitationsApi } from './apis/teamInvitationsApi';
 import { teamMembersApi } from './apis/teamMembersApi';
+import { teamMessagesApi } from './apis/teamMessagesApi';
 
 export const store = configureStore({
   reducer: {
@@ -230,6 +233,7 @@ export const store = configureStore({
     [teamsApi.reducerPath]: teamsApi.reducer,
     [teamInvitationsApi.reducerPath]: teamInvitationsApi.reducer,
     [teamMembersApi.reducerPath]: teamMembersApi.reducer,
+    [teamMessagesApi.reducerPath]: teamMessagesApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -285,7 +289,8 @@ export const store = configureStore({
       .concat(appTestimonialsApi.middleware)
       .concat(teamsApi.middleware)
       .concat(teamInvitationsApi.middleware)
-      .concat(teamMembersApi.middleware);
+      .concat(teamMembersApi.middleware)
+      .concat(teamMessagesApi.middleware);
   },
 });
 
@@ -295,6 +300,8 @@ export type TRootState = ReturnType<typeof store.getState>;
 export type TAppDispatch = typeof store.dispatch;
 
 export {
+  addTeamMessage,
+  setTeamMessages,
   clearTeamInvitations,
   setTeamInvitations,
   clearTeamMemberTeams,
@@ -656,6 +663,8 @@ export {
   useFetchTeamMemberTeamsQuery,
 } from './apis/teamMembersApi';
 
+export { useLazyFetchTeamMessagesQuery } from './apis/teamMessagesApi';
+
 export {
   testimonialsApi,
   authsApi,
@@ -695,4 +704,5 @@ export {
   teamsApi,
   teamInvitationsApi,
   teamMembersApi,
+  teamMessagesApi,
 };

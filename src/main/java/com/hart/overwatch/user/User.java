@@ -40,6 +40,7 @@ import com.hart.overwatch.stripepaymentintent.StripePaymentIntent;
 import com.hart.overwatch.team.Team;
 import com.hart.overwatch.teaminvitation.TeamInvitation;
 import com.hart.overwatch.teammember.TeamMember;
+import com.hart.overwatch.teammessage.TeamMessage;
 import com.hart.overwatch.testimonial.Testimonial;
 import com.hart.overwatch.todocard.TodoCard;
 import com.hart.overwatch.todolist.TodoList;
@@ -298,6 +299,9 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<TeamMember> teamMembers;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<TeamMessage> teamMessages;
 
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -352,6 +356,10 @@ public class User implements UserDetails {
 
     public List<ReplyComment> getReplyComments() {
         return replyComments;
+    }
+
+    public List<TeamMessage> getTeamMessages() {
+        return teamMessages;
     }
 
     public List<Team> getTeams() {
@@ -645,6 +653,10 @@ public class User implements UserDetails {
 
     public void setOwnerRepositories(List<Repository> ownerRepositories) {
         this.ownerRepositories = ownerRepositories;
+    }
+
+    public void setTeamMessages(List<TeamMessage> teamMessages) {
+        this.teamMessages = teamMessages;
     }
 
     public void setReviewerRepositories(List<Repository> reviewerRepositories) {

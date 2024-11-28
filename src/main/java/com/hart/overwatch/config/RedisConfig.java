@@ -12,6 +12,7 @@ import org.springframework.data.redis.serializer.GenericToStringSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import com.hart.overwatch.chatmessage.ChatMessageSubscriber;
 import com.hart.overwatch.email.request.EmailRequest;
+import com.hart.overwatch.teammessage.TeamMessageSubscriber;
 import org.springframework.data.redis.core.RedisTemplate;
 
 @Configuration
@@ -32,16 +33,25 @@ public class RedisConfig {
 
     @Bean
     RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,
-            MessageListenerAdapter listenerAdapter) {
+            MessageListenerAdapter chatListenerAdapter,
+            MessageListenerAdapter teamListenerAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        container.addMessageListener(listenerAdapter, new PatternTopic("chat"));
+
+        container.addMessageListener(chatListenerAdapter, new PatternTopic("chat"));
+        container.addMessageListener(teamListenerAdapter, new PatternTopic("team"));
+
         return container;
     }
 
     @Bean
-    MessageListenerAdapter listenerAdapter(ChatMessageSubscriber receiver) {
-        return new MessageListenerAdapter(receiver, "receiveMessage");
+    MessageListenerAdapter chatListenerAdapter(ChatMessageSubscriber receiver) {
+        return new MessageListenerAdapter(receiver, "receiveChatMessage");
+    }
+
+    @Bean
+    MessageListenerAdapter teamListenerAdapter(TeamMessageSubscriber receiver) {
+        return new MessageListenerAdapter(receiver, "receiveTeamMessage");
     }
 
     @Bean
