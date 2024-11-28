@@ -18,7 +18,7 @@ const ToolTip = ({ children, message }: IToolTipProps) => {
         {children}
       </div>
       {isShowing && (
-        <div className="absolute top-6 -right-6 text-xs text-gray-400 bg-gray-800 p-2 rounded-lg">{message}</div>
+        <div className="absolute top-6 -right-6 text-xs text-gray-400 bg-gray-800 p-2 rounded-lg z-10">{message}</div>
       )}
     </div>
   );

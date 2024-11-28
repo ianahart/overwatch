@@ -650,7 +650,11 @@ export {
   useCreateTeamInvitationMutation,
 } from './apis/teamInvitationsApi';
 
-export { useLazyFetchTeamMemberTeamsQuery, useFetchTeamMemberTeamsQuery } from './apis/teamMembersApi';
+export {
+  useDeleteTeamMemberMutation,
+  useLazyFetchTeamMemberTeamsQuery,
+  useFetchTeamMemberTeamsQuery,
+} from './apis/teamMembersApi';
 
 export {
   testimonialsApi,

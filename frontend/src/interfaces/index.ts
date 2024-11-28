@@ -2432,6 +2432,13 @@ export interface IGetTeamMemberTeamResponse {
   totalTeamMemberTeams: number;
 }
 
+export interface IDeleteTeamMemberRequest {
+  token: string;
+  teamMemberId: number;
+}
+
+export interface IDeleteTeamMemberResponse extends IBaseResponse {}
+
 export interface IUpdateTeamInvitationResponse extends IBaseResponse {}
 
 export interface IDeleteTeamInvitationResponse extends IBaseResponse {}

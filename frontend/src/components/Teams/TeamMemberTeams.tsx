@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { AiOutlineTeam } from 'react-icons/ai';
+import { BsTrash } from 'react-icons/bs';
+import ToolTip from '../Shared/ToolTip';
+
 import {
   TRootState,
   useFetchTeamMemberTeamsQuery,
@@ -9,8 +13,8 @@ import {
   setCurrentTeam,
   setTeamMemberTeams,
   clearTeamMemberTeams,
+  useDeleteTeamMemberMutation,
 } from '../../state/store';
-import { AiOutlineTeam } from 'react-icons/ai';
 
 const TeamMemberTeams = () => {
   const { teamMemberTeams, teamMemberTeamPagination, currentTeam } = useSelector((store: TRootState) => store.team);
@@ -18,6 +22,7 @@ const TeamMemberTeams = () => {
   const dispatch = useDispatch();
   const { token, user } = useSelector((store: TRootState) => store.user);
   const [fetchTeamMemberTeams] = useLazyFetchTeamMemberTeamsQuery();
+  const [deleteTeamMember] = useDeleteTeamMemberMutation();
   const [totalTeamMemberTeams, setTotalTeamMemberTeams] = useState(0);
   const { data, error, isLoading } = useFetchTeamMemberTeamsQuery(
     {
@@ -89,21 +94,40 @@ const TeamMemberTeams = () => {
     dispatch(setCurrentTeam(teamId));
     navigate(`/settings/${user.slug}/teams/${currentTeam}/posts`);
   };
+
+  const handleDeleteTeamMember = (teamMemberId: number): void => {
+    deleteTeamMember({ token, teamMemberId })
+      .unwrap()
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div>
       <h3>Teams You Belong to ({totalTeamMemberTeams})</h3>
       <div className="h-20 overflow-y-auto">
-        {teamMemberTeams.map((teamMembersTeam) => {
+        {teamMemberTeams.map((teamMembersTeam, index) => {
           return (
-            <div
-              onClick={() => changeCurrentTeam(teamMembersTeam.teamId)}
-              className="my-1 cursor-pointer"
-              key={teamMembersTeam.id}
-            >
-              <p className="hover:text-gray-500 flex items-center">
-                <AiOutlineTeam className="mr-1 text-blue-400" />
-                {teamMembersTeam.teamName}
-              </p>
+            <div key={teamMembersTeam.id} className="flex items-center justify-between">
+              <div onClick={() => changeCurrentTeam(teamMembersTeam.teamId)} className="my-1 cursor-pointer">
+                <p className="hover:text-gray-500 flex items-center">
+                  <AiOutlineTeam className="mr-1 text-blue-400" />
+                  {teamMembersTeam.teamName}
+                </p>
+              </div>
+              <div onClick={() => handleDeleteTeamMember(teamMembersTeam.id)} className="mr-10 cursor-pointer">
+                {teamMemberTeams.length - 1 !== index ? (
+                  <ToolTip message="Leave">
+                    <BsTrash />
+                  </ToolTip>
+                ) : (
+                  <BsTrash />
+                )}
+              </div>
             </div>
           );
         })}
