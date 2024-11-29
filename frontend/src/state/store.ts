@@ -8,6 +8,7 @@ import { settingReducer, updateSetting, clearSetting } from './slices/settingSli
 import {
   teamReducer,
   setTeamMessages,
+  setTeamPosts,
   addTeamMessage,
   clearTeamMemberTeams,
   setTeamMemberTeams,
@@ -168,6 +169,7 @@ import { teamsApi } from './apis/teamsApi';
 import { teamInvitationsApi } from './apis/teamInvitationsApi';
 import { teamMembersApi } from './apis/teamMembersApi';
 import { teamMessagesApi } from './apis/teamMessagesApi';
+import { teamPostsApi } from './apis/teamPostsApi';
 
 export const store = configureStore({
   reducer: {
@@ -234,6 +236,7 @@ export const store = configureStore({
     [teamInvitationsApi.reducerPath]: teamInvitationsApi.reducer,
     [teamMembersApi.reducerPath]: teamMembersApi.reducer,
     [teamMessagesApi.reducerPath]: teamMessagesApi.reducer,
+    [teamPostsApi.reducerPath]: teamPostsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -290,7 +293,8 @@ export const store = configureStore({
       .concat(teamsApi.middleware)
       .concat(teamInvitationsApi.middleware)
       .concat(teamMembersApi.middleware)
-      .concat(teamMessagesApi.middleware);
+      .concat(teamMessagesApi.middleware)
+      .concat(teamPostsApi.middleware);
   },
 });
 
@@ -300,6 +304,7 @@ export type TRootState = ReturnType<typeof store.getState>;
 export type TAppDispatch = typeof store.dispatch;
 
 export {
+  setTeamPosts,
   addTeamMessage,
   setTeamMessages,
   clearTeamInvitations,
@@ -665,6 +670,8 @@ export {
 
 export { useLazyFetchTeamMessagesQuery } from './apis/teamMessagesApi';
 
+export { useFetchTeamPostsQuery, useLazyFetchTeamPostsQuery, useCreateTeamPostMutation } from './apis/teamPostsApi';
+
 export {
   testimonialsApi,
   authsApi,
@@ -705,4 +712,5 @@ export {
   teamInvitationsApi,
   teamMembersApi,
   teamMessagesApi,
+  teamPostsApi,
 };

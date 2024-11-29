@@ -41,6 +41,7 @@ import com.hart.overwatch.team.Team;
 import com.hart.overwatch.teaminvitation.TeamInvitation;
 import com.hart.overwatch.teammember.TeamMember;
 import com.hart.overwatch.teammessage.TeamMessage;
+import com.hart.overwatch.teampost.TeamPost;
 import com.hart.overwatch.testimonial.Testimonial;
 import com.hart.overwatch.todocard.TodoCard;
 import com.hart.overwatch.todolist.TodoList;
@@ -303,6 +304,10 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<TeamMessage> teamMessages;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<TeamPost> teamPosts;
+
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "setting_id", referencedColumnName = "id")
@@ -356,6 +361,10 @@ public class User implements UserDetails {
 
     public List<ReplyComment> getReplyComments() {
         return replyComments;
+    }
+
+    public List<TeamPost> getTeamPosts() {
+        return teamPosts;
     }
 
     public List<TeamMessage> getTeamMessages() {
@@ -838,6 +847,10 @@ public class User implements UserDetails {
 
     public void setTeams(List<Team> teams) {
         this.teams = teams;
+    }
+
+    public void setTeamPosts(List<TeamPost> teamPosts) {
+        this.teamPosts = teamPosts;
     }
 
     public void setReviewierStripePaymentIntents(
