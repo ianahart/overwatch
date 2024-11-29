@@ -2498,6 +2498,13 @@ export interface IGetAllTeamPostsResponse {
   totalTeamMemberTeams: number;
 }
 
+export interface IDeleteTeamPostRequest {
+  token: string;
+  teamPostId: number;
+}
+
+export interface IDeleteTeamPostResponse extends IBaseResponse {}
+
 export interface ICreateTeamPostResponse extends IBaseResponse {}
 
 export interface IDeleteTeamMemberResponse extends IBaseResponse {}
