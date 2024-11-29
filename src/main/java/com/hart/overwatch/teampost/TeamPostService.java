@@ -15,6 +15,8 @@ import com.hart.overwatch.teampost.dto.TeamPostDto;
 import com.hart.overwatch.teampost.request.CreateTeamPostRequest;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
+import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.advice.ForbiddenException;
 
 @Service
 public class TeamPostService {
@@ -34,6 +36,11 @@ public class TeamPostService {
         this.userService = userService;
         this.teamService = teamService;
         this.paginationService = paginationService;
+    }
+
+    private TeamPost getTeamPostByTeamPostId(Long teamPostId) {
+        return teamPostRepository.findById(teamPostId).orElseThrow(() -> new NotFoundException(
+                String.format("Could not find a team post with id %d", teamPostId)));
     }
 
 
@@ -74,6 +81,17 @@ public class TeamPostService {
 
         return new PaginationDto<TeamPostDto>(result.getContent(), result.getNumber(), pageSize,
                 result.getTotalPages(), direction, result.getTotalElements());
+    }
+
+    public void deleteTeamPost(Long teamPostId) {
+        User user = userService.getCurrentlyLoggedInUser();
+        TeamPost teamPost = getTeamPostByTeamPostId(teamPostId);
+
+        if (!user.getId().equals(teamPost.getUser().getId())) {
+            throw new ForbiddenException(
+                    "You do not have the permission to delete another user's post");
+        }
+        teamPostRepository.delete(teamPost);
     }
 
 }

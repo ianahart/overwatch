@@ -4,6 +4,8 @@ import {
   IGetAllTeamPostsRequest,
   ICreateTeamPostRequest,
   ICreateTeamPostResponse,
+  IDeleteTeamPostRequest,
+  IDeleteTeamPostResponse,
 } from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
@@ -45,8 +47,27 @@ const teamPostsApi = createApi({
             ? [...result.data.items.map(({ id }) => ({ type: 'TeamPost', id })), { type: 'TeamPost', id: 'LIST' }]
             : [{ type: 'TeamPost', id: 'LIST' }],
       }),
+      deleteTeamPost: builder.mutation<IDeleteTeamPostResponse, IDeleteTeamPostRequest>({
+        query: ({ teamPostId, token }) => ({
+          url: `/team-posts/${teamPostId}`,
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }),
+        //@ts-ignore
+        invalidatesTags: (_, error, { teamPostId }) => [
+          { type: 'TeamPost', id: teamPostId },
+          { type: 'TeamPost', id: 'LIST' },
+        ],
+      }),
     };
   },
 });
-export const { useCreateTeamPostMutation, useLazyFetchTeamPostsQuery, useFetchTeamPostsQuery } = teamPostsApi;
+export const {
+  useDeleteTeamPostMutation,
+  useCreateTeamPostMutation,
+  useLazyFetchTeamPostsQuery,
+  useFetchTeamPostsQuery,
+} = teamPostsApi;
 export { teamPostsApi };

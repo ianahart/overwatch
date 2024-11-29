@@ -102,6 +102,10 @@ const teamSlice = createSlice({
       state.teamMessages = [...state.teamMessages, ...action.payload];
     },
 
+    removeTeamPost: (state, action: PayloadAction<number>) => {
+      state.teamPosts = state.teamPosts.filter((teamPost) => teamPost.id !== action.payload);
+    },
+
     removeTeamInvitation: (state, action: PayloadAction<number>) => {
       state.teamInvitations = state.teamInvitations.filter((teamInvitation) => teamInvitation.id !== action.payload);
     },
@@ -185,6 +189,7 @@ export const {
   clearTeamInvitations,
   setTeamInvitations,
   removeTeamInvitation,
+  removeTeamPost,
 } = teamSlice.actions;
 
 export const teamReducer = teamSlice.reducer;
