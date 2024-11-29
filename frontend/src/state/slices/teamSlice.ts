@@ -1,6 +1,11 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { IPaginationState, ITeam, ITeamInvitiation, ITeamMemberTeam, ITeamMessage } from '../../interfaces';
+import { IPaginationState, ITeam, ITeamInvitiation, ITeamMemberTeam, ITeamMessage, ITeamPost } from '../../interfaces';
 import { clearUser } from '../store';
+
+interface IUpdateTeamPostTeam {
+  reset: boolean;
+  posts: ITeamPost[];
+}
 
 interface IUpdatTeamMemberTeam {
   reset: boolean;
@@ -16,11 +21,13 @@ interface ITeamState {
   currentTeam: number;
   adminTeams: ITeam[];
   teamMessages: ITeamMessage[];
+  teamPosts: ITeamPost[];
   teamInvitations: ITeamInvitiation[];
   teamMemberTeams: ITeamMemberTeam[];
   adminTeamPagination: IPaginationState;
   teamMemberTeamPagination: IPaginationState;
   teamInvitationPagination: IPaginationState;
+  teamPostPagination: IPaginationState;
 }
 
 interface IPaginationPayload {
@@ -42,9 +49,11 @@ const initialState: ITeamState = {
   teamMessages: [],
   teamInvitations: [],
   teamMemberTeams: [],
+  teamPosts: [],
   teamInvitationPagination: paginationState,
   adminTeamPagination: paginationState,
   teamMemberTeamPagination: paginationState,
+  teamPostPagination: paginationState,
 };
 
 const teamSlice = createSlice({
@@ -62,6 +71,9 @@ const teamSlice = createSlice({
         case 'invitation':
           state.teamInvitationPagination = action.payload.pagination;
           break;
+        case 'post':
+          state.teamPostPagination = action.payload.pagination;
+          break;
         default:
           break;
       }
@@ -70,11 +82,20 @@ const teamSlice = createSlice({
     setCurrentTeam: (state, action: PayloadAction<number>) => {
       state.currentTeam = action.payload;
       state.teamMessages = [];
-      // CLEAR ALL STATE HERE BECAUSE CHANGING CURRENT TEAM MEANS TO RESET ALL STATE
+      state.teamPosts = [];
     },
 
     addTeamMessage: (state, action: PayloadAction<ITeamMessage>) => {
       state.teamMessages = [action.payload, ...state.teamMessages];
+    },
+
+    setTeamPosts: (state, action: PayloadAction<IUpdateTeamPostTeam>) => {
+      if (action.payload.reset) {
+        state.teamPosts = [];
+        state.teamPostPagination = paginationState;
+      } else {
+        state.teamPosts = [...state.teamPosts, ...action.payload.posts];
+      }
     },
 
     setTeamMessages: (state, action: PayloadAction<ITeamMessage[]>) => {
@@ -108,7 +129,7 @@ const teamSlice = createSlice({
     },
 
     clearTeamPagination: (state, action: PayloadAction<string>) => {
-      const paginationState = { page: 0, pageSize: 1, totalPages: 0, direction: 'next', totalElements: 0 };
+      const paginationState = { page: 0, pageSize: 3, totalPages: 0, direction: 'next', totalElements: 0 };
       switch (action.payload) {
         case 'admin':
           state.adminTeamPagination = paginationState;
@@ -118,6 +139,9 @@ const teamSlice = createSlice({
           break;
         case 'invitation':
           state.teamInvitationPagination = paginationState;
+          break;
+        case 'post':
+          state.teamPostPagination = paginationState;
           break;
         default:
           break;
@@ -147,6 +171,7 @@ const teamSlice = createSlice({
 });
 
 export const {
+  setTeamPosts,
   addTeamMessage,
   setTeamMessages,
   clearTeamMemberTeams,
