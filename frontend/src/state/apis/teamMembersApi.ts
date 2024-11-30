@@ -2,6 +2,8 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import {
   IDeleteTeamMemberRequest,
   IDeleteTeamMemberResponse,
+  IGetAllTeamMembersRequest,
+  IGetAllTeamMembersResponse,
   IGetTeamMemberTeamRequest,
   IGetTeamMemberTeamResponse,
 } from '../../interfaces';
@@ -27,6 +29,25 @@ const teamMembersApi = createApi({
           { type: 'TeamMember', id: 'LIST' },
         ],
       }),
+      fetchTeamMembers: builder.query<IGetAllTeamMembersResponse, IGetAllTeamMembersRequest>({
+        query: ({ teamId, token, page, pageSize, direction }) => {
+          if (teamId === 0 || teamId === null || !token) {
+            return '';
+          }
+          return {
+            url: `/teams/${teamId}/team-members?&page=${page}&pageSize=${pageSize}&direction=${direction}`,
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+        //@ts-ignore
+        providesTags: (result, error, arg) =>
+          result
+            ? [...result.data.items.map(({ id }) => ({ type: 'TeamMember', id })), { type: 'TeamMember', id: 'LIST' }]
+            : [{ type: 'TeamMember', id: 'LIST' }],
+      }),
       fetchTeamMemberTeams: builder.query<IGetTeamMemberTeamResponse, IGetTeamMemberTeamRequest>({
         query: ({ userId, token, page, pageSize, direction }) => {
           if (userId === 0 || userId === null || !token) {
@@ -49,6 +70,11 @@ const teamMembersApi = createApi({
     };
   },
 });
-export const { useDeleteTeamMemberMutation, useFetchTeamMemberTeamsQuery, useLazyFetchTeamMemberTeamsQuery } =
-  teamMembersApi;
+export const {
+  useDeleteTeamMemberMutation,
+  useFetchTeamMemberTeamsQuery,
+  useLazyFetchTeamMemberTeamsQuery,
+  useFetchTeamMembersQuery,
+  useLazyFetchTeamMembersQuery,
+} = teamMembersApi;
 export { teamMembersApi };

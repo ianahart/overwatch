@@ -48,7 +48,7 @@ const TeamMemberTeams = () => {
         pageSize,
       };
 
-      dispatch(setTeamPagination({ pagination: newPagination, paginationType: 'member' }));
+      dispatch(setTeamPagination({ pagination: newPagination, paginationType: 'memberTeam' }));
       setTotalTeamMemberTeams(data.totalTeamMemberTeams);
       dispatch(setTeamMemberTeams({ team: items, reset: false }));
     }
@@ -75,7 +75,7 @@ const TeamMemberTeams = () => {
           pageSize,
         };
 
-        dispatch(setTeamPagination({ pagination: newPagination, paginationType: 'member' }));
+        dispatch(setTeamPagination({ pagination: newPagination, paginationType: 'memberTeam' }));
         setTotalTeamMemberTeams(res.totalTeamMemberTeams);
         dispatch(setTeamMemberTeams({ team: items, reset: false }));
       })

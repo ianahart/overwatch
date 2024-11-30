@@ -7,6 +7,8 @@ import { userReducer, updateUser, updateTokens, clearUser, updateUserAndTokens }
 import { settingReducer, updateSetting, clearSetting } from './slices/settingSlice';
 import {
   teamReducer,
+  removeTeamMember,
+  setTeamMembers,
   removeTeamPost,
   setTeamMessages,
   setTeamPosts,
@@ -305,6 +307,8 @@ export type TRootState = ReturnType<typeof store.getState>;
 export type TAppDispatch = typeof store.dispatch;
 
 export {
+  setTeamMembers,
+  removeTeamMember,
   removeTeamPost,
   setTeamPosts,
   addTeamMessage,
@@ -665,6 +669,8 @@ export {
 } from './apis/teamInvitationsApi';
 
 export {
+  useLazyFetchTeamMembersQuery,
+  useFetchTeamMembersQuery,
   useDeleteTeamMemberMutation,
   useLazyFetchTeamMemberTeamsQuery,
   useFetchTeamMemberTeamsQuery,

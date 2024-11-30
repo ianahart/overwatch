@@ -1,6 +1,19 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { IPaginationState, ITeam, ITeamInvitiation, ITeamMemberTeam, ITeamMessage, ITeamPost } from '../../interfaces';
+import {
+  IPaginationState,
+  ITeam,
+  ITeamInvitiation,
+  ITeamMember,
+  ITeamMemberTeam,
+  ITeamMessage,
+  ITeamPost,
+} from '../../interfaces';
 import { clearUser } from '../store';
+
+interface IUpdateTeamMember {
+  reset: boolean;
+  teamMembers: ITeamMember[];
+}
 
 interface IUpdateTeamPostTeam {
   reset: boolean;
@@ -21,6 +34,7 @@ interface ITeamState {
   currentTeam: number;
   adminTeams: ITeam[];
   teamMessages: ITeamMessage[];
+  teamMembers: ITeamMember[];
   teamPosts: ITeamPost[];
   teamInvitations: ITeamInvitiation[];
   teamMemberTeams: ITeamMemberTeam[];
@@ -28,6 +42,7 @@ interface ITeamState {
   teamMemberTeamPagination: IPaginationState;
   teamInvitationPagination: IPaginationState;
   teamPostPagination: IPaginationState;
+  teamMemberPagination: IPaginationState;
 }
 
 interface IPaginationPayload {
@@ -50,10 +65,12 @@ const initialState: ITeamState = {
   teamInvitations: [],
   teamMemberTeams: [],
   teamPosts: [],
+  teamMembers: [],
   teamInvitationPagination: paginationState,
   adminTeamPagination: paginationState,
   teamMemberTeamPagination: paginationState,
   teamPostPagination: paginationState,
+  teamMemberPagination: paginationState,
 };
 
 const teamSlice = createSlice({
@@ -65,7 +82,7 @@ const teamSlice = createSlice({
         case 'admin':
           state.adminTeamPagination = action.payload.pagination;
           break;
-        case 'member':
+        case 'memberTeam':
           state.teamMemberTeamPagination = action.payload.pagination;
           break;
         case 'invitation':
@@ -83,6 +100,7 @@ const teamSlice = createSlice({
       state.currentTeam = action.payload;
       state.teamMessages = [];
       state.teamPosts = [];
+      state.teamMembers = [];
     },
 
     addTeamMessage: (state, action: PayloadAction<ITeamMessage>) => {
@@ -98,9 +116,22 @@ const teamSlice = createSlice({
       }
     },
 
+    setTeamMembers: (state, action: PayloadAction<IUpdateTeamMember>) => {
+      if (action.payload.reset) {
+        state.teamMembers = [];
+        state.teamMemberPagination = paginationState;
+      } else {
+        state.teamMembers = [...state.teamMembers, ...action.payload.teamMembers];
+      }
+    },
+
     setTeamMessages: (state, action: PayloadAction<ITeamMessage[]>) => {
       state.teamMessages = [];
       state.teamMessages = action.payload;
+    },
+
+    removeTeamMember: (state, action: PayloadAction<number>) => {
+      state.teamMembers = state.teamMembers.filter((teamMember) => teamMember.id !== action.payload);
     },
 
     removeTeamPost: (state, action: PayloadAction<number>) => {
@@ -139,7 +170,7 @@ const teamSlice = createSlice({
         case 'admin':
           state.adminTeamPagination = paginationState;
           break;
-        case 'member':
+        case 'memberTeam':
           state.teamMemberTeamPagination = paginationState;
           break;
         case 'invitation':
@@ -176,6 +207,8 @@ const teamSlice = createSlice({
 });
 
 export const {
+  removeTeamMember,
+  setTeamMembers,
   setTeamPosts,
   addTeamMessage,
   setTeamMessages,
