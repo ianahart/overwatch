@@ -2534,6 +2534,15 @@ export interface IGetAllTeamMembersResponse {
   admin: ITeamMember;
 }
 
+export interface ICreateTeamCommentRequest {
+  token: string;
+  userId: number;
+  teamPostId: number;
+  content: string;
+}
+
+export interface ICreateTeamCommentResponse extends IBaseResponse {}
+
 export interface IDeleteTeamPostResponse extends IBaseResponse {}
 
 export interface ICreateTeamPostResponse extends IBaseResponse {}

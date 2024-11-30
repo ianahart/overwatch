@@ -38,7 +38,7 @@ public class TeamPostService {
         this.paginationService = paginationService;
     }
 
-    private TeamPost getTeamPostByTeamPostId(Long teamPostId) {
+    public TeamPost getTeamPostByTeamPostId(Long teamPostId) {
         return teamPostRepository.findById(teamPostId).orElseThrow(() -> new NotFoundException(
                 String.format("Could not find a team post with id %d", teamPostId)));
     }
