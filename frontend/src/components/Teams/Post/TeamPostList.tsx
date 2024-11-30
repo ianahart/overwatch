@@ -78,7 +78,10 @@ const TeamPostList = () => {
   return (
     <div>
       <div className="my-8 max-w-[600px] w-full">
-        <div className="text-xl">Team Posts</div>
+        <div className="text-center">
+          <h3 className="text-xl">Team Posts</h3>
+          <p>Here you can share code snippets.</p>
+        </div>
         {teamPosts.map((teamPost) => {
           return <TeamPostItem key={teamPost.id} teamPost={teamPost} />;
         })}
