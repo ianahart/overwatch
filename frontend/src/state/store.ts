@@ -688,7 +688,11 @@ export {
   useDeleteTeamPostMutation,
 } from './apis/teamPostsApi';
 
-export { useCreateTeamCommentMutation } from './apis/teamCommentsApi';
+export {
+  useCreateTeamCommentMutation,
+  useFetchTeamCommentsQuery,
+  useLazyFetchTeamCommentsQuery,
+} from './apis/teamCommentsApi';
 
 export {
   testimonialsApi,
