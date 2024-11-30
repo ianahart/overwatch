@@ -99,7 +99,8 @@ const teamSlice = createSlice({
     },
 
     setTeamMessages: (state, action: PayloadAction<ITeamMessage[]>) => {
-      state.teamMessages = [...state.teamMessages, ...action.payload];
+      state.teamMessages = [];
+      state.teamMessages = action.payload;
     },
 
     removeTeamPost: (state, action: PayloadAction<number>) => {

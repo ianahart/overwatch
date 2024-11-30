@@ -35,6 +35,7 @@ const Message = () => {
   };
   const onFetchMessages = (data: any) => {
     const newMessage = JSON.parse(data.body) as ITeamMessage;
+    console.log(newMessage);
     if (newMessage.teamId === currentTeam) {
       dispatch(addTeamMessage(newMessage));
     }
