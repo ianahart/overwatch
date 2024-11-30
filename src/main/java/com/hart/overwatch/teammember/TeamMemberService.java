@@ -8,8 +8,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.team.Team;
 import com.hart.overwatch.team.TeamService;
+import com.hart.overwatch.teammember.dto.TeamMemberDto;
 import com.hart.overwatch.teammember.dto.TeamMemberTeamDto;
 import com.hart.overwatch.teammember.response.GetTeamMemberTeamsResponse;
+import com.hart.overwatch.teammember.response.GetTeamMembersResponse;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.advice.BadRequestException;
@@ -101,6 +103,38 @@ public class TeamMemberService {
         }
         return teamMembers.stream().filter(teamMember -> teamMember.getUser().getLoggedIn())
                 .map(teamMember -> teamMember.getUser().getId()).collect(Collectors.toList());
+    }
+
+    private TeamMemberDto getTeamAdmin(Long teamId) {
+        Team team = teamService.getTeamByTeamId(teamId);
+        TeamMemberDto teamMemberDto = new TeamMemberDto();
+        teamMemberDto.setId(team.getId());
+        teamMemberDto.setTeamId(team.getId());
+        teamMemberDto.setUserId(team.getUser().getId());
+        teamMemberDto.setFullName(team.getUser().getFullName());
+        teamMemberDto.setProfileId(team.getUser().getProfile().getId());
+        teamMemberDto.setAvatarUrl(team.getUser().getProfile().getAvatarUrl());
+        teamMemberDto.setCreatedAt(team.getCreatedAt());
+
+        return teamMemberDto;
+    }
+
+    public GetTeamMembersResponse getTeamMembers(Long teamId, int page, int pageSize,
+            String direction) {
+
+        Pageable pageable = this.paginationService.getPageable(page, pageSize, direction);
+
+        Page<TeamMemberDto> result =
+                this.teamMemberRepository.getTeamMembersByTeamId(pageable, teamId);
+        TeamMemberDto admin = getTeamAdmin(teamId);
+
+        GetTeamMembersResponse response = new GetTeamMembersResponse();
+        response.setMessage("success");
+        response.setAdmin(admin);
+        response.setData(new PaginationDto<TeamMemberDto>(result.getContent(), result.getNumber(),
+                 pageSize, result.getTotalPages(), direction, result.getTotalElements()));
+
+        return response;
     }
 
 

@@ -13,12 +13,13 @@ const Navigation = () => {
     { id: 2, text: 'Add Team Member', href: `/settings/${user.slug}/teams/${currentTeam}/add` },
     { id: 3, text: 'Messages', href: `/settings/${user.slug}/teams/${currentTeam}/messages` },
     { id: 4, text: 'Posts', href: `/settings/${user.slug}/teams/${currentTeam}/posts` },
+    { id: 5, text: 'Team Members', href: `/settings/${user.slug}/teams/${currentTeam}/members` },
   ];
 
   return (
     <>
       {currentTeam !== 0 ? (
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center flex-wrap">
           {teamLinks.map((teamLink) => {
             return (
               <Link key={teamLink.id} to={teamLink.href} className="mx-2 text-gray-400 font-bold">

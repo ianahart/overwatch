@@ -65,6 +65,7 @@ import InvitationRoute from './routes/Settings/Teams/InvitationRoute';
 import AddTeamMemberRoute from './routes/Settings/Teams/AddTeamMemberRoute';
 import TeamMessageRoute from './routes/Settings/Teams/TeamMessageRoute';
 import TeamPostRoute from './routes/Settings/Teams/TeamPostRoute';
+import TeamMemberRoute from './routes/Settings/Teams/TeamMemberRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -399,6 +400,14 @@ const router = createBrowserRouter(
             element={
               <RequireAuthReviewer>
                 <AddTeamMemberRoute />
+              </RequireAuthReviewer>
+            }
+          />
+          <Route
+            path=":teamId/members"
+            element={
+              <RequireAuthReviewer>
+                <TeamMemberRoute />
               </RequireAuthReviewer>
             }
           />

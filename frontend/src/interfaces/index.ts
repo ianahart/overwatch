@@ -1,6 +1,16 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface ITeamMember {
+  id: number;
+  userId: number;
+  teamId: number;
+  avatarUrl: string;
+  fullName: string;
+  createdAt: string;
+  profileId: number;
+}
+
 export interface ITeamPost {
   id: number;
   teamId: number;
@@ -2501,6 +2511,27 @@ export interface IGetAllTeamPostsResponse {
 export interface IDeleteTeamPostRequest {
   token: string;
   teamPostId: number;
+}
+
+export interface IGetAllTeamMembersRequest {
+  token: string;
+  teamId: number;
+  page: number;
+  pageSize: number;
+  direction: string;
+}
+
+export interface IGetAllTeamMembersResponse {
+  message: string;
+  data: {
+    items: ITeamMember[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
+  admin: ITeamMember;
 }
 
 export interface IDeleteTeamPostResponse extends IBaseResponse {}

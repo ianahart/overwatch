@@ -1,3 +1,13 @@
+export const teamMember = {
+  id: 0,
+  userId: 0,
+  teamId: 0,
+  avatarUrl: '',
+  fullName: '',
+  createdAt: '',
+  profileId: 0,
+};
+
 export const developerTypes = [
   { label: 'Frontend Developer', value: 'Frontend Developer', id: 'frontenddeveloper' },
   { label: 'Backend Developer', value: 'Backend Developer', id: 'backenddeveloper' },
