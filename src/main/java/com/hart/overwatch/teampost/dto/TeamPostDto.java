@@ -22,13 +22,16 @@ public class TeamPostDto {
 
     private String language;
 
+    private Boolean hasComments;
+
 
     public TeamPostDto() {
 
     }
 
     public TeamPostDto(Long id, Long teamId, LocalDateTime createdAt, Long userId, String code,
-            Boolean isEdited, String fullName, String avatarUrl, String language) {
+            Boolean isEdited, String fullName, String avatarUrl, String language,
+            Boolean hasComments) {
 
         this.id = id;
         this.teamId = teamId;
@@ -39,11 +42,17 @@ public class TeamPostDto {
         this.fullName = fullName;
         this.avatarUrl = avatarUrl;
         this.language = language;
+        this.hasComments = hasComments;
     }
 
     public Long getId() {
         return id;
     }
+
+    public Boolean getHasComments() {
+        return hasComments;
+    }
+
 
     public String getLanguage() {
         return language;
@@ -111,6 +120,10 @@ public class TeamPostDto {
 
     public void setLanguage(String language) {
         this.language = language;
+    }
+
+    public void setHasComments(Boolean hasComments) {
+        this.hasComments = hasComments;
     }
 
 

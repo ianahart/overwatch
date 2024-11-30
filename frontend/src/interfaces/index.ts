@@ -1,6 +1,17 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface ITeamComment {
+  id: number;
+  userId: number;
+  content: string;
+  createdAt: string;
+  fullName: string;
+  avatarUrl: string;
+  teamPostId: number;
+  isEdited: boolean;
+}
+
 export interface ITeamMember {
   id: number;
   userId: number;
@@ -21,6 +32,7 @@ export interface ITeamPost {
   fullName: string;
   avatarUrl: string;
   language: string;
+  hasComments: boolean;
 }
 
 export interface ITeamMessage {
@@ -2539,6 +2551,27 @@ export interface ICreateTeamCommentRequest {
   userId: number;
   teamPostId: number;
   content: string;
+}
+
+export interface IGetAllTeamCommentsRequest {
+  token: string;
+  teamPostId: number;
+  page: number;
+  pageSize: number;
+  direction: string;
+}
+
+export interface IGetAllTeamCommentsResponse {
+  message: string;
+  data: {
+    items: ITeamComment[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
+  admin: ITeamMember;
 }
 
 export interface ICreateTeamCommentResponse extends IBaseResponse {}

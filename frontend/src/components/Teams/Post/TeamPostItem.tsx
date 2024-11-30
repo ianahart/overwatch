@@ -6,11 +6,18 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { tomorrowNightBright } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import Avatar from '../../Shared/Avatar';
-import { ITeamPost } from '../../../interfaces';
-import { TRootState, removeTeamPost, useDeleteTeamPostMutation } from '../../../state/store';
+import { ITeamComment, ITeamPost } from '../../../interfaces';
+import {
+  TRootState,
+  removeTeamPost,
+  useDeleteTeamPostMutation,
+  useLazyFetchTeamCommentsQuery,
+} from '../../../state/store';
 import ClickAway from '../../Shared/ClickAway';
 import TeamModal from '../TeamModal';
 import TeamCommentForm from './Comment/TeamCommentForm';
+import { paginationState } from '../../../data';
+import TeamCommentList from './Comment/TeamCommentList';
 
 export interface ITeamPostItemProps {
   teamPost: ITeamPost;
@@ -23,11 +30,14 @@ const decodeHtmlEntities = (input: string): string => {
 
 const TeamPostItem = ({ teamPost }: ITeamPostItemProps) => {
   const dispatch = useDispatch();
+  const [pag, setPag] = useState(paginationState);
   const [isClickAwayOpen, setIsClickAwayOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [teamComments, setTeamComments] = useState<ITeamComment[]>([]);
   const decodedCode = decodeHtmlEntities(teamPost.code);
   const { token, user } = useSelector((store: TRootState) => store.user);
   const [deleteTeamPost] = useDeleteTeamPostMutation();
+  const [fetchTeamComments] = useLazyFetchTeamCommentsQuery();
 
   const handleOnOpenModal = (): void => {
     setIsModalOpen(true);
@@ -35,6 +45,11 @@ const TeamPostItem = ({ teamPost }: ITeamPostItemProps) => {
 
   const handleOnCloseModal = (): void => {
     setIsModalOpen(false);
+  };
+
+  const handleResetComments = () => {
+    setTeamComments([]);
+    setPag(paginationState);
   };
 
   const handleDeleteTeamPost = async (): Promise<void> => {
@@ -45,6 +60,28 @@ const TeamPostItem = ({ teamPost }: ITeamPostItemProps) => {
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const paginateTeamComments = (dir: string, initial = false) => {
+    const pageNumber = initial ? -1 : pag.page;
+    fetchTeamComments({ page: pageNumber, direction: dir, pageSize: pag.pageSize, teamPostId: teamPost.id, token })
+      .unwrap()
+      .then((res) => {
+        console.log(res);
+        const { items, page, pageSize, totalPages, direction, totalElements } = res.data;
+        setTeamComments((prevState) => [...prevState, ...items]);
+        setPag((prevState) => ({
+          ...prevState,
+          page,
+          pageSize,
+          totalPages,
+          totalElements,
+          direction,
+        }));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -95,16 +132,32 @@ const TeamPostItem = ({ teamPost }: ITeamPostItemProps) => {
       >
         {decodedCode}
       </SyntaxHighlighter>
-      <div>
-        <button onClick={handleOnOpenModal} className="my-1 text-sm hover:text-gray-600">
-          Leave a comment
-        </button>
-        {isModalOpen && (
-          <TeamModal closeModal={handleOnCloseModal}>
-            <TeamCommentForm teamPostId={teamPost.id} formType="create" closeModal={handleOnCloseModal} />
-          </TeamModal>
+      <div className="flex items-center justify-between">
+        <div>
+          <button onClick={handleOnOpenModal} className="my-1 text-sm hover:text-gray-600">
+            Leave a comment
+          </button>
+          {isModalOpen && (
+            <TeamModal closeModal={handleOnCloseModal}>
+              <TeamCommentForm
+                handleResetComments={handleResetComments}
+                teamPostId={teamPost.id}
+                formType="create"
+                closeModal={handleOnCloseModal}
+              />
+            </TeamModal>
+          )}
+        </div>
+
+        {teamPost.hasComments && !teamComments.length && (
+          <div>
+            <button onClick={() => paginateTeamComments('next', true)} className="my-1 text-sm hover:text-gray-600">
+              Read comments...
+            </button>
+          </div>
         )}
       </div>
+      <TeamCommentList pag={pag} teamComments={teamComments} paginateTeamComments={paginateTeamComments} />
     </div>
   );
 };

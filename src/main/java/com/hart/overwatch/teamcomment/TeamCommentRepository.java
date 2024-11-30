@@ -14,7 +14,8 @@ public interface TeamCommentRepository extends JpaRepository<TeamComment, Long> 
     @Query(value = """
             SELECT new com.hart.overwatch.teamcomment.dto.TeamCommentDto(
              tc.id AS id, u.id AS userId, tc.content AS content, tc.createdAt,
-             u.fullName AS fullName, p.avatarUrl AS avatarUrl, tp.id AS teamPostId
+             u.fullName AS fullName, p.avatarUrl AS avatarUrl, tp.id AS teamPostId,
+             tc.isEdited AS isEdited
             ) FROM TeamComment tc
             INNER JOIN tc.user u
             INNER JOIN tc.user.profile p

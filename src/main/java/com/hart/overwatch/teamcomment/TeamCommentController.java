@@ -34,7 +34,7 @@ public class TeamCommentController {
         return ResponseEntity.status(HttpStatus.OK).body(new CreateTeamCommentResponse("success"));
     }
 
-    @GetMapping(path = "team-posts/{teamPostId}/team-comments")
+    @GetMapping(path = "/team-posts/{teamPostId}/team-comments")
     ResponseEntity<GetTeamCommentsResponse> getTeamComments(
             @PathVariable("teamPostId") Long teamPostId, @RequestParam("page") int page,
             @RequestParam("pageSize") int pageSize, @RequestParam("direction") String direction) {

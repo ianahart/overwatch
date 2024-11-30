@@ -7,9 +7,10 @@ export interface ITeamCommentFormProps {
   teamPostId: number;
   formType: string;
   closeModal: () => void;
+  handleResetComments: () => void;
 }
 
-const TeamCommentForm = ({ teamPostId, formType, closeModal }: ITeamCommentFormProps) => {
+const TeamCommentForm = ({ teamPostId, formType, closeModal, handleResetComments }: ITeamCommentFormProps) => {
   const MAX_COMMENT_LENGTH = 200;
   const { user, token } = useSelector((store: TRootState) => store.user);
   const [error, setError] = useState('');
@@ -41,7 +42,7 @@ const TeamCommentForm = ({ teamPostId, formType, closeModal }: ITeamCommentFormP
       .unwrap()
       .then(() => {
         closeModal();
-        // maybe reset pagination and team comments here
+        handleResetComments();
       })
       .catch((err) => {
         applyErrors(err.data);
