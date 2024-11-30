@@ -173,6 +173,7 @@ import { teamInvitationsApi } from './apis/teamInvitationsApi';
 import { teamMembersApi } from './apis/teamMembersApi';
 import { teamMessagesApi } from './apis/teamMessagesApi';
 import { teamPostsApi } from './apis/teamPostsApi';
+import { teamCommentsApi } from './apis/teamCommentsApi';
 
 export const store = configureStore({
   reducer: {
@@ -240,6 +241,7 @@ export const store = configureStore({
     [teamMembersApi.reducerPath]: teamMembersApi.reducer,
     [teamMessagesApi.reducerPath]: teamMessagesApi.reducer,
     [teamPostsApi.reducerPath]: teamPostsApi.reducer,
+    [teamCommentsApi.reducerPath]: teamCommentsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -297,7 +299,8 @@ export const store = configureStore({
       .concat(teamInvitationsApi.middleware)
       .concat(teamMembersApi.middleware)
       .concat(teamMessagesApi.middleware)
-      .concat(teamPostsApi.middleware);
+      .concat(teamPostsApi.middleware)
+      .concat(teamCommentsApi.middleware);
   },
 });
 
@@ -685,6 +688,8 @@ export {
   useDeleteTeamPostMutation,
 } from './apis/teamPostsApi';
 
+export { useCreateTeamCommentMutation } from './apis/teamCommentsApi';
+
 export {
   testimonialsApi,
   authsApi,
@@ -726,4 +731,5 @@ export {
   teamMembersApi,
   teamMessagesApi,
   teamPostsApi,
+  teamCommentsApi,
 };

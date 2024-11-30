@@ -38,6 +38,7 @@ import com.hart.overwatch.savecomment.SaveComment;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.stripepaymentintent.StripePaymentIntent;
 import com.hart.overwatch.team.Team;
+import com.hart.overwatch.teamcomment.TeamComment;
 import com.hart.overwatch.teaminvitation.TeamInvitation;
 import com.hart.overwatch.teammember.TeamMember;
 import com.hart.overwatch.teammessage.TeamMessage;
@@ -308,6 +309,11 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<TeamPost> teamPosts;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<TeamComment> teamComments;
+
+
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "setting_id", referencedColumnName = "id")
@@ -365,6 +371,10 @@ public class User implements UserDetails {
 
     public List<TeamPost> getTeamPosts() {
         return teamPosts;
+    }
+
+    public List<TeamComment> getTeamComments() {
+        return teamComments;
     }
 
     public List<TeamMessage> getTeamMessages() {
@@ -856,6 +866,10 @@ public class User implements UserDetails {
     public void setReviewierStripePaymentIntents(
             List<StripePaymentIntent> reviewierStripePaymentIntents) {
         this.reviewierStripePaymentIntents = reviewierStripePaymentIntents;
+    }
+
+    public void setTeamComments(List<TeamComment> teamComments) {
+        this.teamComments = teamComments;
     }
 
     public String getUsername() {

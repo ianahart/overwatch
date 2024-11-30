@@ -1,34 +1,28 @@
-package com.hart.overwatch.teampost;
+package com.hart.overwatch.teamcomment;
 
-import java.util.List;
 import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import com.hart.overwatch.team.Team;
-import com.hart.overwatch.teamcomment.TeamComment;
+import com.hart.overwatch.teampost.TeamPost;
 import com.hart.overwatch.user.User;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Table;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
 
-
-@Entity
-@Table(name = "team_post")
-public class TeamPost {
+@Entity()
+@Table(name = "team_comment")
+public class TeamComment {
 
     @Id
-    @SequenceGenerator(name = "team_post_sequence", sequenceName = "team_post_sequence",
+    @SequenceGenerator(name = "team_comment_sequence", sequenceName = "team_comment_sequence",
             allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "team_post_sequence")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "team_comment_sequence")
     @Column(name = "id")
     private Long id;
 
@@ -40,67 +34,58 @@ public class TeamPost {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "code", length = 600)
-    private String code;
+    @Column(name = "content", length = 200, nullable = false)
+    private String content;
 
     @Column(name = "is_edited")
     private Boolean isEdited;
-
-    @Column(name = "language", length = 100)
-    private String language;
 
     @ManyToOne()
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
     @ManyToOne()
-    @JoinColumn(name = "team_id", referencedColumnName = "id", nullable = false)
-    private Team team;
+    @JoinColumn(name = "team_post_id", referencedColumnName = "id", nullable = false)
+    private TeamPost teamPost;
 
-    @OneToMany(mappedBy = "teamPost", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
-            orphanRemoval = true)
-    private List<TeamComment> teamComments;
-
-
-
-    public TeamPost() {
+    public TeamComment() {
 
     }
 
-    public TeamPost(String code, String language, Boolean isEdited, User user, Team team) {
-        this.code = code;
-        this.language = language;
+    public TeamComment(Long id, LocalDateTime createdAt, LocalDateTime updatedAt, String content,
+            Boolean isEdited) {
+        this.id = id;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.content = content;
         this.isEdited = isEdited;
+    }
+
+    public TeamComment(Boolean isEdited, String content, User user, TeamPost teamPost) {
+        this.isEdited = isEdited;
+        this.content = content;
         this.user = user;
-        this.team = team;
+        this.teamPost = teamPost;
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getLanguage() {
-        return language;
-    }
-
-    public List<TeamComment> getTeamComments() {
-        return teamComments;
-    }
-
-    public Team getTeam() {
-        return team;
-    }
-
     public User getUser() {
         return user;
     }
 
-    public String getCode() {
-        return code;
+    public String getContent() {
+        return content;
     }
 
     public Boolean getIsEdited() {
         return isEdited;
+    }
+
+    public TeamPost getTeamPost() {
+        return teamPost;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -115,16 +100,16 @@ public class TeamPost {
         this.id = id;
     }
 
-    public void setTeam(Team team) {
-        this.team = team;
-    }
-
     public void setUser(User user) {
         this.user = user;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setTeamPost(TeamPost teamPost) {
+        this.teamPost = teamPost;
     }
 
     public void setIsEdited(Boolean isEdited) {
@@ -139,12 +124,5 @@ public class TeamPost {
         this.updatedAt = updatedAt;
     }
 
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
-    public void setTeamComments(List<TeamComment> teamComments) {
-        this.teamComments = teamComments;
-    }
 
 }

@@ -9,6 +9,8 @@ import Avatar from '../../Shared/Avatar';
 import { ITeamPost } from '../../../interfaces';
 import { TRootState, removeTeamPost, useDeleteTeamPostMutation } from '../../../state/store';
 import ClickAway from '../../Shared/ClickAway';
+import TeamModal from '../TeamModal';
+import TeamCommentForm from './Comment/TeamCommentForm';
 
 export interface ITeamPostItemProps {
   teamPost: ITeamPost;
@@ -22,9 +24,18 @@ const decodeHtmlEntities = (input: string): string => {
 const TeamPostItem = ({ teamPost }: ITeamPostItemProps) => {
   const dispatch = useDispatch();
   const [isClickAwayOpen, setIsClickAwayOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const decodedCode = decodeHtmlEntities(teamPost.code);
   const { token, user } = useSelector((store: TRootState) => store.user);
   const [deleteTeamPost] = useDeleteTeamPostMutation();
+
+  const handleOnOpenModal = (): void => {
+    setIsModalOpen(true);
+  };
+
+  const handleOnCloseModal = (): void => {
+    setIsModalOpen(false);
+  };
 
   const handleDeleteTeamPost = async (): Promise<void> => {
     try {
@@ -84,6 +95,16 @@ const TeamPostItem = ({ teamPost }: ITeamPostItemProps) => {
       >
         {decodedCode}
       </SyntaxHighlighter>
+      <div>
+        <button onClick={handleOnOpenModal} className="my-1 text-sm hover:text-gray-600">
+          Leave a comment
+        </button>
+        {isModalOpen && (
+          <TeamModal closeModal={handleOnCloseModal}>
+            <TeamCommentForm teamPostId={teamPost.id} formType="create" closeModal={handleOnCloseModal} />
+          </TeamModal>
+        )}
+      </div>
     </div>
   );
 };
