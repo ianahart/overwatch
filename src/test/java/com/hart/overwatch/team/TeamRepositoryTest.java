@@ -109,6 +109,16 @@ public class TeamRepositoryTest {
         Assertions.assertThat(teamDto.getTeamDescription()).isEqualTo(team.getTeamDescription());
     }
 
+    @Test
+    public void TeamRepository_ExistsByUserIdAndTeamName_ReturnBooleanTrue() {
+        Long userId = user.getId();
+        String teamName = team.getTeamName();
+
+        boolean teamExists = teamRepository.existsByUserIdAndTeamName(userId, teamName);
+
+        Assertions.assertThat(teamExists).isTrue();
+    }
+
 }
 
 
