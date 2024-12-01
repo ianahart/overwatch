@@ -48,8 +48,6 @@ public class TeamRepositoryTest {
 
     private Team team;
 
-
-
     private User createUser() {
         Boolean loggedIn = true;
         User userEntity = new User("john@mail.com", "John", "Doe", "John Doe", Role.USER, loggedIn,
