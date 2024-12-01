@@ -92,9 +92,27 @@ public class TeamServiceTest {
 
         Assertions.assertThatThrownBy(() -> {
             teamService.createTeam(request);
-        }).isInstanceOf(BadRequestException.class).hasMessage(String.format("You have already added the maximum amount of teams (%d)", MAX_TEAMS));
+        }).isInstanceOf(BadRequestException.class).hasMessage(String
+
+                .format("You have already added the maximum amount of teams (%d)", MAX_TEAMS));
     }
 
+    @Test
+    public void TeamService_CreateTeam_ThrowBadRequestException_AlreadyExists() {
+        CreateTeamRequest request = new CreateTeamRequest();
+        request.setUserId(user.getId());
+        request.setTeamName(team.getTeamName());
+        request.setTeamDescription(team.getTeamDescription());
+
+        when(teamRepository.getTeamCountByUserId(request.getUserId())).thenReturn(0L);
+        when(teamRepository.existsByUserIdAndTeamName(request.getUserId(), request.getTeamName()))
+                .thenReturn(true);
+
+        Assertions.assertThatThrownBy(() -> {
+            teamService.createTeam(request);
+        }).isInstanceOf(BadRequestException.class).hasMessage(
+                String.format("You have already created a team named %s", request.getTeamName()));
+    }
 
 }
 
