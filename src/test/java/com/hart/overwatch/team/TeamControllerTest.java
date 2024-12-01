@@ -12,6 +12,7 @@ import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.reportcomment.request.CreateReportCommentRequest;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.team.dto.TeamDto;
+import com.hart.overwatch.team.request.CreateTeamRequest;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.topic.Topic;
 import com.hart.overwatch.user.Role;
@@ -134,35 +135,26 @@ public class TeamControllerTest {
                         CoreMatchers.is(teamDto.getTeamName())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.items[0].userId",
                         CoreMatchers.is(teamDto.getUserId().intValue())));
-
-
     }
 
 
 
-    // @Test
-    // public void
-    // ReportCommentControllerTest_CreateReportComment_ReturnCreateReportCommentResponse()
-    // throws Exception {
-    // CreateReportCommentRequest request = new CreateReportCommentRequest();
-    // Comment newComment = new Comment();
-    // newComment.setId(2L);
-    // newComment.setContent("some content");
-    //
-    // request.setUserId(user.getId());
-    // request.setCommentId(newComment.getId());
-    // request.setDetails("details");
-    // request.setReason(ReportReason.MISINFORMATION);
-    //
-    // doNothing().when(reportCommentService).createReportComment(request);
-    //
-    // ResultActions response = mockMvc
-    // .perform(post("/api/v1/report-comments").contentType(MediaType.APPLICATION_JSON)
-    // .content(objectMapper.writeValueAsString(request)));
-    // response.andExpect(MockMvcResultMatchers.status().isCreated())
-    // .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
-    //
-    // }
+    @Test
+    public void TeamCommentControllerTest_CreateTeam_ReturnCreateTeamResponse() throws Exception {
+
+        CreateTeamRequest request = new CreateTeamRequest();
+        request.setUserId(user.getId());
+        request.setTeamName("team two");
+        request.setTeamDescription("team two description");
+        doNothing().when(teamService).createTeam(request);
+
+        ResultActions response =
+                mockMvc.perform(post("/api/v1/teams").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+        response.andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+
+    }
 
 }
 
