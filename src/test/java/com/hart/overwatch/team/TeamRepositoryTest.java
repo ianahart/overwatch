@@ -1,8 +1,5 @@
 package com.hart.overwatch.team;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +21,7 @@ import jakarta.persistence.PersistenceContext;
 import com.hart.overwatch.config.DatabaseSetupService;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
+import com.hart.overwatch.team.dto.TeamDto;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserRepository;
@@ -89,6 +90,23 @@ public class TeamRepositoryTest {
         Long teamCount = teamRepository.getTeamCountByUserId(user.getId());
 
         Assertions.assertThat(teamCount).isEqualTo(1L);
+    }
+
+    @Test
+    public void TeamRepository_GetTeamsByUserId_ReturnPageOfTeamDto() {
+        Long userId = user.getId();
+        int pageSize = 3;
+        Pageable pageable = PageRequest.of(0, pageSize);
+
+        Page<TeamDto> result = teamRepository.getTeamsByUserId(pageable, userId);
+
+        Assertions.assertThat(result).isNotEmpty();
+        Assertions.assertThat(result.getContent()).hasSize(1);
+        TeamDto teamDto = result.getContent().get(0);
+        Assertions.assertThat(teamDto.getId()).isEqualTo(team.getId());
+        Assertions.assertThat(teamDto.getUserId()).isEqualTo(team.getUser().getId());
+        Assertions.assertThat(teamDto.getTeamName()).isEqualTo(team.getTeamName());
+        Assertions.assertThat(teamDto.getTeamDescription()).isEqualTo(team.getTeamDescription());
     }
 
 }
