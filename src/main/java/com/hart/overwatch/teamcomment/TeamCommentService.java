@@ -10,12 +10,14 @@ import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.teamcomment.dto.TeamCommentDto;
 import com.hart.overwatch.teamcomment.request.CreateTeamCommentRequest;
+import com.hart.overwatch.teamcomment.request.UpdateTeamCommentRequest;
 import com.hart.overwatch.teampost.TeamPost;
 import com.hart.overwatch.teampost.TeamPostService;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.advice.BadRequestException;
+import com.hart.overwatch.advice.ForbiddenException;
 
 @Service
 public class TeamCommentService {
@@ -66,4 +68,38 @@ public class TeamCommentService {
                 result.getTotalPages(), direction, result.getTotalElements());
     }
 
+    public String getTeamComment(Long teamCommentId) {
+        TeamComment teamComment = getTeamCommentByTeamCommentId(teamCommentId);
+
+        return teamComment.getContent();
+    }
+
+    public String updateTeamComment(Long teamCommentId, UpdateTeamCommentRequest request) {
+        TeamComment teamComment = getTeamCommentByTeamCommentId(teamCommentId);
+        User user = userService.getCurrentlyLoggedInUser();
+
+        if (!user.getId().equals(teamComment.getUser().getId())) {
+            throw new ForbiddenException("You do not have permission to update this comment");
+        }
+
+        String content = Jsoup.clean(request.getContent(), Safelist.none());
+
+        teamComment.setContent(content);
+        teamComment.setIsEdited(true);
+
+        teamCommentRepository.save(teamComment);
+
+        return teamComment.getContent();
+    }
+
+    public void deleteTeamComment(Long teamCommentId) {
+        TeamComment teamComment = getTeamCommentByTeamCommentId(teamCommentId);
+        User user = userService.getCurrentlyLoggedInUser();
+
+        if (!user.getId().equals(teamComment.getUser().getId())) {
+            throw new ForbiddenException("You do not have permission to delete this comment");
+        }
+
+        teamCommentRepository.delete(teamComment);
+    }
 }

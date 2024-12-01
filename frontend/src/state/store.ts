@@ -689,6 +689,9 @@ export {
 } from './apis/teamPostsApi';
 
 export {
+  useFetchTeamCommentQuery,
+  useUpdateTeamCommentMutation,
+  useDeleteTeamCommentMutation,
   useCreateTeamCommentMutation,
   useFetchTeamCommentsQuery,
   useLazyFetchTeamCommentsQuery,

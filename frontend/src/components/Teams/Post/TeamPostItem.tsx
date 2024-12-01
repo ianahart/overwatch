@@ -67,7 +67,6 @@ const TeamPostItem = ({ teamPost }: ITeamPostItemProps) => {
     fetchTeamComments({ page: pageNumber, direction: dir, pageSize: pag.pageSize, teamPostId: teamPost.id, token })
       .unwrap()
       .then((res) => {
-        console.log(res);
         const { items, page, pageSize, totalPages, direction, totalElements } = res.data;
         setTeamComments((prevState) => [...prevState, ...items]);
         setPag((prevState) => ({
@@ -82,6 +81,17 @@ const TeamPostItem = ({ teamPost }: ITeamPostItemProps) => {
       .catch((err) => {
         console.log(err);
       });
+  };
+
+  const updateTeamComment = (teamCommentId: number, content: string): void => {
+    setTeamComments(
+      teamComments.map((teamComment) => {
+        if (teamComment.id === teamCommentId) {
+          return { ...teamComment, content, isEdited: true };
+        }
+        return { ...teamComment };
+      })
+    );
   };
 
   return (
@@ -140,6 +150,8 @@ const TeamPostItem = ({ teamPost }: ITeamPostItemProps) => {
           {isModalOpen && (
             <TeamModal closeModal={handleOnCloseModal}>
               <TeamCommentForm
+                updateTeamComment={() => {}}
+                teamCommentId={0}
                 handleResetComments={handleResetComments}
                 teamPostId={teamPost.id}
                 formType="create"
@@ -157,7 +169,13 @@ const TeamPostItem = ({ teamPost }: ITeamPostItemProps) => {
           </div>
         )}
       </div>
-      <TeamCommentList pag={pag} teamComments={teamComments} paginateTeamComments={paginateTeamComments} />
+      <TeamCommentList
+        pag={pag}
+        teamComments={teamComments}
+        paginateTeamComments={paginateTeamComments}
+        handleResetComments={handleResetComments}
+        updateTeamComment={updateTeamComment}
+      />
     </div>
   );
 };

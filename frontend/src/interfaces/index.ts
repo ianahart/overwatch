@@ -2574,6 +2574,40 @@ export interface IGetAllTeamCommentsResponse {
   admin: ITeamMember;
 }
 
+export interface IUpdateTeamCommentRequest {
+  token: string;
+  teamPostId: number;
+  teamCommentId: number;
+  content: string;
+}
+
+export interface IDeleteTeamCommentRequest {
+  token: string;
+  teamCommentId: number;
+  teamPostId: number;
+}
+
+export interface IGetTeamCommentRequest {
+  token: string;
+  teamPostId: number;
+  teamCommentId: number;
+}
+
+export interface IGetTeamCommentResponse {
+  message: string;
+  data: string;
+}
+
+export interface IDeleteTeamCommentResponse {
+  message: string;
+  data: string;
+}
+
+export interface IUpdateTeamCommentResponse {
+  message: string;
+  data: string;
+}
+
 export interface ICreateTeamCommentResponse extends IBaseResponse {}
 
 export interface IDeleteTeamPostResponse extends IBaseResponse {}

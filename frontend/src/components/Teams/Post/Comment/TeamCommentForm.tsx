@@ -1,21 +1,44 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IError } from '../../../../interfaces';
-import { TRootState, useCreateTeamCommentMutation } from '../../../../state/store';
+import {
+  TRootState,
+  useCreateTeamCommentMutation,
+  useFetchTeamCommentQuery,
+  useUpdateTeamCommentMutation,
+} from '../../../../state/store';
 import { useSelector } from 'react-redux';
 
 export interface ITeamCommentFormProps {
+  teamCommentId: number;
   teamPostId: number;
   formType: string;
   closeModal: () => void;
   handleResetComments: () => void;
+  updateTeamComment: (teamCommentId: number, content: string) => void;
 }
 
-const TeamCommentForm = ({ teamPostId, formType, closeModal, handleResetComments }: ITeamCommentFormProps) => {
+const TeamCommentForm = ({
+  teamCommentId,
+  teamPostId,
+  formType,
+  closeModal,
+  handleResetComments,
+  updateTeamComment,
+}: ITeamCommentFormProps) => {
   const MAX_COMMENT_LENGTH = 200;
   const { user, token } = useSelector((store: TRootState) => store.user);
   const [error, setError] = useState('');
   const [content, setContent] = useState('');
-  const [createTeamComment] = useCreateTeamCommentMutation();
+  const { data } = useFetchTeamCommentQuery({ token, teamCommentId, teamPostId });
+  const [createTeamCommentMutation] = useCreateTeamCommentMutation();
+  const [updateTeamCommentMutation] = useUpdateTeamCommentMutation();
+
+  useEffect(() => {
+    if (token && data !== undefined) {
+      console.log(data);
+      setContent(data.data);
+    }
+  }, [data]);
 
   const handleOnChange = (e: React.ChangeEvent<HTMLTextAreaElement>): void => {
     setContent(e.target.value);
@@ -38,7 +61,7 @@ const TeamCommentForm = ({ teamPostId, formType, closeModal, handleResetComments
 
   const handleCreateComment = (): void => {
     const payload = { userId: user.id, content, token, teamPostId };
-    createTeamComment(payload)
+    createTeamCommentMutation(payload)
       .unwrap()
       .then(() => {
         closeModal();
@@ -51,6 +74,17 @@ const TeamCommentForm = ({ teamPostId, formType, closeModal, handleResetComments
   };
 
   const handleUpdateComment = (): void => {
+    const payload = { teamCommentId, content, token, teamPostId };
+    updateTeamCommentMutation(payload)
+      .unwrap()
+      .then((res) => {
+        updateTeamComment(teamCommentId, res.data);
+        closeModal();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
     console.log('editing comment');
   };
 
@@ -81,7 +115,7 @@ const TeamCommentForm = ({ teamPostId, formType, closeModal, handleResetComments
         )}
         <div className="my-4 flex flex-col">
           <label htmlFor="content" className="mb-1">
-            Write Comment
+            {formType === 'create' ? 'Create' : 'Edit'} Comment
           </label>
           <textarea
             onChange={handleOnChange}

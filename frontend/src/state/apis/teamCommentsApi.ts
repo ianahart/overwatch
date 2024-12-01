@@ -4,6 +4,12 @@ import {
   ICreateTeamCommentResponse,
   IGetAllTeamCommentsRequest,
   IGetAllTeamCommentsResponse,
+  IGetTeamCommentRequest,
+  IGetTeamCommentResponse,
+  IUpdateTeamCommentRequest,
+  IUpdateTeamCommentResponse,
+  IDeleteTeamCommentRequest,
+  IDeleteTeamCommentResponse,
 } from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
@@ -13,6 +19,67 @@ const teamCommentsApi = createApi({
   tagTypes: ['TeamComment'],
   endpoints(builder) {
     return {
+      deleteTeamComment: builder.mutation<IDeleteTeamCommentResponse, IDeleteTeamCommentRequest>({
+        query: ({ teamPostId, teamCommentId, token }) => {
+          if (!teamPostId || !teamCommentId || !token) {
+            return '';
+          }
+          return {
+            url: `/team-posts/${teamPostId}/team-comments/${teamCommentId}`,
+            method: 'DELETE',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+        //@ts-ignore
+        invalidatesTags: (_, error, { teamCommentId }) => {
+          console.log(error);
+          return [
+            { type: 'TeamComment', id: teamCommentId },
+            { type: 'TeamComment', id: 'LIST' },
+          ];
+        },
+      }),
+      updateTeamComment: builder.mutation<IUpdateTeamCommentResponse, IUpdateTeamCommentRequest>({
+        query: ({ teamPostId, content, teamCommentId, token }) => {
+          console.log(content);
+          if (!teamPostId || !teamCommentId || !token) {
+            return '';
+          }
+          return {
+            url: `/team-posts/${teamPostId}/team-comments/${teamCommentId}`,
+            method: 'PATCH',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: { content },
+          };
+        },
+        //@ts-ignore
+        invalidatesTags: (_, error, { teamCommentId }) => {
+          console.log(error);
+          return [
+            { type: 'TeamComment', id: teamCommentId },
+            { type: 'TeamComment', id: 'LIST' },
+          ];
+        },
+      }),
+
+      fetchTeamComment: builder.query<IGetTeamCommentResponse, IGetTeamCommentRequest>({
+        query: ({ teamPostId, teamCommentId, token }) => {
+          if (!teamPostId || !teamCommentId || !token) {
+            return '';
+          }
+          return {
+            url: `/team-posts/${teamPostId}/team-comments/${teamCommentId}`,
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+      }),
       createTeamComment: builder.mutation<ICreateTeamCommentResponse, ICreateTeamCommentRequest>({
         query: ({ teamPostId, userId, content, token }) => ({
           url: `team-posts/${teamPostId}/team-comments`,
@@ -47,6 +114,12 @@ const teamCommentsApi = createApi({
     };
   },
 });
-export const { useCreateTeamCommentMutation, useFetchTeamCommentsQuery, useLazyFetchTeamCommentsQuery } =
-  teamCommentsApi;
+export const {
+  useFetchTeamCommentQuery,
+  useUpdateTeamCommentMutation,
+  useDeleteTeamCommentMutation,
+  useCreateTeamCommentMutation,
+  useFetchTeamCommentsQuery,
+  useLazyFetchTeamCommentsQuery,
+} = teamCommentsApi;
 export { teamCommentsApi };
