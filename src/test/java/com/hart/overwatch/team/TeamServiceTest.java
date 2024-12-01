@@ -3,10 +3,6 @@ package com.hart.overwatch.team;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.Collections;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,18 +15,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import com.hart.overwatch.advice.BadRequestException;
-import com.hart.overwatch.advice.NotFoundException;
-import com.hart.overwatch.config.DatabaseSetupService;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
-import com.hart.overwatch.tag.Tag;
-import com.hart.overwatch.tag.dto.TagDto;
 import com.hart.overwatch.team.dto.TeamDto;
 import com.hart.overwatch.team.request.CreateTeamRequest;
-import com.hart.overwatch.topic.dto.TopicDto;
-import com.hart.overwatch.topic.request.CreateTopicRequest;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
@@ -166,8 +156,10 @@ public class TeamServiceTest {
 
         Assertions.assertThat(actualPaginationDto.getItems().size())
                 .isEqualTo(expectedPaginationDto.getItems().size());
-        Assertions.assertThat(actualPaginationDto.getPage()).isEqualTo(expectedPaginationDto.getPage());
-        Assertions.assertThat(actualPaginationDto.getTotalPages()).isEqualTo(expectedPaginationDto.getTotalPages());
+        Assertions.assertThat(actualPaginationDto.getPage())
+                .isEqualTo(expectedPaginationDto.getPage());
+        Assertions.assertThat(actualPaginationDto.getTotalPages())
+                .isEqualTo(expectedPaginationDto.getTotalPages());
     }
 }
 
