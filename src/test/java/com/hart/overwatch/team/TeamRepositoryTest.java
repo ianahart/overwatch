@@ -83,6 +83,14 @@ public class TeamRepositoryTest {
         entityManager.clear();
     }
 
+    @Test
+    public void TeamRepository_GetTeamCountByUserId_ReturnLongCount() {
+
+        Long teamCount = teamRepository.getTeamCountByUserId(user.getId());
+
+        Assertions.assertThat(teamCount).isEqualTo(1L);
+    }
+
 }
 
 
