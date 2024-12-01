@@ -42,7 +42,7 @@ const teamCommentsApi = createApi({
         },
       }),
       updateTeamComment: builder.mutation<IUpdateTeamCommentResponse, IUpdateTeamCommentRequest>({
-        query: ({ teamPostId, content, teamCommentId, token }) => {
+        query: ({ teamPostId, content, teamCommentId, token, tag }) => {
           console.log(content);
           if (!teamPostId || !teamCommentId || !token) {
             return '';
@@ -53,7 +53,7 @@ const teamCommentsApi = createApi({
             headers: {
               Authorization: `Bearer ${token}`,
             },
-            body: { content },
+            body: { content, tag },
           };
         },
         //@ts-ignore
@@ -81,13 +81,13 @@ const teamCommentsApi = createApi({
         },
       }),
       createTeamComment: builder.mutation<ICreateTeamCommentResponse, ICreateTeamCommentRequest>({
-        query: ({ teamPostId, userId, content, token }) => ({
+        query: ({ teamPostId, userId, tag, content, token }) => ({
           url: `team-posts/${teamPostId}/team-comments`,
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,
           },
-          body: { userId, content },
+          body: { userId, content, tag },
         }),
         //@ts-ignore
         invalidatesTags: (_, error) => [{ type: 'TeamComment', id: 'LIST' }],

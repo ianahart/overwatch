@@ -1,21 +1,23 @@
 package com.hart.overwatch.teamcomment.response;
 
+import com.hart.overwatch.teamcomment.dto.MinTeamCommentDto;
+
 public class UpdateOrDeleteTeamCommentResponse {
 
     private String message;
 
-    private String data;
+    private MinTeamCommentDto data;
 
     public UpdateOrDeleteTeamCommentResponse() {
 
     }
 
-    public UpdateOrDeleteTeamCommentResponse(String message, String data) {
+    public UpdateOrDeleteTeamCommentResponse(String message, MinTeamCommentDto data) {
         this.message = message;
         this.data = data;
     }
 
-    public String getData() {
+    public MinTeamCommentDto getData() {
         return data;
     }
 
@@ -27,7 +29,7 @@ public class UpdateOrDeleteTeamCommentResponse {
         this.message = message;
     }
 
-    public void setData(String data) {
+    public void setData(MinTeamCommentDto data) {
         this.data = data;
     }
 }

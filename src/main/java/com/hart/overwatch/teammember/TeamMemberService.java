@@ -132,9 +132,21 @@ public class TeamMemberService {
         response.setMessage("success");
         response.setAdmin(admin);
         response.setData(new PaginationDto<TeamMemberDto>(result.getContent(), result.getNumber(),
-                 pageSize, result.getTotalPages(), direction, result.getTotalElements()));
+                pageSize, result.getTotalPages(), direction, result.getTotalElements()));
 
         return response;
+    }
+
+    public PaginationDto<TeamMemberDto> searchTeamMembers(Long teamId, int page, int pageSize,
+            String direction, String search) {
+
+        Pageable pageable = this.paginationService.getPageable(page, pageSize, direction);
+
+        Page<TeamMemberDto> result =
+                this.teamMemberRepository.searchTeamMembersByTeamId(pageable, teamId, search);
+
+        return new PaginationDto<TeamMemberDto>(result.getContent(), result.getNumber(), pageSize,
+                result.getTotalPages(), direction, result.getTotalElements());
     }
 
 

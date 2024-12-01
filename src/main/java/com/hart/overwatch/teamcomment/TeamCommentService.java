@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
+import com.hart.overwatch.teamcomment.dto.MinTeamCommentDto;
 import com.hart.overwatch.teamcomment.dto.TeamCommentDto;
 import com.hart.overwatch.teamcomment.request.CreateTeamCommentRequest;
 import com.hart.overwatch.teamcomment.request.UpdateTeamCommentRequest;
@@ -48,11 +49,12 @@ public class TeamCommentService {
 
     public void createTeamComment(CreateTeamCommentRequest request, Long teamPostId) {
         String content = Jsoup.clean(request.getContent(), Safelist.none());
+        String tag = Jsoup.clean(request.getTag(), Safelist.none());
         User user = userService.getUserById(request.getUserId());
         TeamPost teamPost = teamPostService.getTeamPostByTeamPostId(teamPostId);
         Boolean isEdited = false;
 
-        TeamComment teamComment = new TeamComment(isEdited, content, user, teamPost);
+        TeamComment teamComment = new TeamComment(isEdited, content, user, teamPost, tag);
 
         teamCommentRepository.save(teamComment);
     }
@@ -68,13 +70,13 @@ public class TeamCommentService {
                 result.getTotalPages(), direction, result.getTotalElements());
     }
 
-    public String getTeamComment(Long teamCommentId) {
+    public MinTeamCommentDto getTeamComment(Long teamCommentId) {
         TeamComment teamComment = getTeamCommentByTeamCommentId(teamCommentId);
 
-        return teamComment.getContent();
+        return new MinTeamCommentDto(teamComment.getContent(), teamComment.getTag());
     }
 
-    public String updateTeamComment(Long teamCommentId, UpdateTeamCommentRequest request) {
+    public MinTeamCommentDto updateTeamComment(Long teamCommentId, UpdateTeamCommentRequest request) {
         TeamComment teamComment = getTeamCommentByTeamCommentId(teamCommentId);
         User user = userService.getCurrentlyLoggedInUser();
 
@@ -83,13 +85,15 @@ public class TeamCommentService {
         }
 
         String content = Jsoup.clean(request.getContent(), Safelist.none());
+        String tag = Jsoup.clean(request.getTag(), Safelist.none());
 
         teamComment.setContent(content);
+        teamComment.setTag(tag);
         teamComment.setIsEdited(true);
 
         teamCommentRepository.save(teamComment);
 
-        return teamComment.getContent();
+        return new MinTeamCommentDto(teamComment.getContent(), teamComment.getTag());
     }
 
     public void deleteTeamComment(Long teamCommentId) {

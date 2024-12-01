@@ -83,11 +83,11 @@ const TeamPostItem = ({ teamPost }: ITeamPostItemProps) => {
       });
   };
 
-  const updateTeamComment = (teamCommentId: number, content: string): void => {
+  const updateTeamComment = (teamCommentId: number, content: string, tag: string): void => {
     setTeamComments(
       teamComments.map((teamComment) => {
         if (teamComment.id === teamCommentId) {
-          return { ...teamComment, content, isEdited: true };
+          return { ...teamComment, content, tag, isEdited: true };
         }
         return { ...teamComment };
       })

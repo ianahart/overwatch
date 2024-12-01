@@ -55,4 +55,20 @@ public interface TeamMemberRepository extends JpaRepository<TeamMember, Long> {
             """)
     Page<TeamMemberDto> getTeamMembersByTeamId(@Param("pageable") Pageable pageable,
             @Param("teamId") Long teamId);
+
+
+    @Query(value = """
+                SELECT new com.hart.overwatch.teammember.dto.TeamMemberDto(
+                 tm.id AS id, u.id AS userId, t.id AS teamId, p.id AS profileId,
+                 u.fullName AS fullName, p.avatarUrl AS avatarUrl, tm.createdAt AS createdAt
+                ) FROM TeamMember tm
+                INNER JOIN tm.user u
+                INNER JOIN tm.user.profile p
+                INNER JOIN tm.team t
+                WHERE t.id = :teamId
+                AND LOWER(u.fullName) LIKE LOWER(CONCAT('%', :search, '%'))
+            """)
+    Page<TeamMemberDto> searchTeamMembersByTeamId(@Param("pageable") Pageable pageable,
+            @Param("teamId") Long teamId, @Param("search") String search);
+
 }

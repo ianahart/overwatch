@@ -20,12 +20,14 @@ public class TeamCommentDto {
 
     private Boolean isEdited;
 
+    private String tag;
+
     public TeamCommentDto() {
 
     }
 
     public TeamCommentDto(Long id, Long userId, String content, LocalDateTime createdAt,
-            String fullName, String avatarUrl, Long teamPostId, Boolean isEdited) {
+            String fullName, String avatarUrl, Long teamPostId, Boolean isEdited, String tag) {
         this.id = id;
         this.userId = userId;
         this.content = content;
@@ -34,7 +36,12 @@ public class TeamCommentDto {
         this.avatarUrl = avatarUrl;
         this.teamPostId = teamPostId;
         this.isEdited = isEdited;
+        this.tag = tag;
 
+    }
+
+    public String getTag() {
+        return tag;
     }
 
     public Long getId() {
@@ -99,5 +106,9 @@ public class TeamCommentDto {
 
     public void setIsEdited(Boolean isEdited) {
         this.isEdited = isEdited;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 }

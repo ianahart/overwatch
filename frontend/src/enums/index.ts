@@ -13,6 +13,7 @@ export enum NotificationType {
   REVIEW_INPROGRESS = 'REVIEW_INPROGRESS',
   REVIEW_COMPLETED = 'REVIEW_COMPLETED',
   COMMENT_REPLY = 'COMMENT_REPLY',
+  TAG = 'TAG',
 }
 
 export enum NotificationRole {

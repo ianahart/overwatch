@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hart.overwatch.teammember.response.DeleteTeamMemberResponse;
 import com.hart.overwatch.teammember.response.GetTeamMemberTeamsResponse;
 import com.hart.overwatch.teammember.response.GetTeamMembersResponse;
+import com.hart.overwatch.teammember.response.SearchTeamMembersResponse;
 
 @RestController
 @RequestMapping(path = "/api/v1")
@@ -47,4 +48,15 @@ public class TeamMemberController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(teamMemberService.getTeamMembers(teamId, page, pageSize, direction));
     }
+
+    @GetMapping(path = "/teams/{teamId}/team-members/search")
+    public ResponseEntity<SearchTeamMembersResponse> searchTeamMembers(
+            @PathVariable("teamId") Long teamId, @RequestParam("page") int page,
+            @RequestParam("pageSize") int pageSize, @RequestParam("direction") String direction,
+            @RequestParam("search") String search) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(new SearchTeamMembersResponse("success",
+                teamMemberService.searchTeamMembers(teamId, page, pageSize, direction, search)));
+    }
+
 }
