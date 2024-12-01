@@ -27,6 +27,7 @@ import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.tag.Tag;
 import com.hart.overwatch.tag.dto.TagDto;
+import com.hart.overwatch.team.dto.TeamDto;
 import com.hart.overwatch.team.request.CreateTeamRequest;
 import com.hart.overwatch.topic.dto.TopicDto;
 import com.hart.overwatch.topic.request.CreateTopicRequest;
@@ -73,6 +74,16 @@ public class TeamServiceTest {
         return teamEntity;
     }
 
+    private TeamDto convertToDto(Team team) {
+        TeamDto teamDto = new TeamDto();
+        teamDto.setId(team.getId());
+        teamDto.setUserId(team.getUser().getId());
+        teamDto.setTeamName(team.getTeamName());
+        teamDto.setTeamDescription(team.getTeamDescription());
+        teamDto.setTotalTeams(1L);
+
+        return teamDto;
+    }
 
     @BeforeEach
     public void setUp() {
@@ -135,6 +146,29 @@ public class TeamServiceTest {
         verify(teamRepository, times(1)).save(any(Team.class));
     }
 
+    @Test
+    public void TeamService_GetTeams_ReturnPaginationOfTeamDto() {
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+        Pageable pageable = Pageable.ofSize(pageSize);
+        TeamDto teamDto = convertToDto(team);
+        Page<TeamDto> pageResult = new PageImpl<>(Collections.singletonList(teamDto), pageable, 1);
+        PaginationDto<TeamDto> expectedPaginationDto =
+                new PaginationDto<>(pageResult.getContent(), pageResult.getNumber(), pageSize,
+                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
+
+        when(paginationService.getPageable(page, pageSize, direction)).thenReturn(pageable);
+        when(teamRepository.getTeamsByUserId(pageable, user.getId())).thenReturn(pageResult);
+
+        PaginationDto<TeamDto> actualPaginationDto =
+                teamService.getTeams(user.getId(), page, pageSize, direction);
+
+        Assertions.assertThat(actualPaginationDto.getItems().size())
+                .isEqualTo(expectedPaginationDto.getItems().size());
+        Assertions.assertThat(actualPaginationDto.getPage()).isEqualTo(expectedPaginationDto.getPage());
+        Assertions.assertThat(actualPaginationDto.getTotalPages()).isEqualTo(expectedPaginationDto.getTotalPages());
+    }
 }
 
 
