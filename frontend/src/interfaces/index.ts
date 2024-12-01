@@ -10,6 +10,7 @@ export interface ITeamComment {
   avatarUrl: string;
   teamPostId: number;
   isEdited: boolean;
+  tag: string;
 }
 
 export interface ITeamMember {
@@ -2546,11 +2547,33 @@ export interface IGetAllTeamMembersResponse {
   admin: ITeamMember;
 }
 
+export interface ISearchTeamMembersRequest {
+  token: string;
+  teamId: number;
+  page: number;
+  pageSize: number;
+  direction: string;
+  search: string;
+}
+
+export interface ISearchTeamMembersResponse {
+  message: string;
+  data: {
+    items: ITeamMember[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
+}
+
 export interface ICreateTeamCommentRequest {
   token: string;
   userId: number;
   teamPostId: number;
   content: string;
+  tag: string;
 }
 
 export interface IGetAllTeamCommentsRequest {
@@ -2579,6 +2602,7 @@ export interface IUpdateTeamCommentRequest {
   teamPostId: number;
   teamCommentId: number;
   content: string;
+  tag: string;
 }
 
 export interface IDeleteTeamCommentRequest {
@@ -2595,7 +2619,7 @@ export interface IGetTeamCommentRequest {
 
 export interface IGetTeamCommentResponse {
   message: string;
-  data: string;
+  data: { content: string; tag: string };
 }
 
 export interface IDeleteTeamCommentResponse {
@@ -2605,7 +2629,7 @@ export interface IDeleteTeamCommentResponse {
 
 export interface IUpdateTeamCommentResponse {
   message: string;
-  data: string;
+  data: { content: string; tag: string };
 }
 
 export interface ICreateTeamCommentResponse extends IBaseResponse {}

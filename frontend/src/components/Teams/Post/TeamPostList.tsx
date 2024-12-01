@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   TRootState,
@@ -9,10 +9,12 @@ import {
 } from '../../../state/store';
 import { useParams } from 'react-router-dom';
 import TeamPostItem from './TeamPostItem';
+import { connectWebSocket, disconnectWebSocket } from '../../../util/WebSocketService';
 
 const TeamPostList = () => {
   const dispatch = useDispatch();
   const params = useParams();
+  const shouldRun = useRef(true);
   const teamId = Number.parseInt(params.teamId as string);
   const { token } = useSelector((store: TRootState) => store.user);
   const { teamPosts, teamPostPagination } = useSelector((store: TRootState) => store.team);
@@ -45,6 +47,24 @@ const TeamPostList = () => {
       dispatch(setTeamPosts({ posts: items, reset: false }));
     }
   }, [data, dispatch]);
+
+  const onConnected = () => {
+    console.log('WebSocket connected');
+  };
+
+  const onError = (err: any) => {
+    console.error('WebSocket error:', err);
+  };
+
+  useEffect(() => {
+    if (shouldRun.current) {
+      shouldRun.current = false;
+      connectWebSocket(onConnected, onError);
+    }
+    return () => {
+      disconnectWebSocket();
+    };
+  }, []);
 
   const paginateTeamInvitations = () => {
     const payload = {

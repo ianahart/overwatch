@@ -73,6 +73,10 @@ public class NotificationService {
         Setting receiverSetting = receiver.getSetting();
 
         switch (notificationType) {
+            case TAG:
+                notificationText.put("receiver",
+                        String.format("%s tagged you in a team comment", sender.getFullName()));
+                break;
             case REVIEW_INPROGRESS:
                 if (receiverSetting.getReviewInProgressNotifOn()) {
                     notificationText.put("receiver",

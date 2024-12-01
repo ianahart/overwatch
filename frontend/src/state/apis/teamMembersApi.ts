@@ -6,6 +6,8 @@ import {
   IGetAllTeamMembersResponse,
   IGetTeamMemberTeamRequest,
   IGetTeamMemberTeamResponse,
+  ISearchTeamMembersRequest,
+  ISearchTeamMembersResponse,
 } from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
@@ -67,10 +69,30 @@ const teamMembersApi = createApi({
             ? [...result.data.items.map(({ id }) => ({ type: 'TeamMember', id })), { type: 'TeamMember', id: 'LIST' }]
             : [{ type: 'TeamMember', id: 'LIST' }],
       }),
+      searchTeamMembers: builder.query<ISearchTeamMembersResponse, ISearchTeamMembersRequest>({
+        query: ({ teamId, token, page, pageSize, direction, search }) => {
+          if (teamId === 0 || teamId === null || !token) {
+            return '';
+          }
+          return {
+            url: `/teams/${teamId}/team-members/search?search=${search}&page=${page}&pageSize=${pageSize}&direction=${direction}`,
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+        //@ts-ignore
+        providesTags: (result, error, arg) =>
+          result
+            ? [...result.data.items.map(({ id }) => ({ type: 'TeamMember', id })), { type: 'TeamMember', id: 'LIST' }]
+            : [{ type: 'TeamMember', id: 'LIST' }],
+      }),
     };
   },
 });
 export const {
+  useLazySearchTeamMembersQuery,
   useDeleteTeamMemberMutation,
   useFetchTeamMemberTeamsQuery,
   useLazyFetchTeamMemberTeamsQuery,

@@ -37,6 +37,9 @@ public class TeamComment {
     @Column(name = "content", length = 200, nullable = false)
     private String content;
 
+    @Column(name = "tag", length = 200, nullable = true)
+    private String tag;
+
     @Column(name = "is_edited")
     private Boolean isEdited;
 
@@ -53,23 +56,29 @@ public class TeamComment {
     }
 
     public TeamComment(Long id, LocalDateTime createdAt, LocalDateTime updatedAt, String content,
-            Boolean isEdited) {
+            Boolean isEdited, String tag) {
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.content = content;
         this.isEdited = isEdited;
+        this.tag = tag;
     }
 
-    public TeamComment(Boolean isEdited, String content, User user, TeamPost teamPost) {
+    public TeamComment(Boolean isEdited, String content, User user, TeamPost teamPost, String tag) {
         this.isEdited = isEdited;
         this.content = content;
         this.user = user;
         this.teamPost = teamPost;
+        this.tag = tag;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public String getTag() {
+        return tag;
     }
 
     public User getUser() {
@@ -122,6 +131,10 @@ public class TeamComment {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 
 

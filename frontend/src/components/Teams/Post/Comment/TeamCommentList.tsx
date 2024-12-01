@@ -5,7 +5,7 @@ export interface ITeamCommentListProps {
   teamComments: ITeamComment[];
   paginateTeamComments: (dir: string, reset?: boolean) => void;
   pag: IPaginationState;
-  updateTeamComment: (teamCommentId: number, content: string) => void;
+  updateTeamComment: (teamCommentId: number, content: string, tag: string) => void;
   handleResetComments: () => void;
 }
 

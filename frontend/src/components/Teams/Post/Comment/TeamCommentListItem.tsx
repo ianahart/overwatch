@@ -14,7 +14,7 @@ import { ITeamComment } from '../../../../interfaces';
 
 export interface ITeamCommentListItemProps {
   teamComment: ITeamComment;
-  updateTeamComment: (teamCommentId: number, content: string) => void;
+  updateTeamComment: (teamCommentId: number, content: string, tag: string) => void;
   handleResetComments: () => void;
 }
 
@@ -58,7 +58,10 @@ const TeamCommentListItem = ({ teamComment, updateTeamComment, handleResetCommen
           <p className="text-xs">{dayjs(teamComment.createdAt).format('MM/DD/YYYY')}</p>
         </div>
       </div>
-      <div className="my-1 p-2">{teamComment.content}</div>
+      <div className="my-1 p-2">
+        <span className="mx-1 font-bold text-white">{teamComment.tag}</span>
+        {teamComment.content}
+      </div>
       {teamComment.userId === user.id && (
         <>
           <div className="mt-2 flex justify-end">

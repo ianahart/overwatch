@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.hart.overwatch.teamcomment.dto.MinTeamCommentDto;
 import com.hart.overwatch.teamcomment.request.CreateTeamCommentRequest;
 import com.hart.overwatch.teamcomment.request.UpdateTeamCommentRequest;
 import com.hart.overwatch.teamcomment.response.CreateTeamCommentResponse;
@@ -70,8 +71,8 @@ public class TeamCommentController {
             @PathVariable("teamPostId") Long teamPostId,
             @PathVariable("teamCommentId") Long teamCommentId) {
         teamCommentService.deleteTeamComment(teamCommentId);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(new UpdateOrDeleteTeamCommentResponse("success", ""));
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new UpdateOrDeleteTeamCommentResponse("success", new MinTeamCommentDto("", "")));
     }
 
 }
