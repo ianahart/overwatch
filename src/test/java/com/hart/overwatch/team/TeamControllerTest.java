@@ -1,27 +1,20 @@
 package com.hart.overwatch.team;
 
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hart.overwatch.comment.Comment;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
-import com.hart.overwatch.reportcomment.request.CreateReportCommentRequest;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.team.dto.TeamDto;
 import com.hart.overwatch.team.request.CreateTeamRequest;
 import com.hart.overwatch.token.TokenRepository;
-import com.hart.overwatch.topic.Topic;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
