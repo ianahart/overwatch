@@ -114,6 +114,27 @@ public class TeamServiceTest {
                 String.format("You have already created a team named %s", request.getTeamName()));
     }
 
+    @Test
+    public void TeamService_CreateTeam_ReturnNothing() {
+        CreateTeamRequest request = new CreateTeamRequest();
+        request.setUserId(user.getId());
+        request.setTeamName("team two");
+        request.setTeamDescription("team description");
+
+        when(teamRepository.getTeamCountByUserId(request.getUserId())).thenReturn(0L);
+        when(teamRepository.existsByUserIdAndTeamName(request.getUserId(), request.getTeamName()))
+                .thenReturn(false);
+
+        when(userService.getUserById(request.getUserId())).thenReturn(user);
+
+        when(teamRepository.save(any(Team.class))).thenReturn(team);
+
+        teamService.createTeam(request);
+
+        Assertions.assertThatNoException();
+        verify(teamRepository, times(1)).save(any(Team.class));
+    }
+
 }
 
 
