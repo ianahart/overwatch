@@ -115,6 +115,16 @@ public class TeamMemberRepositoryTest {
 
         Assertions.assertThat(count).isEqualTo(1L);
     }
+
+    @Test
+    public void TeamMemberRepository_ExistsByTeamIdAndUserId_ReturnBooleanTrue() {
+        Long teamId = team.getId();
+        Long userId = user.getId();
+
+        boolean exists = teamMemberRepository.existsByTeamIdAndUserId(teamId, userId);
+
+        Assertions.assertThat(exists).isTrue();
+    }
 }
 
 
