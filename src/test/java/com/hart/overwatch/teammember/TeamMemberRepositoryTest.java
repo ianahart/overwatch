@@ -65,6 +65,7 @@ public class TeamMemberRepositoryTest {
         User userEntity = new User("john@mail.com", "John", "Doe", "John Doe", Role.USER, loggedIn,
                 profileEntity, "Test12345%", new Setting());
         userRepository.save(userEntity);
+
         return userEntity;
     }
 
@@ -84,8 +85,6 @@ public class TeamMemberRepositoryTest {
         teamMemberRepository.save(teamMemberEntity);
 
         return teamMemberEntity;
-
-
     }
 
 
@@ -108,6 +107,14 @@ public class TeamMemberRepositoryTest {
         entityManager.clear();
     }
 
+    @Test
+    public void TeamMemberRepository_CountTeamMemberTeams_ReturnLongCount() {
+        Long userId = user.getId();
+
+        long count = teamMemberRepository.countTeamMemberTeams(userId);
+
+        Assertions.assertThat(count).isEqualTo(1L);
+    }
 }
 
 
