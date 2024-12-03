@@ -12,6 +12,7 @@ import com.hart.overwatch.team.request.CreateTeamRequest;
 import com.hart.overwatch.teammember.dto.TeamMemberDto;
 import com.hart.overwatch.teammember.dto.TeamMemberTeamDto;
 import com.hart.overwatch.teammember.response.GetTeamMemberTeamsResponse;
+import com.hart.overwatch.teammember.response.GetTeamMembersResponse;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
@@ -168,6 +169,47 @@ public class TeamMemberControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.items",
                         Matchers.hasSize(Math.toIntExact(1L))));
     }
+
+    @Test
+    public void TeamMemberController_GetTeamMembers_ReturnGetTeamMembersResponse()
+            throws Exception {
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+        Pageable pageable = Pageable.ofSize(pageSize);
+        TeamMemberDto teamMemberDto = convertToTeamMemberDto(teamMember);
+        Page<TeamMemberDto> pageResult =
+                new PageImpl<>(Collections.singletonList(teamMemberDto), pageable, 1);
+        PaginationDto<TeamMemberDto> expectedPaginationDto =
+                new PaginationDto<>(pageResult.getContent(), pageResult.getNumber(), pageSize,
+                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
+        GetTeamMembersResponse getTeamMembersResponse = new GetTeamMembersResponse();
+        getTeamMembersResponse.setData(expectedPaginationDto);
+        getTeamMembersResponse.setMessage("success");
+        getTeamMembersResponse.setAdmin(new TeamMemberDto());
+
+        when(teamMemberService.getTeamMembers(team.getId(), page, pageSize, direction))
+                .thenReturn(getTeamMembersResponse);
+
+        ResultActions response =
+                mockMvc.perform(get(String.format("/api/v1/teams/%d/team-members", team.getId()))
+                        .param("page", "0").param("pageSize", "3").param("direction", "next"));
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.page",
+                        CoreMatchers.is(expectedPaginationDto.getPage())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.pageSize",
+                        CoreMatchers.is(expectedPaginationDto.getPageSize())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.totalPages",
+                        CoreMatchers.is(expectedPaginationDto.getTotalPages())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.page",
+                        CoreMatchers.is(expectedPaginationDto.getPage())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.totalElements",
+                        CoreMatchers.is(Math.toIntExact(expectedPaginationDto.getTotalElements()))))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.items",
+                        Matchers.hasSize(Math.toIntExact(1L))));
+    }
+
 
 }
 
