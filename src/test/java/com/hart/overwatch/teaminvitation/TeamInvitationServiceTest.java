@@ -228,6 +228,21 @@ public class TeamInvitationServiceTest {
                 .hasMessage("You are forbidden from deleting another user's team invitation");
     }
 
+    @Test
+    public void TeamInvitationService_DeleteTeamInvitation_ReturnNothing() {
+        Long teamInvitationId = teamInvitation.getId();
+
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(receiver);
+        when(teamInvitationRepository.findById(teamInvitationId))
+                .thenReturn(Optional.of(teamInvitation));
+        doNothing().when(teamInvitationRepository).delete(teamInvitation);
+
+        teamInvitationService.deleteTeamInvitation(teamInvitationId);
+
+        Assertions.assertThatNoException();
+        verify(teamInvitationRepository, times(1)).delete(teamInvitation);
+    }
+
 }
 
 
