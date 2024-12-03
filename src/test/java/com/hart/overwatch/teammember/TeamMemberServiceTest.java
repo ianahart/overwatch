@@ -26,6 +26,7 @@ import com.hart.overwatch.team.TeamService;
 import com.hart.overwatch.teammember.dto.TeamMemberDto;
 import com.hart.overwatch.teammember.dto.TeamMemberTeamDto;
 import com.hart.overwatch.teammember.response.GetTeamMemberTeamsResponse;
+import com.hart.overwatch.teammember.response.GetTeamMembersResponse;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
@@ -92,6 +93,18 @@ public class TeamMemberServiceTest {
         teamMemberTeamDto.setUserId(teamMember.getUser().getId());
 
         return teamMemberTeamDto;
+    }
+
+    private TeamMemberDto convertToTeamMemberDto(TeamMember teamMember) {
+        TeamMemberDto teamMemberDto = new TeamMemberDto();
+        teamMemberDto.setId(teamMember.getId());
+        teamMemberDto.setTeamId(teamMember.getTeam().getId());
+        teamMemberDto.setUserId(teamMember.getUser().getId());
+        teamMemberDto.setFullName(teamMember.getUser().getFullName());
+        teamMemberDto.setProfileId(teamMember.getUser().getProfile().getId());
+        teamMemberDto.setAvatarUrl(teamMember.getUser().getProfile().getAvatarUrl());
+
+        return teamMemberDto;
     }
 
 
@@ -210,6 +223,53 @@ public class TeamMemberServiceTest {
 
         Assertions.assertThatNoException();
         verify(teamMemberRepository, times(1)).delete(teamMember);
+    }
+
+    @Test
+    public void TeamMemberService_GetTeamMembers_ReturnGetTeamMembersResponse() {
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+        Pageable pageable = Pageable.ofSize(pageSize);
+        TeamMemberDto teamMemberDto = convertToTeamMemberDto(teamMember);
+        Page<TeamMemberDto> pageResult =
+                new PageImpl<>(Collections.singletonList(teamMemberDto), pageable, 1);
+        PaginationDto<TeamMemberDto> expectedPaginationDto =
+                new PaginationDto<>(pageResult.getContent(), pageResult.getNumber(), pageSize,
+                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
+
+        when(paginationService.getPageable(page, pageSize, direction)).thenReturn(pageable);
+        when(teamMemberRepository.getTeamMembersByTeamId(pageable, teamMember.getTeam().getId()))
+                .thenReturn(pageResult);
+        when(teamService.getTeamByTeamId(teamMember.getTeam().getId())).thenReturn(team);
+
+        GetTeamMembersResponse response = teamMemberService
+                .getTeamMembers(teamMember.getTeam().getId(), page, pageSize, direction);
+
+        Assertions.assertThat(response.getMessage()).isEqualTo("success");
+        Assertions.assertThat(response.getData()).isNotNull();
+        PaginationDto<TeamMemberDto> actualPaginationDto = response.getData();
+        Assertions.assertThat(actualPaginationDto.getPage())
+                .isEqualTo(expectedPaginationDto.getPage());
+        Assertions.assertThat(actualPaginationDto.getPageSize())
+                .isEqualTo(expectedPaginationDto.getPageSize());
+        Assertions.assertThat(actualPaginationDto.getTotalPages())
+                .isEqualTo(expectedPaginationDto.getTotalPages());
+        Assertions.assertThat(actualPaginationDto.getTotalElements())
+                .isEqualTo(expectedPaginationDto.getTotalElements());
+        Assertions.assertThat(actualPaginationDto.getItems()).hasSize(1);
+        TeamMemberDto actualTeamMeamberDto = actualPaginationDto.getItems().get(0);
+        Assertions.assertThat(actualTeamMeamberDto.getId()).isEqualTo(teamMemberDto.getId());
+        Assertions.assertThat(actualTeamMeamberDto.getTeamId())
+                .isEqualTo(teamMemberDto.getTeamId());
+        Assertions.assertThat(actualTeamMeamberDto.getUserId())
+                .isEqualTo(teamMemberDto.getUserId());
+        Assertions.assertThat(actualTeamMeamberDto.getProfileId())
+                .isEqualTo(teamMemberDto.getProfileId());
+        Assertions.assertThat(actualTeamMeamberDto.getFullName())
+                .isEqualTo(teamMemberDto.getFullName());
+        Assertions.assertThat(actualTeamMeamberDto.getAvatarUrl())
+                .isEqualTo(teamMemberDto.getAvatarUrl());
     }
 }
 
