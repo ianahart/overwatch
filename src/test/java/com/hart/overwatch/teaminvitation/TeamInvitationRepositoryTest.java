@@ -1,6 +1,5 @@
 package com.hart.overwatch.teaminvitation;
 
-import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,8 +24,7 @@ import com.hart.overwatch.profile.ProfileRepository;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.team.Team;
 import com.hart.overwatch.team.TeamRepository;
-import com.hart.overwatch.teammember.dto.TeamMemberDto;
-import com.hart.overwatch.teammember.dto.TeamMemberTeamDto;
+import com.hart.overwatch.teaminvitation.dto.TeamInvitationDto;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserRepository;
@@ -35,7 +33,7 @@ import com.hart.overwatch.user.UserRepository;
 @ActiveProfiles("test")
 @Import(DatabaseSetupService.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Sql(scripts = "classpath:reset_invitation_sequences.sql",
+@Sql(scripts = "classpath:reset_team_invitation_sequences.sql",
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Transactional
 public class TeamInvitationRepositoryTest {
@@ -102,6 +100,7 @@ public class TeamInvitationRepositoryTest {
         teamInvitationEntity.setSender(sender);
         teamInvitationEntity.setReceiver(receiver);
         teamInvitationEntity.setStatus(InvitationStatus.PENDING);
+        teamInvitationRepository.save(teamInvitationEntity);
 
         return teamInvitationEntity;
     }
@@ -123,6 +122,35 @@ public class TeamInvitationRepositoryTest {
         userRepository.deleteAll();
         entityManager.flush();
         entityManager.clear();
+    }
+
+    @Test
+    public void TeamInvitationRepository_GetTeamInvitationsByReceiverId_ReturnPageOfTeamInvitationDto() {
+        Long receiverId = receiver.getId();
+        int page = 0;
+        int pageSize = 3;
+        Pageable pageable = PageRequest.of(page, pageSize);
+
+        Page<TeamInvitationDto> result =
+                teamInvitationRepository.getTeamInvitationsByReceiverId(pageable, receiverId);
+
+        Assertions.assertThat(result).isNotEmpty();
+        Assertions.assertThat(result.getContent()).hasSize(1);
+        TeamInvitationDto teamInvitationDto = result.getContent().get(0);
+        Assertions.assertThat(teamInvitationDto.getId()).isEqualTo(teamInvitation.getId());
+        Assertions.assertThat(teamInvitationDto.getTeamId())
+                .isEqualTo(teamInvitation.getTeam().getId());
+        Assertions.assertThat(teamInvitationDto.getSenderId())
+                .isEqualTo(teamInvitation.getSender().getId());
+        Assertions.assertThat(teamInvitationDto.getReceiverId())
+                .isEqualTo(teamInvitation.getReceiver().getId());
+        Assertions.assertThat(teamInvitationDto.getTeamName())
+                .isEqualTo(teamInvitation.getTeam().getTeamName());
+        Assertions.assertThat(teamInvitationDto.getSenderFullName())
+                .isEqualTo(teamInvitation.getSender().getFullName());
+        Assertions.assertThat(teamInvitationDto.getSenderAvatarUrl())
+                .isEqualTo(teamInvitation.getSender().getProfile().getAvatarUrl());
+        Assertions.assertThat(teamInvitationDto.getStatus()).isEqualTo(teamInvitation.getStatus());
     }
 }
 
