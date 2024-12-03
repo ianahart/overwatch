@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import java.util.Collections;
+import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import com.hart.overwatch.advice.BadRequestException;
+import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
@@ -179,6 +181,20 @@ public class TeamMemberServiceTest {
                 .isEqualTo(teamMemberTeamDto.getUserId());
         Assertions.assertThat(actualTeamMeamberTeamDto.getTeamName())
                 .isEqualTo(teamMemberTeamDto.getTeamName());
+    }
+
+    @Test
+    public void TeamMemberService_DeleteTeamMember_ThrowForbiddenException() {
+        Long teamMemberId = teamMember.getId();
+        User forbiddenUser = new User();
+        forbiddenUser.setId(2L);
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(forbiddenUser);
+        when(teamMemberRepository.findById(teamMemberId)).thenReturn(Optional.of(teamMember));
+
+        Assertions.assertThatThrownBy(() -> {
+            teamMemberService.deleteTeamMember(teamMemberId);
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("Cannot perform the action of deleting a team member from a team");
     }
 }
 
