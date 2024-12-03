@@ -20,6 +20,7 @@ import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.team.Team;
+import com.hart.overwatch.team.TeamRepository;
 import com.hart.overwatch.team.TeamService;
 import com.hart.overwatch.team.dto.TeamDto;
 import com.hart.overwatch.team.request.CreateTeamRequest;
@@ -90,6 +91,18 @@ public class TeamMemberServiceTest {
         teamMember = createTeamMember(user, team);
     }
 
+    @Test
+    public void TeamMemberService_CreatTeamMember_ThrowBadRequestException() {
+        Long userId = user.getId();
+        Long teamId = team.getId();
+
+        when(teamMemberRepository.existsByTeamIdAndUserId(teamId, userId)).thenReturn(true);
+
+        Assertions.assertThatThrownBy(() -> {
+            teamMemberService.createTeamMember(teamId, userId);
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage("You are already a team member of this team");
+    }
 
 }
 

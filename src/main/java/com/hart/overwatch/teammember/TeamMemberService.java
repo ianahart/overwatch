@@ -52,7 +52,7 @@ public class TeamMemberService {
     public void createTeamMember(Long teamId, Long userId) {
 
         if (alreadyATeamMember(teamId, userId)) {
-            throw new BadRequestException("You are already a team member of thsi team");
+            throw new BadRequestException("You are already a team member of this team");
         }
 
         Team team = teamService.getTeamByTeamId(teamId);
