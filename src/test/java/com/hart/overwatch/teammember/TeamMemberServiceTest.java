@@ -20,10 +20,7 @@ import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.team.Team;
-import com.hart.overwatch.team.TeamRepository;
 import com.hart.overwatch.team.TeamService;
-import com.hart.overwatch.team.dto.TeamDto;
-import com.hart.overwatch.team.request.CreateTeamRequest;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
@@ -102,6 +99,27 @@ public class TeamMemberServiceTest {
             teamMemberService.createTeamMember(teamId, userId);
         }).isInstanceOf(BadRequestException.class)
                 .hasMessage("You are already a team member of this team");
+    }
+
+    @Test
+    public void TeamMemberService_CreateTeamMember_ReturnNothing() {
+        User newUser = new User();
+        newUser.setId(2L);
+        Team newTeam = new Team();
+        newTeam.setId(2L);
+
+        when(teamMemberRepository.existsByTeamIdAndUserId(newTeam.getId(), newUser.getId()))
+                .thenReturn(false);
+        when(teamService.getTeamByTeamId(newTeam.getId())).thenReturn(newTeam);
+        when(userService.getUserById(newUser.getId())).thenReturn(newUser);
+
+        TeamMember newTeamMember = new TeamMember(newTeam, newUser);
+        when(teamMemberRepository.save(any(TeamMember.class))).thenReturn(newTeamMember);
+
+        teamMemberService.createTeamMember(newTeam.getId(), newUser.getId());
+
+        Assertions.assertThatNoException();
+        verify(teamMemberRepository, times(1)).save(any(TeamMember.class));
     }
 
 }
