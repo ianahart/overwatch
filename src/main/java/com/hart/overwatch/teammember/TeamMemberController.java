@@ -33,7 +33,7 @@ public class TeamMemberController {
                 .body(teamMemberService.getTeamMemberTeams(userId, page, pageSize, direction));
     }
 
-    @DeleteMapping(path = "/team-members{teamMemberId}")
+    @DeleteMapping(path = "/team-members/{teamMemberId}")
     public ResponseEntity<DeleteTeamMemberResponse> deleteTeamMember(
             @PathVariable("teamMemberId") Long teamMemberId) {
         teamMemberService.deleteTeamMember(teamMemberId);

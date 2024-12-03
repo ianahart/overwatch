@@ -39,6 +39,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 
@@ -246,6 +247,20 @@ public class TeamMemberControllerTest {
                         CoreMatchers.is(Math.toIntExact(expectedPaginationDto.getTotalElements()))))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.items",
                         Matchers.hasSize(Math.toIntExact(1L))));
+    }
+
+    @Test
+    public void TeamMemberController_DeleteTeamMember_ReturnDeleteTeamMemberResponse()
+            throws Exception {
+        Long teamMemberId = teamMember.getId();
+
+        doNothing().when(teamMemberService).deleteTeamMember(teamMemberId);
+
+        ResultActions response =
+                mockMvc.perform(delete(String.format("/api/v1/team-members/%d", teamMemberId)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 
 
