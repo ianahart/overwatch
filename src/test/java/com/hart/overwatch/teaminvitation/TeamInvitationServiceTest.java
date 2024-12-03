@@ -126,6 +126,26 @@ public class TeamInvitationServiceTest {
                 .hasMessage("You have already sent this person an invitation to this team");
     }
 
+    @Test
+    public void TeamInvitationService_CreateTeamInvitation_ReturnNothing() {
+        CreateTeamInvitationRequest request = new CreateTeamInvitationRequest();
+        request.setSenderId(sender.getId());
+        request.setReceiverId(receiver.getId());
+        Long teamId = team.getId();
+
+        when(teamInvitationRepository.existsByReceiverIdAndSenderIdAndTeamId(
+                request.getReceiverId(), request.getSenderId(), teamId)).thenReturn(false);
+        when(userService.getUserById(request.getSenderId())).thenReturn(sender);
+        when(userService.getUserById(request.getReceiverId())).thenReturn(receiver);
+        when(teamService.getTeamByTeamId(teamId)).thenReturn(team);
+        when(teamInvitationRepository.save(any(TeamInvitation.class))).thenReturn(teamInvitation);
+
+        teamInvitationService.createTeamInvitation(request, teamId);
+
+        Assertions.assertThatNoException();
+        verify(teamInvitationRepository, times(1)).save(any(TeamInvitation.class));
+    }
+
 }
 
 
