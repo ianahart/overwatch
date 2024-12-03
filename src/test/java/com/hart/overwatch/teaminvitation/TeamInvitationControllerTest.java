@@ -37,6 +37,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 
@@ -197,6 +199,21 @@ public class TeamInvitationControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.items",
                         Matchers.hasSize(Math.toIntExact(1L))));
 
+    }
+
+    @Test
+    public void TeamInvitationController_DeleteTeamInvitation_ReturnDeleteTeamInvitationResponse()
+            throws Exception {
+        Long teamInvitationId = teamInvitation.getId();
+
+        doNothing().when(teamInvitationService).deleteTeamInvitation(teamInvitationId);
+
+        ResultActions response = mockMvc
+                .perform(delete(String.format("/api/v1/teams/invitations/%d", teamInvitationId)));
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+
+        verify(teamInvitationService, times(1)).deleteTeamInvitation(teamInvitationId);
     }
 
 }
