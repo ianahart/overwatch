@@ -10,6 +10,7 @@ import com.hart.overwatch.team.Team;
 import com.hart.overwatch.team.dto.TeamDto;
 import com.hart.overwatch.team.request.CreateTeamRequest;
 import com.hart.overwatch.teaminvitation.dto.TeamInvitationDto;
+import com.hart.overwatch.teaminvitation.request.CreateTeamInvitationRequest;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
@@ -139,6 +140,24 @@ public class TeamInvitationControllerTest {
         teamInvitation = createTeamInvitation(sender, receiver, team);
     }
 
+    @Test
+    public void TeamInvitationController_CreateTeamInvitation_ReturnCreateTeamInvitationResponse()
+            throws Exception {
+        Long teamId = team.getId();
+        CreateTeamInvitationRequest request = new CreateTeamInvitationRequest();
+        request.setSenderId(sender.getId());
+        request.setReceiverId(receiver.getId());
+
+        doNothing().when(teamInvitationService).createTeamInvitation(request, teamId);
+
+        ResultActions response =
+                mockMvc.perform(post(String.format("/api/v1/teams/%d/invitations", teamId))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
 
 }
 
