@@ -183,8 +183,9 @@ public class TeamMemberRepositoryTest {
         Long teamId = team.getId();
         String search = "john doe";
 
-        Page<TeamMemberDto> result = teamMemberRepository.searchTeamMembersByTeamId(pageable, teamId, search);
-                Assertions.assertThat(result).isNotEmpty();
+        Page<TeamMemberDto> result =
+                teamMemberRepository.searchTeamMembersByTeamId(pageable, teamId, search);
+        Assertions.assertThat(result).isNotEmpty();
         Assertions.assertThat(result.getContent()).hasSize(1);
         TeamMemberDto teamMemberDto = result.getContent().get(0);
         Assertions.assertThat(teamMemberDto).isNotNull();
@@ -198,7 +199,7 @@ public class TeamMemberRepositoryTest {
         Assertions.assertThat(teamMemberDto.getAvatarUrl())
                 .isEqualTo(teamMember.getUser().getProfile().getAvatarUrl());
 
-    } 
+    }
 }
 
 
