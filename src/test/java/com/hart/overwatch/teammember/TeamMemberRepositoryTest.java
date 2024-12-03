@@ -151,6 +151,29 @@ public class TeamMemberRepositoryTest {
         Assertions.assertThat(teamMemberTeamDto.getTeamName())
                 .isEqualTo(teamMember.getTeam().getTeamName());
     }
+
+    @Test
+    public void TeamMemberRepository_GetTeamMembersByTeamId_ReturnPageOfTeamMemberDto() {
+        int page = 0;
+        int pageSize = 3;
+        Long teamId = team.getId();
+        Pageable pageable = PageRequest.of(page, pageSize);
+
+        Page<TeamMemberDto> result = teamMemberRepository.getTeamMembersByTeamId(pageable, teamId);
+        Assertions.assertThat(result).isNotEmpty();
+        Assertions.assertThat(result.getContent()).hasSize(1);
+        TeamMemberDto teamMemberDto = result.getContent().get(0);
+        Assertions.assertThat(teamMemberDto).isNotNull();
+        Assertions.assertThat(teamMemberDto.getId()).isEqualTo(teamMember.getId());
+        Assertions.assertThat(teamMemberDto.getTeamId()).isEqualTo(teamMember.getTeam().getId());
+        Assertions.assertThat(teamMemberDto.getUserId()).isEqualTo(teamMember.getUser().getId());
+        Assertions.assertThat(teamMemberDto.getProfileId())
+                .isEqualTo(teamMember.getUser().getProfile().getId());
+        Assertions.assertThat(teamMemberDto.getFullName())
+                .isEqualTo(teamMember.getUser().getFullName());
+        Assertions.assertThat(teamMemberDto.getAvatarUrl())
+                .isEqualTo(teamMember.getUser().getProfile().getAvatarUrl());
+    }
 }
 
 
