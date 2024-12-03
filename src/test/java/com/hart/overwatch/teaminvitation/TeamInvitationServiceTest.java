@@ -243,6 +243,23 @@ public class TeamInvitationServiceTest {
         verify(teamInvitationRepository, times(1)).delete(teamInvitation);
     }
 
+    @Test
+    public void TeamInvitationService_UpdateTeamInvitation_ReturnNothing() {
+        Long teamId = team.getId();
+        Long teamInvitationId = teamInvitation.getId();
+        Long userId = receiver.getId();
+
+        when(teamInvitationRepository.findById(teamInvitationId))
+                .thenReturn(Optional.of(teamInvitation));
+        when(teamInvitationRepository.save(any(TeamInvitation.class))).thenReturn(teamInvitation);
+        doNothing().when(teamMemberService).createTeamMember(teamId, userId);
+
+        teamInvitationService.updateTeamInvitation(teamId, teamInvitationId, userId);
+
+        verify(teamInvitationRepository, times(1)).save(any(TeamInvitation.class));
+        verify(teamMemberService, times(1)).createTeamMember(teamId, userId);
+    }
+
 }
 
 
