@@ -152,6 +152,18 @@ public class TeamInvitationRepositoryTest {
                 .isEqualTo(teamInvitation.getSender().getProfile().getAvatarUrl());
         Assertions.assertThat(teamInvitationDto.getStatus()).isEqualTo(teamInvitation.getStatus());
     }
+
+    @Test
+    public void TeamInvitationRepository_ExistsByReceiverIdAndSenderIdAndTeamId_ReturnBooleanTrue() {
+        Long receiverId = receiver.getId();
+        Long senderId = sender.getId();
+        Long teamId = team.getId();
+
+        boolean exists = teamInvitationRepository.existsByReceiverIdAndSenderIdAndTeamId(receiverId,
+                senderId, teamId);
+
+        Assertions.assertThat(exists).isTrue();
+    }
 }
 
 
