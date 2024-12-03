@@ -148,7 +148,7 @@
             <groupId>com.itextpdf</groupId>
             <artifactId>itext-core</artifactId>
             <version>9.0.0</version>
-    <type>pom</type>
+            <type>pom</type>
         </dependency>
     </dependencies>
 
