@@ -21,6 +21,9 @@ import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.team.Team;
 import com.hart.overwatch.team.TeamService;
+import com.hart.overwatch.teammember.dto.TeamMemberDto;
+import com.hart.overwatch.teammember.dto.TeamMemberTeamDto;
+import com.hart.overwatch.teammember.response.GetTeamMemberTeamsResponse;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
@@ -80,6 +83,15 @@ public class TeamMemberServiceTest {
         return teamMemberEntity;
     }
 
+    private TeamMemberTeamDto convertToTeamMemberTeamDto(TeamMember teamMember) {
+        TeamMemberTeamDto teamMemberTeamDto = new TeamMemberTeamDto();
+        teamMemberTeamDto.setId(teamMember.getId());
+        teamMemberTeamDto.setTeamId(teamMember.getTeam().getId());
+        teamMemberTeamDto.setUserId(teamMember.getUser().getId());
+
+        return teamMemberTeamDto;
+    }
+
 
     @BeforeEach
     public void setUp() {
@@ -122,6 +134,52 @@ public class TeamMemberServiceTest {
         verify(teamMemberRepository, times(1)).save(any(TeamMember.class));
     }
 
+    @Test
+    public void TeamMemberService_GetTeamMemberTeams_ReturnGetTeamMemberTeamsResponse() {
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+        Pageable pageable = Pageable.ofSize(pageSize);
+        TeamMemberTeamDto teamMemberTeamDto = convertToTeamMemberTeamDto(teamMember);
+        Page<TeamMemberTeamDto> pageResult =
+                new PageImpl<>(Collections.singletonList(teamMemberTeamDto), pageable, 1);
+        PaginationDto<TeamMemberTeamDto> expectedPaginationDto =
+                new PaginationDto<>(pageResult.getContent(), pageResult.getNumber(), pageSize,
+                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
+
+        when(paginationService.getPageable(page, pageSize, direction)).thenReturn(pageable);
+
+        when(teamMemberRepository.getTeamsByTeamMember(pageable, user.getId()))
+                .thenReturn(pageResult);
+
+        when(teamMemberRepository.countTeamMemberTeams(user.getId())).thenReturn(1L);
+
+        GetTeamMemberTeamsResponse result =
+                teamMemberService.getTeamMemberTeams(user.getId(), page, pageSize, direction);
+
+        Assertions.assertThat(result.getMessage()).isEqualTo("success");
+        Assertions.assertThat(result.getTotalTeamMemberTeams()).isEqualTo(1L);
+        Assertions.assertThat(result.getData()).isNotNull();
+        PaginationDto<TeamMemberTeamDto> actualPaginationDto = result.getData();
+        Assertions.assertThat(actualPaginationDto.getPage())
+                .isEqualTo(expectedPaginationDto.getPage());
+        Assertions.assertThat(actualPaginationDto.getPageSize())
+                .isEqualTo(expectedPaginationDto.getPageSize());
+        Assertions.assertThat(actualPaginationDto.getTotalPages())
+                .isEqualTo(expectedPaginationDto.getTotalPages());
+        Assertions.assertThat(actualPaginationDto.getTotalElements())
+                .isEqualTo(expectedPaginationDto.getTotalElements());
+        Assertions.assertThat(actualPaginationDto.getItems()).hasSize(1);
+        TeamMemberTeamDto actualTeamMeamberTeamDto = actualPaginationDto.getItems().get(0);
+        Assertions.assertThat(actualTeamMeamberTeamDto.getId())
+                .isEqualTo(teamMemberTeamDto.getId());
+        Assertions.assertThat(actualTeamMeamberTeamDto.getTeamId())
+                .isEqualTo(teamMemberTeamDto.getTeamId());
+        Assertions.assertThat(actualTeamMeamberTeamDto.getUserId())
+                .isEqualTo(teamMemberTeamDto.getUserId());
+        Assertions.assertThat(actualTeamMeamberTeamDto.getTeamName())
+                .isEqualTo(teamMemberTeamDto.getTeamName());
+    }
 }
 
 
