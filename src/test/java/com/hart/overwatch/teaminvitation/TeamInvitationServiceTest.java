@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import java.util.Collections;
+import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import com.hart.overwatch.advice.BadRequestException;
+import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
@@ -209,7 +211,21 @@ public class TeamInvitationServiceTest {
                 .isEqualTo(teamInvitationDto.getSenderAvatarUrl());
         Assertions.assertThat(actualTeamInvitationDto.getStatus())
                 .isEqualTo(teamInvitationDto.getStatus());
+    }
 
+    @Test
+    public void TeamInvitationService_DeleteTeamInvitation_ThrowForbiddenException() {
+        Long teamInvitationId = teamInvitation.getId();
+        User forbiddenUser = new User();
+        forbiddenUser.setId(3L);
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(forbiddenUser);
+        when(teamInvitationRepository.findById(teamInvitationId))
+                .thenReturn(Optional.of(teamInvitation));
+
+        Assertions.assertThatThrownBy(() -> {
+            teamInvitationService.deleteTeamInvitation(teamInvitationId);
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("You are forbidden from deleting another user's team invitation");
     }
 
 }
