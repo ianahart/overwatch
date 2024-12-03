@@ -271,6 +271,49 @@ public class TeamMemberServiceTest {
         Assertions.assertThat(actualTeamMeamberDto.getAvatarUrl())
                 .isEqualTo(teamMemberDto.getAvatarUrl());
     }
+
+        @Test
+    public void TeamMemberService_SearchTeamMembers_ReturnPaginationDtoOfTeamMemberDto() {
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+        String search = "john doe";
+        Pageable pageable = Pageable.ofSize(pageSize);
+        TeamMemberDto teamMemberDto = convertToTeamMemberDto(teamMember);
+        Page<TeamMemberDto> pageResult =
+                new PageImpl<>(Collections.singletonList(teamMemberDto), pageable, 1);
+        PaginationDto<TeamMemberDto> expectedPaginationDto =
+                new PaginationDto<>(pageResult.getContent(), pageResult.getNumber(), pageSize,
+                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
+
+        when(paginationService.getPageable(page, pageSize, direction)).thenReturn(pageable);
+        when(teamMemberRepository.searchTeamMembersByTeamId(pageable, team.getId(), search))
+                .thenReturn(pageResult);
+
+        PaginationDto<TeamMemberDto> actualPaginationDto = teamMemberService
+                .searchTeamMembers(team.getId(), page, pageSize, direction, search);
+        Assertions.assertThat(actualPaginationDto.getPage())
+                .isEqualTo(expectedPaginationDto.getPage());
+        Assertions.assertThat(actualPaginationDto.getPageSize())
+                .isEqualTo(expectedPaginationDto.getPageSize());
+        Assertions.assertThat(actualPaginationDto.getTotalPages())
+                .isEqualTo(expectedPaginationDto.getTotalPages());
+        Assertions.assertThat(actualPaginationDto.getTotalElements())
+                .isEqualTo(expectedPaginationDto.getTotalElements());
+        Assertions.assertThat(actualPaginationDto.getItems()).hasSize(1);
+        TeamMemberDto actualTeamMeamberDto = actualPaginationDto.getItems().get(0);
+        Assertions.assertThat(actualTeamMeamberDto.getId()).isEqualTo(teamMemberDto.getId());
+        Assertions.assertThat(actualTeamMeamberDto.getTeamId())
+                .isEqualTo(teamMemberDto.getTeamId());
+        Assertions.assertThat(actualTeamMeamberDto.getUserId())
+                .isEqualTo(teamMemberDto.getUserId());
+        Assertions.assertThat(actualTeamMeamberDto.getProfileId())
+                .isEqualTo(teamMemberDto.getProfileId());
+        Assertions.assertThat(actualTeamMeamberDto.getFullName())
+                .isEqualTo(teamMemberDto.getFullName());
+        Assertions.assertThat(actualTeamMeamberDto.getAvatarUrl())
+                .isEqualTo(teamMemberDto.getAvatarUrl());
+    }
 }
 
 
