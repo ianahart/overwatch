@@ -21,6 +21,7 @@ import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.team.Team;
 import com.hart.overwatch.team.TeamService;
+import com.hart.overwatch.teaminvitation.dto.TeamInvitationDto;
 import com.hart.overwatch.teaminvitation.request.CreateTeamInvitationRequest;
 import com.hart.overwatch.teammember.TeamMemberService;
 import com.hart.overwatch.user.Role;
@@ -102,6 +103,21 @@ public class TeamInvitationServiceTest {
         return teamInvitationEntity;
     }
 
+    private TeamInvitationDto convertToDto(TeamInvitation teamInvitation) {
+        TeamInvitationDto teamInvitationDto = new TeamInvitationDto();
+        teamInvitationDto.setId(teamInvitation.getId());
+        teamInvitationDto.setTeamId(teamInvitation.getTeam().getId());
+        teamInvitationDto.setSenderId(teamInvitation.getSender().getId());
+        teamInvitationDto.setTeamName(teamInvitation.getTeam().getTeamName());
+        teamInvitationDto.setReceiverId(teamInvitation.getReceiver().getId());
+        teamInvitationDto.setStatus(teamInvitation.getStatus());
+        teamInvitationDto.setSenderFullName(teamInvitation.getSender().getFullName());
+        teamInvitationDto
+                .setSenderAvatarUrl(teamInvitation.getSender().getProfile().getAvatarUrl());
+
+        return teamInvitationDto;
+    }
+
     @BeforeEach
     public void setUp() {
         sender = createSender();
@@ -144,6 +160,56 @@ public class TeamInvitationServiceTest {
 
         Assertions.assertThatNoException();
         verify(teamInvitationRepository, times(1)).save(any(TeamInvitation.class));
+    }
+
+    @Test
+    public void TeamInvitationService_GetReceiverTeamInvitations_ReturnPaginationDtoOfTeamInvitationDto() {
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+        Pageable pageable = Pageable.ofSize(pageSize);
+        TeamInvitationDto teamInvitationDto = convertToDto(teamInvitation);
+        Page<TeamInvitationDto> pageResult =
+                new PageImpl<>(Collections.singletonList(teamInvitationDto), pageable, 1);
+        PaginationDto<TeamInvitationDto> expectedPaginationDto =
+                new PaginationDto<>(pageResult.getContent(), pageResult.getNumber(), pageSize,
+                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
+
+        when(paginationService.getPageable(page, pageSize, direction)).thenReturn(pageable);
+        when(teamInvitationRepository.getTeamInvitationsByReceiverId(pageable, receiver.getId()))
+                .thenReturn(pageResult);
+
+        PaginationDto<TeamInvitationDto> actualPaginationDto = teamInvitationService
+                .getReceiverTeamInvitations(receiver.getId(), page, pageSize, direction);
+
+        Assertions.assertThat(actualPaginationDto).isNotNull();
+        Assertions.assertThat(actualPaginationDto.getPage())
+                .isEqualTo(expectedPaginationDto.getPage());
+        Assertions.assertThat(actualPaginationDto.getPageSize())
+                .isEqualTo(expectedPaginationDto.getPageSize());
+        Assertions.assertThat(actualPaginationDto.getTotalPages())
+                .isEqualTo(expectedPaginationDto.getTotalPages());
+        Assertions.assertThat(actualPaginationDto.getTotalElements())
+                .isEqualTo(expectedPaginationDto.getTotalElements());
+        Assertions.assertThat(actualPaginationDto.getDirection())
+                .isEqualTo(expectedPaginationDto.getDirection());
+        TeamInvitationDto actualTeamInvitationDto = actualPaginationDto.getItems().get(0);
+        Assertions.assertThat(actualTeamInvitationDto.getId()).isEqualTo(teamInvitationDto.getId());
+        Assertions.assertThat(actualTeamInvitationDto.getTeamId())
+                .isEqualTo(teamInvitationDto.getTeamId());
+        Assertions.assertThat(actualTeamInvitationDto.getSenderId())
+                .isEqualTo(teamInvitationDto.getSenderId());
+        Assertions.assertThat(actualTeamInvitationDto.getReceiverId())
+                .isEqualTo(teamInvitationDto.getReceiverId());
+        Assertions.assertThat(actualTeamInvitationDto.getTeamName())
+                .isEqualTo(teamInvitationDto.getTeamName());
+        Assertions.assertThat(actualTeamInvitationDto.getSenderFullName())
+                .isEqualTo(teamInvitationDto.getSenderFullName());
+        Assertions.assertThat(actualTeamInvitationDto.getSenderAvatarUrl())
+                .isEqualTo(teamInvitationDto.getSenderAvatarUrl());
+        Assertions.assertThat(actualTeamInvitationDto.getStatus())
+                .isEqualTo(teamInvitationDto.getStatus());
+
     }
 
 }
