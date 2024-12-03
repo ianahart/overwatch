@@ -196,6 +196,21 @@ public class TeamMemberServiceTest {
         }).isInstanceOf(ForbiddenException.class)
                 .hasMessage("Cannot perform the action of deleting a team member from a team");
     }
+
+    @Test
+    public void TeamMemberService_DeleteTeamMember_ReturnNothing() {
+        Long teamMemberId = teamMember.getId();
+
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+        when(teamMemberRepository.findById(teamMemberId)).thenReturn(Optional.of(teamMember));
+
+        doNothing().when(teamMemberRepository).delete(teamMember);
+
+        teamMemberService.deleteTeamMember(teamMemberId);
+
+        Assertions.assertThatNoException();
+        verify(teamMemberRepository, times(1)).delete(teamMember);
+    }
 }
 
 
