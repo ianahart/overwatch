@@ -1,5 +1,6 @@
 package com.hart.overwatch.teammember;
 
+import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +25,8 @@ import com.hart.overwatch.profile.ProfileRepository;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.team.Team;
 import com.hart.overwatch.team.TeamRepository;
+import com.hart.overwatch.teammember.dto.TeamMemberDto;
+import com.hart.overwatch.teammember.dto.TeamMemberTeamDto;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserRepository;
@@ -124,6 +127,29 @@ public class TeamMemberRepositoryTest {
         boolean exists = teamMemberRepository.existsByTeamIdAndUserId(teamId, userId);
 
         Assertions.assertThat(exists).isTrue();
+    }
+
+    @Test
+    public void TeamMemberRepository_GetTeamsByTeamMember_ReturnPageOfTeamMemberTeamDto() {
+        int page = 0;
+        int pageSize = 3;
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Long userId = user.getId();
+
+        Page<TeamMemberTeamDto> result =
+                teamMemberRepository.getTeamsByTeamMember(pageable, userId);
+
+        Assertions.assertThat(result).isNotEmpty();
+        List<TeamMemberTeamDto> teamMemberTeamDtos = result.getContent();
+        Assertions.assertThat(teamMemberTeamDtos).hasSize(1);
+        TeamMemberTeamDto teamMemberTeamDto = teamMemberTeamDtos.get(0);
+        Assertions.assertThat(teamMemberTeamDto.getId()).isEqualTo(teamMember.getId());
+        Assertions.assertThat(teamMemberTeamDto.getTeamId())
+                .isEqualTo(teamMember.getTeam().getId());
+        Assertions.assertThat(teamMemberTeamDto.getUserId())
+                .isEqualTo(teamMember.getUser().getId());
+        Assertions.assertThat(teamMemberTeamDto.getTeamName())
+                .isEqualTo(teamMember.getTeam().getTeamName());
     }
 }
 
