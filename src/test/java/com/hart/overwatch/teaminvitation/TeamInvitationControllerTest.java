@@ -11,6 +11,7 @@ import com.hart.overwatch.team.dto.TeamDto;
 import com.hart.overwatch.team.request.CreateTeamRequest;
 import com.hart.overwatch.teaminvitation.dto.TeamInvitationDto;
 import com.hart.overwatch.teaminvitation.request.CreateTeamInvitationRequest;
+import com.hart.overwatch.teaminvitation.request.UpdateTeamInvitationRequest;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
@@ -214,6 +215,27 @@ public class TeamInvitationControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
 
         verify(teamInvitationService, times(1)).deleteTeamInvitation(teamInvitationId);
+    }
+
+    @Test
+    public void TeamInvitationController_UpdateTeamInvitation_ReturnUpdateTeamInvitationResponse()
+            throws Exception {
+        Long teamInvitationId = teamInvitation.getId();
+        Long teamId = team.getId();
+        UpdateTeamInvitationRequest request = new UpdateTeamInvitationRequest(receiver.getId());
+
+        doNothing().when(teamInvitationService).updateTeamInvitation(teamId, teamInvitationId,
+                request.getUserId());
+
+        ResultActions response = mockMvc.perform(
+                patch(String.format("/api/v1/teams/%d/invitations/%d", teamId, teamInvitationId))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+
+        verify(teamInvitationService, times(1)).updateTeamInvitation(teamId, teamInvitationId,
+                request.getUserId());
     }
 
 }
