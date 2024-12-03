@@ -38,6 +38,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matchers;
 
 
 @DirtiesContext
@@ -157,6 +158,45 @@ public class TeamInvitationControllerTest {
 
         response.andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
+    @Test
+    public void TeamInvitationController_GetReceiverTeamInvitations_ReturnGetTeamInvitationsResponse()
+            throws Exception {
+        Long userId = receiver.getId();
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+        Pageable pageable = Pageable.ofSize(pageSize);
+        TeamInvitationDto teamInvitationDto = convertToDto(teamInvitation);
+        Page<TeamInvitationDto> pageResult =
+                new PageImpl<>(Collections.singletonList(teamInvitationDto), pageable, 1);
+        PaginationDto<TeamInvitationDto> expectedPaginationDto =
+                new PaginationDto<>(pageResult.getContent(), pageResult.getNumber(), pageSize,
+                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
+
+        when(teamInvitationService.getReceiverTeamInvitations(userId, page, pageSize, direction))
+                .thenReturn(expectedPaginationDto);
+
+        ResultActions response = mockMvc
+                .perform(get("/api/v1/teams/invitations").param("userId", String.valueOf(userId))
+                        .param("page", "0").param("pageSize", "3").param("direction", "next"));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.page",
+                        CoreMatchers.is(expectedPaginationDto.getPage())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.pageSize",
+                        CoreMatchers.is(expectedPaginationDto.getPageSize())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.totalPages",
+                        CoreMatchers.is(expectedPaginationDto.getTotalPages())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.page",
+                        CoreMatchers.is(expectedPaginationDto.getPage())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.totalElements",
+                        CoreMatchers.is(Math.toIntExact(expectedPaginationDto.getTotalElements()))))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.items",
+                        Matchers.hasSize(Math.toIntExact(1L))));
+
     }
 
 }
