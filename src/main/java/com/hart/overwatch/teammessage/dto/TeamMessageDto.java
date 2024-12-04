@@ -30,6 +30,7 @@ public class TeamMessageDto {
         this.text = text;
         this.createdAt = createdAt;
         this.userId = userId;
+        this.fullName = fullName;
         this.avatarUrl = avatarUrl;
         this.teamId = teamId;
     }
