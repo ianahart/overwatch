@@ -22,6 +22,7 @@ import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.team.Team;
 import com.hart.overwatch.team.TeamService;
 import com.hart.overwatch.teamcomment.TeamComment;
+import com.hart.overwatch.teamcomment.dto.TeamCommentDto;
 import com.hart.overwatch.teampost.TeamPost;
 import com.hart.overwatch.teampost.TeamPostRepository;
 import com.hart.overwatch.user.Role;
@@ -120,6 +121,20 @@ public class TeamCommentServiceTest {
         return teamCommentEntities;
     }
 
+    private TeamCommentDto convertToDto(TeamComment teamComment) {
+        TeamCommentDto teamCommentDto = new TeamCommentDto();
+        teamCommentDto.setId(teamComment.getId());
+        teamCommentDto.setTag(teamComment.getTag());
+        teamCommentDto.setUserId(teamComment.getUser().getId());
+        teamCommentDto.setContent(teamComment.getContent());
+        teamCommentDto.setFullName(teamComment.getUser().getFullName());
+        teamCommentDto.setIsEdited(teamComment.getIsEdited());
+        teamCommentDto.setAvatarUrl(teamComment.getUser().getProfile().getAvatarUrl());
+        teamCommentDto.setTeamPostId(teamComment.getTeamPost().getId());
+
+        return teamCommentDto;
+    }
+
     @BeforeEach
     public void setUp() {
         user = createUser();
@@ -127,6 +142,55 @@ public class TeamCommentServiceTest {
         teamPost = createTeamPost(user, team);
         int numOfComments = 3;
         teamComments = createTeamComments(user, teamPost, numOfComments);
+    }
+
+    @Test
+    public void TeamCommentService_GetTeamComments_ReturnPaginationDtoOfTeamCommentDto() {
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+        Pageable pageable = Pageable.ofSize(pageSize);
+        TeamCommentDto teamCommentDto = convertToDto(teamComments.get(0));
+        Page<TeamCommentDto> pageResult =
+                new PageImpl<>(Collections.singletonList(teamCommentDto), pageable, 1);
+        PaginationDto<TeamCommentDto> expectedPaginationDto =
+                new PaginationDto<>(pageResult.getContent(), pageResult.getNumber(), pageSize,
+                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
+
+        when(paginationService.getPageable(page, pageSize, direction)).thenReturn(pageable);
+        when(teamCommentRepository.getTeamCommentsByTeamPostId(pageable, teamPost.getId()))
+                .thenReturn(pageResult);
+
+        PaginationDto<TeamCommentDto> actualPaginationDto =
+                teamCommentService.getTeamComments(teamPost.getId(), page, pageSize, direction);
+
+        Assertions.assertThat(actualPaginationDto).isNotNull();
+        Assertions.assertThat(actualPaginationDto.getPage())
+                .isEqualTo(expectedPaginationDto.getPage());
+        Assertions.assertThat(actualPaginationDto.getPageSize())
+                .isEqualTo(expectedPaginationDto.getPageSize());
+        Assertions.assertThat(actualPaginationDto.getTotalPages())
+                .isEqualTo(expectedPaginationDto.getTotalPages());
+        Assertions.assertThat(actualPaginationDto.getTotalElements())
+                .isEqualTo(expectedPaginationDto.getTotalElements());
+        Assertions.assertThat(actualPaginationDto.getDirection())
+                .isEqualTo(expectedPaginationDto.getDirection());
+        Assertions.assertThat(actualPaginationDto.getItems()).hasSize(1);
+        TeamCommentDto actualTeamCommentDto = actualPaginationDto.getItems().get(0);
+        Assertions.assertThat(actualTeamCommentDto.getId()).isEqualTo(teamCommentDto.getId());
+        Assertions.assertThat(actualTeamCommentDto.getUserId())
+                .isEqualTo(teamCommentDto.getUserId());
+        Assertions.assertThat(actualTeamCommentDto.getTeamPostId())
+                .isEqualTo(teamCommentDto.getTeamPostId());
+        Assertions.assertThat(actualTeamCommentDto.getIsEdited())
+                .isEqualTo(teamCommentDto.getIsEdited());
+        Assertions.assertThat(actualTeamCommentDto.getTag()).isEqualTo(teamCommentDto.getTag());
+        Assertions.assertThat(actualTeamCommentDto.getContent())
+                .isEqualTo(teamCommentDto.getContent());
+        Assertions.assertThat(actualTeamCommentDto.getFullName())
+                .isEqualTo(teamCommentDto.getFullName());
+        Assertions.assertThat(actualTeamCommentDto.getAvatarUrl())
+                .isEqualTo(teamCommentDto.getAvatarUrl());
     }
 
 }
