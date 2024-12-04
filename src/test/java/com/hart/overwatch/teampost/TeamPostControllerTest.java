@@ -38,7 +38,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
@@ -213,6 +212,18 @@ public class TeamPostControllerTest {
                         .content(objectMapper.writeValueAsString(request)));
 
         response.andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
+    @Test
+    public void TeamPostController_DeleteTeamPost_ReturnDeleteTeamPostResponse() throws Exception {
+        Long teamPostId = teamPosts.get(0).getId();
+
+        doNothing().when(teamPostService).deleteTeamPost(teamPostId);
+        ResultActions response =
+                mockMvc.perform(delete(String.format("/api/v1/team-posts/%d", teamPostId)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 }
