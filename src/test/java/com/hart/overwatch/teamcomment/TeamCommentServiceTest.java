@@ -267,6 +267,21 @@ public class TeamCommentServiceTest {
         verify(teamCommentRepository, times(1)).save(any(TeamComment.class));
     }
 
+    @Test
+    public void TeamCommentService_DeleteTeamComment_ThrowForbiddenException() {
+        TeamComment teamComment = teamComments.get(0);
+        User forbiddenUser = new User();
+        forbiddenUser.setId(2L);
+
+        when(teamCommentRepository.findById(teamComment.getId()))
+                .thenReturn(Optional.of(teamComment));
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(forbiddenUser);
+
+        Assertions.assertThatThrownBy(() -> {
+            teamCommentService.deleteTeamComment(teamComment.getId());
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("You do not have permission to delete this comment");
+    }
 
 }
 
