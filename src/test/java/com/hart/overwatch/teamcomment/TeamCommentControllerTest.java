@@ -178,6 +178,45 @@ public class TeamCommentControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 
+    @Test
+    public void TeamCommentController_GetTeamComments_ReturnGetTeamCommentsResponse()
+            throws Exception {
+        Long teamPostId = teamPost.getId();
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+        Pageable pageable = Pageable.ofSize(pageSize);
+        TeamCommentDto teamCommentDto = convertToDto(teamComments.get(0));
+        Page<TeamCommentDto> pageResult =
+                new PageImpl<>(Collections.singletonList(teamCommentDto), pageable, 1);
+        PaginationDto<TeamCommentDto> expectedPaginationDto =
+                new PaginationDto<>(pageResult.getContent(), pageResult.getNumber(), pageSize,
+                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
+
+        when(teamCommentService.getTeamComments(teamPostId, page, pageSize, direction))
+                .thenReturn(expectedPaginationDto);
+
+        ResultActions response = mockMvc
+                .perform(get(String.format("/api/v1/team-posts/%d/team-comments", teamPostId))
+                        .param("userId", String.valueOf(teamPostId)).param("page", "0")
+                        .param("pageSize", "3").param("direction", "next"));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.page",
+                        CoreMatchers.is(expectedPaginationDto.getPage())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.pageSize",
+                        CoreMatchers.is(expectedPaginationDto.getPageSize())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.totalPages",
+                        CoreMatchers.is(expectedPaginationDto.getTotalPages())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.page",
+                        CoreMatchers.is(expectedPaginationDto.getPage())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.totalElements",
+                        CoreMatchers.is(Math.toIntExact(expectedPaginationDto.getTotalElements()))))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.items",
+                        Matchers.hasSize(Math.toIntExact(1L))));
+    }
+
 }
 
 
