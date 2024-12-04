@@ -249,6 +249,25 @@ public class TeamCommentServiceTest {
                 .hasMessage("You do not have permission to update this comment");
     }
 
+    @Test
+    public void TeamCommentService_UpdateTeamComment_ReturnNothing() {
+        TeamComment teamComment = teamComments.get(0);
+        when(teamCommentRepository.findById(teamComment.getId()))
+                .thenReturn(Optional.of(teamComment));
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+
+        UpdateTeamCommentRequest request = new UpdateTeamCommentRequest();
+        request.setTag(user.getFullName());
+        request.setContent("updated comment");
+
+        when(teamCommentRepository.save(any(TeamComment.class))).thenReturn(teamComment);
+
+        teamCommentService.updateTeamComment(teamComment.getId(), request);
+
+        verify(teamCommentRepository, times(1)).save(any(TeamComment.class));
+    }
+
+
 }
 
 
