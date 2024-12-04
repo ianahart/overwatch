@@ -11,6 +11,7 @@ import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.team.Team;
 import com.hart.overwatch.teamcomment.TeamComment;
 import com.hart.overwatch.teampost.dto.TeamPostDto;
+import com.hart.overwatch.teampost.request.CreateTeamPostRequest;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
@@ -194,8 +195,25 @@ public class TeamPostControllerTest {
                         CoreMatchers.is(Math.toIntExact(expectedPaginationDto.getTotalElements()))))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.items",
                         Matchers.hasSize(Math.toIntExact(1L))));
+    }
 
+    @Test
+    public void TeamPostController_CreateTeamPost_ReturnCreatTeamPostResponse() throws Exception {
+        CreateTeamPostRequest request = new CreateTeamPostRequest();
+        request.setCode(getCode());
+        request.setUserId(user.getId());
+        request.setLanguage("javascript");
+        Long teamId = team.getId();
 
+        doNothing().when(teamPostService).createTeamPost(request, teamId);
+
+        ResultActions response =
+                mockMvc.perform(post(String.format("/api/v1/teams/%d/team-posts", teamId))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 }
 
