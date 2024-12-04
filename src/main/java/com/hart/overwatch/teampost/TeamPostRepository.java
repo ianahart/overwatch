@@ -17,7 +17,7 @@ public interface TeamPostRepository extends JpaRepository<TeamPost, Long> {
              tp.id AS id, t.id AS teamId, tp.createdAt AS createdAt,
              u.id AS userId, tp.code AS code, tp.isEdited AS isEdited,
              u.fullName AS fullName, p.avatarUrl AS avatarUrl, tp.language AS language,
-             CASE WHEN COUNT(tc.id) > 1 THEN true ELSE false END AS hasComments
+             CASE WHEN COUNT(tc.id) >= 1 THEN true ELSE false END AS hasComments
             )
             FROM TeamPost tp
             INNER JOIN tp.team t
