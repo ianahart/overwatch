@@ -22,10 +22,10 @@ import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.team.Team;
 import com.hart.overwatch.team.TeamService;
 import com.hart.overwatch.teamcomment.TeamComment;
+import com.hart.overwatch.teamcomment.dto.MinTeamCommentDto;
 import com.hart.overwatch.teamcomment.dto.TeamCommentDto;
 import com.hart.overwatch.teamcomment.request.CreateTeamCommentRequest;
 import com.hart.overwatch.teampost.TeamPost;
-import com.hart.overwatch.teampost.TeamPostRepository;
 import com.hart.overwatch.teampost.TeamPostService;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
@@ -214,6 +214,18 @@ public class TeamCommentServiceTest {
         teamCommentService.createTeamComment(request, teamPostId);
 
         verify(teamCommentRepository, times(1)).save(any(TeamComment.class));
+    }
+
+    @Test
+    public void TeamCommentService_GetTeamComment_ReturnMinTeamCommentDto() {
+        TeamComment teamComment = teamComments.get(0);
+        when(teamCommentRepository.findById(teamComment.getId()))
+                .thenReturn(Optional.of(teamComment));
+        MinTeamCommentDto result = teamCommentService.getTeamComment(teamComment.getId());
+
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getTag()).isEqualTo(teamComment.getTag());
+        Assertions.assertThat(result.getContent()).isEqualTo(teamComment.getContent());
     }
 
 }
