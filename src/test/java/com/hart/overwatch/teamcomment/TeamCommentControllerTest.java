@@ -11,6 +11,7 @@ import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.team.Team;
 import com.hart.overwatch.teamcomment.TeamComment;
 import com.hart.overwatch.teamcomment.dto.TeamCommentDto;
+import com.hart.overwatch.teamcomment.request.CreateTeamCommentRequest;
 import com.hart.overwatch.teampost.TeamPost;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.user.Role;
@@ -157,6 +158,25 @@ public class TeamCommentControllerTest {
         teamComments = createTeamComments(user, teamPost, numOfComments);
     }
 
+    @Test
+    public void TeamCommentController_CreateTeamComment_ReturnCreateTeamCommentResponse()
+            throws Exception {
+        Long teamPostId = teamPost.getId();
+        CreateTeamCommentRequest request = new CreateTeamCommentRequest();
+        request.setTag(user.getFullName());
+        request.setUserId(user.getId());
+        request.setContent("comment content");
+
+        doNothing().when(teamCommentService).createTeamComment(request, teamPostId);
+
+        ResultActions response = mockMvc
+                .perform(post(String.format("/api/v1/team-posts/%d/team-comments", teamPostId))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
 
 }
 
