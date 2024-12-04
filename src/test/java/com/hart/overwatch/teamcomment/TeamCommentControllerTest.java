@@ -261,6 +261,21 @@ public class TeamCommentControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 
+    @Test
+    public void TeamCommentController_DeleteTeamComment_ReturnDeleteTeamCommentResponse()
+            throws Exception {
+        Long teamPostId = teamPost.getId();
+        Long teamCommentId = teamComments.get(0).getId();
+
+        doNothing().when(teamCommentService).deleteTeamComment(teamCommentId);
+
+        ResultActions response = mockMvc.perform(delete(String
+                .format("/api/v1/team-posts/%d/team-comments/%d", teamPostId, teamCommentId)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
 }
 
 
