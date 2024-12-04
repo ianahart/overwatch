@@ -23,6 +23,7 @@ import com.hart.overwatch.profile.ProfileRepository;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.team.Team;
 import com.hart.overwatch.team.TeamRepository;
+import com.hart.overwatch.teammessage.dto.TeamMessageDto;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserRepository;
@@ -59,8 +60,11 @@ public class TeamMessageRepositoryTest {
 
     private User createUser() {
         Boolean loggedIn = true;
+        Profile profileEntity = new Profile();
+        profileEntity.setAvatarUrl("test-avatar-url");
+        profileRepository.save(profileEntity);
         User userEntity = new User("john@mail.com", "John", "Doe", "John Doe", Role.USER, loggedIn,
-                new Profile(), "Test12345%", new Setting());
+                profileEntity, "Test12345%", new Setting());
         userRepository.save(userEntity);
         return userEntity;
     }
@@ -110,7 +114,32 @@ public class TeamMessageRepositoryTest {
         entityManager.clear();
     }
 
-}
+    @Test
+    public void TeamMessageRepository_GetTeamMessagesByTeamId_ReturnListOfTeamMessageDto() {
+        Long teamId = team.getId();
 
+        List<TeamMessageDto> teamMessageDtos =
+                teamMessageRepository.getTeamMessagesByTeamId(teamId);
+
+        Assertions.assertThat(teamMessageDtos).isNotEmpty();
+        Assertions.assertThat(teamMessageDtos).hasSize(teamMessages.size());
+        for (int i = 0; i < teamMessages.size(); i++) {
+            TeamMessage teamMessage = teamMessages.get(teamMessages.size() - 1 - i);
+            TeamMessageDto teamMessageDto = teamMessageDtos.get(i);
+
+            Assertions.assertThat(teamMessageDto.getId()).isEqualTo(teamMessage.getId());
+            Assertions.assertThat(teamMessageDto.getTeamId())
+                    .isEqualTo(teamMessage.getTeam().getId());
+            Assertions.assertThat(teamMessageDto.getUserId())
+                    .isEqualTo(teamMessage.getUser().getId());
+            Assertions.assertThat(teamMessageDto.getText()).isEqualTo(teamMessage.getText());
+            Assertions.assertThat(teamMessageDto.getFullName())
+                    .isEqualTo(teamMessage.getUser().getFullName());
+            Assertions.assertThat(teamMessageDto.getAvatarUrl())
+                    .isEqualTo(teamMessage.getUser().getProfile().getAvatarUrl());
+        }
+    }
+
+}
 
 
