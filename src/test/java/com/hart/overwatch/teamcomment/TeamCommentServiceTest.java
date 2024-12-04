@@ -120,7 +120,6 @@ public class TeamCommentServiceTest {
 
             teamCommentEntities.add(teamCommentEntity);
         }
-        teamCommentRepository.saveAll(teamCommentEntities);
         return teamCommentEntities;
     }
 
