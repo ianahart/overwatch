@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import java.util.List;
+import java.util.Optional;
 import java.util.ArrayList;
 import java.util.Collections;
 import org.assertj.core.api.Assertions;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
@@ -211,6 +213,21 @@ public class TeamPostServiceTest {
         Assertions.assertThat(actualTeamPostDto.getLanguage()).isEqualTo(teamPostDto.getLanguage());
         Assertions.assertThat(actualTeamPostDto.getAvatarUrl())
                 .isEqualTo(teamPostDto.getAvatarUrl());
+    }
+
+    @Test
+    public void TeamPostService_DeleteTeamPost_ThrowForbiddenException() {
+        Long teamPostId = teamPosts.get(0).getId();
+        User forbiddenUser = new User();
+        forbiddenUser.setId(2L);
+
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(forbiddenUser);
+        when(teamPostRepository.findById(teamPostId)).thenReturn(Optional.of(teamPosts.get(0)));
+
+        Assertions.assertThatThrownBy(() -> {
+            teamPostService.deleteTeamPost(teamPostId);
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("You do not have the permission to delete another user's post");
     }
 
 }
