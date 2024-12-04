@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import com.amazonaws.services.rds.model.Option;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
@@ -228,6 +229,22 @@ public class TeamPostServiceTest {
             teamPostService.deleteTeamPost(teamPostId);
         }).isInstanceOf(ForbiddenException.class)
                 .hasMessage("You do not have the permission to delete another user's post");
+    }
+
+    @Test
+    public void TeamPostService_DeleteTeamPost_ReturnNothing() {
+        TeamPost teamPost = teamPosts.get(0);
+
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+        when(teamPostRepository.findById(teamPost.getId())).thenReturn(Optional.of(teamPost));
+
+        doNothing().when(teamPostRepository).delete(teamPost);
+
+        teamPostService.deleteTeamPost(teamPost.getId());
+
+        verify(userService, times(1)).getCurrentlyLoggedInUser();
+        verify(teamPostRepository, times(1)).findById(teamPost.getId());
+        verify(teamPostRepository, times(1)).delete(teamPost);
     }
 
 }
