@@ -28,6 +28,7 @@ import com.hart.overwatch.team.Team;
 import com.hart.overwatch.team.TeamRepository;
 import com.hart.overwatch.teamcomment.TeamComment;
 import com.hart.overwatch.teamcomment.TeamCommentRepository;
+import com.hart.overwatch.teamcomment.dto.TeamCommentDto;
 import com.hart.overwatch.teampost.TeamPost;
 import com.hart.overwatch.teampost.TeamPostRepository;
 import com.hart.overwatch.teampost.dto.TeamPostDto;
@@ -135,8 +136,6 @@ public class TeamCommentRepositoryTest {
         teamPost = createTeamPost(user, team);
         int numOfComments = 3;
         teamComments = createTeamComments(user, teamPost, numOfComments);
-
-
     }
 
     @AfterEach
@@ -149,6 +148,32 @@ public class TeamCommentRepositoryTest {
         userRepository.deleteAll();
         entityManager.flush();
         entityManager.clear();
+    }
+
+    @Test
+    public void TeamCommentRepository_GetTeamCommentsByTeamPostId_ReturnPageOfTeamCommentDto() {
+        int page = 0, pageSize = 3;
+        Long teamPostId = teamPost.getId();
+        Pageable pageable = PageRequest.of(page, pageSize);
+
+        Page<TeamCommentDto> result =
+                teamCommentRepository.getTeamCommentsByTeamPostId(pageable, teamPostId);
+
+        Assertions.assertThat(result).isNotEmpty();
+        TeamCommentDto teamCommentDto = result.getContent().get(0);
+        TeamComment teamComment = teamComments.get(0);
+        Assertions.assertThat(teamCommentDto.getId()).isEqualTo(teamComment.getId());
+        Assertions.assertThat(teamCommentDto.getUserId()).isEqualTo(teamComment.getUser().getId());
+        Assertions.assertThat(teamCommentDto.getTeamPostId())
+                .isEqualTo(teamComment.getTeamPost().getId());
+        Assertions.assertThat(teamCommentDto.getIsEdited()).isEqualTo(teamComment.getIsEdited());
+        Assertions.assertThat(teamCommentDto.getTag()).isEqualTo(teamComment.getTag());
+        Assertions.assertThat(teamCommentDto.getContent()).isEqualTo(teamComment.getContent());
+        Assertions.assertThat(teamCommentDto.getFullName())
+                .isEqualTo(teamComment.getUser().getFullName());
+        Assertions.assertThat(teamCommentDto.getAvatarUrl())
+                .isEqualTo(teamCommentDto.getAvatarUrl());
+
     }
 
 }
