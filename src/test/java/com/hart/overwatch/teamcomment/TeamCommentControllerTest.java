@@ -13,6 +13,7 @@ import com.hart.overwatch.teamcomment.TeamComment;
 import com.hart.overwatch.teamcomment.dto.MinTeamCommentDto;
 import com.hart.overwatch.teamcomment.dto.TeamCommentDto;
 import com.hart.overwatch.teamcomment.request.CreateTeamCommentRequest;
+import com.hart.overwatch.teamcomment.request.UpdateTeamCommentRequest;
 import com.hart.overwatch.teampost.TeamPost;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.user.Role;
@@ -238,6 +239,26 @@ public class TeamCommentControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.content",
                         CoreMatchers.is(teamComment.getContent())));
 
+    }
+
+    @Test
+    public void TeamCommentController_UpdateTeamComment_ReturnUpdateTeamCommentResponse()
+            throws Exception {
+        Long teamPostId = teamPost.getId();
+        Long teamCommentId = teamComments.get(0).getId();
+        UpdateTeamCommentRequest request =
+                new UpdateTeamCommentRequest("updated content", "John Doe");
+
+        when(teamCommentService.updateTeamComment(teamCommentId, request))
+                .thenReturn(new MinTeamCommentDto("updated content", "John Doe"));
+
+        ResultActions response = mockMvc.perform(patch(
+                String.format("/api/v1/team-posts/%d/team-comments/%d", teamPostId, teamCommentId))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 
 }
