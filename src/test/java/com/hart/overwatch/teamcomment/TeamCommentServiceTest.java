@@ -25,6 +25,7 @@ import com.hart.overwatch.teamcomment.TeamComment;
 import com.hart.overwatch.teamcomment.dto.MinTeamCommentDto;
 import com.hart.overwatch.teamcomment.dto.TeamCommentDto;
 import com.hart.overwatch.teamcomment.request.CreateTeamCommentRequest;
+import com.hart.overwatch.teamcomment.request.UpdateTeamCommentRequest;
 import com.hart.overwatch.teampost.TeamPost;
 import com.hart.overwatch.teampost.TeamPostService;
 import com.hart.overwatch.user.Role;
@@ -226,6 +227,26 @@ public class TeamCommentServiceTest {
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result.getTag()).isEqualTo(teamComment.getTag());
         Assertions.assertThat(result.getContent()).isEqualTo(teamComment.getContent());
+    }
+
+    @Test
+    public void TeamCommentService_UpdateTeamComment_ReturnMinTeamCommentDto() {
+        TeamComment teamComment = teamComments.get(0);
+        User forbiddenUser = new User();
+        forbiddenUser.setId(2L);
+
+        when(teamCommentRepository.findById(teamComment.getId()))
+                .thenReturn(Optional.of(teamComment));
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(forbiddenUser);
+
+        UpdateTeamCommentRequest request = new UpdateTeamCommentRequest();
+        request.setTag(user.getFullName());
+        request.setContent("updated comment");
+
+        Assertions.assertThatThrownBy(() -> {
+            teamCommentService.updateTeamComment(teamComment.getId(), request);
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("You do not have permission to update this comment");
     }
 
 }
