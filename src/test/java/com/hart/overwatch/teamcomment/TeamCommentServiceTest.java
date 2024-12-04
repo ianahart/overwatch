@@ -283,6 +283,24 @@ public class TeamCommentServiceTest {
                 .hasMessage("You do not have permission to delete this comment");
     }
 
+    @Test
+    public void TeamCommentService_DeleteTeamComment_ReturnNothing() {
+        TeamComment teamComment = teamComments.get(0);
+
+        when(teamCommentRepository.findById(teamComment.getId()))
+                .thenReturn(Optional.of(teamComment));
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+        doNothing().when(teamCommentRepository).delete(teamComment);
+
+        teamCommentService.deleteTeamComment(teamComment.getId());
+
+        verify(teamCommentRepository, times(1)).delete(teamComment);
+
+
+
+    }
+
+
 }
 
 
