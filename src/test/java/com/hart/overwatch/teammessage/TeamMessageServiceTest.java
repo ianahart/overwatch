@@ -121,6 +121,42 @@ public class TeamMessageServiceTest {
                 .isEqualTo(teamMessage.getUser().getProfile().getAvatarUrl());
     }
 
+    @Test
+    public void TeamMessageService_CreateTeamMessage_ReturnTeamMessageDto() {
+        Long teamId = team.getId();
+        Long userId = user.getId();
+        String text = "<script>alert('XSS')</script> Hello, World!";
+        String cleanedText = "Hello, World!";
+        String messageJson = String.format("{\"teamId\":%d,\"userId\":%d,\"text\":\"%s\"}", teamId,
+                userId, text);
+
+
+        TeamMessage savedMessage = new TeamMessage(cleanedText, user, team);
+        savedMessage.setId(3L);
+
+        TeamMessageDto expectedDto = new TeamMessageDto(savedMessage.getId(),
+                savedMessage.getText(), savedMessage.getCreatedAt(), user.getId(),
+                user.getFullName(), null, team.getId());
+
+        when(userService.getUserById(userId)).thenReturn(user);
+        when(teamService.getTeamByTeamId(teamId)).thenReturn(team);
+        when(teamMessageRepository.save(any(TeamMessage.class))).thenAnswer(invocation -> {
+            TeamMessage argument = invocation.getArgument(0);
+            argument.setId(3L);
+            return argument;
+        });
+
+        TeamMessageDto actualDto = teamMessageService.createTeamMessage(messageJson);
+
+        Assertions.assertThat(actualDto).isNotNull();
+        Assertions.assertThat(actualDto.getId()).isEqualTo(expectedDto.getId());
+        Assertions.assertThat(actualDto.getText()).isEqualTo(expectedDto.getText());
+        Assertions.assertThat(actualDto.getUserId()).isEqualTo(expectedDto.getUserId());
+        Assertions.assertThat(actualDto.getFullName()).isEqualTo(expectedDto.getFullName());
+        Assertions.assertThat(actualDto.getTeamId()).isEqualTo(expectedDto.getTeamId());
+
+        verify(teamMessageRepository, times(1)).save(any(TeamMessage.class));
+    }
 }
 
 
