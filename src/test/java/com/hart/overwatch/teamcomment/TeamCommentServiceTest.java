@@ -23,8 +23,10 @@ import com.hart.overwatch.team.Team;
 import com.hart.overwatch.team.TeamService;
 import com.hart.overwatch.teamcomment.TeamComment;
 import com.hart.overwatch.teamcomment.dto.TeamCommentDto;
+import com.hart.overwatch.teamcomment.request.CreateTeamCommentRequest;
 import com.hart.overwatch.teampost.TeamPost;
 import com.hart.overwatch.teampost.TeamPostRepository;
+import com.hart.overwatch.teampost.TeamPostService;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
@@ -44,7 +46,7 @@ public class TeamCommentServiceTest {
     private TeamCommentRepository teamCommentRepository;
 
     @Mock
-    private TeamPostRepository teamPostRepository;
+    private TeamPostService teamPostService;
 
     @Mock
     private TeamService teamService;
@@ -191,6 +193,27 @@ public class TeamCommentServiceTest {
                 .isEqualTo(teamCommentDto.getFullName());
         Assertions.assertThat(actualTeamCommentDto.getAvatarUrl())
                 .isEqualTo(teamCommentDto.getAvatarUrl());
+    }
+
+    @Test
+    public void TeamCommentService_CreateTeamComment_ReturnNothing() {
+        Long teamPostId = teamPost.getId();
+        CreateTeamCommentRequest request = new CreateTeamCommentRequest();
+        request.setTag("John Doe");
+        request.setUserId(user.getId());
+        request.setContent("comment content");
+
+        when(userService.getUserById(user.getId())).thenReturn(user);
+        when(teamPostService.getTeamPostByTeamPostId(teamPostId)).thenReturn(teamPost);
+
+        TeamComment newTeamComment =
+                new TeamComment(false, request.getContent(), user, teamPost, request.getTag());
+
+        when(teamCommentRepository.save(any(TeamComment.class))).thenReturn(newTeamComment);
+
+        teamCommentService.createTeamComment(request, teamPostId);
+
+        verify(teamCommentRepository, times(1)).save(any(TeamComment.class));
     }
 
 }
