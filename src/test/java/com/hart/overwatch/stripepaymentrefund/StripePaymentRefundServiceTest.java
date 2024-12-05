@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import java.util.Collections;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
@@ -21,7 +20,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
-import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
@@ -347,10 +345,7 @@ public class StripePaymentRefundServiceTest {
             assertEquals("refund_123456789", stripePaymentRefund.getRefundId());
             verify(stripePaymentIntentService).updateStatus(PaymentIntentStatus.REFUNDED,
                     stripePaymentIntent.getId());
-            mockedStatic.verify(() -> Refund.create(any(RefundCreateParams.class)), times(1)); // Verify
-                                                                                               // static
-                                                                                               // method
-                                                                                               // call
+            mockedStatic.verify(() -> Refund.create(any(RefundCreateParams.class)), times(1));
         }
     }
 
