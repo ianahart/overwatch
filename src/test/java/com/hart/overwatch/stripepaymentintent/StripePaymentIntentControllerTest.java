@@ -10,6 +10,7 @@ import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.stripepaymentintent.dto.FullStripePaymentIntentDto;
+import com.hart.overwatch.stripepaymentintent.dto.StripePaymentIntentDto;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
@@ -108,7 +109,20 @@ public class StripePaymentIntentControllerTest {
         return stripePaymentIntentEntity;
     }
 
-    private FullStripePaymentIntentDto convertToDto(StripePaymentIntent stripePaymentIntent) {
+    private StripePaymentIntentDto convertToMinDto(StripePaymentIntent stripePaymentIntent) {
+        StripePaymentIntentDto dto = new StripePaymentIntentDto();
+        dto.setId(stripePaymentIntent.getId());
+        dto.setAmount(stripePaymentIntent.getAmount());
+        dto.setCurrency(stripePaymentIntent.getCurrency());
+        dto.setFullName(stripePaymentIntent.getUser().getFullName());
+        dto.setAvatarUrl(stripePaymentIntent.getUser().getProfile().getAvatarUrl());
+        dto.setReviewerId(stripePaymentIntent.getReviewer().getId());
+        dto.setStatus(stripePaymentIntent.getStatus());
+
+        return dto;
+    }
+
+    private FullStripePaymentIntentDto convertToFullDto(StripePaymentIntent stripePaymentIntent) {
         FullStripePaymentIntentDto dto = new FullStripePaymentIntentDto();
         dto.setId(stripePaymentIntent.getId());
         dto.setAmount(stripePaymentIntent.getAmount());
@@ -134,6 +148,42 @@ public class StripePaymentIntentControllerTest {
 
     }
 
+    @Test
+    public void StripePaymentIntentController_GetUserStripePaymentIntents_ReturnGetAllStripePaymentIntentResponse()
+            throws Exception {
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+        Pageable pageable = Pageable.ofSize(pageSize);
+        StripePaymentIntentDto stripePaymentIntentDto = convertToMinDto(stripePaymentIntent);
+        Page<StripePaymentIntentDto> pageResult =
+                new PageImpl<>(Collections.singletonList(stripePaymentIntentDto), pageable, 1);
+        PaginationDto<StripePaymentIntentDto> expectedPaginationDto =
+                new PaginationDto<>(pageResult.getContent(), pageResult.getNumber(), pageSize,
+                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
+
+        when(stripePaymentIntentService.getUserStripePaymentIntents(user.getId(), page, pageSize,
+                direction)).thenReturn(expectedPaginationDto);
+
+        ResultActions response =
+                mockMvc.perform(get(String.format("/api/v1/users/%d/payment-intents", user.getId()))
+                        .param("page", "0").param("pageSize", "3").param("direction", "next"));
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.page",
+                        CoreMatchers.is(expectedPaginationDto.getPage())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.pageSize",
+                        CoreMatchers.is(expectedPaginationDto.getPageSize())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.totalPages",
+                        CoreMatchers.is(expectedPaginationDto.getTotalPages())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.page",
+                        CoreMatchers.is(expectedPaginationDto.getPage())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.totalElements",
+                        CoreMatchers.is(Math.toIntExact(expectedPaginationDto.getTotalElements()))))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.items",
+                        Matchers.hasSize(Math.toIntExact(1L))));
+
+    }
 
 }
 
