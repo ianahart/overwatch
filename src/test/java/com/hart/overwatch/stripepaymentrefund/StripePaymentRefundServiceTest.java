@@ -3,10 +3,9 @@ package com.hart.overwatch.stripepaymentrefund;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import java.io.IOException;
-import java.nio.file.Path;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +22,6 @@ import org.springframework.data.domain.PageImpl;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
-import com.hart.overwatch.csv.CsvFileService;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
@@ -37,6 +35,9 @@ import com.hart.overwatch.stripepaymentrefund.request.UpdateStripePaymentRefundR
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
+import com.stripe.exception.StripeException;
+import com.stripe.model.Refund;
+import com.stripe.param.RefundCreateParams;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
@@ -57,6 +58,9 @@ public class StripePaymentRefundServiceTest {
 
     @Mock
     private PaginationService paginationService;
+
+    @Mock
+    private Refund refundMock;
 
     @Captor
     private ArgumentCaptor<StripePaymentRefund> refundCaptor;
@@ -302,5 +306,54 @@ public class StripePaymentRefundServiceTest {
         Assertions.assertThat(savedRefund.getStatus()).isEqualTo(PaymentRefundStatus.REJECTED);
         Assertions.assertThat(savedRefund.getAdminNotes()).isEqualTo(request.getAdminNotes());
     }
+
+
+
+    @Test
+    public void StripePaymentRefundService_ApproveRefund_Success() throws StripeException {
+        Long userId = user.getId();
+        Long paymentRefundId = stripePaymentRefund.getId();
+
+        StripePaymentIntent stripePaymentIntent = new StripePaymentIntent();
+        stripePaymentIntent.setId(123L);
+        stripePaymentIntent.setPaymentIntentId("pi_1234567890");
+
+        StripePaymentRefund stripePaymentRefund = new StripePaymentRefund();
+        stripePaymentRefund.setId(paymentRefundId);
+        stripePaymentRefund.setStatus(PaymentRefundStatus.PENDING);
+
+        UpdateStripePaymentRefundRequest request = new UpdateStripePaymentRefundRequest();
+        request.setStatus("approve");
+        request.setAdminNotes("Approving refund successfully.");
+        request.setStripePaymentIntentId(stripePaymentIntent.getId());
+
+        when(stripePaymentIntentService
+                .getStripePaymentIntentById(request.getStripePaymentIntentId()))
+                        .thenReturn(stripePaymentIntent);
+        when(stripePaymentRefundRepository.findById(paymentRefundId))
+                .thenReturn(Optional.of(stripePaymentRefund));
+
+        Refund stripeRefundMock = mock(Refund.class);
+        when(stripeRefundMock.getId()).thenReturn("refund_123456789");
+
+        try (MockedStatic<Refund> mockedStatic = mockStatic(Refund.class)) {
+            mockedStatic.when(() -> Refund.create(any(RefundCreateParams.class)))
+                    .thenReturn(stripeRefundMock);
+
+            stripePaymentRefundService.updatePaymentRefund(request, userId, paymentRefundId);
+
+            verify(stripePaymentRefundRepository, times(2)).save(stripePaymentRefund);
+            assertEquals(PaymentRefundStatus.APPROVED, stripePaymentRefund.getStatus());
+            assertEquals("refund_123456789", stripePaymentRefund.getRefundId());
+            verify(stripePaymentIntentService).updateStatus(PaymentIntentStatus.REFUNDED,
+                    stripePaymentIntent.getId());
+            mockedStatic.verify(() -> Refund.create(any(RefundCreateParams.class)), times(1)); // Verify
+                                                                                               // static
+                                                                                               // method
+                                                                                               // call
+        }
+    }
+
 }
+
 
