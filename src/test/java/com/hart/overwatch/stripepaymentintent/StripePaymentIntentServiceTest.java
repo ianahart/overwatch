@@ -3,6 +3,7 @@ package com.hart.overwatch.stripepaymentintent;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +35,7 @@ import com.hart.overwatch.email.request.EmailRequest;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.stripe.model.PaymentIntent;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
@@ -348,5 +350,49 @@ public class StripePaymentIntentServiceTest {
         Assertions.assertThat(actualStripePaymentIntentDto.getStatus())
                 .isEqualTo(stripePaymentIntentDto.getStatus());
     }
+
+    @Test
+    public void StripePaymentIntentService_ExportStripePaymentIntentsToPdf_ReturnNothing()
+            throws IOException {
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        String search = "all";
+        Pageable pageable = Pageable.ofSize(pageSize);
+        FullStripePaymentIntentDto stripePaymentIntentDto = convertToDto(stripePaymentIntent);
+        Page<FullStripePaymentIntentDto> pageResult =
+                new PageImpl<>(Collections.singletonList(stripePaymentIntentDto), pageable, 1);
+        PaginationDto<FullStripePaymentIntentDto> expectedPaginationDto =
+                new PaginationDto<>(pageResult.getContent(), pageResult.getNumber(), pageSize,
+                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
+
+        when(paginationService.getPageable(page, pageSize, direction)).thenReturn(pageable);
+        when(stripePaymentIntentRepository.getStripePaymentIntentsBySearch(pageable, ""))
+                .thenReturn(pageResult);
+
+        stripePaymentIntentService.exportStripePaymentIntentsToPdf(response, search, page, pageSize,
+                direction);
+
+        verify(stripePaymentIntentRepository, times(1)).getStripePaymentIntentsBySearch(pageable,
+                "");
+        verify(pdfFileService, times(1)).generatePdfFile(eq(response),
+                eq(List.of(stripePaymentIntentDto)));
+
+
+
+    }
+
+    //
+    // public void exportStripePaymentIntentsToPdf(HttpServletResponse response, String search,
+    // int page, int pageSize, String direction) throws IOException {
+    //
+    // StripePaymentIntentSearchResultDto data =
+    // getAllStripePaymentIntents(search, page, pageSize, direction);
+    //
+    //
+    // List<FullStripePaymentIntentDto> transactions = data.getResult().getItems();
+    // pdfFileService.generatePdfFile(response, transactions);
+    // }
 
 }
