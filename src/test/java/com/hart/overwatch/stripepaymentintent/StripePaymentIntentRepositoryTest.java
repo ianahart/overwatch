@@ -25,6 +25,7 @@ import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.profile.ProfileRepository;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.stripepaymentintent.dto.FullStripePaymentIntentDto;
+import com.hart.overwatch.stripepaymentintent.dto.StripePaymentIntentDto;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserRepository;
@@ -143,6 +144,26 @@ public class StripePaymentIntentRepositoryTest {
                 .isEqualTo(stripePaymentIntent.getReviewer().getEmail());
         Assertions.assertThat(dto.getReviewerFullName())
                 .isEqualTo(stripePaymentIntent.getReviewer().getFullName());
+        Assertions.assertThat(dto.getStatus()).isEqualTo(stripePaymentIntent.getStatus());
+    }
+
+    @Test
+    public void StripePaymentIntentRepository_GetStripePaymentIntentsByUserId() {
+        Long userId = user.getId();
+        int page = 0, pageSize = 3;
+        Pageable pageable = PageRequest.of(page, pageSize);
+
+        Page<StripePaymentIntentDto> result = stripePaymentIntentRepository.getStripePaymentIntentsByUserId(pageable, userId);
+
+        Assertions.assertThat(result).isNotEmpty();
+        Assertions.assertThat(result.getContent()).hasSize(1);
+        StripePaymentIntentDto dto = result.getContent().get(0);
+        Assertions.assertThat(dto.getId()).isEqualTo(stripePaymentIntent.getId());
+        Assertions.assertThat(dto.getAmount()).isEqualTo(stripePaymentIntent.getAmount());
+        Assertions.assertThat(dto.getReviewerId()).isEqualTo(stripePaymentIntent.getReviewer().getId());
+        Assertions.assertThat(dto.getCurrency()).isEqualTo(stripePaymentIntent.getCurrency());
+        Assertions.assertThat(dto.getFullName()).isEqualTo(stripePaymentIntent.getReviewer().getFullName());
+        Assertions.assertThat(dto.getAvatarUrl()).isEqualTo(stripePaymentIntent.getReviewer().getProfile().getAvatarUrl());
         Assertions.assertThat(dto.getStatus()).isEqualTo(stripePaymentIntent.getStatus());
     }
 
