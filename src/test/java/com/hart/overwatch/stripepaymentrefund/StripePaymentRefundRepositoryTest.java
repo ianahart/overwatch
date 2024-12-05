@@ -160,6 +160,17 @@ public class StripePaymentRefundRepositoryTest {
         Assertions.assertThat(stripePaymentRefundDto.getStatus())
                 .isEqualTo(stripePaymentRefund.getStatus());
     }
+
+    @Test
+    public void StripePaymentRefundRepository_FindPaymentRefundByUserIdAndStripePaymentIntentId_ReturnBooleanTrue() {
+        Long userId = user.getId();
+        Long stripePaymentIntentId = stripePaymentIntent.getId();
+
+        boolean exists = stripePaymentRefundRepository
+                .findPaymentRefundByUserIdAndStripePaymentIntentId(userId, stripePaymentIntentId);
+
+        Assertions.assertThat(exists).isTrue();
+    }
 }
 
 
