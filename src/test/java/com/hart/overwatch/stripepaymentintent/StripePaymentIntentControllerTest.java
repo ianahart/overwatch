@@ -3,6 +3,8 @@ package com.hart.overwatch.stripepaymentintent;
 
 import java.util.List;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,6 +31,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -246,6 +249,28 @@ public class StripePaymentIntentControllerTest {
 
         res.andExpect(MockMvcResultMatchers.status().isOk());
     }
+
+    @Test
+    public void StripePaymentIntentController_ExportStripePaymentIntentsToCsv_ReturnInputStreamResource()
+            throws IOException, Exception {
+        Path tempFile = Files.createTempFile("transactions", ".csv");
+        Files.write(tempFile, "id,name,amount\n1,John,100\n".getBytes());
+        when(stripePaymentIntentService.exportStripePaymentIntentsToCsv("john doe", 0, 3, "next"))
+                .thenReturn(tempFile);
+
+        mockMvc.perform(get("/api/v1/admin/payment-intents/export-csv").param("search", "john doe")
+                .param("page", "0").param("pageSize", "3").param("direction", "next"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.header().string(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=transactions.csv"))
+                .andExpect(MockMvcResultMatchers.content().contentType("text/csv"))
+                .andExpect(MockMvcResultMatchers.content().string("id,name,amount\n1,John,100\n"));
+
+        verify(stripePaymentIntentService, times(1)).exportStripePaymentIntentsToCsv("john doe", 0,
+                3, "next");
+        Files.deleteIfExists(tempFile);
+    }
+
 }
 
 
