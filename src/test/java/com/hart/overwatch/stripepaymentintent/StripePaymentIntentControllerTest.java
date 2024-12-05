@@ -11,6 +11,7 @@ import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.stripepaymentintent.dto.FullStripePaymentIntentDto;
 import com.hart.overwatch.stripepaymentintent.dto.StripePaymentIntentDto;
+import com.hart.overwatch.stripepaymentintent.dto.StripePaymentIntentSearchResultDto;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
@@ -182,9 +183,49 @@ public class StripePaymentIntentControllerTest {
                         CoreMatchers.is(Math.toIntExact(expectedPaginationDto.getTotalElements()))))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.items",
                         Matchers.hasSize(Math.toIntExact(1L))));
-
     }
 
+    @Test
+    public void StripePaymentIntentController_GetSearchStripePaymentIntents_ReturnGetAllSearchStripePaymentIntentResponse()
+            throws Exception {
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+        String search = "john doe";
+        Pageable pageable = Pageable.ofSize(pageSize);
+        FullStripePaymentIntentDto stripePaymentIntentDto = convertToFullDto(stripePaymentIntent);
+        Page<FullStripePaymentIntentDto> pageResult =
+                new PageImpl<>(Collections.singletonList(stripePaymentIntentDto), pageable, 1);
+        PaginationDto<FullStripePaymentIntentDto> expectedPaginationDto =
+                new PaginationDto<>(pageResult.getContent(), pageResult.getNumber(), pageSize,
+                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
+
+        StripePaymentIntentSearchResultDto stripePaymentIntentSearchResultDto =
+                new StripePaymentIntentSearchResultDto(expectedPaginationDto, 0L);
+        when(stripePaymentIntentService.getAllStripePaymentIntents(search, page, pageSize,
+                direction)).thenReturn(stripePaymentIntentSearchResultDto);
+
+        ResultActions response =
+                mockMvc.perform(get("/api/v1/admin/payment-intents").param("search", "john doe")
+                        .param("page", "0").param("pageSize", "3").param("direction", "next"));
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.result.page",
+                        CoreMatchers.is(expectedPaginationDto.getPage())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.result.pageSize",
+                        CoreMatchers.is(expectedPaginationDto.getPageSize())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.result.totalPages",
+                        CoreMatchers.is(expectedPaginationDto.getTotalPages())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.result.page",
+                        CoreMatchers.is(expectedPaginationDto.getPage())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.result.totalElements",
+                        CoreMatchers.is(Math.toIntExact(expectedPaginationDto.getTotalElements()))))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.result.items",
+                        Matchers.hasSize(Math.toIntExact(1L))));
+
+
+
+    }
 }
 
 
