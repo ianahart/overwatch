@@ -114,4 +114,33 @@ public class StripePaymentIntentServiceTest {
                         nonExistentStripePaymentIntentId));
     }
 
+    @Test
+    public void StripePaymentIntentService_GetStripePaymentIntentById_ReturnStripePaymentIntent() {
+        Long stripePaymentIntentId = stripePaymentIntent.getId();
+        when(stripePaymentIntentRepository.findById(stripePaymentIntentId))
+                .thenReturn(Optional.of(stripePaymentIntent));
+
+        StripePaymentIntent returnedStripePaymentIntent =
+                stripePaymentIntentService.getStripePaymentIntentById(stripePaymentIntentId);
+
+        Assertions.assertThatNoException();
+        Assertions.assertThat(returnedStripePaymentIntent.getId())
+                .isEqualTo(stripePaymentIntent.getId());
+        Assertions.assertThat(returnedStripePaymentIntent.getAmount())
+                .isEqualTo(stripePaymentIntent.getAmount());
+        Assertions.assertThat(returnedStripePaymentIntent.getApplicationFee())
+                .isEqualTo(stripePaymentIntent.getApplicationFee());
+        Assertions.assertThat(returnedStripePaymentIntent.getCurrency())
+                .isEqualTo(stripePaymentIntent.getCurrency());
+        Assertions.assertThat(returnedStripePaymentIntent.getDescription())
+                .isEqualTo(stripePaymentIntent.getDescription());
+        Assertions.assertThat(returnedStripePaymentIntent.getClientSecret())
+                .isEqualTo(stripePaymentIntent.getClientSecret());
+        Assertions.assertThat(returnedStripePaymentIntent.getPaymentIntentId())
+                .isEqualTo(stripePaymentIntent.getPaymentIntentId());
+        Assertions.assertThat(returnedStripePaymentIntent.getStatus())
+                .isEqualTo(stripePaymentIntent.getStatus());
+
+    }
+
 }
