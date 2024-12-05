@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
+import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.csv.CsvFileService;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
@@ -59,7 +60,7 @@ public class StripePaymentIntentServiceTest {
         profileEntity.setId(1L);
         User userEntity = new User("john@mail.com", "John", "Doe", "John Doe", Role.USER, loggedIn,
                 profileEntity, "Test12345%", new Setting());
-        user.setId(1L);
+        userEntity.setId(1L);
         return userEntity;
     }
 
@@ -99,6 +100,18 @@ public class StripePaymentIntentServiceTest {
 
     }
 
+    @Test
+    public void StripePaymentIntentService_GetStripePaymentIntentById_ThrowNotFoundException() {
+        Long nonExistentStripePaymentIntentId = 999L;
 
+        when(stripePaymentIntentRepository.findById(nonExistentStripePaymentIntentId))
+                .thenReturn(Optional.ofNullable(null));
+
+        Assertions.assertThatThrownBy(() -> {
+            stripePaymentIntentService.getStripePaymentIntentById(nonExistentStripePaymentIntentId);
+        }).isInstanceOf(NotFoundException.class)
+                .hasMessage(String.format("Could not find stripe payment intent with the id %d",
+                        nonExistentStripePaymentIntentId));
+    }
 
 }
