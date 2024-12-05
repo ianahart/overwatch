@@ -2,6 +2,7 @@ package com.hart.overwatch.stripepaymentintent;
 
 
 import java.util.List;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,6 +16,7 @@ import com.hart.overwatch.stripepaymentintent.dto.StripePaymentIntentSearchResul
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
+import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -222,9 +224,27 @@ public class StripePaymentIntentControllerTest {
                         CoreMatchers.is(Math.toIntExact(expectedPaginationDto.getTotalElements()))))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.result.items",
                         Matchers.hasSize(Math.toIntExact(1L))));
+    }
 
+    @Test
+    public void StripePaymentIntentController_ExportStripePaymentIntentsToPdf()
+            throws IOException, Exception {
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+        String search = "john doe";
 
+        doNothing().when(stripePaymentIntentService).exportStripePaymentIntentsToPdf(
+                any(HttpServletResponse.class), eq(search), eq(page), eq(pageSize), eq(direction));
 
+        ResultActions res = mockMvc.perform(get("/api/v1/admin/payment-intents/export-pdf")
+                .param("search", search).param("page", String.valueOf(page))
+                .param("pageSize", String.valueOf(pageSize)).param("direction", direction));
+
+        verify(stripePaymentIntentService, times(1)).exportStripePaymentIntentsToPdf(
+                any(HttpServletResponse.class), eq(search), eq(page), eq(pageSize), eq(direction));
+
+        res.andExpect(MockMvcResultMatchers.status().isOk());
     }
 }
 
