@@ -76,10 +76,10 @@ public class StripePaymentIntentService {
 
         stripePaymentIntentRepository.save(stripePaymentIntent);
         String reviewerText =
-                String.format("%s has paid you $%s %s for reviewing their code!\n package:%s",
+                String.format("%s has paid you %s %s for reviewing their code!\n package:%s",
                         user.getFullName(), convertCentsToDollars(paymentIntent.getAmount()),
                         paymentIntent.getCurrency(), paymentIntent.getDescription());
-        String userText = String.format("You paid %s $%s %s for reviewing your code!\n package: %s",
+        String userText = String.format("You paid %s %s %s for reviewing your code!\n package: %s",
                 reviewer.getFullName(), convertCentsToDollars(paymentIntent.getAmount()),
                 paymentIntent.getCurrency(), paymentIntent.getDescription());
         queueEmail(reviewer, "Payment Recieved", reviewerText);

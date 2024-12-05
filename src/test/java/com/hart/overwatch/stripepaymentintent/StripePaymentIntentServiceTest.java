@@ -4,11 +4,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -24,8 +26,10 @@ import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.email.EmailQueueService;
+import com.hart.overwatch.email.request.EmailRequest;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
+import com.stripe.model.PaymentIntent;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
@@ -39,7 +43,7 @@ public class StripePaymentIntentServiceTest {
     private StripePaymentIntentRepository stripePaymentIntentRepository;
 
     @Mock
-    private EmailQueueService EmailQueueService;
+    private EmailQueueService emailQueueService;
 
     @Mock
     private CsvFileService csvFileService;
@@ -141,6 +145,60 @@ public class StripePaymentIntentServiceTest {
         Assertions.assertThat(returnedStripePaymentIntent.getStatus())
                 .isEqualTo(stripePaymentIntent.getStatus());
 
+    }
+
+    @Test
+    public void StripePaymentItentService_CreateStripePaymentIntent_ReturnNothing() {
+        StripePaymentIntent newStripePaymentIntent = new StripePaymentIntent();
+        newStripePaymentIntent.setId(2L);
+        PaymentIntent paymentIntent = new PaymentIntent();
+        paymentIntent.setId("pi_test");
+        paymentIntent.setCurrency("usd");
+        paymentIntent.setAmount(5000L);
+        paymentIntent.setClientSecret("secret_test");
+        paymentIntent.setDescription("Code Review Package");
+
+        Long applicationFee = 500L;
+
+        when(stripePaymentIntentRepository.save(any(StripePaymentIntent.class)))
+                .thenReturn(newStripePaymentIntent);
+
+        stripePaymentIntentService.createStripePaymentIntent(user, reviewer, paymentIntent,
+                applicationFee);
+
+        // Assert
+        ArgumentCaptor<StripePaymentIntent> intentCaptor =
+                ArgumentCaptor.forClass(StripePaymentIntent.class);
+        verify(stripePaymentIntentRepository, times(1)).save(intentCaptor.capture());
+
+        StripePaymentIntent capturedIntent = intentCaptor.getValue();
+        Assertions.assertThat(capturedIntent).isNotNull();
+        Assertions.assertThat(capturedIntent.getUser()).isEqualTo(user);
+        Assertions.assertThat(capturedIntent.getReviewer()).isEqualTo(reviewer);
+        Assertions.assertThat(capturedIntent.getCurrency()).isEqualTo("usd");
+        Assertions.assertThat(capturedIntent.getPaymentIntentId()).isEqualTo("pi_test");
+        Assertions.assertThat(capturedIntent.getAmount()).isEqualTo(5000L);
+        Assertions.assertThat(capturedIntent.getApplicationFee()).isEqualTo(applicationFee);
+        Assertions.assertThat(capturedIntent.getStatus()).isEqualTo(PaymentIntentStatus.PAID);
+        Assertions.assertThat(capturedIntent.getClientSecret()).isEqualTo("secret_test");
+        Assertions.assertThat(capturedIntent.getDescription()).isEqualTo("Code Review Package");
+
+        String expectedReviewerText =
+                "John Doe has paid you $50.00 usd for reviewing their code!\n package:Code Review Package";
+        String expectedUserText =
+                "You paid Jane Doe $50.00 usd for reviewing your code!\n package: Code Review Package";
+
+        ArgumentCaptor<EmailRequest> emailCaptor = ArgumentCaptor.forClass(EmailRequest.class);
+        verify(emailQueueService, times(2)).queueEmail(emailCaptor.capture());
+
+        List<EmailRequest> queuedEmails = emailCaptor.getAllValues();
+        Assertions.assertThat(queuedEmails).hasSize(2);
+        Assertions.assertThat(queuedEmails.get(0).getTo()).isEqualTo(reviewer.getEmail());
+        Assertions.assertThat(queuedEmails.get(0).getSubject()).isEqualTo("Payment Recieved");
+        Assertions.assertThat(queuedEmails.get(0).getBody()).isEqualTo(expectedReviewerText);
+        Assertions.assertThat(queuedEmails.get(1).getTo()).isEqualTo(user.getEmail());
+        Assertions.assertThat(queuedEmails.get(1).getSubject()).isEqualTo("Payment Notification");
+        Assertions.assertThat(queuedEmails.get(1).getBody()).isEqualTo(expectedUserText);
     }
 
 }
