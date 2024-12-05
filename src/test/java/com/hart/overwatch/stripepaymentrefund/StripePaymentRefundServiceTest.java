@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.csv.CsvFileService;
 import com.hart.overwatch.pagination.PaginationService;
@@ -28,6 +29,7 @@ import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.stripepaymentintent.PaymentIntentStatus;
 import com.hart.overwatch.stripepaymentintent.StripePaymentIntent;
 import com.hart.overwatch.stripepaymentintent.StripePaymentIntentService;
+import com.hart.overwatch.stripepaymentrefund.request.CreateStripePaymentRefundRequest;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
@@ -119,6 +121,20 @@ public class StripePaymentRefundServiceTest {
         stripePaymentRefund = createStripePaymentRefund(stripePaymentIntent, user);
     }
 
+    @Test
+    public void StripePaymentRefundService_CreatePaymentRefund_ThrowForbiddenException() {
+        CreateStripePaymentRefundRequest request = new CreateStripePaymentRefundRequest();
+        request.setUserId(999L);
+        request.setReason("refund reason");
+        request.setStripePaymentIntentId(stripePaymentIntent.getId());
+
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+
+        Assertions.assertThatThrownBy(() -> {
+            stripePaymentRefundService.createPaymentRefund(request);
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("Cannot ask for a payment refund when the payment is not yours");
+    }
 
 }
 
