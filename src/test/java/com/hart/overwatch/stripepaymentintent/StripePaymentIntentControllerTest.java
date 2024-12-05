@@ -1,13 +1,10 @@
 package com.hart.overwatch.stripepaymentintent;
 
 
-import java.util.List;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collections;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
@@ -66,9 +63,6 @@ public class StripePaymentIntentControllerTest {
 
     @MockBean
     private TokenRepository tokenRepository;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     private User user;
 
