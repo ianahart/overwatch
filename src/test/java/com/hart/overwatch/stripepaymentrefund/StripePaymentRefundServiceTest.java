@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -32,6 +33,7 @@ import com.hart.overwatch.stripepaymentintent.StripePaymentIntent;
 import com.hart.overwatch.stripepaymentintent.StripePaymentIntentService;
 import com.hart.overwatch.stripepaymentrefund.dto.StripePaymentRefundDto;
 import com.hart.overwatch.stripepaymentrefund.request.CreateStripePaymentRefundRequest;
+import com.hart.overwatch.stripepaymentrefund.request.UpdateStripePaymentRefundRequest;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
@@ -55,6 +57,9 @@ public class StripePaymentRefundServiceTest {
 
     @Mock
     private PaginationService paginationService;
+
+    @Captor
+    private ArgumentCaptor<StripePaymentRefund> refundCaptor;
 
     private User user;
 
@@ -276,5 +281,26 @@ public class StripePaymentRefundServiceTest {
 
     }
 
+    @Test
+    public void StripePaymentRefundService_UpdatePaymentRefund_ReturnNothing_RejectRefund() {
+        Long userId = user.getId();
+        Long paymentRefundId = stripePaymentRefund.getId();
+        UpdateStripePaymentRefundRequest request = new UpdateStripePaymentRefundRequest();
+        request.setStatus("reject");
+        request.setAdminNotes("admin notes");
+        request.setStripePaymentIntentId(stripePaymentIntent.getId());
+        when(stripePaymentIntentService
+                .getStripePaymentIntentById(request.getStripePaymentIntentId()))
+                        .thenReturn(stripePaymentIntent);
+        when(stripePaymentRefundRepository.findById(stripePaymentRefund.getId()))
+                .thenReturn(Optional.of(stripePaymentRefund));
+
+        stripePaymentRefundService.updatePaymentRefund(request, userId, paymentRefundId);
+
+        verify(stripePaymentRefundRepository).save(refundCaptor.capture());
+        StripePaymentRefund savedRefund = refundCaptor.getValue();
+        Assertions.assertThat(savedRefund.getStatus()).isEqualTo(PaymentRefundStatus.REJECTED);
+        Assertions.assertThat(savedRefund.getAdminNotes()).isEqualTo(request.getAdminNotes());
+    }
 }
 
