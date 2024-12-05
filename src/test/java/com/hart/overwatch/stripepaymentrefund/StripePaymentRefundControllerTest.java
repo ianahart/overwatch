@@ -10,6 +10,7 @@ import com.hart.overwatch.stripepaymentintent.PaymentIntentStatus;
 import com.hart.overwatch.stripepaymentintent.StripePaymentIntent;
 import com.hart.overwatch.stripepaymentrefund.dto.StripePaymentRefundDto;
 import com.hart.overwatch.stripepaymentrefund.request.CreateStripePaymentRefundRequest;
+import com.hart.overwatch.stripepaymentrefund.request.UpdateStripePaymentRefundRequest;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
@@ -169,7 +170,7 @@ public class StripePaymentRefundControllerTest {
                         .content(objectMapper.writeValueAsString(request)));
 
         response.andExpect(MockMvcResultMatchers.status().isCreated())
-                    .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
 
     }
 
@@ -207,9 +208,33 @@ public class StripePaymentRefundControllerTest {
                         CoreMatchers.is(Math.toIntExact(expectedPaginationDto.getTotalElements()))))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.items",
                         Matchers.hasSize(Math.toIntExact(1L))));
-
     }
 
+    @Test
+    public void StripePaymentRefundController_UpdatePaymentRefund_ReturnNothing() throws Exception {
+        Long paymentRefundId = stripePaymentRefund.getId();
+        User admin = new User();
+        admin.setId(3L);
+        admin.setRole(Role.ADMIN);
+        Long userId = admin.getId();
+
+        UpdateStripePaymentRefundRequest request = new UpdateStripePaymentRefundRequest();
+        request.setStatus("approve");
+        request.setAdminNotes("admin notes");
+        request.setStripePaymentIntentId(stripePaymentIntent.getId());
+
+        doNothing().when(stripePaymentRefundService).updatePaymentRefund(request, userId,
+                paymentRefundId);
+
+        ResultActions response = mockMvc.perform(
+                patch(String.format("/api/v1/admin/%d/payment-refunds/%d", userId, paymentRefundId))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+
+    }
 }
 
 
