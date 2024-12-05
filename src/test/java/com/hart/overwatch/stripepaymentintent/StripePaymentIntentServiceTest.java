@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -363,9 +364,6 @@ public class StripePaymentIntentServiceTest {
         FullStripePaymentIntentDto stripePaymentIntentDto = convertToDto(stripePaymentIntent);
         Page<FullStripePaymentIntentDto> pageResult =
                 new PageImpl<>(Collections.singletonList(stripePaymentIntentDto), pageable, 1);
-        PaginationDto<FullStripePaymentIntentDto> expectedPaginationDto =
-                new PaginationDto<>(pageResult.getContent(), pageResult.getNumber(), pageSize,
-                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
 
         when(paginationService.getPageable(page, pageSize, direction)).thenReturn(pageable);
         when(stripePaymentIntentRepository.getStripePaymentIntentsBySearch(pageable, ""))
@@ -378,21 +376,34 @@ public class StripePaymentIntentServiceTest {
                 "");
         verify(pdfFileService, times(1)).generatePdfFile(eq(response),
                 eq(List.of(stripePaymentIntentDto)));
-
-
-
     }
 
-    //
-    // public void exportStripePaymentIntentsToPdf(HttpServletResponse response, String search,
-    // int page, int pageSize, String direction) throws IOException {
-    //
-    // StripePaymentIntentSearchResultDto data =
-    // getAllStripePaymentIntents(search, page, pageSize, direction);
-    //
-    //
-    // List<FullStripePaymentIntentDto> transactions = data.getResult().getItems();
-    // pdfFileService.generatePdfFile(response, transactions);
-    // }
+    @Test
+    public void StripePaymentIntentService_ExportStripePaymentIntentsToCsv_ReturnNothing()
+            throws IOException {
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+        String search = "all";
+        Pageable pageable = Pageable.ofSize(pageSize);
+        String fileName = "transactions.csv";
+        Path expectedPath = Path.of(fileName);
+        FullStripePaymentIntentDto stripePaymentIntentDto = convertToDto(stripePaymentIntent);
+        Page<FullStripePaymentIntentDto> pageResult =
+                new PageImpl<>(Collections.singletonList(stripePaymentIntentDto), pageable, 1);
+
+        when(paginationService.getPageable(page, pageSize, direction)).thenReturn(pageable);
+        when(stripePaymentIntentRepository.getStripePaymentIntentsBySearch(pageable, ""))
+                .thenReturn(pageResult);
+
+        when(csvFileService.generateCsvFile(fileName, List.of(stripePaymentIntentDto)))
+                .thenReturn(expectedPath);
+        Path actualPath = stripePaymentIntentService.exportStripePaymentIntentsToCsv(search, page,
+                pageSize, direction);
+
+        Assertions.assertThat(actualPath).isEqualTo(expectedPath);
+        verify(csvFileService, times(1)).generateCsvFile(fileName, List.of(stripePaymentIntentDto));
+    }
+
 
 }
