@@ -24,6 +24,7 @@ import com.hart.overwatch.config.DatabaseSetupService;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.profile.ProfileRepository;
 import com.hart.overwatch.setting.Setting;
+import com.hart.overwatch.stripepaymentintent.dto.FullStripePaymentIntentDto;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserRepository;
@@ -84,7 +85,7 @@ public class StripePaymentIntentRepositoryTest {
         stripePaymentIntentEntity.setAmount(10000L);
         stripePaymentIntentEntity.setCurrency("usd");
         stripePaymentIntentEntity.setDescription("description");
-        stripePaymentIntent.setClientSecret("client-secret");
+        stripePaymentIntentEntity.setClientSecret("client-secret");
         stripePaymentIntentEntity.setStatus(PaymentIntentStatus.PAID);
         stripePaymentIntentEntity.setApplicationFee(10000L);
         stripePaymentIntentEntity.setPaymentIntentId("stripe-paymentintent-id");
@@ -113,6 +114,37 @@ public class StripePaymentIntentRepositoryTest {
         entityManager.clear();
     }
 
+    @Test
+    public void StripePaymentIntentRepository_GetStripePaymentItentsBySearch() {
+        int page = 0, pageSize = 3;
+        String search = "John Doe";
+        Pageable pageable = PageRequest.of(page, pageSize);
+
+        Page<FullStripePaymentIntentDto> result =
+                stripePaymentIntentRepository.getStripePaymentIntentsBySearch(pageable, search);
+
+        Assertions.assertThat(result).isNotEmpty();
+        Assertions.assertThat(result.getContent()).hasSize(1);
+        FullStripePaymentIntentDto dto = result.getContent().get(0);
+        Assertions.assertThat(dto.getId()).isEqualTo(stripePaymentIntent.getId());
+        Assertions.assertThat(dto.getAmount()).isEqualTo(stripePaymentIntent.getAmount());
+        Assertions.assertThat(dto.getUserId()).isEqualTo(stripePaymentIntent.getUser().getId());
+        Assertions.assertThat(dto.getReviewerId())
+                .isEqualTo(stripePaymentIntent.getReviewer().getId());
+        Assertions.assertThat(dto.getApplicationFee())
+                .isEqualTo(stripePaymentIntent.getApplicationFee());
+        Assertions.assertThat(dto.getCurrency()).isEqualTo(stripePaymentIntent.getCurrency());
+        Assertions.assertThat(dto.getUserEmail())
+                .isEqualTo(stripePaymentIntent.getUser().getEmail());
+        Assertions.assertThat(dto.getDescription()).isEqualTo(stripePaymentIntent.getDescription());
+        Assertions.assertThat(dto.getUserFullName())
+                .isEqualTo(stripePaymentIntent.getUser().getFullName());
+        Assertions.assertThat(dto.getReviewerEmail())
+                .isEqualTo(stripePaymentIntent.getReviewer().getEmail());
+        Assertions.assertThat(dto.getReviewerFullName())
+                .isEqualTo(stripePaymentIntent.getReviewer().getFullName());
+        Assertions.assertThat(dto.getStatus()).isEqualTo(stripePaymentIntent.getStatus());
+    }
 
 
 }
