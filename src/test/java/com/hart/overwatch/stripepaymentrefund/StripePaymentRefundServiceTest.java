@@ -188,5 +188,19 @@ public class StripePaymentRefundServiceTest {
         verify(stripePaymentRefundRepository, times(1)).save(any(StripePaymentRefund.class));
     }
 
+    @Test
+    public void StripePaymentRefundService_GetPaymentRefunds_ThrowForbiddenException() {
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+        Long userId = user.getId();
+        when(userService.getUserById(user.getId())).thenReturn(user);
+
+        Assertions.assertThatThrownBy(() -> {
+            stripePaymentRefundService.getPaymentRefunds(userId, page, pageSize, direction);
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("You do not have priveleges to access this route");
+    }
+
 }
 
