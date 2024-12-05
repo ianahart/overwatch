@@ -30,6 +30,7 @@ import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.stripepaymentintent.PaymentIntentStatus;
 import com.hart.overwatch.stripepaymentintent.StripePaymentIntent;
 import com.hart.overwatch.stripepaymentintent.StripePaymentIntentService;
+import com.hart.overwatch.stripepaymentrefund.dto.StripePaymentRefundDto;
 import com.hart.overwatch.stripepaymentrefund.request.CreateStripePaymentRefundRequest;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
@@ -113,6 +114,23 @@ public class StripePaymentRefundServiceTest {
 
         return stripePaymentRefundEntity;
     }
+
+
+    private StripePaymentRefundDto convertToDto(StripePaymentRefund stripePaymentRefund) {
+        StripePaymentRefundDto dto = new StripePaymentRefundDto();
+        dto.setId(stripePaymentRefund.getId());
+        dto.setAmount(stripePaymentRefund.getAmount());
+        dto.setUserId(stripePaymentRefund.getUser().getId());
+        dto.setReason(stripePaymentRefund.getReason());
+        dto.setCurrency(stripePaymentRefund.getCurrency());
+        dto.setFullName(stripePaymentRefund.getUser().getFullName());
+        dto.setAdminNotes(stripePaymentRefund.getAdminNotes());
+        dto.setStatus(stripePaymentRefund.getStatus());
+        dto.setStripePaymentIntentId(stripePaymentRefund.getStripePaymentIntent().getId());
+
+        return dto;
+    }
+
 
     @BeforeEach
     public void setUp() {
@@ -200,6 +218,62 @@ public class StripePaymentRefundServiceTest {
             stripePaymentRefundService.getPaymentRefunds(userId, page, pageSize, direction);
         }).isInstanceOf(ForbiddenException.class)
                 .hasMessage("You do not have priveleges to access this route");
+    }
+
+    @Test
+    public void StripePaymentRefundService_GetPaymentRefunds_ReturnPaginationOfStripePaymentRefundDto() {
+        User admin = new User("admin@mail.com", "Admin", "User", "Admin User", Role.ADMIN, true,
+                new Profile(), "password123", new Setting());
+        admin.setId(3L);
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+        Pageable pageable = Pageable.ofSize(pageSize);
+        StripePaymentRefundDto expectedStripePaymentRefundDto = convertToDto(stripePaymentRefund);
+        Page<StripePaymentRefundDto> pageResult = new PageImpl<>(
+                Collections.singletonList(expectedStripePaymentRefundDto), pageable, 1);
+        PaginationDto<StripePaymentRefundDto> expectedPaginationDto =
+                new PaginationDto<>(pageResult.getContent(), pageResult.getNumber(), pageSize,
+                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
+
+        when(userService.getUserById(admin.getId())).thenReturn(admin);
+        when(paginationService.getPageable(page, pageSize, direction)).thenReturn(pageable);
+        when(stripePaymentRefundRepository.findPaymentRefunds(pageable)).thenReturn(pageResult);
+
+        PaginationDto<StripePaymentRefundDto> actualPaginationDto = stripePaymentRefundService
+                .getPaymentRefunds(admin.getId(), page, pageSize, direction);
+
+        Assertions.assertThat(actualPaginationDto.getPage())
+                .isEqualTo(expectedPaginationDto.getPage());
+        Assertions.assertThat(actualPaginationDto.getPageSize())
+                .isEqualTo(expectedPaginationDto.getPageSize());
+        Assertions.assertThat(actualPaginationDto.getTotalPages())
+                .isEqualTo(expectedPaginationDto.getTotalPages());
+        Assertions.assertThat(actualPaginationDto.getTotalElements())
+                .isEqualTo(expectedPaginationDto.getTotalElements());
+        Assertions.assertThat(actualPaginationDto.getDirection())
+                .isEqualTo(expectedPaginationDto.getDirection());
+        StripePaymentRefundDto actualStripePaymentRefundDto = actualPaginationDto.getItems().get(0);
+
+        Assertions.assertThat(actualStripePaymentRefundDto.getId())
+                .isEqualTo(expectedStripePaymentRefundDto.getId());
+        Assertions.assertThat(actualStripePaymentRefundDto.getAmount())
+                .isEqualTo(expectedStripePaymentRefundDto.getAmount());
+        Assertions.assertThat(actualStripePaymentRefundDto.getUserId())
+                .isEqualTo(expectedStripePaymentRefundDto.getUserId());
+        Assertions.assertThat(actualStripePaymentRefundDto.getStripePaymentIntentId())
+                .isEqualTo(expectedStripePaymentRefundDto.getStripePaymentIntentId());
+        Assertions.assertThat(actualStripePaymentRefundDto.getReason())
+                .isEqualTo(expectedStripePaymentRefundDto.getReason());
+        Assertions.assertThat(actualStripePaymentRefundDto.getCurrency())
+                .isEqualTo(expectedStripePaymentRefundDto.getCurrency());
+        Assertions.assertThat(actualStripePaymentRefundDto.getFullName())
+                .isEqualTo(expectedStripePaymentRefundDto.getFullName());
+        Assertions.assertThat(actualStripePaymentRefundDto.getAdminNotes())
+                .isEqualTo(expectedStripePaymentRefundDto.getAdminNotes());
+        Assertions.assertThat(actualStripePaymentRefundDto.getStatus())
+                .isEqualTo(expectedStripePaymentRefundDto.getStatus());
+
     }
 
 }
