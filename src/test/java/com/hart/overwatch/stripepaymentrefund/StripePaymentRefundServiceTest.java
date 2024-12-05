@@ -154,5 +154,39 @@ public class StripePaymentRefundServiceTest {
                 .hasMessage("You have already asked for a refund for this payment");
     }
 
+    @Test
+    public void StripePaymentRefundService_CreatePaymentRefund_ReturnNothing() {
+        CreateStripePaymentRefundRequest request = new CreateStripePaymentRefundRequest();
+        request.setUserId(user.getId());
+        request.setReason("refund reason");
+        request.setStripePaymentIntentId(stripePaymentIntent.getId());
+
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+        when(stripePaymentRefundRepository.findPaymentRefundByUserIdAndStripePaymentIntentId(
+                request.getUserId(), request.getStripePaymentIntentId())).thenReturn(false);
+
+        when(stripePaymentIntentService
+                .getStripePaymentIntentById(request.getStripePaymentIntentId()))
+                        .thenReturn(stripePaymentIntent);
+        StripePaymentRefund newStripePaymentRefund = new StripePaymentRefund();
+        newStripePaymentRefund.setStripePaymentIntent(stripePaymentIntent);
+        newStripePaymentRefund.setUser(user);
+        newStripePaymentRefund.setAmount(10000L);
+        newStripePaymentRefund.setCurrency("usd");
+        newStripePaymentRefund.setRefundId("re_123");
+        newStripePaymentRefund.setStatus(PaymentRefundStatus.PENDING);
+
+        when(stripePaymentRefundRepository.save(any(StripePaymentRefund.class)))
+                .thenReturn(newStripePaymentRefund);
+        doNothing().when(stripePaymentIntentService).updateStatus(PaymentIntentStatus.PENDING,
+                request.getStripePaymentIntentId());
+
+        stripePaymentRefundService.createPaymentRefund(request);
+
+        verify(stripePaymentIntentService, times(1))
+                .getStripePaymentIntentById(request.getStripePaymentIntentId());
+        verify(stripePaymentRefundRepository, times(1)).save(any(StripePaymentRefund.class));
+    }
+
 }
 
