@@ -23,8 +23,12 @@ import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.csv.CsvFileService;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
+import com.hart.overwatch.pdf.PdfFileService;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
+import com.hart.overwatch.stripepaymentintent.dto.FullStripePaymentIntentDto;
+import com.hart.overwatch.stripepaymentintent.dto.StripePaymentIntentSearchResultDto;
+import com.hart.overwatch.stripepaymentintent.projection.StripePaymentIntentApplicationFeeProjection;
 import com.hart.overwatch.email.EmailQueueService;
 import com.hart.overwatch.email.request.EmailRequest;
 import com.hart.overwatch.user.Role;
@@ -50,6 +54,9 @@ public class StripePaymentIntentServiceTest {
 
     @Mock
     private PaginationService paginationService;
+
+    @Mock
+    private PdfFileService pdfFileService;
 
     private User user;
 
@@ -94,6 +101,24 @@ public class StripePaymentIntentServiceTest {
 
 
         return stripePaymentIntentEntity;
+    }
+
+    private FullStripePaymentIntentDto convertToDto(StripePaymentIntent stripePaymentIntent) {
+        FullStripePaymentIntentDto dto = new FullStripePaymentIntentDto();
+        dto.setId(stripePaymentIntent.getId());
+        dto.setAmount(stripePaymentIntent.getAmount());
+        dto.setUserId(stripePaymentIntent.getUser().getId());
+        dto.setCurrency(stripePaymentIntent.getCurrency());
+        dto.setReviewerId(stripePaymentIntent.getReviewer().getId());
+        dto.setUserEmail(stripePaymentIntent.getUser().getEmail());
+        dto.setDescription(stripePaymentIntent.getDescription());
+        dto.setUserFullName(stripePaymentIntent.getUser().getFullName());
+        dto.setStatus(stripePaymentIntent.getStatus());
+        dto.setApplicationFee(stripePaymentIntent.getApplicationFee());
+        dto.setReviewerEmail(stripePaymentIntent.getReviewer().getEmail());
+        dto.setReviewerFullName(stripePaymentIntent.getReviewer().getFullName());
+
+        return dto;
     }
 
     @BeforeEach
@@ -166,7 +191,6 @@ public class StripePaymentIntentServiceTest {
         stripePaymentIntentService.createStripePaymentIntent(user, reviewer, paymentIntent,
                 applicationFee);
 
-        // Assert
         ArgumentCaptor<StripePaymentIntent> intentCaptor =
                 ArgumentCaptor.forClass(StripePaymentIntent.class);
         verify(stripePaymentIntentRepository, times(1)).save(intentCaptor.capture());
@@ -199,6 +223,130 @@ public class StripePaymentIntentServiceTest {
         Assertions.assertThat(queuedEmails.get(1).getTo()).isEqualTo(user.getEmail());
         Assertions.assertThat(queuedEmails.get(1).getSubject()).isEqualTo("Payment Notification");
         Assertions.assertThat(queuedEmails.get(1).getBody()).isEqualTo(expectedUserText);
+    }
+
+    @Test
+    public void StripePaymentIntentService_GetAllStripePaymentIntents_Search() {
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+        String search = "john doe";
+        Pageable pageable = Pageable.ofSize(pageSize);
+        FullStripePaymentIntentDto stripePaymentIntentDto = convertToDto(stripePaymentIntent);
+        Page<FullStripePaymentIntentDto> pageResult =
+                new PageImpl<>(Collections.singletonList(stripePaymentIntentDto), pageable, 1);
+        PaginationDto<FullStripePaymentIntentDto> expectedPaginationDto =
+                new PaginationDto<>(pageResult.getContent(), pageResult.getNumber(), pageSize,
+                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
+
+        when(paginationService.getPageable(page, pageSize, direction)).thenReturn(pageable);
+        when(stripePaymentIntentRepository.getStripePaymentIntentsBySearch(pageable, search))
+                .thenReturn(pageResult);
+        when(stripePaymentIntentRepository.findAllBy()).thenReturn(List.of());
+
+        StripePaymentIntentSearchResultDto result = stripePaymentIntentService
+                .getAllStripePaymentIntents(search, page, pageSize, direction);
+
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getResult().getPage())
+                .isEqualTo(expectedPaginationDto.getPage());
+        Assertions.assertThat(result.getResult().getPageSize())
+                .isEqualTo(expectedPaginationDto.getPageSize());
+        Assertions.assertThat(result.getResult().getTotalPages())
+                .isEqualTo(expectedPaginationDto.getTotalPages());
+        Assertions.assertThat(result.getResult().getTotalElements())
+                .isEqualTo(expectedPaginationDto.getTotalElements());
+        Assertions.assertThat(result.getResult().getDirection())
+                .isEqualTo(expectedPaginationDto.getDirection());
+        Assertions.assertThat(result.getResult().getItems()).hasSize(1);
+        FullStripePaymentIntentDto actualStripePaymentIntentDto =
+                result.getResult().getItems().get(0);
+        Assertions.assertThat(actualStripePaymentIntentDto.getId())
+                .isEqualTo(stripePaymentIntentDto.getId());
+        Assertions.assertThat(actualStripePaymentIntentDto.getAmount())
+                .isEqualTo(stripePaymentIntentDto.getAmount());
+        Assertions.assertThat(actualStripePaymentIntentDto.getUserId())
+                .isEqualTo(stripePaymentIntentDto.getUserId());
+        Assertions.assertThat(actualStripePaymentIntentDto.getReviewerId())
+                .isEqualTo(stripePaymentIntentDto.getReviewerId());
+        Assertions.assertThat(actualStripePaymentIntentDto.getApplicationFee())
+                .isEqualTo(stripePaymentIntentDto.getApplicationFee());
+        Assertions.assertThat(actualStripePaymentIntentDto.getCurrency())
+                .isEqualTo(stripePaymentIntentDto.getCurrency());
+        Assertions.assertThat(actualStripePaymentIntentDto.getUserEmail())
+                .isEqualTo(stripePaymentIntentDto.getUserEmail());
+        Assertions.assertThat(actualStripePaymentIntentDto.getDescription())
+                .isEqualTo(stripePaymentIntentDto.getDescription());
+        Assertions.assertThat(actualStripePaymentIntentDto.getUserFullName())
+                .isEqualTo(stripePaymentIntentDto.getUserFullName());
+        Assertions.assertThat(actualStripePaymentIntentDto.getReviewerEmail())
+                .isEqualTo(stripePaymentIntentDto.getReviewerEmail());
+        Assertions.assertThat(actualStripePaymentIntentDto.getReviewerFullName())
+                .isEqualTo(stripePaymentIntentDto.getReviewerFullName());
+        Assertions.assertThat(actualStripePaymentIntentDto.getStatus())
+                .isEqualTo(stripePaymentIntentDto.getStatus());
+    }
+
+    @Test
+    public void StripePaymentIntentService_GetAllStripePaymentIntents_All() {
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+        String search = "all";
+        Pageable pageable = Pageable.ofSize(pageSize);
+        FullStripePaymentIntentDto stripePaymentIntentDto = convertToDto(stripePaymentIntent);
+        Page<FullStripePaymentIntentDto> pageResult =
+                new PageImpl<>(Collections.singletonList(stripePaymentIntentDto), pageable, 1);
+        PaginationDto<FullStripePaymentIntentDto> expectedPaginationDto =
+                new PaginationDto<>(pageResult.getContent(), pageResult.getNumber(), pageSize,
+                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
+
+        when(paginationService.getPageable(page, pageSize, direction)).thenReturn(pageable);
+        when(stripePaymentIntentRepository.getStripePaymentIntentsBySearch(pageable, ""))
+                .thenReturn(pageResult);
+        when(stripePaymentIntentRepository.findAllBy()).thenReturn(List.of());
+
+        StripePaymentIntentSearchResultDto result = stripePaymentIntentService
+                .getAllStripePaymentIntents(search, page, pageSize, direction);
+
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getResult().getPage())
+                .isEqualTo(expectedPaginationDto.getPage());
+        Assertions.assertThat(result.getResult().getPageSize())
+                .isEqualTo(expectedPaginationDto.getPageSize());
+        Assertions.assertThat(result.getResult().getTotalPages())
+                .isEqualTo(expectedPaginationDto.getTotalPages());
+        Assertions.assertThat(result.getResult().getTotalElements())
+                .isEqualTo(expectedPaginationDto.getTotalElements());
+        Assertions.assertThat(result.getResult().getDirection())
+                .isEqualTo(expectedPaginationDto.getDirection());
+        Assertions.assertThat(result.getResult().getItems()).hasSize(1);
+        FullStripePaymentIntentDto actualStripePaymentIntentDto =
+                result.getResult().getItems().get(0);
+        Assertions.assertThat(actualStripePaymentIntentDto.getId())
+                .isEqualTo(stripePaymentIntentDto.getId());
+        Assertions.assertThat(actualStripePaymentIntentDto.getAmount())
+                .isEqualTo(stripePaymentIntentDto.getAmount());
+        Assertions.assertThat(actualStripePaymentIntentDto.getUserId())
+                .isEqualTo(stripePaymentIntentDto.getUserId());
+        Assertions.assertThat(actualStripePaymentIntentDto.getReviewerId())
+                .isEqualTo(stripePaymentIntentDto.getReviewerId());
+        Assertions.assertThat(actualStripePaymentIntentDto.getApplicationFee())
+                .isEqualTo(stripePaymentIntentDto.getApplicationFee());
+        Assertions.assertThat(actualStripePaymentIntentDto.getCurrency())
+                .isEqualTo(stripePaymentIntentDto.getCurrency());
+        Assertions.assertThat(actualStripePaymentIntentDto.getUserEmail())
+                .isEqualTo(stripePaymentIntentDto.getUserEmail());
+        Assertions.assertThat(actualStripePaymentIntentDto.getDescription())
+                .isEqualTo(stripePaymentIntentDto.getDescription());
+        Assertions.assertThat(actualStripePaymentIntentDto.getUserFullName())
+                .isEqualTo(stripePaymentIntentDto.getUserFullName());
+        Assertions.assertThat(actualStripePaymentIntentDto.getReviewerEmail())
+                .isEqualTo(stripePaymentIntentDto.getReviewerEmail());
+        Assertions.assertThat(actualStripePaymentIntentDto.getReviewerFullName())
+                .isEqualTo(stripePaymentIntentDto.getReviewerFullName());
+        Assertions.assertThat(actualStripePaymentIntentDto.getStatus())
+                .isEqualTo(stripePaymentIntentDto.getStatus());
     }
 
 }

@@ -31,6 +31,9 @@ public class FullStripePaymentIntentDto {
 
     private Long reviewerId;
 
+    public FullStripePaymentIntentDto() {
+
+    }
 
     public FullStripePaymentIntentDto(Long id, Long amount, Long applicationFee,
             LocalDateTime createdAt, String currency, String description,
