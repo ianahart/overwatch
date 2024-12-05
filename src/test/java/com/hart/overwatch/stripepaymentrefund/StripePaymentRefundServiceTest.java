@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.csv.CsvFileService;
@@ -134,6 +135,23 @@ public class StripePaymentRefundServiceTest {
             stripePaymentRefundService.createPaymentRefund(request);
         }).isInstanceOf(ForbiddenException.class)
                 .hasMessage("Cannot ask for a payment refund when the payment is not yours");
+    }
+
+    @Test
+    public void StripePaymentRefundService_CreatePaymentRefund_ThrowBadRequestException() {
+        CreateStripePaymentRefundRequest request = new CreateStripePaymentRefundRequest();
+        request.setUserId(user.getId());
+        request.setReason("refund reason");
+        request.setStripePaymentIntentId(stripePaymentIntent.getId());
+
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+        when(stripePaymentRefundRepository.findPaymentRefundByUserIdAndStripePaymentIntentId(
+                request.getUserId(), request.getStripePaymentIntentId())).thenReturn(true);
+
+        Assertions.assertThatThrownBy(() -> {
+            stripePaymentRefundService.createPaymentRefund(request);
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage("You have already asked for a refund for this payment");
     }
 
 }
