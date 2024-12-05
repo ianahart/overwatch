@@ -1,5 +1,6 @@
 package com.hart.overwatch.stripepaymentrefund;
 
+import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +25,7 @@ import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.stripepaymentintent.PaymentIntentStatus;
 import com.hart.overwatch.stripepaymentintent.StripePaymentIntent;
 import com.hart.overwatch.stripepaymentintent.StripePaymentIntentRepository;
+import com.hart.overwatch.stripepaymentrefund.dto.StripePaymentRefundDto;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserRepository;
@@ -44,7 +46,8 @@ public class StripePaymentRefundRepositoryTest {
     private StripePaymentIntentRepository stripePaymentIntentRepository;
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
+
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -92,18 +95,19 @@ public class StripePaymentRefundRepositoryTest {
 
     private StripePaymentRefund createStripePaymentRefund(StripePaymentIntent stripePaymentIntent,
             User user) {
-        StripePaymentRefund stripePaymentRefund = new StripePaymentRefund();
-        stripePaymentRefund.setUser(user);
-        stripePaymentRefund.setAmount(10000L);
-        stripePaymentRefund.setReason("refund reason");
-        stripePaymentRefund.setCurrency("usd");
-        stripePaymentRefund.setRefundId("re_123");
-        stripePaymentRefund.setAdminNotes("admin notes");
-        stripePaymentRefund.setStatus(PaymentRefundStatus.PENDING);
+        StripePaymentRefund stripePaymentRefundEntity = new StripePaymentRefund();
+        stripePaymentRefundEntity.setUser(user);
+        stripePaymentRefundEntity.setStripePaymentIntent(stripePaymentIntent);
+        stripePaymentRefundEntity.setAmount(10000L);
+        stripePaymentRefundEntity.setReason("refund reason");
+        stripePaymentRefundEntity.setCurrency("usd");
+        stripePaymentRefundEntity.setRefundId("re_123");
+        stripePaymentRefundEntity.setAdminNotes("admin notes");
+        stripePaymentRefundEntity.setStatus(PaymentRefundStatus.PENDING);
 
-        stripePaymentRefundRepository.save(stripePaymentRefund);
+        stripePaymentRefundRepository.save(stripePaymentRefundEntity);
 
-        return stripePaymentRefund;
+        return stripePaymentRefundEntity;
     }
 
     @BeforeEach
@@ -123,6 +127,38 @@ public class StripePaymentRefundRepositoryTest {
         userRepository.deleteAll();
         entityManager.flush();
         entityManager.clear();
+    }
+
+    @Test
+    public void StripePaymentRefundRepository_FindPaymentRefunds_ReturnPageOfStripePaymentRefundDto() {
+        int page = 0, pageSize = 3;
+        Pageable pageable = PageRequest.of(page, pageSize);
+
+        Page<StripePaymentRefundDto> result =
+                stripePaymentRefundRepository.findPaymentRefunds(pageable);
+
+        Assertions.assertThat(result).isNotEmpty();
+        List<StripePaymentRefundDto> stripePaymentRefundDtos = result.getContent();
+        Assertions.assertThat(stripePaymentRefundDtos).hasSize(1);
+        StripePaymentRefundDto stripePaymentRefundDto = stripePaymentRefundDtos.get(0);
+        Assertions.assertThat(stripePaymentRefundDto.getId())
+                .isEqualTo(stripePaymentRefund.getId());
+        Assertions.assertThat(stripePaymentRefundDto.getAmount())
+                .isEqualTo(stripePaymentRefund.getAmount());
+        Assertions.assertThat(stripePaymentRefundDto.getUserId())
+                .isEqualTo(stripePaymentRefund.getUser().getId());
+        Assertions.assertThat(stripePaymentRefundDto.getStripePaymentIntentId())
+                .isEqualTo(stripePaymentRefund.getStripePaymentIntent().getId());
+        Assertions.assertThat(stripePaymentRefundDto.getReason())
+                .isEqualTo(stripePaymentRefund.getReason());
+        Assertions.assertThat(stripePaymentRefundDto.getCurrency())
+                .isEqualTo(stripePaymentRefund.getCurrency());
+        Assertions.assertThat(stripePaymentRefundDto.getFullName())
+                .isEqualTo(stripePaymentRefund.getUser().getFullName());
+        Assertions.assertThat(stripePaymentRefundDto.getAdminNotes())
+                .isEqualTo(stripePaymentRefund.getAdminNotes());
+        Assertions.assertThat(stripePaymentRefundDto.getStatus())
+                .isEqualTo(stripePaymentRefund.getStatus());
     }
 }
 
