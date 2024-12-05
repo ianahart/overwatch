@@ -1,7 +1,5 @@
 package com.hart.overwatch.stripepaymentintent;
 
-import java.util.List;
-import java.util.ArrayList;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -153,21 +151,23 @@ public class StripePaymentIntentRepositoryTest {
         int page = 0, pageSize = 3;
         Pageable pageable = PageRequest.of(page, pageSize);
 
-        Page<StripePaymentIntentDto> result = stripePaymentIntentRepository.getStripePaymentIntentsByUserId(pageable, userId);
+        Page<StripePaymentIntentDto> result =
+                stripePaymentIntentRepository.getStripePaymentIntentsByUserId(pageable, userId);
 
         Assertions.assertThat(result).isNotEmpty();
         Assertions.assertThat(result.getContent()).hasSize(1);
         StripePaymentIntentDto dto = result.getContent().get(0);
         Assertions.assertThat(dto.getId()).isEqualTo(stripePaymentIntent.getId());
         Assertions.assertThat(dto.getAmount()).isEqualTo(stripePaymentIntent.getAmount());
-        Assertions.assertThat(dto.getReviewerId()).isEqualTo(stripePaymentIntent.getReviewer().getId());
+        Assertions.assertThat(dto.getReviewerId())
+                .isEqualTo(stripePaymentIntent.getReviewer().getId());
         Assertions.assertThat(dto.getCurrency()).isEqualTo(stripePaymentIntent.getCurrency());
-        Assertions.assertThat(dto.getFullName()).isEqualTo(stripePaymentIntent.getReviewer().getFullName());
-        Assertions.assertThat(dto.getAvatarUrl()).isEqualTo(stripePaymentIntent.getReviewer().getProfile().getAvatarUrl());
+        Assertions.assertThat(dto.getFullName())
+                .isEqualTo(stripePaymentIntent.getReviewer().getFullName());
+        Assertions.assertThat(dto.getAvatarUrl())
+                .isEqualTo(stripePaymentIntent.getReviewer().getProfile().getAvatarUrl());
         Assertions.assertThat(dto.getStatus()).isEqualTo(stripePaymentIntent.getStatus());
     }
-
-
 }
 
 
