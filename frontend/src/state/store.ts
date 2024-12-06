@@ -174,6 +174,7 @@ import { teamMembersApi } from './apis/teamMembersApi';
 import { teamMessagesApi } from './apis/teamMessagesApi';
 import { teamPostsApi } from './apis/teamPostsApi';
 import { teamCommentsApi } from './apis/teamCommentsApi';
+import { bannedUsersApi } from './apis/bannedUsersApi';
 
 export const store = configureStore({
   reducer: {
@@ -242,6 +243,7 @@ export const store = configureStore({
     [teamMessagesApi.reducerPath]: teamMessagesApi.reducer,
     [teamPostsApi.reducerPath]: teamPostsApi.reducer,
     [teamCommentsApi.reducerPath]: teamCommentsApi.reducer,
+    [bannedUsersApi.reducerPath]: bannedUsersApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -300,7 +302,8 @@ export const store = configureStore({
       .concat(teamMembersApi.middleware)
       .concat(teamMessagesApi.middleware)
       .concat(teamPostsApi.middleware)
-      .concat(teamCommentsApi.middleware);
+      .concat(teamCommentsApi.middleware)
+      .concat(bannedUsersApi.middleware);
   },
 });
 
@@ -434,6 +437,7 @@ export {
   useVerifyOTPMutation,
 } from './apis/authsApi';
 export {
+  useLazyFetchAllUserAndReviewersQuery,
   useLazyFetchReviewersQuery,
   useSyncUserQuery,
   useUpdateUserMutation,
@@ -699,6 +703,15 @@ export {
 } from './apis/teamCommentsApi';
 
 export {
+  useDeleteBannedUserMutation,
+  useUpdateBannedUserMutation,
+  useLazyFetchBannedUserQuery,
+  useCreateBannedUserMutation,
+  useFetchBannedUsersQuery,
+  useLazyFetchBannedUsersQuery,
+} from './apis/bannedUsersApi';
+
+export {
   testimonialsApi,
   authsApi,
   heartbeatApi,
@@ -740,4 +753,5 @@ export {
   teamMessagesApi,
   teamPostsApi,
   teamCommentsApi,
+  bannedUsersApi,
 };

@@ -66,6 +66,7 @@ import AddTeamMemberRoute from './routes/Settings/Teams/AddTeamMemberRoute';
 import TeamMessageRoute from './routes/Settings/Teams/TeamMessageRoute';
 import TeamPostRoute from './routes/Settings/Teams/TeamPostRoute';
 import TeamMemberRoute from './routes/Settings/Teams/TeamMemberRoute';
+import BannedUserRoute from './routes/Dashboard/Admin/BannedUserRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -133,6 +134,14 @@ const router = createBrowserRouter(
           </RequireAdminUser>
         }
       >
+        <Route
+          path="banned-users"
+          element={
+            <RequireAdminUser>
+              <BannedUserRoute />
+            </RequireAdminUser>
+          }
+        />
         <Route
           path="refunds"
           element={

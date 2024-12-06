@@ -8,7 +8,7 @@ import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.BadRequestException;
-import com.hart.overwatch.token.TokenService;
+import com.hart.overwatch.user.dto.MinUserDto;
 import com.hart.overwatch.user.dto.ReviewerDto;
 import com.hart.overwatch.user.dto.UpdateUserDto;
 import com.hart.overwatch.user.dto.UserDto;
@@ -201,5 +201,18 @@ public class UserService {
         return new PaginationDto<ReviewerDto>(result.getContent(), result.getNumber(), pageSize,
                 result.getTotalPages(), direction, result.getTotalElements());
     }
+
+    public PaginationDto<MinUserDto> searchAllUsers(String search, int page, int pageSize,
+            String direction) {
+
+        Pageable pageable = this.paginationService.getPageable(page, pageSize, direction);
+
+        Page<MinUserDto> result =
+                this.userRepository.geallUsersBySearch(pageable, search.toLowerCase());
+
+        return new PaginationDto<MinUserDto>(result.getContent(), result.getNumber(), pageSize,
+                result.getTotalPages(), direction, result.getTotalElements());
+    }
+
 
 }

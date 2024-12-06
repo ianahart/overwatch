@@ -1,6 +1,17 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface IBan {
+  id: number;
+  fullName: string;
+  email: string;
+  userId: number;
+  time: number;
+  adminNotes: string;
+  createdAt: string;
+  banDate: string;
+}
+
 export interface ITeamComment {
   id: number;
   userId: number;
@@ -2417,6 +2428,10 @@ export interface IGetAllReviewersResponse {
   };
 }
 
+export interface IGetAllUserAndReviewerRequest extends IGetAllReviewersRequest {}
+
+export interface IGetAllUserAndReviewerResponse extends IGetAllReviewersResponse {}
+
 export interface ICreateTeamInvitationRequest {
   token: string;
   senderId: number;
@@ -2631,6 +2646,63 @@ export interface IUpdateTeamCommentResponse {
   message: string;
   data: { content: string; tag: string };
 }
+
+export interface ICreateBannedUserRequest {
+  token: string;
+  userId: number;
+  time: number;
+  adminNotes: string;
+}
+
+export interface IGetAllBanResponse {
+  message: string;
+  data: {
+    items: IBan[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
+}
+
+export interface IGetAllBanRequest {
+  token: string;
+  page: number;
+  pageSize: number;
+  direction: string;
+}
+
+export interface IGetBanRequest {
+  token: string;
+  banId: number;
+}
+
+export interface IGetBanResponse {
+  message: string;
+  data: IBan;
+}
+
+export interface IUpdateBanRequest {
+  banId: number;
+  token: string;
+  adminNotes: string;
+  time: number;
+}
+
+export interface IUpdateBanResponse {
+  message: string;
+  data: IBan;
+}
+
+export interface IDeleteBanRequest {
+  token: string;
+  banId: number;
+}
+
+export interface IDeleteBanResponse extends IBaseResponse {}
+
+export interface ICreateBannedUserResponse extends IBaseResponse {}
 
 export interface ICreateTeamCommentResponse extends IBaseResponse {}
 

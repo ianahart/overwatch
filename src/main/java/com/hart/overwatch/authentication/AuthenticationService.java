@@ -6,6 +6,7 @@ import com.hart.overwatch.authentication.request.LoginRequest;
 import com.hart.overwatch.authentication.request.RegisterRequest;
 import com.hart.overwatch.authentication.response.LoginResponse;
 import com.hart.overwatch.authentication.response.RegisterResponse;
+import com.hart.overwatch.ban.BanService;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.phone.PhoneService;
 import com.hart.overwatch.profile.ProfileService;
@@ -32,6 +33,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 
@@ -52,13 +54,15 @@ public class AuthenticationService {
     private final UserService userService;
     private final SettingService settingService;
     private final PhoneService phoneService;
+    private final BanService banService;
 
     @Autowired
     public AuthenticationService(PasswordEncoder passwordEncoder, ProfileService profileService,
             UserRepository userRepository, AuthenticationManager authenticationManager,
             JwtService jwtService, TokenRepository tokenRepository,
             RefreshTokenService refreshTokenService, TokenService tokenService,
-            UserService userService, SettingService settingService, PhoneService phoneService) {
+            UserService userService, SettingService settingService, PhoneService phoneService,
+            BanService banService) {
         this.passwordEncoder = passwordEncoder;
         this.profileService = profileService;
         this.userRepository = userRepository;
@@ -70,6 +74,7 @@ public class AuthenticationService {
         this.userService = userService;
         this.settingService = settingService;
         this.phoneService = phoneService;
+        this.banService = banService;
     }
 
 
@@ -197,6 +202,8 @@ public class AuthenticationService {
     public LoginResponse login(LoginRequest request) {
 
         try {
+
+
             this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     Jsoup.clean(request.getEmail(), Safelist.none()),
                     Jsoup.clean(request.getPassword(), Safelist.none())));
@@ -207,6 +214,9 @@ public class AuthenticationService {
         User user = this.userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException("User not found by email."));
 
+
+        checkForBan(user);
+
         if (is2FAEnabled(user) && userHasPhone(user)) {
             return new LoginResponse(user.getId());
         }
@@ -216,6 +226,18 @@ public class AuthenticationService {
 
         return new LoginResponse(authenticationItems.getUser(), authenticationItems.getJwtToken(),
                 authenticationItems.getRefreshToken().getRefreshToken());
+    }
+
+
+    private void checkForBan(User user) {
+        if (user.getBan() != null) {
+            if (user.getBan().getBanDate().isAfter(LocalDateTime.now())) {
+                throw new ForbiddenException(
+                        "Your account has been banned. Contact support at codeoverwatch@codeoverwatch.com");
+            } else {
+                banService.deleteBan(user.getBan().getId());
+            }
+        }
     }
 
 }

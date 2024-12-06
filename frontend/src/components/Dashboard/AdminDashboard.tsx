@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
 import { TRootState } from '../../state/store';
-import AdminSidebarNaivigation from './AdminSidebarNavigation';
+import AdminSidebarNavigation from './AdminSidebarNavigation';
 import OutletContainer from './OutletContainer';
 
 const AdminDashboard = () => {
@@ -21,7 +21,7 @@ const AdminDashboard = () => {
   return (
     <div className="md:max-w-[1450px] w-full mx-auto mt-8">
       <div className="md:flex bg-gray-900 p-2 rounded">
-        <AdminSidebarNaivigation />
+        <AdminSidebarNavigation />
         <OutletContainer />
       </div>
     </div>
