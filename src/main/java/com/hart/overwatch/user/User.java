@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.hart.overwatch.activity.Activity;
 import com.hart.overwatch.apptestimonial.AppTestimonial;
+import com.hart.overwatch.ban.Ban;
 import com.hart.overwatch.blockuser.BlockUser;
 import com.hart.overwatch.chatmessage.ChatMessage;
 import com.hart.overwatch.checklist.CheckList;
@@ -324,6 +325,10 @@ public class User implements UserDetails {
     @JoinColumn(name = "profile_id", referencedColumnName = "id")
     private Profile profile;
 
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private Ban ban;
+
+
     @JsonIgnore
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Location location;
@@ -375,6 +380,10 @@ public class User implements UserDetails {
 
     public List<TeamComment> getTeamComments() {
         return teamComments;
+    }
+
+    public Ban getBan() {
+        return ban;
     }
 
     public List<TeamMessage> getTeamMessages() {
@@ -850,6 +859,9 @@ public class User implements UserDetails {
         this.receiverTeamInvitations = receiverTeamInvitations;
     }
 
+    public void setBan(Ban ban) {
+        this.ban = ban;
+    }
 
     public void setAppTestimonials(List<AppTestimonial> appTestimonials) {
         this.appTestimonials = appTestimonials;

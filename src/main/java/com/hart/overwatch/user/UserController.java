@@ -17,6 +17,7 @@ import com.hart.overwatch.user.request.DeleteUserRequest;
 import com.hart.overwatch.user.request.UpdateUserPasswordRequest;
 import com.hart.overwatch.user.request.UpdateUserRequest;
 import com.hart.overwatch.user.response.DeleteUserResponse;
+import com.hart.overwatch.user.response.GetAllUsersResponse;
 import com.hart.overwatch.user.response.GetReviewersResponse;
 import com.hart.overwatch.user.response.UpdateUserPasswordResponse;
 import com.hart.overwatch.user.response.UpdateUserResponse;
@@ -33,6 +34,14 @@ public class UserController {
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    @GetMapping(path = "/search-all")
+    public ResponseEntity<GetAllUsersResponse> searchAllUsers(@RequestParam("search") String search,
+            @RequestParam("page") int page, @RequestParam("pageSize") int pageSize,
+            @RequestParam("direction") String direction) {
+        return ResponseEntity.status(HttpStatus.OK).body(new GetAllUsersResponse("success",
+                userService.searchAllUsers(search, page, pageSize, direction)));
     }
 
     @GetMapping(path = "/search")

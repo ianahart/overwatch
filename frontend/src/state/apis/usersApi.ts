@@ -9,6 +9,8 @@ import {
   IDeleteUserResponse,
   IUpdateUserResponse,
   IUpdateUserRequest,
+  IGetAllUserAndReviewerResponse,
+  IGetAllUserAndReviewerRequest,
 } from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
@@ -90,11 +92,26 @@ const usersApi = createApi({
           };
         },
       }),
+      fetchAllUserAndReviewers: builder.query<IGetAllUserAndReviewerResponse, IGetAllUserAndReviewerRequest>({
+        query: ({ search, token, page, pageSize, direction }) => {
+          if (!search || !token) {
+            return '';
+          }
+          return {
+            url: `/users/search-all?search=${search}&page=${page}&pageSize=${pageSize}&direction=${direction}`,
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+      }),
     };
   },
 });
 
 export const {
+  useLazyFetchAllUserAndReviewersQuery,
   useLazyFetchReviewersQuery,
   useSyncUserQuery,
   useUpdateUserPasswordMutation,
