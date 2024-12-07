@@ -18,6 +18,7 @@ import com.hart.overwatch.authentication.request.LoginRequest;
 import com.hart.overwatch.authentication.request.RegisterRequest;
 import com.hart.overwatch.authentication.response.LoginResponse;
 import com.hart.overwatch.authentication.response.RegisterResponse;
+import com.hart.overwatch.ban.BanService;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.user.Role;
@@ -84,6 +85,9 @@ public class AuthenticationServiceTest {
 
     @Mock
     private UserService userService;
+
+    @Mock
+    private BanService banService;
 
     private User user;
 
