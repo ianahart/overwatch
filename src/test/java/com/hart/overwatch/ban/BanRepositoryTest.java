@@ -19,12 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import com.hart.overwatch.ban.dto.BanDto;
 import com.hart.overwatch.config.DatabaseSetupService;
 import com.hart.overwatch.profile.Profile;
-import com.hart.overwatch.profile.ProfileRepository;
 import com.hart.overwatch.setting.Setting;
-import com.hart.overwatch.stripepaymentintent.dto.FullStripePaymentIntentDto;
-import com.hart.overwatch.stripepaymentintent.dto.StripePaymentIntentDto;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserRepository;
@@ -67,6 +65,8 @@ public class BanRepositoryTest {
         banEntity.setAdminNotes("admin notes");
         banEntity.setBanDate(LocalDateTime.now().plusSeconds(86400));
 
+        banRepository.save(banEntity);
+
         return banEntity;
     }
 
@@ -85,6 +85,25 @@ public class BanRepositoryTest {
         userRepository.deleteAll();
         entityManager.flush();
         entityManager.clear();
+    }
+
+    @Test
+    public void BanRepository_GetBans_ReturnPageOfDto() {
+        int page = 0, pageSize = 3;
+        Pageable pageable = PageRequest.of(page, pageSize);
+
+        Page<BanDto> result = banRepository.getBans(pageable);
+
+        Assertions.assertThat(result).isNotEmpty();
+        Assertions.assertThat(result.getContent()).hasSize(1);
+        BanDto banDto = result.getContent().get(0);
+        Assertions.assertThat(banDto.getId()).isEqualTo(ban.getId());
+        Assertions.assertThat(banDto.getTime()).isEqualTo(ban.getTime());
+        Assertions.assertThat(banDto.getUserId()).isEqualTo(ban.getUser().getId());
+        Assertions.assertThat(banDto.getBanDate()).isEqualTo(ban.getBanDate());
+        Assertions.assertThat(banDto.getEmail()).isEqualTo(ban.getUser().getEmail());
+        Assertions.assertThat(banDto.getFullName()).isEqualTo(ban.getUser().getFullName());
+        Assertions.assertThat(banDto.getAdminNotes()).isEqualTo(ban.getAdminNotes());
     }
 }
 
