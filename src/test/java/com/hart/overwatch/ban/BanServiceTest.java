@@ -22,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.ban.dto.BanDto;
 import com.hart.overwatch.ban.request.CreateBanRequest;
 import com.hart.overwatch.csv.CsvFileService;
 import com.hart.overwatch.pagination.PaginationService;
@@ -48,6 +49,9 @@ public class BanServiceTest {
     @Mock
     private UserService userService;
 
+    @Mock
+    private PaginationService paginationService;
+
     private User user;
 
     private Ban ban;
@@ -71,6 +75,19 @@ public class BanServiceTest {
 
 
         return banEntity;
+    }
+
+    private BanDto convertToDto(Ban ban) {
+        BanDto dto = new BanDto();
+        dto.setId(ban.getId());
+        dto.setTime(ban.getTime());
+        dto.setEmail(ban.getUser().getEmail());
+        dto.setUserId(ban.getUser().getId());
+        dto.setFullName(ban.getUser().getFullName());
+        dto.setAdminNotes(ban.getAdminNotes());
+        dto.setBanDate(ban.getBanDate());
+
+        return dto;
     }
 
     @BeforeEach
@@ -116,7 +133,49 @@ public class BanServiceTest {
 
         verify(userService, times(1)).getUserById(request.getUserId());
         verify(banRepository, times(1)).save(any(Ban.class));
-
     }
+
+    @Test
+    public void BanService_GetBans_ReturnPaginationDtoOfBanDto() {
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+        Pageable pageable = Pageable.ofSize(pageSize);
+        BanDto banDto = convertToDto(ban);
+        Page<BanDto> pageactualPaginationDto =
+                new PageImpl<>(Collections.singletonList(banDto), pageable, 1);
+        PaginationDto<BanDto> expectedPaginationDto = new PaginationDto<>(
+                pageactualPaginationDto.getContent(), pageactualPaginationDto.getNumber(), pageSize,
+                pageactualPaginationDto.getTotalPages(), direction,
+                pageactualPaginationDto.getTotalElements());
+
+        when(paginationService.getPageable(page, pageSize, direction)).thenReturn(pageable);
+        when(banRepository.getBans(pageable)).thenReturn(pageactualPaginationDto);
+
+        PaginationDto<BanDto> actualPaginationDto = banService.getBans(page, pageSize, direction);
+
+        Assertions.assertThat(actualPaginationDto).isNotNull();
+        Assertions.assertThat(actualPaginationDto.getPage())
+                .isEqualTo(expectedPaginationDto.getPage());
+        Assertions.assertThat(actualPaginationDto.getPageSize())
+                .isEqualTo(expectedPaginationDto.getPageSize());
+        Assertions.assertThat(actualPaginationDto.getTotalPages())
+                .isEqualTo(expectedPaginationDto.getTotalPages());
+        Assertions.assertThat(actualPaginationDto.getTotalElements())
+                .isEqualTo(expectedPaginationDto.getTotalElements());
+        Assertions.assertThat(actualPaginationDto.getDirection())
+                .isEqualTo(expectedPaginationDto.getDirection());
+        Assertions.assertThat(actualPaginationDto.getItems()).hasSize(1);
+        BanDto actualBanDto = actualPaginationDto.getItems().get(0);
+        Assertions.assertThat(actualBanDto.getId()).isEqualTo(banDto.getId());
+        Assertions.assertThat(actualBanDto.getTime()).isEqualTo(banDto.getTime());
+        Assertions.assertThat(actualBanDto.getUserId()).isEqualTo(banDto.getUserId());
+        Assertions.assertThat(actualBanDto.getBanDate()).isEqualTo(banDto.getBanDate());
+        Assertions.assertThat(actualBanDto.getEmail()).isEqualTo(banDto.getEmail());
+        Assertions.assertThat(actualBanDto.getFullName()).isEqualTo(banDto.getFullName());
+        Assertions.assertThat(actualBanDto.getAdminNotes()).isEqualTo(banDto.getAdminNotes());
+    }
+
+
 }
 
