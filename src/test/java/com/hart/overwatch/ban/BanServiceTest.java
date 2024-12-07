@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,7 @@ import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.ban.dto.BanDto;
 import com.hart.overwatch.ban.request.CreateBanRequest;
+import com.hart.overwatch.ban.request.UpdateBanRequest;
 import com.hart.overwatch.csv.CsvFileService;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
@@ -191,7 +193,30 @@ public class BanServiceTest {
         Assertions.assertThat(actualBanDto.getEmail()).isEqualTo(banDto.getEmail());
         Assertions.assertThat(actualBanDto.getFullName()).isEqualTo(banDto.getFullName());
         Assertions.assertThat(actualBanDto.getAdminNotes()).isEqualTo(banDto.getAdminNotes());
+    }
 
+    @Test
+    public void BanService_UpdateBan_ReturnBanDto() {
+        Long banId = ban.getId();
+        UpdateBanRequest request = new UpdateBanRequest();
+        request.setTime(ban.getTime());
+        request.setAdminNotes(ban.getAdminNotes());
+        BanDto banDto = convertToDto(ban);
+
+        when(banRepository.findById(banId)).thenReturn(Optional.of(ban));
+        when(banRepository.save(any(Ban.class))).thenReturn(ban);
+
+        BanDto actualBanDto = banService.updateBan(banId, request);
+        Assertions.assertThat(actualBanDto.getId()).isEqualTo(banDto.getId());
+        Assertions.assertThat(actualBanDto.getTime()).isEqualTo(banDto.getTime());
+        Assertions.assertThat(actualBanDto.getUserId()).isEqualTo(banDto.getUserId());
+        Assertions.assertThat(actualBanDto.getBanDate()).isCloseTo(banDto.getBanDate(),
+                Assertions.within(10000, ChronoUnit.MICROS));
+        Assertions.assertThat(actualBanDto.getEmail()).isEqualTo(banDto.getEmail());
+        Assertions.assertThat(actualBanDto.getFullName()).isEqualTo(banDto.getFullName());
+        Assertions.assertThat(actualBanDto.getAdminNotes()).isEqualTo(banDto.getAdminNotes());
+
+        verify(banRepository, times(1)).save(any(Ban.class));
 
     }
 
