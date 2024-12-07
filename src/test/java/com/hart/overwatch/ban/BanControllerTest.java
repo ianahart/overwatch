@@ -161,6 +161,30 @@ public class BanControllerTest {
 
     }
 
+    @Test
+    public void BanController_GetBan_ReturnGetBanResponse() throws Exception {
+        Long banId = ban.getId();
+        BanDto banDto = convertToDto(ban);
+        when(banService.getBan(banId)).thenReturn(banDto);
+
+        ResultActions response =
+                mockMvc.perform(get(String.format("/api/v1/admin/banned-users/%d", banId)));
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.id",
+                        CoreMatchers.is(banDto.getId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.userId",
+                        CoreMatchers.is(banDto.getUserId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.time",
+                        CoreMatchers.is(banDto.getTime().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.email",
+                        CoreMatchers.is(banDto.getEmail())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.fullName",
+                        CoreMatchers.is(banDto.getFullName())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.adminNotes",
+                        CoreMatchers.is(banDto.getAdminNotes())));
+    }
+
 }
 
 
