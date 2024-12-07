@@ -176,6 +176,24 @@ public class BanServiceTest {
         Assertions.assertThat(actualBanDto.getAdminNotes()).isEqualTo(banDto.getAdminNotes());
     }
 
+    @Test
+    public void BanService_getBan_ReturnBandDto() {
+        Long banId = ban.getId();
+        BanDto banDto = convertToDto(ban);
+
+        when(banRepository.findById(banId)).thenReturn(Optional.of(ban));
+
+        BanDto actualBanDto = banService.getBan(banId);
+        Assertions.assertThat(actualBanDto.getId()).isEqualTo(banDto.getId());
+        Assertions.assertThat(actualBanDto.getTime()).isEqualTo(banDto.getTime());
+        Assertions.assertThat(actualBanDto.getUserId()).isEqualTo(banDto.getUserId());
+        Assertions.assertThat(actualBanDto.getBanDate()).isEqualTo(banDto.getBanDate());
+        Assertions.assertThat(actualBanDto.getEmail()).isEqualTo(banDto.getEmail());
+        Assertions.assertThat(actualBanDto.getFullName()).isEqualTo(banDto.getFullName());
+        Assertions.assertThat(actualBanDto.getAdminNotes()).isEqualTo(banDto.getAdminNotes());
+
+
+    }
 
 }
 
