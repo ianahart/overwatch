@@ -126,6 +126,41 @@ public class BanControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 
+    @Test
+    public void BanController_GetBans_ReturnGetAllBansResponse() throws Exception {
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+        Pageable pageable = Pageable.ofSize(pageSize);
+        BanDto banDto = convertToDto(ban);
+        Page<BanDto> pageactualPaginationDto =
+                new PageImpl<>(Collections.singletonList(banDto), pageable, 1);
+        PaginationDto<BanDto> expectedPaginationDto = new PaginationDto<>(
+                pageactualPaginationDto.getContent(), pageactualPaginationDto.getNumber(), pageSize,
+                pageactualPaginationDto.getTotalPages(), direction,
+                pageactualPaginationDto.getTotalElements());
+
+        when(banService.getBans(page, pageSize, direction)).thenReturn(expectedPaginationDto);
+
+        ResultActions response = mockMvc.perform(get("/api/v1/admin/banned-users")
+                .param("page", "0").param("pageSize", "3").param("direction", "next"));
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.page",
+                        CoreMatchers.is(expectedPaginationDto.getPage())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.pageSize",
+                        CoreMatchers.is(expectedPaginationDto.getPageSize())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.totalPages",
+                        CoreMatchers.is(expectedPaginationDto.getTotalPages())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.page",
+                        CoreMatchers.is(expectedPaginationDto.getPage())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.totalElements",
+                        CoreMatchers.is(Math.toIntExact(expectedPaginationDto.getTotalElements()))))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.items",
+                        Matchers.hasSize(Math.toIntExact(1L))));
+
+    }
+
 }
 
 
