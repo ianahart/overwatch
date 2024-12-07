@@ -5,6 +5,7 @@ import java.util.Collections;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.ban.dto.BanDto;
 import com.hart.overwatch.ban.request.CreateBanRequest;
+import com.hart.overwatch.ban.request.UpdateBanRequest;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
@@ -184,6 +185,34 @@ public class BanControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.adminNotes",
                         CoreMatchers.is(banDto.getAdminNotes())));
     }
+
+    @Test
+    public void BanController_UpdateBan_ReturnUpdateBanResponse() throws Exception {
+        UpdateBanRequest request = new UpdateBanRequest("admin notes", 86400L);
+        Long banId = ban.getId();
+        BanDto banDto = convertToDto(ban);
+        when(banService.updateBan(eq(banId), any(UpdateBanRequest.class))).thenReturn(banDto);
+
+        ResultActions response =
+                mockMvc.perform(patch(String.format("/api/v1/admin/banned-users/%d", banId))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.id",
+                        CoreMatchers.is(banDto.getId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.userId",
+                        CoreMatchers.is(banDto.getUserId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.time",
+                        CoreMatchers.is(banDto.getTime().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.email",
+                        CoreMatchers.is(banDto.getEmail())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.fullName",
+                        CoreMatchers.is(banDto.getFullName())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.adminNotes",
+                        CoreMatchers.is(banDto.getAdminNotes())));
+    }
+
 
 }
 
