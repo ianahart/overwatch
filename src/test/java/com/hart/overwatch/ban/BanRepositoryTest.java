@@ -105,6 +105,15 @@ public class BanRepositoryTest {
         Assertions.assertThat(banDto.getFullName()).isEqualTo(ban.getUser().getFullName());
         Assertions.assertThat(banDto.getAdminNotes()).isEqualTo(ban.getAdminNotes());
     }
+
+    @Test
+    public void BanRepository_BanExistsByUserId_ReturnBooleanTrue() {
+        Long userId = user.getId();
+
+        boolean exists = banRepository.banExistsByUserId(userId);
+
+        Assertions.assertThat(exists).isTrue();
+    }
 }
 
 
