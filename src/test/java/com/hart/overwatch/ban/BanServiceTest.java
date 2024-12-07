@@ -94,5 +94,29 @@ public class BanServiceTest {
     }
 
 
+    @Test
+    public void BanService_CreateBan_ReturnNothing() {
+        CreateBanRequest request = new CreateBanRequest();
+        request.setTime(ban.getTime());
+        request.setUserId(user.getId());
+        request.setAdminNotes("admin notes");
+
+        when(banRepository.banExistsByUserId(request.getUserId())).thenReturn(false);
+        when(userService.getUserById(request.getUserId())).thenReturn(user);
+
+        Ban newBan = new Ban();
+        newBan.setTime(request.getTime());
+        newBan.setUser(user);
+        newBan.setAdminNotes(request.getAdminNotes());
+        newBan.setBanDate(LocalDateTime.now().plusSeconds(request.getTime()));
+
+        when(banRepository.save(any(Ban.class))).thenReturn(newBan);
+
+        banService.createBan(request);
+
+        verify(userService, times(1)).getUserById(request.getUserId());
+        verify(banRepository, times(1)).save(any(Ban.class));
+
+    }
 }
 
