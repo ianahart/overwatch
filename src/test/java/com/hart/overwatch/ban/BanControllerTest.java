@@ -213,7 +213,14 @@ public class BanControllerTest {
                         CoreMatchers.is(banDto.getAdminNotes())));
     }
 
-
+    @Test
+    public void BanController_DeleteBan_ReturnDeleteBanResponse() throws Exception {
+        Long banId = ban.getId();
+        doNothing().when(banService).deleteBan(banId);
+        ResultActions response =
+                mockMvc.perform(delete(String.format("/api/v1/admin/banned-users/%d", banId)));
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
 }
-
 
