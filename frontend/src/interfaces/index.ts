@@ -1421,6 +1421,25 @@ export interface IFetchRepositoryRequest {
   repositoryPage: number;
 }
 
+export interface IFetchSearchRepositoryRequest {
+  repositoryPage: number;
+  gitHubAccessToken: string;
+  query: string;
+  token: string;
+  repoName: string;
+}
+
+export interface IFetchSearchRepositoryResponse {
+  mesasge: string;
+  data: {
+    repository: IGitHubRepository;
+    contents: {
+      tree: IGitHubTree[];
+      languages: string[];
+    };
+  };
+}
+
 export interface IFetchRepositoryResponse {
   message: string;
   data: {

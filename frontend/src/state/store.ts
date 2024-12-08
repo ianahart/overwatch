@@ -47,6 +47,8 @@ import {
   todoListsReducer,
 } from './slices/todoListSlice';
 import {
+  setSearchingCodeQuery,
+  setInitialRepositoryTree,
   setRepositoryNavView,
   setRepositoryLanguages,
   setRepositoryFile,
@@ -313,6 +315,8 @@ export type TRootState = ReturnType<typeof store.getState>;
 export type TAppDispatch = typeof store.dispatch;
 
 export {
+  setSearchingCodeQuery,
+  setInitialRepositoryTree,
   setTeamMembers,
   removeTeamMember,
   removeTeamPost,
@@ -509,6 +513,7 @@ export {
 } from './apis/githubApi';
 
 export {
+  useLazySearchRepositoryQuery,
   useLazyFetchRepositoryQuery,
   useFetchRepositoryQuery,
   useUpdateRepositoryCommentMutation,

@@ -44,8 +44,15 @@ export const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, Fetch
           api.dispatch(updateTokens({ token, refreshToken }));
 
           result = await baseQuery(
-            // @ts-ignore
-            { ...args, headers: { Authorization: `Bearer ${token}` } },
+            {
+              //@ts-ignore
+              ...args,
+              headers: {
+                //@ts-ignore
+                ...(args.headers || {}), // Ensure args.headers is an object
+                Authorization: `Bearer ${token}`,
+              },
+            },
             api,
             extraOptions
           );

@@ -42,6 +42,16 @@ public class RepositoryController {
         this.repositoryService = repositoryService;
     }
 
+    @GetMapping(path = "/search")
+    public ResponseEntity<GetRepositoryReviewResponse> searchRepository(
+            @RequestParam("page") int page, @RequestParam("size") int size,
+            @RequestParam("query") String query, @RequestParam("repoName") String repoName,
+            @RequestHeader("GitHub-Token") String gitHubAccessToken) throws IOException {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new GetRepositoryReviewResponse("success", this.repositoryService
+                        .searchRepository(gitHubAccessToken, page, size, repoName, query)));
+    }
+
 
     @PostMapping("/user")
     ResponseEntity<CreateUserRepositoryResponse> createUserRepository(

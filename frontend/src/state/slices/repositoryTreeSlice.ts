@@ -17,9 +17,11 @@ interface IRepositoryReviewsState {
   repository: IGitHubRepository;
   repositoryPage: number;
   repositoryFile: IRepositoryFile;
+  searchingCodeQuery: string;
 }
 
 const initialState: IRepositoryReviewsState = {
+  searchingCodeQuery: '',
   repositoryNavView: ERepositoryView.DETAILS,
   repositoryLanguages: [],
   repositoryTree: [],
@@ -54,8 +56,18 @@ const repositoryTreeSlice = createSlice({
       state.repositoryFile = action.payload;
     },
 
+    setSearchingCodeQuery: (state, action: PayloadAction<string>) => {
+      state.searchingCodeQuery = action.payload;
+    },
+
     setRepositoryTree: (state, action: PayloadAction<IGitHubTree[]>) => {
       state.repositoryTree = [...state.repositoryTree, ...action.payload];
+    },
+
+    setInitialRepositoryTree: (state, action: PayloadAction<IGitHubTree[]>) => {
+      if (action.payload && action.payload.length > 0) {
+        state.repositoryTree = action.payload;
+      }
     },
 
     setRepositoryPage: (state, action: PayloadAction<number>) => {
@@ -74,6 +86,8 @@ const repositoryTreeSlice = createSlice({
 });
 
 export const {
+  setSearchingCodeQuery,
+  setInitialRepositoryTree,
   setRepositoryNavView,
   setRepositoryLanguages,
   setRepositoryFile,

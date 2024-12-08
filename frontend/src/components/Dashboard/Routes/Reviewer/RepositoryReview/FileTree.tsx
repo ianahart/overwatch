@@ -1,3 +1,4 @@
+import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { BsSearch } from 'react-icons/bs';
@@ -6,16 +7,18 @@ import { nanoid } from 'nanoid';
 import { languageMap } from '../../../../../util';
 import {
   TRootState,
+  setInitialRepositoryTree,
   setRepository,
   setRepositoryFile,
   setRepositoryNavView,
   setRepositoryPage,
   setRepositoryTree,
+  setSearchingCodeQuery,
   useCreateRepositoryFileMutation,
   useLazyFetchRepositoryQuery,
+  useLazySearchRepositoryQuery,
 } from '../../../../../state/store';
 import { Session } from '../../../../../util/SessionService';
-import { useState } from 'react';
 import { IGitHubTree } from '../../../../../interfaces';
 import { ERepositoryView } from '../../../../../enums';
 
@@ -25,55 +28,108 @@ const FileTree = () => {
   const repositoryId = Number.parseInt(params.id as string);
   const accessToken = Session.getItem('github_access_token') ?? '';
   const { token } = useSelector((store: TRootState) => store.user);
-  const { repositoryTree, repositoryNavView, repositoryPage, repository } = useSelector(
+  const { repositoryTree, searchingCodeQuery, repositoryNavView, repositoryPage, repository } = useSelector(
     (store: TRootState) => store.repositoryTree
   );
   const [fetchRepository, { isLoading }] = useLazyFetchRepositoryQuery();
+  const [searchRepository] = useLazySearchRepositoryQuery();
   const [createRepositoryFile] = useCreateRepositoryFileMutation();
   const [searchText, setSearchText] = useState('');
 
-  const handleOnLoadMoreFiles = () => {
-    if (isLoading) return;
-    fetchRepository({ repositoryId, token, accessToken, repositoryPage })
-      .unwrap()
-      .then((res) => {
-        dispatch(setRepository(res.data.repository));
-        dispatch(setRepositoryTree(res.data.contents.tree));
-        dispatch(setRepositoryPage(repositoryPage + 1));
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  const handleOnLoadMoreFiles = useCallback(
+    (reset: boolean = false) => {
+      if (isLoading) return;
+      const page = reset ? 0 : repositoryPage;
 
-  const scrollToTop = () => {
+      if (reset) {
+        dispatch(setRepositoryPage(0));
+        dispatch(setSearchingCodeQuery(''));
+        dispatch(setInitialRepositoryTree([]));
+      }
+      fetchRepository({ repositoryId, token, accessToken, repositoryPage: page })
+        .unwrap()
+        .then((res) => {
+          dispatch(setRepository(res.data.repository));
+          if (reset) {
+            dispatch(setInitialRepositoryTree(res.data.contents.tree));
+          } else {
+            dispatch(setRepositoryTree(res.data.contents.tree));
+          }
+          dispatch(setRepositoryPage(repositoryPage + 1));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    [dispatch, fetchRepository, repositoryId, token, accessToken, repositoryPage, isLoading]
+  );
+
+  const handleOnLoadMoreSearchFiles = useCallback(
+    (reset: boolean = false) => {
+      const page = reset ? 0 : repositoryPage;
+
+      if (reset) {
+        dispatch(setRepositoryPage(0));
+        dispatch(setInitialRepositoryTree([]));
+      }
+
+      const payload = {
+        token,
+        gitHubAccessToken: accessToken,
+        repositoryPage: page,
+        repoName: repository.repoName,
+        query: searchingCodeQuery,
+      };
+      searchRepository(payload)
+        .unwrap()
+        .then((res) => {
+          if (reset) {
+            console.log('RUN');
+            dispatch(setInitialRepositoryTree(res.data.contents.tree));
+          } else {
+            dispatch(setRepositoryTree(res.data.contents.tree));
+          }
+          dispatch(setRepositoryPage(repositoryPage + 1));
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    [dispatch, searchRepository, token, accessToken, repositoryPage, repository.repoName, searchingCodeQuery]
+  );
+
+  const scrollToTop = useCallback(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  }, []);
 
-  const handleOnClickFile = (path: string) => {
-    const [owner, repoName] = repository.repoName.split('/');
-    createRepositoryFile({ owner, repoName, path, token, accessToken })
-      .unwrap()
-      .then((res) => {
-        const content = atob(res.data);
-        let extension = path.split('.').pop();
-        let language = '';
-        if (extension !== undefined) {
-          language = languageMap[extension] || 'text';
-        } else {
-          language = 'text';
-        }
-        if (repositoryNavView === ERepositoryView.DETAILS) {
-          dispatch(setRepositoryNavView(ERepositoryView.CODE));
-        }
+  const handleOnClickFile = useCallback(
+    (path: string) => {
+      const [owner, repoName] = repository.repoName.split('/');
+      createRepositoryFile({ owner, repoName, path, token, accessToken })
+        .unwrap()
+        .then((res) => {
+          const content = atob(res.data);
+          let extension = path.split('.').pop();
+          let language = '';
+          if (extension !== undefined) {
+            language = languageMap[extension] || 'text';
+          } else {
+            language = 'text';
+          }
+          if (repositoryNavView === ERepositoryView.DETAILS) {
+            dispatch(setRepositoryNavView(ERepositoryView.CODE));
+          }
 
-        dispatch(setRepositoryFile({ path, content, language }));
-        scrollToTop();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+          dispatch(setRepositoryFile({ path, content, language }));
+          scrollToTop();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    [createRepositoryFile, repository.repoName, token, accessToken, repositoryNavView, dispatch, scrollToTop]
+  );
 
   const filteredRepositoryTree: IGitHubTree[] = repositoryTree.filter((node) =>
     node.path.toLowerCase().includes(searchText.toLowerCase())
@@ -91,11 +147,18 @@ const FileTree = () => {
               className="placeholder:p-8 w-full h-9 rounded-lg bg-gray-950 text-gray-400 px-8"
             />
             <BsSearch className="absolute top-2 left-2 text-lg" />
+            <p className="text-sm my-2 text-green-400 font-bold">
+              <span className="text-yellow-400">*</span> Highlight code with your mouse or click to narrow down code
+              files.
+            </p>
+            <button onClick={() => handleOnLoadMoreFiles(true)} className="my-2 p-1 rounded border border-gray-800">
+              Reset file tree
+            </button>
           </div>
         </div>
         <ul className="overflow-auto">
           {filteredRepositoryTree.map((node) => {
-            return node.type === 'blob' ? (
+            return (
               <li
                 onClick={() => handleOnClickFile(node.path)}
                 key={nanoid()}
@@ -103,11 +166,17 @@ const FileTree = () => {
               >
                 {node.path}
               </li>
-            ) : null;
+            );
           })}
         </ul>
         <div className="my-4 flex justify-center">
-          <button onClick={handleOnLoadMoreFiles}>More files...</button>
+          <button
+            onClick={() =>
+              searchingCodeQuery.length > 0 ? handleOnLoadMoreSearchFiles(false) : handleOnLoadMoreFiles(false)
+            }
+          >
+            More files...
+          </button>
         </div>
       </div>
     </div>
