@@ -37,7 +37,7 @@ const repositoriesApi = createApi({
             return '';
           }
           return {
-            url: `/repositories/search?page=${repositoryPage}&size=5&query=${encodeURIComponent(
+            url: `/repositories/search?page=${repositoryPage}&size=30&query=${encodeURIComponent(
               `repo:${repoName} ${query}`
             )}&repoName=${repoName}`,
             method: 'GET',
