@@ -10,6 +10,10 @@ class SessionService {
   getItem(item: string): string | null {
     return sessionStorage.getItem(item);
   }
+
+  setDynamicItem(key: string, value: string): void {
+    sessionStorage.setItem(key, value);
+  }
 }
 
 export const Session = new SessionService();
