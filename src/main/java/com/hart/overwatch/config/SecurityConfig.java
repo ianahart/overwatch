@@ -13,6 +13,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 
+import org.springframework.web.cors.CorsConfiguration;
+import java.util.List;
+
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
@@ -36,16 +39,21 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.cors(cors -> cors.disable()).csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(
-                        req -> req.requestMatchers("/api/v1/auth/**", "ws/**", "wss/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/v1/topics/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/v1/app-testimonials/**")
-                                .permitAll().requestMatchers(HttpMethod.POST, "/api/v1/topics/**")
-                                .authenticated().requestMatchers("/api/v1/admin/**")
-                                .hasRole("ADMIN").anyRequest().authenticated()
-
-                ).sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
+        http.cors(cors -> cors.configurationSource(request -> {
+            CorsConfiguration config = new CorsConfiguration();
+            config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:8080/ws"));
+            config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
+            config.setAllowedHeaders(
+                    List.of("Authorization", "Cache-Control", "Content-Type", "GitHub-Token"));
+            config.setAllowCredentials(true);
+            return config;
+        })).csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(req -> req
+                .requestMatchers("/api/v1/auth/**", "ws/**", "wss/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/topics/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/app-testimonials/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/topics/**").authenticated()
+                .requestMatchers("/api/v1/admin/**").hasRole("ADMIN").anyRequest().authenticated())
+                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(this.authenticationProvider)
                 .addFilterBefore(this.rateLimitingFilter,
                         UsernamePasswordAuthenticationFilter.class)
@@ -57,5 +65,5 @@ public class SecurityConfig {
 
         return http.build();
     }
-
 }
+

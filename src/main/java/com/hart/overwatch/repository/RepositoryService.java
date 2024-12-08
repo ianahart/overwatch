@@ -223,6 +223,22 @@ public class RepositoryService {
                 entity.getReviewType(), formattedReviewDuration);
     }
 
+
+    public RepositoryContentsDto searchRepository(String accessToken, int page, int size,
+            String repoName, String query) throws IOException {
+        try {
+            FullRepositoryDto repository = new FullRepositoryDto();
+            GitHubTreeDto contents =
+                    gitHubService.searchRepository(accessToken, page, query, repoName, size);
+            return new RepositoryContentsDto(repository, contents);
+
+        } catch (DataAccessException | IOException ex) {
+            System.out.println(ex.getMessage());
+            throw ex;
+        }
+    }
+
+
     public RepositoryContentsDto getRepositoryReview(Long repositoryId, String accessToken,
             int page, int size) throws IOException {
         try {

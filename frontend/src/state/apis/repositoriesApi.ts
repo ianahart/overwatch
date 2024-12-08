@@ -1,5 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import {
+  IFetchSearchRepositoryRequest,
+  IFetchSearchRepositoryResponse,
   ICreateUserRepositoryRequest,
   ICreateUserRepositoryResponse,
   IDeleteUserRepositoryResponse,
@@ -29,6 +31,23 @@ const repositoriesApi = createApi({
   tagTypes: ['Repository'],
   endpoints(builder) {
     return {
+      searchRepository: builder.query<IFetchSearchRepositoryResponse, IFetchSearchRepositoryRequest>({
+        query: ({ token, query, repoName, repositoryPage, gitHubAccessToken }) => {
+          if (!token || !gitHubAccessToken) {
+            return '';
+          }
+          return {
+            url: `/repositories/search?page=${repositoryPage}&size=5&query=${encodeURIComponent(
+              `repo:${repoName} ${query}`
+            )}&repoName=${repoName}`,
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'GitHub-Token': gitHubAccessToken,
+            },
+          };
+        },
+      }),
       updateRepositoryReviewStartTime: builder.mutation<
         IUpdateRepositoryReviewStartTimeResponse,
         IUpdateRepositoryReviewStartTimeRequest
@@ -195,6 +214,7 @@ const repositoriesApi = createApi({
 });
 
 export const {
+  useLazySearchRepositoryQuery,
   useUpdateRepositoryReviewStartTimeMutation,
   useUpdateRepositoryReviewMutation,
   useCreateRepositoryFileMutation,

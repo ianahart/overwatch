@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.github.dto.GitHubPaginationDto;
 import com.hart.overwatch.github.dto.GitHubRepositoryDto;
-import com.hart.overwatch.github.dto.GitHubRepositoryFileDto;
 import com.hart.overwatch.github.dto.GitHubTreeDto;
 import com.hart.overwatch.github.dto.GitHubTreeNodeDto;
 import java.io.IOException;
@@ -24,8 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.HashMap;
 import java.util.Iterator;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import java.util.Collections;
 
 @Service
 public class GitHubService {
@@ -82,6 +80,10 @@ public class GitHubService {
                 .header("Authorization", "Bearer " + accessToken).build();
 
         Response response = this.okHttpClient.newCall(request).execute();
+        String rateLimitRemaining = response.header("X-RateLimit-Remaining");
+        String rateLimitReset = response.header("X-RateLimit-Reset");
+        System.out.println("Remaining requests: " + rateLimitRemaining);
+        System.out.println("Reset time: " + rateLimitReset);
 
         if (!response.isSuccessful()) {
             throw new IOException("Unexpected code " + response);
@@ -134,6 +136,22 @@ public class GitHubService {
         return links;
     }
 
+
+    public GitHubTreeDto searchRepository(String accessToken, int page, String query,
+            String repoPath, int size) throws IOException {
+        String url = String.format("https://api.github.com/search/code?page=%d&q=%s", page, query);
+
+        try {
+            Map<String, String> result = makeGitHubRequest(url, accessToken);
+            String treeData = result.getOrDefault("body", "{}");
+
+            List<String> languages = new ArrayList<>();
+            return new GitHubTreeDto(languages, createFileTree(treeData, page, size, "items"));
+        } catch (IOException e) {
+            throw new RuntimeException("GitHub request failed", e);
+        }
+    }
+
     public GitHubPaginationDto getUserRepos(String accessToken, int page) throws IOException {
 
         String url = String.format("https://api.github.com/user/repos?page=%d", page);
@@ -148,25 +166,65 @@ public class GitHubService {
 
     }
 
-
-    private List<GitHubTreeNodeDto> createFileTree(String jsonData, int page, int size) {
+    private List<GitHubTreeNodeDto> createFileTree(String jsonData, int page, int size,
+            String type) {
         JSONObject jsonObject = new JSONObject(jsonData);
-        JSONArray treeArray = jsonObject.getJSONArray("tree");
+        JSONArray treeArray = jsonObject.optJSONArray(type);
+
+        if (treeArray == null || treeArray.isEmpty()) {
+            System.out.println(treeArray + " EMPTY TREE");
+            return Collections.emptyList();
+        }
+        System.out.println("treeArray: " + treeArray.length());
+
 
         List<GitHubTreeNodeDto> treeNodes = new ArrayList<>();
         for (int i = 0; i < treeArray.length(); i++) {
             JSONObject treeObject = treeArray.getJSONObject(i);
+
             GitHubTreeNodeDto treeNode = new GitHubTreeNodeDto(treeObject.getString("path"),
-                    treeObject.getString("type"), treeObject.getString("sha"),
-                    treeObject.optInt("size", 0), // size may not be present for "tree" type nodes
-                    treeObject.getString("url"));
+                    treeObject.optString("type", "node"), treeObject.getString("sha"),
+                    treeObject.optInt("size", 0), treeObject.getString("url"));
+            System.out.println("TreeNode created: " + treeNode);
             treeNodes.add(treeNode);
         }
+        System.out.println("Total nodes added: " + treeNodes.size());
 
-        int start = Math.min(page * size, treeNodes.size());
-        int end = Math.min((page + 1) * size, treeNodes.size());
+        if (page < 0) {
+            page = 0;
+        }
+        int startIndex = page * size; // Calculate the starting index
 
-        return treeNodes.subList(start, end);
+        // If starting index is out of bounds, return an empty list
+        if (startIndex >= treeNodes.size()) {
+            System.out.println("Start index out of bounds.");
+            return List.of();
+        }
+
+        // Calculate the safe end index
+        int endIndex = Math.min(startIndex + size, treeNodes.size());
+
+        System.out.println("Start index: " + startIndex);
+        System.out.println("End index: " + endIndex);
+        System.out.println("Total nodes: " + treeNodes.size());
+
+        // Return the paginated sublist
+        return treeNodes.subList(startIndex, endIndex);
+
+        // int start = page * size;
+        // int end = Math.min(start + size, treeNodes.size());
+
+        // System.out.println("Start: " + start);
+        // System.out.println("End: " + end);
+
+        // // Ensure start is within bounds
+        // if (start >= treeNodes.size()) {
+        // System.out.println("Start index out of bounds. Returning empty list.");
+        // return Collections.emptyList();
+        // }
+
+        // System.out.println("Returning sublist from index " + start + " to " + end);
+        // return treeNodes.subList(start, end);
     }
 
     public GitHubTreeDto getRepository(String repoName, String accessToken, int page, int size)
@@ -183,7 +241,7 @@ public class GitHubService {
         List<String> languages = constructLanguages(languagesResult.get("body"));
 
 
-        return new GitHubTreeDto(languages, createFileTree(result.get("body"), page, size));
+        return new GitHubTreeDto(languages, createFileTree(result.get("body"), page, size, "tree"));
     }
 
     private String constructContent(String jsonData) {
