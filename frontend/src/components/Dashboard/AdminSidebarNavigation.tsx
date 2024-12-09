@@ -2,7 +2,7 @@ import { FaComment, FaMoneyBill } from 'react-icons/fa';
 import { GrTransaction } from 'react-icons/gr';
 
 import DashboardTitle from './DashboardTitle';
-import { AiOutlineUser } from 'react-icons/ai';
+import { AiOutlineLock, AiOutlineUser } from 'react-icons/ai';
 import NavigationBlock from './Routes/Admin/NavigationBlock';
 
 const AdminSidebarNavigation = () => {
@@ -12,6 +12,9 @@ const AdminSidebarNavigation = () => {
   ];
   const userLinks = [{ path: 'banned-users', label: 'Banned Users', id: 4, icon: <AiOutlineUser /> }];
   const contentLinks = [{ path: 'flagged-comments', label: 'Flagged Comments', id: 1, icon: <FaComment /> }];
+  const securityLinks = [
+    { path: 'multifactor-authentication', label: 'MF Authentication', id: 5, icon: <AiOutlineLock /> },
+  ];
 
   return (
     <div className="md:w-[300px] min-h-[90vh]">
@@ -23,6 +26,7 @@ const AdminSidebarNavigation = () => {
         <NavigationBlock links={transactionLinks} title="Transaction" />
         <NavigationBlock links={userLinks} title="User" />
         <NavigationBlock links={contentLinks} title="Content" />
+        <NavigationBlock links={securityLinks} title="Security" />
       </div>
     </div>
   );

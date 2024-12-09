@@ -67,6 +67,7 @@ import TeamMessageRoute from './routes/Settings/Teams/TeamMessageRoute';
 import TeamPostRoute from './routes/Settings/Teams/TeamPostRoute';
 import TeamMemberRoute from './routes/Settings/Teams/TeamMemberRoute';
 import BannedUserRoute from './routes/Dashboard/Admin/BannedUserRoute';
+import MFAuthenticationRoute from './routes/Dashboard/Admin/MFAuthenticationRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -139,6 +140,14 @@ const router = createBrowserRouter(
           element={
             <RequireAdminUser>
               <BannedUserRoute />
+            </RequireAdminUser>
+          }
+        />
+        <Route
+          path="multifactor-authentication"
+          element={
+            <RequireAdminUser>
+              <MFAuthenticationRoute />
             </RequireAdminUser>
           }
         />
