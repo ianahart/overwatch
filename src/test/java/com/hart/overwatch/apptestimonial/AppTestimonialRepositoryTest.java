@@ -69,6 +69,7 @@ public class AppTestimonialRepositoryTest {
         appTestimonialEntity.setDeveloperType("Frontend Developer");
         appTestimonialEntity.setContent("testimonial content");
         appTestimonialEntity.setUser(user);
+        appTestimonialEntity.setIsSelected(true);
 
         appTestimonialRepository.save(appTestimonialEntity);
 

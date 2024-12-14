@@ -19,6 +19,7 @@ import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.apptestimonial.dto.AppTestimonialDto;
 import com.hart.overwatch.apptestimonial.dto.MinAppTestimonialDto;
 import com.hart.overwatch.apptestimonial.request.CreateAppTestimonialRequest;
+import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.user.Role;
@@ -39,6 +40,9 @@ public class AppTestimonialServiceTest {
 
     @Mock
     private UserService userService;
+
+    @Mock
+    private PaginationService paginationService;
 
     @Mock
     private AppTestimonialRepository appTestimonialRepository;
@@ -65,6 +69,7 @@ public class AppTestimonialServiceTest {
         appTestimonialEntity.setDeveloperType("Frontend Developer");
         appTestimonialEntity.setContent("testimonial content");
         appTestimonialEntity.setUser(user);
+        appTestimonialEntity.setIsSelected(false);
 
         return appTestimonialEntity;
     }

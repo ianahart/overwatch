@@ -21,7 +21,6 @@ const AnimatedContainer = ({ children, side }: IAnimatedContainerProps) => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          console.log('run');
           setIsVisible(true);
           observer.disconnect();
         }

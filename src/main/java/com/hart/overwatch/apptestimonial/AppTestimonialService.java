@@ -13,9 +13,13 @@ import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
+import com.hart.overwatch.apptestimonial.dto.AdminAppTestimonialDto;
 import com.hart.overwatch.apptestimonial.dto.AppTestimonialDto;
 import com.hart.overwatch.apptestimonial.dto.MinAppTestimonialDto;
 import com.hart.overwatch.apptestimonial.request.CreateAppTestimonialRequest;
+import com.hart.overwatch.apptestimonial.request.UpdateAdminAppTestimonialRequest;
+import com.hart.overwatch.pagination.PaginationService;
+import com.hart.overwatch.pagination.dto.PaginationDto;
 
 @Service
 public class AppTestimonialService {
@@ -24,11 +28,14 @@ public class AppTestimonialService {
 
     private final UserService userService;
 
+    private final PaginationService paginationService;
+
     @Autowired
     public AppTestimonialService(AppTestimonialRepository appTestimonialRepository,
-            UserService userService) {
+            UserService userService, PaginationService paginationService) {
         this.appTestimonialRepository = appTestimonialRepository;
         this.userService = userService;
+        this.paginationService = paginationService;
     }
 
     private AppTestimonial getAppTestimonialById(Long appTestimonialId) {
@@ -77,6 +84,7 @@ public class AppTestimonialService {
         appTestimonial.setUser(user);
         appTestimonial.setDeveloperType(developerType);
         appTestimonial.setContent(content);
+        appTestimonial.setIsSelected(false);
 
         appTestimonialRepository.save(appTestimonial);
     }
@@ -118,5 +126,29 @@ public class AppTestimonialService {
         Page<AppTestimonialDto> result = appTestimonialRepository.getAppTestimonials(pageable);
 
         return result.getContent();
+    }
+
+
+    public PaginationDto<AdminAppTestimonialDto> getAdminAppTestimonials(int page, int pageSize,
+            String direction) {
+
+        Pageable pageable = this.paginationService.getPageable(page, pageSize, direction);
+
+        Page<AdminAppTestimonialDto> result =
+                this.appTestimonialRepository.getAdminAppTestimonials(pageable);
+
+        return new PaginationDto<AdminAppTestimonialDto>(result.getContent(), result.getNumber(),
+                pageSize, result.getTotalPages(), direction, result.getTotalElements());
+    }
+
+    public Boolean updateAdminAppTestimonial(UpdateAdminAppTestimonialRequest request,
+            Long appTestimonialId) {
+        AppTestimonial appTestimonial = getAppTestimonialById(appTestimonialId);
+
+        appTestimonial.setIsSelected(request.getIsSelected());
+
+        appTestimonialRepository.save(appTestimonial);
+
+        return appTestimonial.getIsSelected();
     }
 }

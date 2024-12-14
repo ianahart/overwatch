@@ -83,6 +83,7 @@ public class AppTestimonialControllerTest {
         appTestimonialEntity.setDeveloperType("Frontend Developer");
         appTestimonialEntity.setContent("testimonial content");
         appTestimonialEntity.setUser(user);
+        appTestimonialEntity.setIsSelected(false);
 
         return appTestimonialEntity;
     }

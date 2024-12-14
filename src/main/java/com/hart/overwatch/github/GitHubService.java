@@ -80,11 +80,11 @@ public class GitHubService {
                 .header("Authorization", "Bearer " + accessToken).build();
 
         Response response = this.okHttpClient.newCall(request).execute();
-        String rateLimitRemaining = response.header("X-RateLimit-Remaining");
-        String rateLimitReset = response.header("X-RateLimit-Reset");
-        System.out.println("Remaining requests: " + rateLimitRemaining);
-        System.out.println("Reset time: " + rateLimitReset);
-
+//        String rateLimitRemaining = response.header("X-RateLimit-Remaining");
+//        String rateLimitReset = response.header("X-RateLimit-Reset");
+//        System.out.println("Remaining requests: " + rateLimitRemaining);
+//        System.out.println("Reset time: " + rateLimitReset);
+//
         if (!response.isSuccessful()) {
             throw new IOException("Unexpected code " + response);
         }

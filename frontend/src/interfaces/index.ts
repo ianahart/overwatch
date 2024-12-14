@@ -1,5 +1,16 @@
+import AppTestimonial from '../components/Dashboard/Routes/User/AppTestimonial';
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
+
+export interface IAdminAppTestimonial {
+  id: number;
+  isSelected: boolean;
+  firstName: string;
+  developerType: string;
+  createdAt: string;
+  content: string;
+  avatarUrl: string;
+}
 
 export interface IBan {
   id: number;
@@ -2386,6 +2397,36 @@ export interface IGetAllAppTestimonialsRequest {
 export interface IGetAllAppTestimonialsResponse {
   message: string;
   data: IAppTestimonial[];
+}
+
+export interface IGetAllAdminAppTestimonialsRequest {
+  token: string;
+  page: number;
+  pageSize: number;
+  direction: string;
+}
+
+export interface IUpdateAdminAppTestimonialRequest {
+  token: string;
+  id: number;
+  isSelected: boolean;
+}
+
+export interface IUpdateAdminAppTestimonialResponse {
+  message: string;
+  data: boolean;
+}
+
+export interface IGetAllAdminAppTestimonialsResponse {
+  message: string;
+  data: {
+    items: IAdminAppTestimonial[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
 }
 
 export interface IUpdatePaymentRefundResponse {
