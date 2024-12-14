@@ -10,6 +10,10 @@ import {
   IGetAppTestimonialResponse,
   IUpdateAppTestimonialRequest,
   IUpdateAppTestimonialResponse,
+  IGetAllAdminAppTestimonialsRequest,
+  IGetAllAdminAppTestimonialsResponse,
+  IUpdateAdminAppTestimonialResponse,
+  IUpdateAdminAppTestimonialRequest,
 } from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
@@ -19,6 +23,23 @@ const appTestimonialsApi = createApi({
   tagTypes: ['AppTestimonial'],
   endpoints(builder) {
     return {
+      updateAdminAppTestimonial: builder.mutation<
+        IUpdateAdminAppTestimonialResponse,
+        IUpdateAdminAppTestimonialRequest
+      >({
+        query: ({ id, isSelected, token }) => {
+          return {
+            url: `/admin/app-testimonials/${id}`,
+            method: 'PATCH',
+            body: { isSelected },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+        invalidatesTags: [{ type: 'AppTestimonial', id: 'LIST' }],
+      }),
+
       fetchAppTestimonial: builder.query<IGetAppTestimonialResponse, IGetAppTestimonialRequest>({
         query: ({ token }) => {
           if (!token) {
@@ -86,10 +107,37 @@ const appTestimonialsApi = createApi({
             ? [...result.data.map(({ id }) => ({ type: 'AppTestimonial', id })), { type: 'AppTestimonial', id: 'LIST' }]
             : [{ type: 'AppTestimonial', id: 'LIST' }],
       }),
+      fetchAdminAppTestimonials: builder.query<IGetAllAdminAppTestimonialsResponse, IGetAllAdminAppTestimonialsRequest>(
+        {
+          query: ({ pageSize, token, direction, page }) => {
+            if (!token) {
+              return '';
+            }
+            return {
+              url: `/admin/app-testimonials?page=${page}&direction=${direction}&pageSize=${pageSize}`,
+              method: 'GET',
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            };
+          },
+          //@ts-ignore
+          providesTags: (result, error, arg) =>
+            result
+              ? [
+                  ...result.data.items.map(({ id }) => ({ type: 'AppTestimonial', id })),
+                  { type: 'AppTestimonial', id: 'LIST' },
+                ]
+              : [{ type: 'AppTestimonial', id: 'LIST' }],
+        }
+      ),
     };
   },
 });
+
 export const {
+  useUpdateAdminAppTestimonialMutation,
+  useLazyFetchAdminAppTestimonialsQuery,
   useFetchAppTestimonialsQuery,
   useDeleteAppTestimonialMutation,
   useUpdateAppTestimonialMutation,

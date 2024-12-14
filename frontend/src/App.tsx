@@ -68,6 +68,7 @@ import TeamPostRoute from './routes/Settings/Teams/TeamPostRoute';
 import TeamMemberRoute from './routes/Settings/Teams/TeamMemberRoute';
 import BannedUserRoute from './routes/Dashboard/Admin/BannedUserRoute';
 import MFAuthenticationRoute from './routes/Dashboard/Admin/MFAuthenticationRoute';
+import AdminAppTestimonialRoute from './routes/Dashboard/Admin/AdminAppTestimonialRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -135,6 +136,14 @@ const router = createBrowserRouter(
           </RequireAdminUser>
         }
       >
+        <Route
+          path="testimonials"
+          element={
+            <RequireAdminUser>
+              <AdminAppTestimonialRoute />
+            </RequireAdminUser>
+          }
+        />
         <Route
           path="banned-users"
           element={

@@ -39,6 +39,9 @@ public class AppTestimonial {
     @Column(name = "content", length = 200)
     private String content;
 
+    @Column(name = "is_selected")
+    private Boolean isSelected;
+
     @ManyToOne()
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
@@ -48,22 +51,28 @@ public class AppTestimonial {
     }
 
     public AppTestimonial(Long id, LocalDateTime createdAt, LocalDateTime updatedAt,
-            String developerType, String content) {
+            String developerType, String content, Boolean isSelected) {
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.developerType = developerType;
         this.content = content;
+        this.isSelected = isSelected;
     }
 
-    public AppTestimonial(String developerType, String content, User user) {
+    public AppTestimonial(String developerType, String content, Boolean isSelected, User user) {
         this.developerType = developerType;
         this.content = content;
+        this.isSelected = isSelected;
         this.user = user;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public Boolean getIsSelected() {
+        return isSelected;
     }
 
     public User getUser() {
@@ -108,6 +117,10 @@ public class AppTestimonial {
 
     public void setDeveloperType(String developerType) {
         this.developerType = developerType;
+    }
+
+    public void setIsSelected(Boolean isSelected) {
+        this.isSelected = isSelected;
     }
 
 

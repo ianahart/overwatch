@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import com.hart.overwatch.apptestimonial.dto.AdminAppTestimonialDto;
 import com.hart.overwatch.apptestimonial.dto.AppTestimonialDto;
 
 @Repository
@@ -18,6 +19,7 @@ public interface AppTestimonialRepository extends JpaRepository<AppTestimonial, 
             ) FROM AppTestimonial at
             INNER JOIN at.user u
             INNER JOIN at.user.profile p
+            WHERE at.isSelected = true
             """)
     Page<AppTestimonialDto> getAppTestimonials(@Param("pageable") Pageable pageable);
 
@@ -35,4 +37,16 @@ public interface AppTestimonialRepository extends JpaRepository<AppTestimonial, 
                 )
             """)
     boolean existsByUserId(@Param("userId") Long userId);
+
+    @Query(value = """
+            SELECT new com.hart.overwatch.apptestimonial.dto.AdminAppTestimonialDto(
+            at.id AS id, u.firstName AS firstName, at.developerType AS developerType,
+            at.content AS content, p.avatarUrl AS avatarUrl, at.createdAt AS createdAt,
+            at.isSelected AS isSelected
+            ) FROM AppTestimonial at
+            INNER JOIN at.user u
+            INNER JOIN at.user.profile p
+            """)
+    Page<AdminAppTestimonialDto> getAdminAppTestimonials(@Param("pageable") Pageable pageable);
+
 }

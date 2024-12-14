@@ -13,15 +13,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.hart.overwatch.apptestimonial.request.CreateAppTestimonialRequest;
+import com.hart.overwatch.apptestimonial.request.UpdateAdminAppTestimonialRequest;
 import com.hart.overwatch.apptestimonial.response.CreateAppTestimonialResponse;
 import com.hart.overwatch.apptestimonial.response.DeleteAppTestimonialResponse;
+import com.hart.overwatch.apptestimonial.response.GetAllAdminAppTestimonialsResponse;
 import com.hart.overwatch.apptestimonial.response.GetAllAppTestimonialsResponse;
 import com.hart.overwatch.apptestimonial.response.GetSingleAppTestimonialResponse;
+import com.hart.overwatch.apptestimonial.response.UpdateAdminAppTestimonialResponse;
 import com.hart.overwatch.apptestimonial.response.UpdateAppTestimonialResponse;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(path = "/api/v1/app-testimonials")
+@RequestMapping(path = "/api/v1")
 public class AppTestimonialController {
 
     private final AppTestimonialService appTestimonialService;
@@ -32,7 +35,7 @@ public class AppTestimonialController {
     }
 
 
-    @PostMapping(path = "")
+    @PostMapping(path = "/app-testimonials")
     public ResponseEntity<CreateAppTestimonialResponse> createAppTestimonial(
             @Valid @RequestBody CreateAppTestimonialRequest request) {
         appTestimonialService.createAppTestimonial(request);
@@ -40,13 +43,13 @@ public class AppTestimonialController {
                 .body(new CreateAppTestimonialResponse("success"));
     }
 
-    @GetMapping(path = "/single")
+    @GetMapping(path = "/app-testimonials/single")
     public ResponseEntity<GetSingleAppTestimonialResponse> getAppTestimonial() {
         return ResponseEntity.status(HttpStatus.OK).body(new GetSingleAppTestimonialResponse(
                 "success", appTestimonialService.getAppTestimonial()));
     }
 
-    @PatchMapping(path = "/{appTestimonialId}")
+    @PatchMapping(path = "/app-testimonials/{appTestimonialId}")
     public ResponseEntity<UpdateAppTestimonialResponse> updateAppTestimonial(
             @Valid @RequestBody CreateAppTestimonialRequest request,
             @PathVariable("appTestimonialId") Long appTestimonialId) {
@@ -55,7 +58,7 @@ public class AppTestimonialController {
                 .body(new UpdateAppTestimonialResponse("success"));
     }
 
-    @DeleteMapping(path = "/{appTestimonialId}")
+    @DeleteMapping(path = "/app-testimonials/{appTestimonialId}")
     public ResponseEntity<DeleteAppTestimonialResponse> deleteAppTestimonial(
             @PathVariable("appTestimonialId") Long appTestimonialId) {
         appTestimonialService.deleteAppTestimonial(appTestimonialId);
@@ -63,10 +66,28 @@ public class AppTestimonialController {
                 .body(new DeleteAppTestimonialResponse("success"));
     }
 
-    @GetMapping(path = "")
+    @GetMapping(path = "/app-testimonials")
     public ResponseEntity<GetAllAppTestimonialsResponse> getAppTestimonials(
             @RequestParam("pageSize") Integer pageSize) {
         return ResponseEntity.status(HttpStatus.OK).body(new GetAllAppTestimonialsResponse(
                 "success", appTestimonialService.getAppTestimonials(pageSize)));
+    }
+
+    @GetMapping(path = "/admin/app-testimonials")
+    public ResponseEntity<GetAllAdminAppTestimonialsResponse> getAdminAppTestimonials(
+            @RequestParam("page") int page, @RequestParam("pageSize") int pageSize,
+            @RequestParam("direction") String direction) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new GetAllAdminAppTestimonialsResponse("success",
+                        appTestimonialService.getAdminAppTestimonials(page, pageSize, direction)));
+    }
+
+    @PatchMapping(path = "/admin/app-testimonials/{appTestimonialId}")
+    public ResponseEntity<UpdateAdminAppTestimonialResponse> updateAdminAppTestimonial(
+            @RequestBody UpdateAdminAppTestimonialRequest request,
+            @PathVariable("appTestimonialId") Long appTestimonialId) {
+        return ResponseEntity.status(HttpStatus.OK).body(new UpdateAdminAppTestimonialResponse(
+                "success",
+                appTestimonialService.updateAdminAppTestimonial(request, appTestimonialId)));
     }
 }
