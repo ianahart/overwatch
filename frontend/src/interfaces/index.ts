@@ -1,6 +1,14 @@
-import AppTestimonial from '../components/Dashboard/Routes/User/AppTestimonial';
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
+
+export interface ISuggestionForm {
+  feedbackType: { name: string; value: string; error: string; type: string };
+  title: { name: string; value: string; error: string; type: string };
+  description: { name: string; value: string; error: string; type: string };
+  attachment: { name: string; value: File | null; error: string; type: string };
+  contact: { name: string; value: string; error: string; type: string };
+  priorityLevel: { name: string; value: string; error: string; type: string };
+}
 
 export interface IAdminAppTestimonial {
   id: number;
@@ -2759,6 +2767,13 @@ export interface IDeleteBanRequest {
   token: string;
   banId: number;
 }
+
+export interface ICreateSuggestionRequest {
+  token: string;
+  body: FormData;
+}
+
+export interface ICreateSuggestionResponse extends IBaseResponse {}
 
 export interface IDeleteBanResponse extends IBaseResponse {}
 

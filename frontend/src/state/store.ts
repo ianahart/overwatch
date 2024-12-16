@@ -177,6 +177,7 @@ import { teamMessagesApi } from './apis/teamMessagesApi';
 import { teamPostsApi } from './apis/teamPostsApi';
 import { teamCommentsApi } from './apis/teamCommentsApi';
 import { bannedUsersApi } from './apis/bannedUsersApi';
+import { suggestionsApi } from './apis/suggestionsApi';
 
 export const store = configureStore({
   reducer: {
@@ -246,6 +247,7 @@ export const store = configureStore({
     [teamPostsApi.reducerPath]: teamPostsApi.reducer,
     [teamCommentsApi.reducerPath]: teamCommentsApi.reducer,
     [bannedUsersApi.reducerPath]: bannedUsersApi.reducer,
+    [suggestionsApi.reducerPath]: suggestionsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -254,6 +256,7 @@ export const store = configureStore({
           'profileSetup/updateAvatar',
           'stripePaymentIntent/exportPaymentIntentsToPdf',
           'stripePaymentIntent/exportPaymentIntentsToCsv',
+          'suggestions/createSuggestion',
         ],
         ignoredPaths: ['profileSetup.avatar.value'],
       },
@@ -305,7 +308,8 @@ export const store = configureStore({
       .concat(teamMessagesApi.middleware)
       .concat(teamPostsApi.middleware)
       .concat(teamCommentsApi.middleware)
-      .concat(bannedUsersApi.middleware);
+      .concat(bannedUsersApi.middleware)
+      .concat(suggestionsApi.middleware);
   },
 });
 
@@ -718,6 +722,8 @@ export {
   useLazyFetchBannedUsersQuery,
 } from './apis/bannedUsersApi';
 
+export { useCreateSuggestionMutation } from './apis/suggestionsApi';
+
 export {
   testimonialsApi,
   authsApi,
@@ -761,4 +767,5 @@ export {
   teamPostsApi,
   teamCommentsApi,
   bannedUsersApi,
+  suggestionsApi,
 };

@@ -1,3 +1,12 @@
+export const suggestionFormState = {
+  feedbackType: { name: 'feedbackType', value: 'SUGGESTION', error: '', type: 'text' },
+  title: { name: 'title', value: '', error: '', type: 'text' },
+  description: { name: 'description', value: '', error: '', type: 'text' },
+  attachment: { name: 'attachment', value: null, error: '', type: 'file' },
+  contact: { name: 'contact', value: '', error: '', type: 'email' },
+  priorityLevel: { name: 'priorityLevel', value: 'LOW', error: '', type: 'text' },
+};
+
 export const teamMember = {
   id: 0,
   userId: 0,
