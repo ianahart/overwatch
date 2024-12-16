@@ -38,6 +38,7 @@ import com.hart.overwatch.reviewfeedback.ReviewFeedback;
 import com.hart.overwatch.savecomment.SaveComment;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.stripepaymentintent.StripePaymentIntent;
+import com.hart.overwatch.suggestion.Suggestion;
 import com.hart.overwatch.team.Team;
 import com.hart.overwatch.teamcomment.TeamComment;
 import com.hart.overwatch.teaminvitation.TeamInvitation;
@@ -314,6 +315,9 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<TeamComment> teamComments;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Suggestion> suggestions;
 
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -372,6 +376,10 @@ public class User implements UserDetails {
 
     public List<ReplyComment> getReplyComments() {
         return replyComments;
+    }
+
+    public List<Suggestion> getSuggestions() {
+        return suggestions;
     }
 
     public List<TeamPost> getTeamPosts() {
@@ -886,6 +894,10 @@ public class User implements UserDetails {
 
     public String getUsername() {
         return email;
+    }
+
+    public void setSuggestions(List<Suggestion> suggestions) {
+        this.suggestions = suggestions;
     }
 
     @Override

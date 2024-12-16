@@ -69,6 +69,7 @@ import TeamMemberRoute from './routes/Settings/Teams/TeamMemberRoute';
 import BannedUserRoute from './routes/Dashboard/Admin/BannedUserRoute';
 import MFAuthenticationRoute from './routes/Dashboard/Admin/MFAuthenticationRoute';
 import AdminAppTestimonialRoute from './routes/Dashboard/Admin/AdminAppTestimonialRoute';
+import SuggestionRoute from './routes/Dashboard/Shared/SuggestionRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -202,6 +203,14 @@ const router = createBrowserRouter(
           }
         />
         <Route
+          path="reviewer/suggestions/create"
+          element={
+            <RequireAuthReviewer>
+              <SuggestionRoute />
+            </RequireAuthReviewer>
+          }
+        />
+        <Route
           path="reviewer/stats"
           element={
             <RequireAuthReviewer>
@@ -240,6 +249,14 @@ const router = createBrowserRouter(
           element={
             <RequireAuthUser>
               <ReviewsRoute />
+            </RequireAuthUser>
+          }
+        />
+        <Route
+          path="user/suggestions/create"
+          element={
+            <RequireAuthUser>
+              <SuggestionRoute />
             </RequireAuthUser>
           }
         />
