@@ -4,13 +4,18 @@ import java.util.HashMap;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.amazon.AmazonService;
+import com.hart.overwatch.pagination.PaginationService;
+import com.hart.overwatch.pagination.dto.PaginationDto;
+import com.hart.overwatch.suggestion.dto.SuggestionDto;
 import com.hart.overwatch.suggestion.request.CreateSuggestionRequest;
-import com.hart.overwatch.advice.BadRequestException;
+import com.hart.overwatch.suggestion.request.UpdateSuggestionRequest;
 
 @Service
 public class SuggestionService {
@@ -23,12 +28,15 @@ public class SuggestionService {
 
     private final AmazonService amazonService;
 
+    private final PaginationService paginationService;
+
     @Autowired
     public SuggestionService(SuggestionRepository suggestionRepository, UserService userService,
-            AmazonService amazonService) {
+            AmazonService amazonService, PaginationService paginationService) {
         this.suggestionRepository = suggestionRepository;
         this.userService = userService;
         this.amazonService = amazonService;
+        this.paginationService = paginationService;
     }
 
 
@@ -60,6 +68,34 @@ public class SuggestionService {
                     user);
         }
         suggestionRepository.save(newSuggestion);
+    }
+
+    public PaginationDto<SuggestionDto> getAllSuggestions(FeedbackStatus feedbackStatus, int page,
+            int pageSize, String direction) {
+
+        Pageable pageable = this.paginationService.getPageable(page, pageSize, direction);
+
+        Page<SuggestionDto> result =
+                this.suggestionRepository.getAllSuggestions(pageable, feedbackStatus);
+
+        return new PaginationDto<SuggestionDto>(result.getContent(), result.getNumber(), pageSize,
+                result.getTotalPages(), direction, result.getTotalElements());
+    }
+
+    public FeedbackStatus updateSuggestion(UpdateSuggestionRequest request, Long suggestionId) {
+        Suggestion suggestion = getSuggestionById(suggestionId);
+
+        suggestion.setFeedbackStatus(request.getFeedbackStatus());
+
+        suggestionRepository.save(suggestion);
+
+        return suggestion.getFeedbackStatus();
+    }
+
+    public void deleteSuggestion(Long suggestionId) {
+        Suggestion suggestion = getSuggestionById(suggestionId);
+
+        suggestionRepository.delete(suggestion);
     }
 
 }

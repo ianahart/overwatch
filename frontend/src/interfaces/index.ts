@@ -1,6 +1,21 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface ISuggestion {
+  [key: string]: string;
+  id: string;
+  createdAt: string;
+  title: string;
+  description: string;
+  contact: string;
+  fileUrl: string;
+  feedbackType: string;
+  priorityLevel: string;
+  feedbackStatus: string;
+  fullName: string;
+  avatarUrl: string;
+}
+
 export interface ISuggestionForm {
   feedbackType: { name: string; value: string; error: string; type: string };
   title: { name: string; value: string; error: string; type: string };
@@ -2772,6 +2787,44 @@ export interface ICreateSuggestionRequest {
   token: string;
   body: FormData;
 }
+
+export interface IGetAllSuggestionsResponse {
+  message: string;
+  data: {
+    items: ISuggestion[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
+}
+
+export interface IGetAllSuggestionsRequest {
+  token: string;
+  feedbackStatus: string;
+  page: number;
+  pageSize: number;
+  direction: string;
+}
+
+export interface IUpdateSuggestionRequest {
+  token: string;
+  id: number;
+  feedbackStatus: string;
+}
+
+export interface IUpdateSuggestionResponse {
+  message: string;
+  data: string;
+}
+
+export interface IDeleteSuggestionRequest {
+  token: string;
+  id: number;
+}
+
+export interface IDeleteSuggestionResponse extends IBaseResponse {}
 
 export interface ICreateSuggestionResponse extends IBaseResponse {}
 

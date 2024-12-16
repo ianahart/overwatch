@@ -722,7 +722,12 @@ export {
   useLazyFetchBannedUsersQuery,
 } from './apis/bannedUsersApi';
 
-export { useCreateSuggestionMutation } from './apis/suggestionsApi';
+export {
+  useDeleteSuggestionMutation,
+  useCreateSuggestionMutation,
+  useLazyFetchSuggestionsQuery,
+  useUpdateSuggestionMutation,
+} from './apis/suggestionsApi';
 
 export {
   testimonialsApi,
