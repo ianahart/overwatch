@@ -2,7 +2,7 @@ import { FaComment, FaMoneyBill, FaNewspaper, FaShieldAlt } from 'react-icons/fa
 import { GrTransaction } from 'react-icons/gr';
 
 import DashboardTitle from './DashboardTitle';
-import { AiOutlineUser } from 'react-icons/ai';
+import { AiOutlineComment, AiOutlineUser } from 'react-icons/ai';
 import NavigationBlock from './Routes/Admin/NavigationBlock';
 
 const AdminSidebarNavigation = () => {
@@ -14,6 +14,7 @@ const AdminSidebarNavigation = () => {
   const contentLinks = [
     { path: 'flagged-comments', label: 'Flagged Comments', id: 1, icon: <FaComment /> },
     { path: 'testimonials', label: 'Testimonials', id: 6, icon: <FaNewspaper /> },
+    { path: 'suggestions', label: 'Suggestions', id: 7, icon: <AiOutlineComment /> },
   ];
   const securityLinks = [
     { path: 'multifactor-authentication', label: 'MF Authentication', id: 5, icon: <FaShieldAlt /> },

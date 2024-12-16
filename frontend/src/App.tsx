@@ -70,6 +70,7 @@ import BannedUserRoute from './routes/Dashboard/Admin/BannedUserRoute';
 import MFAuthenticationRoute from './routes/Dashboard/Admin/MFAuthenticationRoute';
 import AdminAppTestimonialRoute from './routes/Dashboard/Admin/AdminAppTestimonialRoute';
 import SuggestionRoute from './routes/Dashboard/Shared/SuggestionRoute';
+import AdminSuggestionRoute from './routes/Dashboard/Admin/AdminSuggestionRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -137,6 +138,14 @@ const router = createBrowserRouter(
           </RequireAdminUser>
         }
       >
+        <Route
+          path="suggestions"
+          element={
+            <RequireAdminUser>
+              <AdminSuggestionRoute />
+            </RequireAdminUser>
+          }
+        />
         <Route
           path="testimonials"
           element={
