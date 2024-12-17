@@ -131,29 +131,60 @@ public class SuggestionControllerTest {
         suggestions = createSuggestions(user, numOfSuggestions);
     }
 
-@Test
-public void SuggestionController_CreateSuggestion_ReturnCreateSuggestionResponse() throws Exception {
-    // Create the mock multipart file (only for file uploads, if any)
-    MockMultipartFile mockFile = new MockMultipartFile(
-            "attachment", "image.jpg", MediaType.IMAGE_JPEG_VALUE, "test image content".getBytes());
+    @Test
+    public void SuggestionController_CreateSuggestion_ReturnCreateSuggestionResponse()
+            throws Exception {
+        MockMultipartFile mockFile = new MockMultipartFile("attachment", "image.jpg",
+                MediaType.IMAGE_JPEG_VALUE, "test image content".getBytes());
 
-    // Perform the request
-    ResultActions response = mockMvc.perform(
-            multipart("/api/v1/suggestions")
-                    .file(mockFile) // Add the file, if applicable
-                    .param("title", "title") // Add the form data fields
-                    .param("userId", String.valueOf(user.getId()))
-                    .param("contact", "contact")
-                    .param("description", "description")
-                    .param("feedbackType", "GENERAL_FEEDBACK")
-                    .param("priorityLevel", "LOW")
-                    .contentType(MediaType.MULTIPART_FORM_DATA)
-    );
+        ResultActions response = mockMvc.perform(multipart("/api/v1/suggestions").file(mockFile)
+                .param("title", "title").param("userId", String.valueOf(user.getId()))
+                .param("contact", "contact").param("description", "description")
+                .param("feedbackType", "GENERAL_FEEDBACK").param("priorityLevel", "LOW")
+                .contentType(MediaType.MULTIPART_FORM_DATA));
 
-    // Verify the response
-    response.andExpect(MockMvcResultMatchers.status().isCreated())
-            .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
-}
+        response.andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
+    @Test
+    public void SuggestionController_GetAllSuggestions_ReturnGetAllSuggestionsResponse()
+            throws Exception {
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+        Pageable pageable = Pageable.ofSize(pageSize);
+        List<SuggestionDto> suggestionDtos = convertToDto(suggestions);
+        Page<SuggestionDto> pageResult = new PageImpl<>(suggestionDtos, pageable, 1);
+        PaginationDto<SuggestionDto> expectedPaginationDto =
+                new PaginationDto<>(pageResult.getContent(), pageResult.getNumber(), pageSize,
+                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
+
+        when(suggestionService.getAllSuggestions(FeedbackStatus.PENDING, page, pageSize, direction))
+
+                .thenReturn(expectedPaginationDto);
+
+        ResultActions response =
+                mockMvc.perform(get("/api/v1/admin/suggestions").param("feedbackStatus", "PENDING")
+                        .param("page", "0").param("pageSize", "3").param("direction", "next"));
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.page",
+                        CoreMatchers.is(expectedPaginationDto.getPage())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.pageSize",
+                        CoreMatchers.is(expectedPaginationDto.getPageSize())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.totalPages",
+                        CoreMatchers.is(expectedPaginationDto.getTotalPages())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.page",
+                        CoreMatchers.is(expectedPaginationDto.getPage())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.totalElements",
+                        CoreMatchers.is(Math.toIntExact(expectedPaginationDto.getTotalElements()))))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.items",
+                        Matchers.hasSize(Math.toIntExact(3L))));
+
+
+
+    }
 
 }
 
