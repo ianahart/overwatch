@@ -1,16 +1,13 @@
 package com.hart.overwatch.suggestion;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Collections;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.suggestion.dto.SuggestionDto;
-import com.hart.overwatch.suggestion.request.CreateSuggestionRequest;
 import com.hart.overwatch.suggestion.request.UpdateSuggestionRequest;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.user.Role;
@@ -40,7 +37,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 
 import org.hamcrest.CoreMatchers;
