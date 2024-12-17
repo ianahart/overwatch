@@ -224,10 +224,25 @@ public class SuggestionServiceTest {
 
         when(suggestionRepository.save(any(Suggestion.class))).thenReturn(suggestionToUpdate);
 
-        FeedbackStatus result = suggestionService.updateSuggestion(request, suggestionToUpdate.getId());
+        FeedbackStatus result =
+                suggestionService.updateSuggestion(request, suggestionToUpdate.getId());
 
         verify(suggestionRepository, times(1)).save(any(Suggestion.class));
         Assertions.assertThat(result).isEqualTo(request.getFeedbackStatus());
+    }
+
+    @Test
+    public void SuggestionService_DeleteSuggestion_ReturnNothing() {
+        Suggestion suggestion = suggestions.get(0);
+
+        when(suggestionRepository.findById(suggestion.getId())).thenReturn(Optional.of(suggestion));
+        doNothing().when(amazonService).deleteBucketObject("arrow-date", suggestion.getFileName());
+        doNothing().when(suggestionRepository).delete(suggestion);
+
+        suggestionService.deleteSuggestion(suggestion.getId());
+
+        verify(amazonService, times(1)).deleteBucketObject("arrow-date", suggestion.getFileName());
+        verify(suggestionRepository, times(1)).delete(suggestion);
     }
 }
 
