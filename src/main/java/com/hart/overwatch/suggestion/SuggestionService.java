@@ -95,6 +95,10 @@ public class SuggestionService {
     public void deleteSuggestion(Long suggestionId) {
         Suggestion suggestion = getSuggestionById(suggestionId);
 
+        if (suggestion.getFileUrl() != null) {
+            amazonService.deleteBucketObject(BUCKET_NAME, suggestion.getFileName());
+        }
+
         suggestionRepository.delete(suggestion);
     }
 
