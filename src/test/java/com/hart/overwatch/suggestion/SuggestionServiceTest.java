@@ -22,6 +22,7 @@ import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.suggestion.dto.SuggestionDto;
 import com.hart.overwatch.suggestion.request.CreateSuggestionRequest;
+import com.hart.overwatch.suggestion.request.UpdateSuggestionRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -210,7 +211,23 @@ public class SuggestionServiceTest {
             Assertions.assertThat(actualSuggestionDtos.get(i).getFeedbackStatus())
                     .isEqualTo(expectedSuggestionDtos.get(i).getFeedbackStatus());
         }
+    }
 
+    @Test
+    public void SuggestionService_UpdateSuggestion_ReturnFeedbackStatus() {
+        UpdateSuggestionRequest request = new UpdateSuggestionRequest();
+        request.setFeedbackStatus(FeedbackStatus.IMPLEMENTED);
+        Suggestion suggestionToUpdate = suggestions.get(0);
+
+        when(suggestionRepository.findById(suggestionToUpdate.getId()))
+                .thenReturn(Optional.of(suggestionToUpdate));
+
+        when(suggestionRepository.save(any(Suggestion.class))).thenReturn(suggestionToUpdate);
+
+        FeedbackStatus result = suggestionService.updateSuggestion(request, suggestionToUpdate.getId());
+
+        verify(suggestionRepository, times(1)).save(any(Suggestion.class));
+        Assertions.assertThat(result).isEqualTo(request.getFeedbackStatus());
     }
 }
 
