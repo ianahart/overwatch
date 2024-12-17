@@ -1,6 +1,5 @@
 package com.hart.overwatch.suggestion;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
 import org.assertj.core.api.Assertions;
@@ -21,11 +20,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import com.hart.overwatch.ban.dto.BanDto;
 import com.hart.overwatch.config.DatabaseSetupService;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.profile.ProfileRepository;
 import com.hart.overwatch.setting.Setting;
+import com.hart.overwatch.suggestion.dto.SuggestionDto;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserRepository;
@@ -67,7 +66,7 @@ public class SuggestionRepositoryTest {
 
     private List<Suggestion> createSuggestions(User user, int numOfSuggestions) {
         List<Suggestion> suggestionEntities = new ArrayList<>();
-        for(int i = 0; i < numOfSuggestions; i++) {
+        for (int i = 0; i < numOfSuggestions; i++) {
             Suggestion suggestionEntity = new Suggestion();
             suggestionEntity.setUser(user);
             suggestionEntity.setTitle("title");
@@ -104,6 +103,43 @@ public class SuggestionRepositoryTest {
     }
 
 
+    @Test
+    public void SuggestionRepository_GetAllSuggestions_ReturnPageOfSuggestionDto() {
+        int page = 0, pageSize = 3;
+        FeedbackStatus feedbackStatus = FeedbackStatus.PENDING;
+        Pageable pageable = PageRequest.of(page, pageSize);
+
+        Page<SuggestionDto> result =
+                suggestionRepository.getAllSuggestions(pageable, feedbackStatus);
+
+        Assertions.assertThat(result).isNotEmpty();
+        Assertions.assertThat(result.getContent()).hasSize(suggestions.size());
+
+        List<SuggestionDto> dtos = result.getContent();
+
+        for (int i = 0; i < dtos.size(); i++) {
+            Assertions.assertThat(dtos.get(i).getId()).isEqualTo(suggestions.get(i).getId());
+            Assertions.assertThat(dtos.get(i).getTitle()).isEqualTo(suggestions.get(i).getTitle());
+            Assertions.assertThat(dtos.get(i).getContact())
+                    .isEqualTo(suggestions.get(i).getContact());
+            Assertions.assertThat(dtos.get(i).getFileUrl())
+                    .isEqualTo(suggestions.get(i).getFileUrl());
+            Assertions.assertThat(dtos.get(i).getFullName())
+                    .isEqualTo(suggestions.get(i).getUser().getFullName());
+            Assertions.assertThat(dtos.get(i).getAvatarUrl())
+                    .isEqualTo(suggestions.get(i).getUser().getProfile().getAvatarUrl());
+            Assertions.assertThat(dtos.get(i).getDescription())
+                    .isEqualTo(suggestions.get(i).getDescription());
+            Assertions.assertThat(dtos.get(i).getFeedbackType())
+                    .isEqualTo(suggestions.get(i).getFeedbackType());
+            Assertions.assertThat(dtos.get(i).getPriorityLevel())
+                    .isEqualTo(suggestions.get(i).getPriorityLevel());
+            Assertions.assertThat(dtos.get(i).getFeedbackStatus())
+                    .isEqualTo(suggestions.get(i).getFeedbackStatus());
+        }
+
+
+    }
 
 }
 
