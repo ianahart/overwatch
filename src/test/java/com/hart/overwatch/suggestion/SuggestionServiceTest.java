@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.List;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.Collections;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,9 +17,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.hart.overwatch.amazon.AmazonService;
 import com.hart.overwatch.pagination.PaginationService;
+import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
+import com.hart.overwatch.suggestion.dto.SuggestionDto;
 import com.hart.overwatch.suggestion.request.CreateSuggestionRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
@@ -57,6 +63,26 @@ public class SuggestionServiceTest {
                 profileEntity, "Test12345%", new Setting());
         userEntity.setId(1L);
         return userEntity;
+    }
+
+
+    private List<SuggestionDto> convertToDto(List<Suggestion> suggestions) {
+        List<SuggestionDto> suggestionDtos = new ArrayList<>();
+        for (var suggestion : suggestions) {
+            SuggestionDto suggestionDto = new SuggestionDto();
+            suggestionDto.setId(suggestion.getId());
+            suggestionDto.setTitle(suggestion.getTitle());
+            suggestionDto.setContact(suggestion.getContact());
+            suggestionDto.setFileUrl(suggestion.getFileUrl());
+            suggestionDto.setFullName(suggestion.getUser().getFullName());
+            suggestionDto.setAvatarUrl(suggestion.getUser().getProfile().getAvatarUrl());
+            suggestionDto.setDescription(suggestion.getDescription());
+            suggestionDto.setFeedbackType(suggestion.getFeedbackType());
+            suggestionDto.setPriorityLevel(suggestion.getPriorityLevel());
+            suggestionDto.setFeedbackStatus(suggestion.getFeedbackStatus());
+            suggestionDtos.add(suggestionDto);
+        }
+        return suggestionDtos;
     }
 
     private List<Suggestion> createSuggestions(User user, int numOfSuggestions) {
@@ -125,6 +151,66 @@ public class SuggestionServiceTest {
         verify(suggestionRepository, times(1)).save(any(Suggestion.class));
 
         Assertions.assertThatNoException();
+    }
+
+    @Test
+    public void SuggestionService_GetAllSuggestions_ReturnPaginationDtoOfSuggestionDto() {
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+        Pageable pageable = Pageable.ofSize(pageSize);
+        List<SuggestionDto> suggestionDtos = convertToDto(suggestions);
+        Page<SuggestionDto> pageResult = new PageImpl<>(suggestionDtos, pageable, 1);
+        PaginationDto<SuggestionDto> expectedPaginationDto =
+                new PaginationDto<>(pageResult.getContent(), pageResult.getNumber(), pageSize,
+                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
+
+
+        when(paginationService.getPageable(page, pageSize, direction)).thenReturn(pageable);
+        when(suggestionRepository.getAllSuggestions(pageable, FeedbackStatus.PENDING))
+                .thenReturn(pageResult);
+
+        PaginationDto<SuggestionDto> actualPaginationDto = suggestionService
+                .getAllSuggestions(FeedbackStatus.PENDING, page, pageSize, direction);
+
+        Assertions.assertThat(actualPaginationDto).isNotNull();
+        Assertions.assertThat(actualPaginationDto.getPage())
+                .isEqualTo(expectedPaginationDto.getPage());
+        Assertions.assertThat(actualPaginationDto.getPageSize())
+                .isEqualTo(expectedPaginationDto.getPageSize());
+        Assertions.assertThat(actualPaginationDto.getTotalPages())
+                .isEqualTo(expectedPaginationDto.getTotalPages());
+        Assertions.assertThat(actualPaginationDto.getTotalElements())
+                .isEqualTo(expectedPaginationDto.getTotalElements());
+        Assertions.assertThat(actualPaginationDto.getDirection())
+                .isEqualTo(expectedPaginationDto.getDirection());
+        Assertions.assertThat(actualPaginationDto.getItems()).hasSize(suggestions.size());
+        List<SuggestionDto> actualSuggestionDtos = actualPaginationDto.getItems();
+        List<SuggestionDto> expectedSuggestionDtos = expectedPaginationDto.getItems();
+
+        for (int i = 0; i < actualSuggestionDtos.size(); i++) {
+            Assertions.assertThat(actualSuggestionDtos.get(i).getId())
+                    .isEqualTo(expectedSuggestionDtos.get(i).getId());
+            Assertions.assertThat(actualSuggestionDtos.get(i).getTitle())
+                    .isEqualTo(expectedSuggestionDtos.get(i).getTitle());
+            Assertions.assertThat(actualSuggestionDtos.get(i).getContact())
+                    .isEqualTo(expectedSuggestionDtos.get(i).getContact());
+            Assertions.assertThat(actualSuggestionDtos.get(i).getFileUrl())
+                    .isEqualTo(expectedSuggestionDtos.get(i).getFileUrl());
+            Assertions.assertThat(actualSuggestionDtos.get(i).getFullName())
+                    .isEqualTo(expectedSuggestionDtos.get(i).getFullName());
+            Assertions.assertThat(actualSuggestionDtos.get(i).getAvatarUrl())
+                    .isEqualTo(expectedSuggestionDtos.get(i).getAvatarUrl());
+            Assertions.assertThat(actualSuggestionDtos.get(i).getDescription())
+                    .isEqualTo(expectedSuggestionDtos.get(i).getDescription());
+            Assertions.assertThat(actualSuggestionDtos.get(i).getFeedbackType())
+                    .isEqualTo(expectedSuggestionDtos.get(i).getFeedbackType());
+            Assertions.assertThat(actualSuggestionDtos.get(i).getPriorityLevel())
+                    .isEqualTo(expectedSuggestionDtos.get(i).getPriorityLevel());
+            Assertions.assertThat(actualSuggestionDtos.get(i).getFeedbackStatus())
+                    .isEqualTo(expectedSuggestionDtos.get(i).getFeedbackStatus());
+        }
+
     }
 }
 
