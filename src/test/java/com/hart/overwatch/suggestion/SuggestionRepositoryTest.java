@@ -137,8 +137,6 @@ public class SuggestionRepositoryTest {
             Assertions.assertThat(dtos.get(i).getFeedbackStatus())
                     .isEqualTo(suggestions.get(i).getFeedbackStatus());
         }
-
-
     }
 
 }
