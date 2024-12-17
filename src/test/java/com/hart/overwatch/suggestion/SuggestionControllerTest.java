@@ -11,6 +11,7 @@ import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.suggestion.dto.SuggestionDto;
 import com.hart.overwatch.suggestion.request.CreateSuggestionRequest;
+import com.hart.overwatch.suggestion.request.UpdateSuggestionRequest;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
@@ -181,9 +182,21 @@ public class SuggestionControllerTest {
                         CoreMatchers.is(Math.toIntExact(expectedPaginationDto.getTotalElements()))))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.items",
                         Matchers.hasSize(Math.toIntExact(3L))));
+    }
 
+    @Test
+    public void SuggestionController_UpdateSuggestion_ReturnUpdateSuggestionResponse()
+            throws Exception {
+        UpdateSuggestionRequest request = new UpdateSuggestionRequest();
+        request.setFeedbackStatus(FeedbackStatus.IMPLEMENTED);
 
+        when(suggestionService.updateSuggestion(request, suggestions.get(0).getId()))
+                .thenReturn(request.getFeedbackStatus());
 
+        ResultActions response = mockMvc.perform(
+                patch(String.format("/api/v1/admin/suggestions/%d", suggestions.get(0).getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
     }
 
 }
