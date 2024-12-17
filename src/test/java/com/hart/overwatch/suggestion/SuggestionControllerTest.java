@@ -190,13 +190,33 @@ public class SuggestionControllerTest {
         UpdateSuggestionRequest request = new UpdateSuggestionRequest();
         request.setFeedbackStatus(FeedbackStatus.IMPLEMENTED);
 
-        when(suggestionService.updateSuggestion(request, suggestions.get(0).getId()))
+        when(suggestionService.updateSuggestion(any(UpdateSuggestionRequest.class), anyLong()))
                 .thenReturn(request.getFeedbackStatus());
 
         ResultActions response = mockMvc.perform(
                 patch(String.format("/api/v1/admin/suggestions/%d", suggestions.get(0).getId()))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(
+                        MockMvcResultMatchers.jsonPath("$.data", CoreMatchers.is("IMPLEMENTED")));
+    }
+
+    @Test
+    public void SuggestionController_DeleteSuggestion_ReturnDeleteSuggestionResponse()
+            throws Exception {
+        Long suggestionId = suggestions.get(0).getId();
+
+        doNothing().when(suggestionService).deleteSuggestion(suggestionId);
+
+        ResultActions response = mockMvc
+                .perform(delete(String.format("/api/v1/admin/suggestions/%d", suggestionId)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+
     }
 
 }
