@@ -1,4 +1,4 @@
-import { FaComment, FaMoneyBill, FaNewspaper, FaShieldAlt } from 'react-icons/fa';
+import { FaComment, FaMoneyBill, FaNewspaper, FaPlusCircle, FaRibbon, FaShieldAlt } from 'react-icons/fa';
 import { GrTransaction } from 'react-icons/gr';
 
 import DashboardTitle from './DashboardTitle';
@@ -16,6 +16,12 @@ const AdminSidebarNavigation = () => {
     { path: 'testimonials', label: 'Testimonials', id: 6, icon: <FaNewspaper /> },
     { path: 'suggestions', label: 'Suggestions', id: 7, icon: <AiOutlineComment /> },
   ];
+
+  const badgeLinks = [
+    { path: 'badges/create', label: 'Create a Badge', id: 8, icon: <FaPlusCircle /> },
+    { path: 'badges', label: 'Badges', id: 9, icon: <FaRibbon /> },
+  ];
+
   const securityLinks = [
     { path: 'multifactor-authentication', label: 'MF Authentication', id: 5, icon: <FaShieldAlt /> },
   ];
@@ -30,6 +36,7 @@ const AdminSidebarNavigation = () => {
         <NavigationBlock links={transactionLinks} title="Transaction" />
         <NavigationBlock links={userLinks} title="User" />
         <NavigationBlock links={contentLinks} title="Content" />
+        <NavigationBlock links={badgeLinks} title="Badges" />
         <NavigationBlock links={securityLinks} title="Security" />
       </div>
     </div>
