@@ -7,6 +7,12 @@ export const suggestionFormState = {
   priorityLevel: { name: 'priorityLevel', value: 'LOW', error: '', type: 'text' },
 };
 
+export const badgeFormState = {
+  image: { name: 'image', value: null, error: '', type: 'file' },
+  title: { name: 'title', value: '', error: '', type: 'text' },
+  description: { name: 'description', value: '', error: '', type: 'text' },
+};
+
 export const teamMember = {
   id: 0,
   userId: 0,

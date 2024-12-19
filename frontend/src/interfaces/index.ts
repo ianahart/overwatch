@@ -16,6 +16,12 @@ export interface ISuggestion {
   avatarUrl: string;
 }
 
+export interface IBadgeForm {
+  image: { name: string; value: File | null; error: string; type: string };
+  title: { name: string; value: string; error: string; type: string };
+  description: { name: string; value: string; error: string; type: string };
+}
+
 export interface ISuggestionForm {
   feedbackType: { name: string; value: string; error: string; type: string };
   title: { name: string; value: string; error: string; type: string };
@@ -2823,6 +2829,13 @@ export interface IDeleteSuggestionRequest {
   token: string;
   id: number;
 }
+
+export interface ICreateBadgeRequest {
+  token: string;
+  body: FormData;
+}
+
+export interface ICreateBadgeResponse extends IBaseResponse {}
 
 export interface IDeleteSuggestionResponse extends IBaseResponse {}
 

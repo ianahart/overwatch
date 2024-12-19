@@ -1,5 +1,7 @@
 /// <reference types="vite-plugin-svgr/client" />
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
 import RootLayout from './layouts/RootLayout';
 import AboutRoute from './routes/AboutRoute';
 import ExploreRoute from './routes/ExploreRoute';
@@ -8,8 +10,6 @@ import SignInRoute from './routes/SignInRoute';
 import SignUpRoute from './routes/SignUpRoute';
 import { updateUserAndTokens, useSyncUserQuery } from './state/store';
 import { retrieveTokens } from './util';
-import { useDispatch } from 'react-redux';
-import { useEffect } from 'react';
 import ForgotPasswordRoute from './routes/ForgotPasswordRoute';
 import RequireGuest from './components/Guard/RequireGuest';
 import ResetPasswordRoute from './routes/ResetPasswordRoute';
@@ -71,6 +71,8 @@ import MFAuthenticationRoute from './routes/Dashboard/Admin/MFAuthenticationRout
 import AdminAppTestimonialRoute from './routes/Dashboard/Admin/AdminAppTestimonialRoute';
 import SuggestionRoute from './routes/Dashboard/Shared/SuggestionRoute';
 import AdminSuggestionRoute from './routes/Dashboard/Admin/AdminSuggestionRoute';
+import AdminBadgeRoute from './routes/Dashboard/Admin/AdminBadgeRoute';
+import CreateBadgeRoute from './routes/Dashboard/Admin/CreateBadgeRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -138,6 +140,22 @@ const router = createBrowserRouter(
           </RequireAdminUser>
         }
       >
+        <Route
+          path="badges"
+          element={
+            <RequireAdminUser>
+              <AdminBadgeRoute />
+            </RequireAdminUser>
+          }
+        />
+        <Route
+          path="badges/create"
+          element={
+            <RequireAdminUser>
+              <CreateBadgeRoute />
+            </RequireAdminUser>
+          }
+        />
         <Route
           path="suggestions"
           element={

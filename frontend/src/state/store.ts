@@ -178,6 +178,7 @@ import { teamPostsApi } from './apis/teamPostsApi';
 import { teamCommentsApi } from './apis/teamCommentsApi';
 import { bannedUsersApi } from './apis/bannedUsersApi';
 import { suggestionsApi } from './apis/suggestionsApi';
+import { badgesApi } from './apis/badgesApi';
 
 export const store = configureStore({
   reducer: {
@@ -248,6 +249,7 @@ export const store = configureStore({
     [teamCommentsApi.reducerPath]: teamCommentsApi.reducer,
     [bannedUsersApi.reducerPath]: bannedUsersApi.reducer,
     [suggestionsApi.reducerPath]: suggestionsApi.reducer,
+    [badgesApi.reducerPath]: badgesApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -257,6 +259,7 @@ export const store = configureStore({
           'stripePaymentIntent/exportPaymentIntentsToPdf',
           'stripePaymentIntent/exportPaymentIntentsToCsv',
           'suggestions/createSuggestion',
+          'badges/createBadge',
         ],
         ignoredPaths: ['profileSetup.avatar.value'],
       },
@@ -309,7 +312,8 @@ export const store = configureStore({
       .concat(teamPostsApi.middleware)
       .concat(teamCommentsApi.middleware)
       .concat(bannedUsersApi.middleware)
-      .concat(suggestionsApi.middleware);
+      .concat(suggestionsApi.middleware)
+      .concat(badgesApi.middleware);
   },
 });
 
@@ -729,6 +733,8 @@ export {
   useUpdateSuggestionMutation,
 } from './apis/suggestionsApi';
 
+export { useCreateBadgeMutation } from './apis/badgesApi';
+
 export {
   testimonialsApi,
   authsApi,
@@ -773,4 +779,5 @@ export {
   teamCommentsApi,
   bannedUsersApi,
   suggestionsApi,
+  badgesApi,
 };

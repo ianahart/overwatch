@@ -3,16 +3,29 @@ import { AiOutlineClose } from 'react-icons/ai';
 import { FaCheck, FaPlus } from 'react-icons/fa';
 
 export interface IUploadProps {
+  title?: string;
   maxFileSize: number;
   maxFileSizeWord: string;
   error: string;
   value: File | string | null;
   handleUpdateAttachment: (name: string, value: string | File | null, attribute: string) => void;
   fieldName: string;
+  imageSrc?: string | null;
 }
 
-const Upload = ({ maxFileSize, maxFileSizeWord, fieldName, error, value, handleUpdateAttachment }: IUploadProps) => {
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+const Upload = ({
+  maxFileSize,
+  maxFileSizeWord,
+  fieldName,
+  error,
+  value,
+  handleUpdateAttachment,
+  imageSrc = null,
+  title = 'Upload an attachment',
+}: IUploadProps) => {
+  const [imagePreview, setImagePreview] = useState<string | null>(() => {
+    return imageSrc !== null ? imageSrc : null;
+  });
   const filename = value === null ? null : (value as File).name;
 
   const handleOnDrop = (e: React.DragEvent<HTMLDivElement>): void => {
@@ -68,8 +81,7 @@ const Upload = ({ maxFileSize, maxFileSizeWord, fieldName, error, value, handleU
 
   return (
     <div>
-      <p>Upload an attachment</p>
-      <small className="text-xs">ex. screenshot, etc.</small>
+      <p>{title}</p>
       {filename !== null && (
         <div className="flex items-center">
           <small>{filename}</small>
