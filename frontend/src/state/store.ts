@@ -733,7 +733,14 @@ export {
   useUpdateSuggestionMutation,
 } from './apis/suggestionsApi';
 
-export { useCreateBadgeMutation } from './apis/badgesApi';
+export {
+  useDeleteBadgeMutation,
+  useCreateBadgeMutation,
+  useFetchBadgesQuery,
+  useUpdateBadgeMutation,
+  useLazyFetchBadgesQuery,
+  useLazyFetchBadgeQuery,
+} from './apis/badgesApi';
 
 export {
   testimonialsApi,

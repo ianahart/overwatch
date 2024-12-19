@@ -1,6 +1,21 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface IMinAdminBadge {
+  [key: string]: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+}
+
+export interface IAdminBadge {
+  id: number;
+  createdAt: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+}
+
 export interface ISuggestion {
   [key: string]: string;
   id: string;
@@ -2834,6 +2849,50 @@ export interface ICreateBadgeRequest {
   token: string;
   body: FormData;
 }
+
+export interface IGetAllBadgesRequest {
+  token: string;
+  page: number;
+  pageSize: number;
+  direction: string;
+}
+
+export interface IGetAllBadgesResponse {
+  message: string;
+  data: {
+    items: IAdminBadge[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
+}
+
+export interface IGetBadgeRequest {
+  token: string;
+  badgeId: number;
+}
+
+export interface IGetBadgeResponse {
+  message: string;
+  data: IMinAdminBadge;
+}
+
+export interface IUpdateBadgeRequest {
+  token: string;
+  badgeId: number;
+  body: FormData;
+}
+
+export interface IDeleteBadgeRequest {
+  token: string;
+  badgeId: number;
+}
+
+export interface IDeleteBadgeResponse extends IBaseResponse {}
+
+export interface IUpdateBadgeResponse extends IBaseResponse {}
 
 export interface ICreateBadgeResponse extends IBaseResponse {}
 

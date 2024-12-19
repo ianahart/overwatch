@@ -1,24 +1,50 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MdTitle } from 'react-icons/md';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import { badgeFormState } from '../../../../../data';
 import Upload from '../../../../Shared/Upload';
 import FormTextareaField from '../../../../Form/FormTextareaField';
 import FormInputField from '../../../../Form/FormInputField';
 import { IBadgeForm, IError } from '../../../../../interfaces';
-import { TRootState, useCreateBadgeMutation } from '../../../../../state/store';
-import { useNavigate } from 'react-router-dom';
+import {
+  TRootState,
+  useCreateBadgeMutation,
+  useLazyFetchBadgeQuery,
+  useUpdateBadgeMutation,
+} from '../../../../../state/store';
 
 export interface IBadgeFormProps {
   formType: string;
+  handleCloseModal?: () => void;
+  badgeId?: number;
 }
 
-const BadgeForm = ({ formType }: IBadgeFormProps) => {
+const BadgeForm = ({ formType, badgeId = 0, handleCloseModal = () => {} }: IBadgeFormProps) => {
   const navigate = useNavigate();
   const { token, user } = useSelector((store: TRootState) => store.user);
+  const [fetchBadge] = useLazyFetchBadgeQuery();
   const [createBadge] = useCreateBadgeMutation();
+  const [updateBadge] = useUpdateBadgeMutation();
   const [form, setForm] = useState(badgeFormState);
+
+  useEffect(() => {
+    if (formType === 'edit' && badgeId !== 0) {
+      console.log('fetch data');
+      fetchBadge({ token, badgeId })
+        .unwrap()
+        .then((res) => {
+          const data = res.data;
+          for (let prop in data) {
+            handleUpdateField(prop, data[prop], 'value');
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [formType, badgeId]);
 
   const handleUpdateField = (name: string, value: string | File | null, attribute: string): void => {
     setForm((prevState) => ({
@@ -37,6 +63,7 @@ const BadgeForm = ({ formType }: IBadgeFormProps) => {
     let errors = false;
     for (const field of Object.values(form)) {
       if (field.value === null || field.value === '' || field.error.length > 0) {
+        console.log(field.name);
         handleUpdateField(field.name, `${field.name} cannot be empty`, 'error');
         errors = true;
       }
@@ -54,9 +81,7 @@ const BadgeForm = ({ formType }: IBadgeFormProps) => {
     }
   };
 
-  const handleCreateBadge = (): void => {
-    const body = new FormData();
-    Object.entries(form).forEach(([fieldName, field]) => body.append(fieldName, field.value ?? ''));
+  const handleCreateBadge = (body: FormData): void => {
     createBadge({ token, body })
       .unwrap()
       .then(() => {
@@ -67,8 +92,28 @@ const BadgeForm = ({ formType }: IBadgeFormProps) => {
       });
   };
 
-  const handleUpdateBadge = (): void => {
-    console.log('updating badge...');
+  const handleUpdateBadge = (body: FormData): void => {
+    updateBadge({ token, badgeId, body })
+      .unwrap()
+      .then((res) => {
+        console.log(res);
+        handleCloseModal();
+      })
+      .catch((err) => {
+        console.log(err);
+        applyErrors(err.data);
+      });
+  };
+
+  const appendToBody = (body: FormData): void => {
+    Object.entries(form).forEach(([fieldName, field]) => {
+      const value = (field as { value: string | File | null }).value;
+      if (fieldName === 'image' && value instanceof File) {
+        body.append(fieldName, value);
+      } else if (fieldName !== 'image') {
+        body.append(fieldName, value ?? '');
+      }
+    });
   };
 
   const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
@@ -77,14 +122,16 @@ const BadgeForm = ({ formType }: IBadgeFormProps) => {
     if (formHasErrors()) {
       return;
     }
+    const body = new FormData();
+    appendToBody(body);
 
     if (formType === 'create') {
-      handleCreateBadge();
+      handleCreateBadge(body);
       return;
     }
 
-    if (formType === 'update') {
-      handleUpdateBadge();
+    if (formType === 'edit') {
+      handleUpdateBadge(body);
     }
   };
 
@@ -133,7 +180,9 @@ const BadgeForm = ({ formType }: IBadgeFormProps) => {
           />
         </div>
         <div className="mt-12 mb-4">
-          <button className="btn w-full">{formType === 'create' ? 'Submit' : 'Update'}</button>
+          <button type="submit" className="btn w-full">
+            {formType === 'create' ? 'Submit' : 'Update'}
+          </button>
         </div>
       </form>
     </div>
