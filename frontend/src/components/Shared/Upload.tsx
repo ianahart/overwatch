@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
 import { FaCheck, FaPlus } from 'react-icons/fa';
 
@@ -10,7 +10,6 @@ export interface IUploadProps {
   value: File | string | null;
   handleUpdateAttachment: (name: string, value: string | File | null, attribute: string) => void;
   fieldName: string;
-  imageSrc?: string | null;
 }
 
 const Upload = ({
@@ -20,12 +19,17 @@ const Upload = ({
   error,
   value,
   handleUpdateAttachment,
-  imageSrc = null,
   title = 'Upload an attachment',
 }: IUploadProps) => {
-  const [imagePreview, setImagePreview] = useState<string | null>(() => {
-    return imageSrc !== null ? imageSrc : null;
-  });
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (value !== null && !(value instanceof File)) {
+      setImagePreview(value);
+    } else {
+      setImagePreview(null);
+    }
+  }, [value]);
   const filename = value === null ? null : (value as File).name;
 
   const handleOnDrop = (e: React.DragEvent<HTMLDivElement>): void => {
