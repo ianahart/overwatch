@@ -1,5 +1,7 @@
 package com.hart.overwatch.reviewfeedback;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -89,6 +91,17 @@ public class ReviewFeedbackService {
 
     public List<ReviewFeedbackRatingsDto> getReviewFeedbackRatings(Long reviewerId) {
         return reviewFeedbackRepository.getReviewFeedbackRatings(reviewerId);
+    }
+
+    public List<Long> getMentorEligibleReviewers() {
+        List<Object[]> results = reviewFeedbackRepository.findPotentialMentors();
+        List<Long> mentorIds = new ArrayList<>();
+
+        for (Object[] row : results) {
+            Long reviewerId = ((BigInteger) row[0]).longValue();
+            mentorIds.add(reviewerId);
+        }
+        return mentorIds;
     }
 
 }

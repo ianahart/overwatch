@@ -1,6 +1,7 @@
 package com.hart.overwatch.badge;
 
 import java.util.HashMap;
+import java.util.Optional;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,6 +131,10 @@ public class BadgeService {
         amazonService.deleteBucketObject(BUCKET_NAME, badge.getImageFileName());
 
         badgeRepository.delete(badge);
+    }
+
+    public Optional<Badge> findBadgeByTitle(String badgeTitle) {
+        return badgeRepository.findBadgeByTitle(badgeTitle.toLowerCase());
     }
 
 }

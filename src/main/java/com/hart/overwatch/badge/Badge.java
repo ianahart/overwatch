@@ -1,13 +1,18 @@
 package com.hart.overwatch.badge;
 
+import java.util.List;
 import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import com.hart.overwatch.reviewerbadge.ReviewerBadge;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
@@ -42,6 +47,11 @@ public class Badge {
     @Column(name = "description", length = 200)
     private String description;
 
+    @OneToMany(mappedBy = "badge", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<ReviewerBadge> reviewerBadges;
+
+
     public Badge() {
 
     }
@@ -66,6 +76,10 @@ public class Badge {
 
     public Long getId() {
         return id;
+    }
+
+    public List<ReviewerBadge> getReviewerBadges() {
+        return reviewerBadges;
     }
 
     public String getTitle() {
@@ -118,5 +132,9 @@ public class Badge {
 
     public void setImageFileName(String imageFileName) {
         this.imageFileName = imageFileName;
+    }
+
+    public void setReviewerBadges(List<ReviewerBadge> reviewerBadges) {
+        this.reviewerBadges = reviewerBadges;
     }
 }

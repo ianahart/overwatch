@@ -34,6 +34,7 @@ import com.hart.overwatch.replycomment.ReplyComment;
 import com.hart.overwatch.reportcomment.ReportComment;
 import com.hart.overwatch.repository.Repository;
 import com.hart.overwatch.review.Review;
+import com.hart.overwatch.reviewerbadge.ReviewerBadge;
 import com.hart.overwatch.reviewfeedback.ReviewFeedback;
 import com.hart.overwatch.savecomment.SaveComment;
 import com.hart.overwatch.setting.Setting;
@@ -319,6 +320,11 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<Suggestion> suggestions;
 
+    @OneToMany(mappedBy = "reviewer", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<ReviewerBadge> reviewerBadges;
+
+
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "setting_id", referencedColumnName = "id")
@@ -388,6 +394,10 @@ public class User implements UserDetails {
 
     public List<TeamComment> getTeamComments() {
         return teamComments;
+    }
+
+    public List<ReviewerBadge> getReviewerBadges() {
+        return reviewerBadges;
     }
 
     public Ban getBan() {
@@ -898,6 +908,10 @@ public class User implements UserDetails {
 
     public void setSuggestions(List<Suggestion> suggestions) {
         this.suggestions = suggestions;
+    }
+
+    public void setReviewerBadges(List<ReviewerBadge> reviewerBadges) {
+        this.reviewerBadges = reviewerBadges;
     }
 
     @Override
