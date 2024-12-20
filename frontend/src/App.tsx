@@ -73,6 +73,7 @@ import SuggestionRoute from './routes/Dashboard/Shared/SuggestionRoute';
 import AdminSuggestionRoute from './routes/Dashboard/Admin/AdminSuggestionRoute';
 import AdminBadgeRoute from './routes/Dashboard/Admin/AdminBadgeRoute';
 import CreateBadgeRoute from './routes/Dashboard/Admin/CreateBadgeRoute';
+import BadgeRoute from './routes/Dashboard/Reviewer/BadgeRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -229,6 +230,15 @@ const router = createBrowserRouter(
             </RequireAuthReviewer>
           }
         />
+        <Route
+          path="reviewer/badges"
+          element={
+            <RequireAuthReviewer>
+              <BadgeRoute />
+            </RequireAuthReviewer>
+          }
+        />
+
         <Route
           path="reviewer/suggestions/create"
           element={

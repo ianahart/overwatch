@@ -179,6 +179,7 @@ import { teamCommentsApi } from './apis/teamCommentsApi';
 import { bannedUsersApi } from './apis/bannedUsersApi';
 import { suggestionsApi } from './apis/suggestionsApi';
 import { badgesApi } from './apis/badgesApi';
+import { reviewerBadgesApi } from './apis/reviewerBadgesApi';
 
 export const store = configureStore({
   reducer: {
@@ -250,6 +251,7 @@ export const store = configureStore({
     [bannedUsersApi.reducerPath]: bannedUsersApi.reducer,
     [suggestionsApi.reducerPath]: suggestionsApi.reducer,
     [badgesApi.reducerPath]: badgesApi.reducer,
+    [reviewerBadgesApi.reducerPath]: reviewerBadgesApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -313,7 +315,8 @@ export const store = configureStore({
       .concat(teamCommentsApi.middleware)
       .concat(bannedUsersApi.middleware)
       .concat(suggestionsApi.middleware)
-      .concat(badgesApi.middleware);
+      .concat(badgesApi.middleware)
+      .concat(reviewerBadgesApi.middleware);
   },
 });
 
@@ -742,6 +745,8 @@ export {
   useLazyFetchBadgeQuery,
 } from './apis/badgesApi';
 
+export { useLazyFetchReviewerBadgesQuery } from './apis/reviewerBadgesApi';
+
 export {
   testimonialsApi,
   authsApi,
@@ -787,4 +792,5 @@ export {
   bannedUsersApi,
   suggestionsApi,
   badgesApi,
+  reviewerBadgesApi,
 };

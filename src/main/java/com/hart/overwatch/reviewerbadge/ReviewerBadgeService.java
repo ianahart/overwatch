@@ -2,19 +2,20 @@ package com.hart.overwatch.reviewerbadge;
 
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.badge.Badge;
 import com.hart.overwatch.badge.BadgeService;
 import com.hart.overwatch.pagination.PaginationService;
+import com.hart.overwatch.pagination.dto.PaginationDto;
+import com.hart.overwatch.reviewerbadge.dto.ReviewerBadgeDto;
 import com.hart.overwatch.user.User;
-import com.hart.overwatch.user.UserService;
 
 @Service
 public class ReviewerBadgeService {
 
     private final ReviewerBadgeRepository reviewerBadgeRepository;
-
-    private final UserService userService;
 
     private final BadgeService badgeService;
 
@@ -22,10 +23,8 @@ public class ReviewerBadgeService {
 
     @Autowired
     public ReviewerBadgeService(ReviewerBadgeRepository reviewerBadgeRepository,
-            UserService userService, BadgeService badgeService,
-            PaginationService paginationService) {
+            BadgeService badgeService, PaginationService paginationService) {
         this.reviewerBadgeRepository = reviewerBadgeRepository;
-        this.userService = userService;
         this.badgeService = badgeService;
         this.paginationService = paginationService;
     }
@@ -43,4 +42,16 @@ public class ReviewerBadgeService {
             reviewerBadgeRepository.save(reviewerBadge);
         }
     }
+
+    public PaginationDto<ReviewerBadgeDto> getBadges(Long reviewerId, int page, int pageSize,
+            String direction) {
+
+        Pageable pageable = this.paginationService.getPageable(page, pageSize, direction);
+
+        Page<ReviewerBadgeDto> result =
+                this.reviewerBadgeRepository.getReviewerBadgesByReviewerId(pageable, reviewerId);
+        return new PaginationDto<ReviewerBadgeDto>(result.getContent(), result.getNumber(),
+                pageSize, result.getTotalPages(), direction, result.getTotalElements());
+    }
+
 }

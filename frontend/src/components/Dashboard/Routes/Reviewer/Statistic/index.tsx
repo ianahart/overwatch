@@ -13,7 +13,6 @@ const Statistic = () => {
   const { user, token } = useSelector((store: TRootState) => store.user);
   const { data, isLoading } = useFetchStatisticsQuery({ reviewerId: user.id, token });
 
-  console.log(data);
   return (
     <div>
       {isLoading && (

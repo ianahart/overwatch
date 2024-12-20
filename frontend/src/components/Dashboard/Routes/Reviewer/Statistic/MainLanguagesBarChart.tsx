@@ -7,7 +7,6 @@ export interface IMainLanguagesBarChartProps {
 }
 
 const MainLanguagesBarChart = ({ data }: IMainLanguagesBarChartProps) => {
-  console.log(data);
   return (
     <ChartContainer title="Most Reviewed Languages">
       <ResponsiveContainer width="100%" height="100%">
