@@ -1,6 +1,16 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface IBadge {
+  id: number;
+  badgeId: number;
+  reviewerId: number;
+  createdAt: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+}
+
 export interface IMinAdminBadge {
   [key: string]: string;
   title: string;
@@ -2888,6 +2898,26 @@ export interface IUpdateBadgeRequest {
 export interface IDeleteBadgeRequest {
   token: string;
   badgeId: number;
+}
+
+export interface IGetAllReviewerBadgesRequest {
+  reviewerId: number;
+  token: string;
+  page: number;
+  pageSize: number;
+  direction: string;
+}
+
+export interface IGetAllReviewerBadgesResponse {
+  message: string;
+  data: {
+    items: IBadge[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
 }
 
 export interface IDeleteBadgeResponse extends IBaseResponse {}

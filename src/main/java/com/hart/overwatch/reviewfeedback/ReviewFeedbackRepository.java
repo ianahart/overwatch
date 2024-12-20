@@ -47,4 +47,29 @@ public interface ReviewFeedbackRepository extends JpaRepository<ReviewFeedback, 
             """)
     boolean findByOwnerIdAndReviewerIdAndRepositoryId(@Param("ownerId") Long ownerId,
             @Param("reviewerId") Long reviewerId, @Param("repositoryId") Long repositoryId);
+
+
+    @Query(value = """
+                SELECT
+                    rf.reviewer_id,
+                    r.owner_id,
+                    COUNT(r.id) AS repositories_reviewed,
+                    AVG(rf.helpfulness) AS avg_helpfulness,
+                    AVG(rf.clarity) AS avg_clarity,
+                    AVG(rf.thoroughness) AS avg_thoroughness
+                FROM
+                    review_feedback rf
+                JOIN
+                    repository r ON rf.repository_id = r.id
+                WHERE
+                    r.status = 'COMPLETED'
+                    AND rf.helpfulness >= 4
+                    AND rf.clarity >= 4
+                    AND rf.thoroughness >= 4
+                GROUP BY
+                    rf.reviewer_id, r.owner_id
+                HAVING
+                    COUNT(r.id) >= 2
+            """, nativeQuery = true)
+    List<Object[]> findPotentialMentors();
 }

@@ -1,5 +1,6 @@
 package com.hart.overwatch.badge;
 
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,6 +11,13 @@ import com.hart.overwatch.badge.dto.BadgeDto;
 
 @Repository
 public interface BadgeRepository extends JpaRepository<Badge, Long> {
+
+    @Query(value = """
+              SELECT b FROM Badge b
+             WHERE LOWER(b.title) = :title
+            """)
+    Optional<Badge> findBadgeByTitle(@Param("title") String title);
+
 
     @Query(value = """
             SELECT EXISTS( SELECT 1 FROM Badge b

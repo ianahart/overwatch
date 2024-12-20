@@ -163,4 +163,29 @@ public interface RepositoryRepository extends JpaRepository<Repository, Long> {
     boolean repositoryAlreadyInReview(@Param("ownerId") Long ownerId,
             @Param("reviewerId") Long reviewerId, @Param("repoName") String repoName);
 
+
+    
+    @Query(value = """
+                WITH weekly_reviews AS (
+                    SELECT
+                        DATE_TRUNC('week', review_end_time) AS week_start,
+                        COUNT(*) AS reviews_per_week
+                    FROM
+                        repository
+                    WHERE
+                        reviewer_id = :reviewerId
+                        AND review_end_time >= NOW() - INTERVAL '1 month'
+                        AND status = 'completed'
+                    GROUP BY
+                        week_start
+                )
+                SELECT
+                    COUNT(*) AS consistent_weeks
+                FROM
+                    weekly_reviews
+                WHERE
+                    reviews_per_week > 0
+            """, nativeQuery = true)
+    int countConsistentWeeks(@Param("reviewerId") Long reviewerId);
+
 }

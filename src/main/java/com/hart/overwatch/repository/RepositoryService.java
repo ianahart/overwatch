@@ -5,10 +5,14 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -33,6 +37,8 @@ import com.hart.overwatch.repository.request.CreateRepositoryFileRequest;
 import com.hart.overwatch.repository.request.CreateUserRepositoryRequest;
 import com.hart.overwatch.repository.request.UpdateRepositoryReviewRequest;
 import com.hart.overwatch.repository.request.UpdateRepositoryReviewStartTimeRequest;
+import com.hart.overwatch.reviewerbadge.ReviewerBadgeService;
+import com.hart.overwatch.reviewfeedback.ReviewFeedbackService;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
@@ -48,13 +54,22 @@ public class RepositoryService {
 
     private final GitHubService gitHubService;
 
+    private final ReviewFeedbackService reviewFeedbackService;
+
+    private final ReviewerBadgeService reviewerBadgeService;
+
     @Autowired
     public RepositoryService(RepositoryRepository repositoryRepository, UserService userService,
-            PaginationService paginationService, GitHubService gitHubService) {
+            PaginationService paginationService, GitHubService gitHubService,
+            @Lazy ReviewFeedbackService reviewFeedbackService,
+
+            ReviewerBadgeService reviewerBadgeService) {
         this.repositoryRepository = repositoryRepository;
         this.userService = userService;
         this.paginationService = paginationService;
         this.gitHubService = gitHubService;
+        this.reviewFeedbackService = reviewFeedbackService;
+        this.reviewerBadgeService = reviewerBadgeService;
     }
 
     public Repository getRepositoryById(Long repositoryId) {
@@ -275,10 +290,12 @@ public class RepositoryService {
             if (request.getStatus() == RepositoryStatus.COMPLETED) {
                 LocalDateTime reviewEndTime = LocalDateTime.now();
                 repository.setReviewEndTime(reviewEndTime);
+                repositoryRepository.save(repository);
+                cycleThroughBadges(reviewer);
+            } else {
+                this.repositoryRepository.save(repository);
+
             }
-
-            this.repositoryRepository.save(repository);
-
             return new RepositoryReviewDto(repository.getStatus(), repository.getFeedback());
 
         } catch (DataAccessException ex) {
@@ -328,5 +345,125 @@ public class RepositoryService {
         repository.setStatus(status);
         repositoryRepository.save(repository);
     }
+
+    private List<Repository> getCompletedReviewerRepositories(User reviewer) {
+        if (reviewer.getReviewerRepositories().isEmpty()) {
+            List<Repository> emptyList = new ArrayList<>();
+            return emptyList;
+        }
+
+        return reviewer.getReviewerRepositories().stream()
+                .filter(repo -> repo.getStatus() == RepositoryStatus.COMPLETED
+                        || repo.getStatus() == RepositoryStatus.PAID)
+                .collect(Collectors.toList());
+    }
+
+    private boolean firstReviewBadge(List<Repository> repositories) {
+        return repositories.size() >= 1;
+    }
+
+    private boolean tenReviewsBadge(List<Repository> repositories) {
+        return repositories.size() >= 10;
+    }
+
+    private boolean fiftyReviewsBadge(List<Repository> repositories) {
+        return repositories.size() >= 50;
+    }
+
+    private boolean oneHundredReviewsBadge(List<Repository> repositories) {
+        return repositories.size() >= 100;
+    }
+
+    private boolean consistentReviewBadge(Long reviewerId) {
+        int consistentWeeks = repositoryRepository.countConsistentWeeks(reviewerId);
+        return consistentWeeks >= 4;
+    }
+
+    private boolean highQualityFeedbackBadge(User reviewer) {
+        return reviewer.getReviewerReviewFeedbacks().stream()
+                .anyMatch(review -> review.getThoroughness() >= 4);
+    }
+
+    private boolean mentorBadge(User reviewer) {
+        List<Long> mentorIds = reviewFeedbackService.getMentorEligibleReviewers();
+        return mentorIds.contains(reviewer.getId());
+    }
+
+    private boolean communityBuilderBadge(User reviewer) {
+        int developerCount = 0;
+        for (var feedback : reviewer.getReviewerReviewFeedbacks()) {
+            if (feedback.getClarity() > 2 && feedback.getHelpfulness() > 2
+                    && feedback.getThoroughness() > 2 && feedback.getResponseTime() > 2) {
+                developerCount++;
+            }
+        }
+        return developerCount >= 1;
+    }
+
+    private boolean speedyReviewerBadge(User reviewer) {
+        int count = 0;
+        for (Repository repository : getCompletedReviewerRepositories(reviewer)) {
+            LocalDateTime startTime = repository.getReviewStartTime();
+            LocalDateTime endTime = repository.getReviewEndTime();
+
+            boolean hasHourPassed = ChronoUnit.HOURS.between(startTime, endTime) >= 1;
+
+            if (hasHourPassed) {
+                count++;
+            }
+        }
+        return count >= 10;
+    }
+
+    private void cycleThroughBadges(User reviewer) {
+        List<Repository> repositories = getCompletedReviewerRepositories(reviewer);
+
+        if (firstReviewBadge(repositories)
+                && !reviewerBadgeService.hasBadge(reviewer.getId(), "First Review Badge")) {
+            reviewerBadgeService.createBadge(reviewer, "First Review Badge");
+
+        }
+
+        if (tenReviewsBadge(repositories)
+                && !reviewerBadgeService.hasBadge(reviewer.getId(), "Ten Reviews Badge")) {
+            reviewerBadgeService.createBadge(reviewer, "Ten Reviews Badge");
+        }
+
+        if (consistentReviewBadge(reviewer.getId())
+                && !reviewerBadgeService.hasBadge(reviewer.getId(), "Consistent Reviewer Badge")) {
+            reviewerBadgeService.createBadge(reviewer, "Consistent Reviewer Badge");
+        }
+
+        if (highQualityFeedbackBadge(reviewer) && !reviewerBadgeService.hasBadge(reviewer.getId(),
+                "High-Quality Feedback Badge")) {
+            reviewerBadgeService.createBadge(reviewer, "High-Quality Feedback Badge");
+        }
+
+        if (fiftyReviewsBadge(repositories)
+                && !reviewerBadgeService.hasBadge(reviewer.getId(), "Fifty Reviews Badge")) {
+            reviewerBadgeService.createBadge(reviewer, "Fifty Reviews Badge");
+        }
+
+        if (mentorBadge(reviewer)
+                && !reviewerBadgeService.hasBadge(reviewer.getId(), "Mentor Badge")) {
+            reviewerBadgeService.createBadge(reviewer, "Mentor Badge");
+        }
+
+        if (speedyReviewerBadge(reviewer)
+                && !reviewerBadgeService.hasBadge(reviewer.getId(), "Speedy Reviewer Badge")) {
+            reviewerBadgeService.createBadge(reviewer, "Speedy Reviewer Badge");
+        }
+
+        if (oneHundredReviewsBadge(repositories)
+                && !reviewerBadgeService.hasBadge(reviewer.getId(), "Hundred Reviews Badge")) {
+            reviewerBadgeService.createBadge(reviewer, "Hundred Reviews Badge");
+        }
+
+        if (communityBuilderBadge(reviewer)
+                && !reviewerBadgeService.hasBadge(reviewer.getId(), "Community Builder Badge")) {
+            reviewerBadgeService.createBadge(reviewer, "Community Builder Badge");
+        }
+    }
+
 }
 

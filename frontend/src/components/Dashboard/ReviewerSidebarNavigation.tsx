@@ -7,7 +7,7 @@ import DashboardTitle from './DashboardTitle';
 import { TRootState } from '../../state/store';
 import DashboardNavigationLink from './DashboardNavigationLink';
 import { BsKanban } from 'react-icons/bs';
-import { FaPlus } from 'react-icons/fa';
+import { FaPlus, FaRibbon } from 'react-icons/fa';
 
 const ReviewerSidebarNavigation = () => {
   const { user } = useSelector((store: TRootState) => store.user);
@@ -17,6 +17,7 @@ const ReviewerSidebarNavigation = () => {
     { path: 'reviewer/stats', label: 'Your Statistics', id: 4, icon: <VscGraphLine /> },
     { path: 'reviewer/workspaces', label: 'Your Workspaces', id: 5, icon: <BsKanban /> },
     { path: 'reviewer/suggestions/create', label: 'Add Suggestions', id: 6, icon: <FaPlus /> },
+    { path: 'reviewer/badges', label: 'Badges', id: 7, icon: <FaRibbon /> },
   ];
 
   return (
