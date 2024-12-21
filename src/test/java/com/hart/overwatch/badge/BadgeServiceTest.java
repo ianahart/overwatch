@@ -240,7 +240,8 @@ public class BadgeServiceTest {
         verify(badgeRepository, times(1)).save(any(Badge.class));
     }
 
-        @Test
+
+    @Test
     public void BadgeService_UpdateBadge_WithNoImage_ReturnNothing() {
         UpdateBadgeRequest request = new UpdateBadgeRequest();
         request.setTitle("Second Reviewer Badge");
@@ -256,6 +257,16 @@ public class BadgeServiceTest {
         verify(badgeRepository, times(1)).save(any(Badge.class));
     }
 
+    @Test
+    public void BadgeService_DeleteBadge_ReturnNothing() {
+        when(badgeRepository.findById(badge.getId())).thenReturn(Optional.of(badge));
+        doNothing().when(amazonService).deleteBucketObject(BUCKET_NAME, badge.getImageFileName());
+        doNothing().when(badgeRepository).delete(badge);
+
+        badgeService.deleteBadge(badge.getId());
+        verify(amazonService, times(1)).deleteBucketObject(BUCKET_NAME, badge.getImageFileName());
+        verify(badgeRepository, times(1)).delete(badge);
+    }
 
 }
 
