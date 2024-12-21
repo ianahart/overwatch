@@ -162,10 +162,29 @@ public class BadgeControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.title",
                         CoreMatchers.is(badge.getTitle())))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.description", CoreMatchers.is(badge.getDescription())))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.data.image", CoreMatchers.is(badge.getImageUrl())));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.description",
+                        CoreMatchers.is(badge.getDescription())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.image",
+                        CoreMatchers.is(badge.getImageUrl())));
 
     }
+
+    @Test
+    public void BadgeController_UpdateBadge_ReturnUpdateBadgeResponse() throws Exception {
+        MockMultipartFile mockFile = new MockMultipartFile("attachment", "image.jpg",
+                MediaType.IMAGE_JPEG_VALUE, "test image content".getBytes());
+
+        ResultActions response = mockMvc.perform(multipart("/api/v1/admin/badges/1").file(mockFile)
+                .param("title", "title").param("description", "description")
+                .contentType(MediaType.MULTIPART_FORM_DATA).with(request -> {
+                    request.setMethod("PATCH");
+                    return request;
+                }));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
 }
 
 
