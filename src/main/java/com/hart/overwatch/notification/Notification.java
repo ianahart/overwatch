@@ -165,5 +165,74 @@ public class Notification {
     public void setLink(String link) {
         this.link = link;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
+        result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
+        result = prime * result + ((text == null) ? 0 : text.hashCode());
+        result = prime * result + ((link == null) ? 0 : link.hashCode());
+        result = prime * result + ((notificationType == null) ? 0 : notificationType.hashCode());
+        result = prime * result + ((notificationRole == null) ? 0 : notificationRole.hashCode());
+        result = prime * result + ((receiver == null) ? 0 : receiver.hashCode());
+        result = prime * result + ((sender == null) ? 0 : sender.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Notification other = (Notification) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (createdAt == null) {
+            if (other.createdAt != null)
+                return false;
+        } else if (!createdAt.equals(other.createdAt))
+            return false;
+        if (updatedAt == null) {
+            if (other.updatedAt != null)
+                return false;
+        } else if (!updatedAt.equals(other.updatedAt))
+            return false;
+        if (text == null) {
+            if (other.text != null)
+                return false;
+        } else if (!text.equals(other.text))
+            return false;
+        if (link == null) {
+            if (other.link != null)
+                return false;
+        } else if (!link.equals(other.link))
+            return false;
+        if (notificationType != other.notificationType)
+            return false;
+        if (notificationRole != other.notificationRole)
+            return false;
+        if (receiver == null) {
+            if (other.receiver != null)
+                return false;
+        } else if (!receiver.equals(other.receiver))
+            return false;
+        if (sender == null) {
+            if (other.sender != null)
+                return false;
+        } else if (!sender.equals(other.sender))
+            return false;
+        return true;
+    }
+
+
 }
 

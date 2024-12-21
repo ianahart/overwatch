@@ -204,4 +204,87 @@ public class Suggestion {
         this.feedbackStatus = feedbackStatus;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
+        result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
+        result = prime * result + ((title == null) ? 0 : title.hashCode());
+        result = prime * result + ((description == null) ? 0 : description.hashCode());
+        result = prime * result + ((contact == null) ? 0 : contact.hashCode());
+        result = prime * result + ((fileName == null) ? 0 : fileName.hashCode());
+        result = prime * result + ((fileUrl == null) ? 0 : fileUrl.hashCode());
+        result = prime * result + ((feedbackType == null) ? 0 : feedbackType.hashCode());
+        result = prime * result + ((priorityLevel == null) ? 0 : priorityLevel.hashCode());
+        result = prime * result + ((feedbackStatus == null) ? 0 : feedbackStatus.hashCode());
+        result = prime * result + ((user == null) ? 0 : user.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Suggestion other = (Suggestion) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (createdAt == null) {
+            if (other.createdAt != null)
+                return false;
+        } else if (!createdAt.equals(other.createdAt))
+            return false;
+        if (updatedAt == null) {
+            if (other.updatedAt != null)
+                return false;
+        } else if (!updatedAt.equals(other.updatedAt))
+            return false;
+        if (title == null) {
+            if (other.title != null)
+                return false;
+        } else if (!title.equals(other.title))
+            return false;
+        if (description == null) {
+            if (other.description != null)
+                return false;
+        } else if (!description.equals(other.description))
+            return false;
+        if (contact == null) {
+            if (other.contact != null)
+                return false;
+        } else if (!contact.equals(other.contact))
+            return false;
+        if (fileName == null) {
+            if (other.fileName != null)
+                return false;
+        } else if (!fileName.equals(other.fileName))
+            return false;
+        if (fileUrl == null) {
+            if (other.fileUrl != null)
+                return false;
+        } else if (!fileUrl.equals(other.fileUrl))
+            return false;
+        if (feedbackType != other.feedbackType)
+            return false;
+        if (priorityLevel != other.priorityLevel)
+            return false;
+        if (feedbackStatus != other.feedbackStatus)
+            return false;
+        if (user == null) {
+            if (other.user != null)
+                return false;
+        } else if (!user.equals(other.user))
+            return false;
+        return true;
+    }
+
+
 }

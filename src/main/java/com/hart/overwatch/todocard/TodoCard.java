@@ -280,4 +280,139 @@ public class TodoCard {
     public void setCustomFields(List<CustomField> customFields) {
         this.customFields = customFields;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
+        result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
+        result = prime * result + ((label == null) ? 0 : label.hashCode());
+        result = prime * result + ((title == null) ? 0 : title.hashCode());
+        result = prime * result + ((color == null) ? 0 : color.hashCode());
+        result = prime * result + ((index == null) ? 0 : index.hashCode());
+        result = prime * result + ((details == null) ? 0 : details.hashCode());
+        result = prime * result + ((startDate == null) ? 0 : startDate.hashCode());
+        result = prime * result + ((endDate == null) ? 0 : endDate.hashCode());
+        result = prime * result + ((photo == null) ? 0 : photo.hashCode());
+        result = prime * result + ((uploadPhotoUrl == null) ? 0 : uploadPhotoUrl.hashCode());
+        result = prime * result + ((uploadPhotoFileName == null) ? 0 : uploadPhotoFileName.hashCode());
+        result = prime * result + ((activeLabels == null) ? 0 : activeLabels.hashCode());
+        result = prime * result + ((checkLists == null) ? 0 : checkLists.hashCode());
+        result = prime * result + ((activities == null) ? 0 : activities.hashCode());
+        result = prime * result + ((customFields == null) ? 0 : customFields.hashCode());
+        result = prime * result + ((user == null) ? 0 : user.hashCode());
+        result = prime * result + ((todoList == null) ? 0 : todoList.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        TodoCard other = (TodoCard) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (createdAt == null) {
+            if (other.createdAt != null)
+                return false;
+        } else if (!createdAt.equals(other.createdAt))
+            return false;
+        if (updatedAt == null) {
+            if (other.updatedAt != null)
+                return false;
+        } else if (!updatedAt.equals(other.updatedAt))
+            return false;
+        if (label == null) {
+            if (other.label != null)
+                return false;
+        } else if (!label.equals(other.label))
+            return false;
+        if (title == null) {
+            if (other.title != null)
+                return false;
+        } else if (!title.equals(other.title))
+            return false;
+        if (color == null) {
+            if (other.color != null)
+                return false;
+        } else if (!color.equals(other.color))
+            return false;
+        if (index == null) {
+            if (other.index != null)
+                return false;
+        } else if (!index.equals(other.index))
+            return false;
+        if (details == null) {
+            if (other.details != null)
+                return false;
+        } else if (!details.equals(other.details))
+            return false;
+        if (startDate == null) {
+            if (other.startDate != null)
+                return false;
+        } else if (!startDate.equals(other.startDate))
+            return false;
+        if (endDate == null) {
+            if (other.endDate != null)
+                return false;
+        } else if (!endDate.equals(other.endDate))
+            return false;
+        if (photo == null) {
+            if (other.photo != null)
+                return false;
+        } else if (!photo.equals(other.photo))
+            return false;
+        if (uploadPhotoUrl == null) {
+            if (other.uploadPhotoUrl != null)
+                return false;
+        } else if (!uploadPhotoUrl.equals(other.uploadPhotoUrl))
+            return false;
+        if (uploadPhotoFileName == null) {
+            if (other.uploadPhotoFileName != null)
+                return false;
+        } else if (!uploadPhotoFileName.equals(other.uploadPhotoFileName))
+            return false;
+        if (activeLabels == null) {
+            if (other.activeLabels != null)
+                return false;
+        } else if (!activeLabels.equals(other.activeLabels))
+            return false;
+        if (checkLists == null) {
+            if (other.checkLists != null)
+                return false;
+        } else if (!checkLists.equals(other.checkLists))
+            return false;
+        if (activities == null) {
+            if (other.activities != null)
+                return false;
+        } else if (!activities.equals(other.activities))
+            return false;
+        if (customFields == null) {
+            if (other.customFields != null)
+                return false;
+        } else if (!customFields.equals(other.customFields))
+            return false;
+        if (user == null) {
+            if (other.user != null)
+                return false;
+        } else if (!user.equals(other.user))
+            return false;
+        if (todoList == null) {
+            if (other.todoList != null)
+                return false;
+        } else if (!todoList.equals(other.todoList))
+            return false;
+        return true;
+    }
+
+
 }

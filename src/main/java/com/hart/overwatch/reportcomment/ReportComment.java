@@ -127,4 +127,61 @@ public class ReportComment {
     public void setStatus(ReportStatus status) {
         this.status = status;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
+        result = prime * result + ((details == null) ? 0 : details.hashCode());
+        result = prime * result + ((reason == null) ? 0 : reason.hashCode());
+        result = prime * result + ((status == null) ? 0 : status.hashCode());
+        result = prime * result + ((reportedBy == null) ? 0 : reportedBy.hashCode());
+        result = prime * result + ((comment == null) ? 0 : comment.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        ReportComment other = (ReportComment) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (createdAt == null) {
+            if (other.createdAt != null)
+                return false;
+        } else if (!createdAt.equals(other.createdAt))
+            return false;
+        if (details == null) {
+            if (other.details != null)
+                return false;
+        } else if (!details.equals(other.details))
+            return false;
+        if (reason != other.reason)
+            return false;
+        if (status != other.status)
+            return false;
+        if (reportedBy == null) {
+            if (other.reportedBy != null)
+                return false;
+        } else if (!reportedBy.equals(other.reportedBy))
+            return false;
+        if (comment == null) {
+            if (other.comment != null)
+                return false;
+        } else if (!comment.equals(other.comment))
+            return false;
+        return true;
+    }
+
+
 }

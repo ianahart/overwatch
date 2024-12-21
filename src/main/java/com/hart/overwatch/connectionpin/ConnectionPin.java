@@ -111,4 +111,61 @@ public class ConnectionPin {
     public void setConnection(Connection connection) {
         this.connection = connection;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
+        result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
+        result = prime * result + ((connection == null) ? 0 : connection.hashCode());
+        result = prime * result + ((owner == null) ? 0 : owner.hashCode());
+        result = prime * result + ((pinned == null) ? 0 : pinned.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        ConnectionPin other = (ConnectionPin) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (createdAt == null) {
+            if (other.createdAt != null)
+                return false;
+        } else if (!createdAt.equals(other.createdAt))
+            return false;
+        if (updatedAt == null) {
+            if (other.updatedAt != null)
+                return false;
+        } else if (!updatedAt.equals(other.updatedAt))
+            return false;
+        if (connection == null) {
+            if (other.connection != null)
+                return false;
+        } else if (!connection.equals(other.connection))
+            return false;
+        if (owner == null) {
+            if (other.owner != null)
+                return false;
+        } else if (!owner.equals(other.owner))
+            return false;
+        if (pinned == null) {
+            if (other.pinned != null)
+                return false;
+        } else if (!pinned.equals(other.pinned))
+            return false;
+        return true;
+    }
+
+
 }

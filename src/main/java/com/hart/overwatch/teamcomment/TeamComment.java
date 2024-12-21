@@ -137,5 +137,73 @@ public class TeamComment {
         this.tag = tag;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
+        result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
+        result = prime * result + ((content == null) ? 0 : content.hashCode());
+        result = prime * result + ((tag == null) ? 0 : tag.hashCode());
+        result = prime * result + ((isEdited == null) ? 0 : isEdited.hashCode());
+        result = prime * result + ((user == null) ? 0 : user.hashCode());
+        result = prime * result + ((teamPost == null) ? 0 : teamPost.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        TeamComment other = (TeamComment) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (createdAt == null) {
+            if (other.createdAt != null)
+                return false;
+        } else if (!createdAt.equals(other.createdAt))
+            return false;
+        if (updatedAt == null) {
+            if (other.updatedAt != null)
+                return false;
+        } else if (!updatedAt.equals(other.updatedAt))
+            return false;
+        if (content == null) {
+            if (other.content != null)
+                return false;
+        } else if (!content.equals(other.content))
+            return false;
+        if (tag == null) {
+            if (other.tag != null)
+                return false;
+        } else if (!tag.equals(other.tag))
+            return false;
+        if (isEdited == null) {
+            if (other.isEdited != null)
+                return false;
+        } else if (!isEdited.equals(other.isEdited))
+            return false;
+        if (user == null) {
+            if (other.user != null)
+                return false;
+        } else if (!user.equals(other.user))
+            return false;
+        if (teamPost == null) {
+            if (other.teamPost != null)
+                return false;
+        } else if (!teamPost.equals(other.teamPost))
+            return false;
+        return true;
+    }
+
+
 
 }

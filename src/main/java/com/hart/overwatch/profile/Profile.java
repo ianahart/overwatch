@@ -372,4 +372,162 @@ public class Profile {
         this.isVisible = isVisible;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
+        result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
+        result = prime * result + ((avatarFilename == null) ? 0 : avatarFilename.hashCode());
+        result = prime * result + ((avatarUrl == null) ? 0 : avatarUrl.hashCode());
+        result = prime * result + ((workExp == null) ? 0 : workExp.hashCode());
+        result = prime * result + ((contactNumber == null) ? 0 : contactNumber.hashCode());
+        result = prime * result + ((email == null) ? 0 : email.hashCode());
+        result = prime * result + ((fullName == null) ? 0 : fullName.hashCode());
+        result = prime * result + ((userName == null) ? 0 : userName.hashCode());
+        result = prime * result + ((bio == null) ? 0 : bio.hashCode());
+        result = prime * result + ((tagLine == null) ? 0 : tagLine.hashCode());
+        result = prime * result + ((languages == null) ? 0 : languages.hashCode());
+        result = prime * result + ((programmingLanguages == null) ? 0 : programmingLanguages.hashCode());
+        result = prime * result + ((qualifications == null) ? 0 : qualifications.hashCode());
+        result = prime * result + ((basic == null) ? 0 : basic.hashCode());
+        result = prime * result + ((standard == null) ? 0 : standard.hashCode());
+        result = prime * result + ((pro == null) ? 0 : pro.hashCode());
+        result = prime * result + ((availability == null) ? 0 : availability.hashCode());
+        result = prime * result + ((moreInfo == null) ? 0 : moreInfo.hashCode());
+        result = prime * result + ((isVisible == null) ? 0 : isVisible.hashCode());
+        result = prime * result + ((user == null) ? 0 : user.hashCode());
+        result = prime * result + ((favorites == null) ? 0 : favorites.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Profile other = (Profile) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (createdAt == null) {
+            if (other.createdAt != null)
+                return false;
+        } else if (!createdAt.equals(other.createdAt))
+            return false;
+        if (updatedAt == null) {
+            if (other.updatedAt != null)
+                return false;
+        } else if (!updatedAt.equals(other.updatedAt))
+            return false;
+        if (avatarFilename == null) {
+            if (other.avatarFilename != null)
+                return false;
+        } else if (!avatarFilename.equals(other.avatarFilename))
+            return false;
+        if (avatarUrl == null) {
+            if (other.avatarUrl != null)
+                return false;
+        } else if (!avatarUrl.equals(other.avatarUrl))
+            return false;
+        if (workExp == null) {
+            if (other.workExp != null)
+                return false;
+        } else if (!workExp.equals(other.workExp))
+            return false;
+        if (contactNumber == null) {
+            if (other.contactNumber != null)
+                return false;
+        } else if (!contactNumber.equals(other.contactNumber))
+            return false;
+        if (email == null) {
+            if (other.email != null)
+                return false;
+        } else if (!email.equals(other.email))
+            return false;
+        if (fullName == null) {
+            if (other.fullName != null)
+                return false;
+        } else if (!fullName.equals(other.fullName))
+            return false;
+        if (userName == null) {
+            if (other.userName != null)
+                return false;
+        } else if (!userName.equals(other.userName))
+            return false;
+        if (bio == null) {
+            if (other.bio != null)
+                return false;
+        } else if (!bio.equals(other.bio))
+            return false;
+        if (tagLine == null) {
+            if (other.tagLine != null)
+                return false;
+        } else if (!tagLine.equals(other.tagLine))
+            return false;
+        if (languages == null) {
+            if (other.languages != null)
+                return false;
+        } else if (!languages.equals(other.languages))
+            return false;
+        if (programmingLanguages == null) {
+            if (other.programmingLanguages != null)
+                return false;
+        } else if (!programmingLanguages.equals(other.programmingLanguages))
+            return false;
+        if (qualifications == null) {
+            if (other.qualifications != null)
+                return false;
+        } else if (!qualifications.equals(other.qualifications))
+            return false;
+        if (basic == null) {
+            if (other.basic != null)
+                return false;
+        } else if (!basic.equals(other.basic))
+            return false;
+        if (standard == null) {
+            if (other.standard != null)
+                return false;
+        } else if (!standard.equals(other.standard))
+            return false;
+        if (pro == null) {
+            if (other.pro != null)
+                return false;
+        } else if (!pro.equals(other.pro))
+            return false;
+        if (availability == null) {
+            if (other.availability != null)
+                return false;
+        } else if (!availability.equals(other.availability))
+            return false;
+        if (moreInfo == null) {
+            if (other.moreInfo != null)
+                return false;
+        } else if (!moreInfo.equals(other.moreInfo))
+            return false;
+        if (isVisible == null) {
+            if (other.isVisible != null)
+                return false;
+        } else if (!isVisible.equals(other.isVisible))
+            return false;
+        if (user == null) {
+            if (other.user != null)
+                return false;
+        } else if (!user.equals(other.user))
+            return false;
+        if (favorites == null) {
+            if (other.favorites != null)
+                return false;
+        } else if (!favorites.equals(other.favorites))
+            return false;
+        return true;
+    }
+
+
 }

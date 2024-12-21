@@ -147,4 +147,77 @@ public class TeamPost {
         this.teamComments = teamComments;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
+        result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
+        result = prime * result + ((code == null) ? 0 : code.hashCode());
+        result = prime * result + ((isEdited == null) ? 0 : isEdited.hashCode());
+        result = prime * result + ((language == null) ? 0 : language.hashCode());
+        result = prime * result + ((user == null) ? 0 : user.hashCode());
+        result = prime * result + ((team == null) ? 0 : team.hashCode());
+        result = prime * result + ((teamComments == null) ? 0 : teamComments.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        TeamPost other = (TeamPost) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (createdAt == null) {
+            if (other.createdAt != null)
+                return false;
+        } else if (!createdAt.equals(other.createdAt))
+            return false;
+        if (updatedAt == null) {
+            if (other.updatedAt != null)
+                return false;
+        } else if (!updatedAt.equals(other.updatedAt))
+            return false;
+        if (code == null) {
+            if (other.code != null)
+                return false;
+        } else if (!code.equals(other.code))
+            return false;
+        if (isEdited == null) {
+            if (other.isEdited != null)
+                return false;
+        } else if (!isEdited.equals(other.isEdited))
+            return false;
+        if (language == null) {
+            if (other.language != null)
+                return false;
+        } else if (!language.equals(other.language))
+            return false;
+        if (user == null) {
+            if (other.user != null)
+                return false;
+        } else if (!user.equals(other.user))
+            return false;
+        if (team == null) {
+            if (other.team != null)
+                return false;
+        } else if (!team.equals(other.team))
+            return false;
+        if (teamComments == null) {
+            if (other.teamComments != null)
+                return false;
+        } else if (!teamComments.equals(other.teamComments))
+            return false;
+        return true;
+    }
+
 }
