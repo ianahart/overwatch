@@ -237,6 +237,23 @@ public class BadgeServiceTest {
         verify(amazonService, times(1)).deleteBucketObject(BUCKET_NAME, "photo-1");
         verify(amazonService, times(1)).putS3Object(BUCKET_NAME,
                 request.getImage().getOriginalFilename(), request.getImage());
+        verify(badgeRepository, times(1)).save(any(Badge.class));
+    }
+
+        @Test
+    public void BadgeService_UpdateBadge_WithNoImage_ReturnNothing() {
+        UpdateBadgeRequest request = new UpdateBadgeRequest();
+        request.setTitle("Second Reviewer Badge");
+        request.setDescription("description");
+
+        when(badgeRepository.existsByTitle(request.getTitle().toLowerCase())).thenReturn(false);
+        when(badgeRepository.findById(badge.getId())).thenReturn(Optional.of(badge));
+
+
+        when(badgeRepository.save(any(Badge.class))).thenReturn(badge);
+
+        badgeService.updateBadge(request, badge.getId());
+        verify(badgeRepository, times(1)).save(any(Badge.class));
     }
 
 
