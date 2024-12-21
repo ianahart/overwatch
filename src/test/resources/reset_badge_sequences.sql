@@ -1,0 +1,2 @@
+ALTER SEQUENCE badge_sequence RESTART WITH 1;
+
