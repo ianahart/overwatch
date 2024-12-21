@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import com.hart.overwatch.badge.dto.BadgeDto;
 import com.hart.overwatch.config.DatabaseSetupService;
 
 @DataJpaTest
@@ -85,6 +86,22 @@ public class BadgeRepositoryTest {
         boolean exists = badgeRepository.existsByTitle(title);
 
         Assertions.assertThat(exists).isTrue();
+    }
+
+    @Test
+    public void BadgeRepository_GetBadges_ReturnPageOfBadgeDto() {
+        int page = 0, pageSize = 3;
+        Pageable pageable = PageRequest.of(page, pageSize);
+
+        Page<BadgeDto> result = badgeRepository.getBadges(pageable);
+
+        Assertions.assertThat(result).isNotEmpty();
+        Assertions.assertThat(result.getContent()).hasSize(1);
+        BadgeDto badgeDto = result.getContent().get(0);
+        Assertions.assertThat(badgeDto.getId()).isEqualTo(badge.getId());
+        Assertions.assertThat(badgeDto.getTitle()).isEqualTo(badge.getTitle());
+        Assertions.assertThat(badgeDto.getDescription()).isEqualTo(badge.getDescription());
+        Assertions.assertThat(badgeDto.getImageUrl()).isEqualTo(badge.getImageUrl());
     }
 }
 
