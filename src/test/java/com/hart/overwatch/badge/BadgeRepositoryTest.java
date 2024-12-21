@@ -21,13 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import com.hart.overwatch.ban.dto.BanDto;
 import com.hart.overwatch.config.DatabaseSetupService;
-import com.hart.overwatch.profile.Profile;
-import com.hart.overwatch.setting.Setting;
-import com.hart.overwatch.user.Role;
-import com.hart.overwatch.user.User;
-import com.hart.overwatch.user.UserRepository;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -82,6 +76,15 @@ public class BadgeRepositoryTest {
 
         Assertions.assertThat(returnedBadge).isPresent();
         Assertions.assertThat(returnedBadge.get().getTitle().toLowerCase()).isEqualTo(title);
+    }
+
+    @Test
+    public void BadgeRepository_ExistsByTitle_ReturnBooleanTrue() {
+        String title = badge.getTitle().toLowerCase();
+
+        boolean exists = badgeRepository.existsByTitle(title);
+
+        Assertions.assertThat(exists).isTrue();
     }
 }
 
