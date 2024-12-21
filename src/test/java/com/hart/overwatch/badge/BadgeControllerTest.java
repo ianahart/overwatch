@@ -1,7 +1,5 @@
 package com.hart.overwatch.badge;
 
-import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.badge.dto.BadgeDto;
@@ -35,8 +33,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 
 import org.hamcrest.CoreMatchers;
@@ -186,14 +182,14 @@ public class BadgeControllerTest {
     }
 
     @Test
-    public void BadgeController_DeleteBadge_ReturnDeleteBadgeResponse() throws Exception{
-         Long badgeId = badge.getId();
+    public void BadgeController_DeleteBadge_ReturnDeleteBadgeResponse() throws Exception {
+        Long badgeId = badge.getId();
 
         doNothing().when(badgeService).deleteBadge(badgeId);
 
         ResultActions response = mockMvc.perform(delete("/api/v1/admin/badges/1"));
         response.andExpect(MockMvcResultMatchers.status().isOk())
-        .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 
 }
