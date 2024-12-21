@@ -1,6 +1,7 @@
 import { ILanguageMap } from '../interfaces';
 
-export const baseURL = 'http://localhost:5173/api/v1';
+const baseUrlEnv = import.meta.env.VITE_CLIENT_URL;
+export const baseURL = `${baseUrlEnv}/api/v1`;
 
 export const languageMap: ILanguageMap = {
   js: 'javascript',
