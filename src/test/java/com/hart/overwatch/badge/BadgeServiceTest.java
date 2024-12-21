@@ -26,6 +26,7 @@ import com.hart.overwatch.amazon.AmazonService;
 import com.hart.overwatch.badge.dto.BadgeDto;
 import com.hart.overwatch.badge.dto.MinBadgeDto;
 import com.hart.overwatch.badge.request.CreateBadgeRequest;
+import com.hart.overwatch.badge.request.UpdateBadgeRequest;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.user.UserService;
@@ -191,6 +192,23 @@ public class BadgeServiceTest {
         Assertions.assertThat(minBadgeDto.getImage()).isEqualTo(badge.getImageUrl());
         Assertions.assertThat(minBadgeDto.getTitle()).isEqualTo(badge.getTitle());
         Assertions.assertThat(minBadgeDto.getDescription()).isEqualTo(badge.getDescription());
+    }
+
+    @Test
+    public void BadgeService_UpdateBadge_ThrowBadRequestException() {
+        UpdateBadgeRequest request = new UpdateBadgeRequest();
+        request.setTitle("Second Reviewer Badge");
+        request.setDescription("description");
+        request.setImage(new MockMultipartFile("file", "test-image.jpeg", "image/jpeg",
+                new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF, (byte) 0xE0, 0x00, 0x10, 0x4A,
+                        0x46, 0x49, 0x46, 0x00, 0x01}));
+
+        when(badgeRepository.existsByTitle(request.getTitle().toLowerCase())).thenReturn(true);
+
+        Assertions.assertThatThrownBy(() -> {
+            badgeService.updateBadge(request, badge.getId());
+        }).isInstanceOf(BadRequestException.class).hasMessage(String
+                .format("You have already created a badge with the title %s", request.getTitle()));
     }
 }
 
