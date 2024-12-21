@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
@@ -82,6 +83,36 @@ public class BadgeServiceTest {
             badgeService.createBadge(request);
         }).isInstanceOf(BadRequestException.class).hasMessage(String
                 .format("You have already created a badge with the title %s", request.getTitle()));
+    }
+
+    @Test
+    public void BadgeService_CreateBadge_ReturnNothing() {
+        CreateBadgeRequest request = new CreateBadgeRequest();
+        request.setTitle("Second Reviewer Badge");
+        request.setDescription("description");
+        request.setImage(new MockMultipartFile("file", "test-image.jpeg", "image/jpeg",
+                new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF, (byte) 0xE0, 0x00, 0x10, 0x4A,
+                        0x46, 0x49, 0x46, 0x00, 0x01}));
+
+        when(badgeRepository.existsByTitle(request.getTitle().toLowerCase())).thenReturn(false);
+        HashMap<String, String> result = new HashMap<>();
+        result.put("filename", "filename");
+        result.put("objectUrl", "https://www.s3.com/photo-1.jpeg");
+        when(amazonService.putS3Object(BUCKET_NAME, request.getImage().getOriginalFilename(),
+                request.getImage())).thenReturn(result);
+
+        Badge badge = new Badge();
+        badge.setTitle(request.getTitle());
+        badge.setDescription(request.getDescription());
+        badge.setImageFileName(result.get("filename"));
+        badge.setImageUrl(result.get("objectUrl"));
+
+        when(badgeRepository.save(any(Badge.class))).thenReturn(badge);
+
+        badgeService.createBadge(request);
+
+        verify(amazonService, times(1)).putS3Object(BUCKET_NAME, request.getImage().getOriginalFilename(), request.getImage());
+        verify(badgeRepository, times(1)).save(any(Badge.class));
     }
 
 }
