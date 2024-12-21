@@ -33,9 +33,16 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import com.sendgrid.*;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
+
 
 @Service
 public class PasswordResetService {
+    @Value("${sendgrid.api.key}")
+    private String sendGridApiKey;
 
     @Value("${secretkey}")
     private String secretKey;
@@ -45,7 +52,6 @@ public class PasswordResetService {
 
     private final JwtService jwtService;
     private final Configuration configuration;
-    private final JavaMailSender javaMailSender;
     private final UserRepository userRepository;
     private final PasswordResetRepository passwordResetRepository;
     private final UserService userService;
@@ -53,13 +59,11 @@ public class PasswordResetService {
 
     @Autowired
     public PasswordResetService(JwtService jwtService, Configuration configuration,
-            JavaMailSender javaMailSender, UserRepository userRepository,
-            PasswordResetRepository passwordResetRepository, UserService userService,
-            PasswordEncoder passwordEncoder) {
+            UserRepository userRepository, PasswordResetRepository passwordResetRepository,
+            UserService userService, PasswordEncoder passwordEncoder) {
 
         this.jwtService = jwtService;
         this.configuration = configuration;
-        this.javaMailSender = javaMailSender;
         this.userRepository = userRepository;
         this.passwordResetRepository = passwordResetRepository;
         this.userService = userService;
@@ -78,22 +82,38 @@ public class PasswordResetService {
     }
 
     public ForgotPasswordResponse sendForgotPasswordEmail(ForgotPasswordRequest request)
-            throws MessagingException, IOException, TemplateException {
-
-        MimeMessage mimeMessage = this.javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
-        helper.setFrom(sender);
-        helper.setSubject("Reset Your Password");
-
+            throws IOException, TemplateException {
         User user = this.userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException("A user with this email does not exist."));
 
-        helper.setTo(request.getEmail());
         String emailContent = getEmailContent(user);
-        helper.setText(emailContent, true);
-        javaMailSender.send(mimeMessage);
+
+        sendEmailWithSendGrid(request.getEmail(), "Reset Your Password", emailContent);
 
         return new ForgotPasswordResponse("Email sent successfully...");
+    }
+
+    private void sendEmailWithSendGrid(String recipientEmail, String subject, String emailContent)
+            throws IOException {
+        Email from = new Email(sender);
+        Email to = new Email(recipientEmail);
+        Content content = new Content("text/html", emailContent);
+        Mail mail = new Mail(from, subject, to, content);
+
+        SendGrid sg = new SendGrid(sendGridApiKey);
+        Request request = new Request();
+        try {
+            request.setMethod(Method.POST);
+            request.setEndpoint("mail/send");
+            request.setBody(mail.build());
+            Response response = sg.api(request);
+
+            if (response.getStatusCode() != 202) {
+                throw new IOException("Failed to send email. Response: " + response.getBody());
+            }
+        } catch (IOException ex) {
+            throw new IOException("Error while sending email", ex);
+        }
     }
 
     String getEmailContent(User user) throws IOException, TemplateException {
