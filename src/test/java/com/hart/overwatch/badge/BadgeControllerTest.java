@@ -19,7 +19,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.annotation.DirtiesContext;
@@ -107,6 +109,41 @@ public class BadgeControllerTest {
 
         response.andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+
+    }
+
+    @Test
+    public void BadgeController_GetBadges_ReturnGetAllBadgesResponse() throws Exception {
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.unsorted());
+        BadgeDto badgeDto = convertToDto(badge);
+        Page<BadgeDto> pageResult = new PageImpl<>(List.of(badgeDto), pageable, 1);
+        PaginationDto<BadgeDto> expectedPaginationDto =
+                new PaginationDto<>(pageResult.getContent(), pageResult.getNumber(), pageSize,
+                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
+
+        when(badgeService.getBadges(page, pageSize, direction)).thenReturn(expectedPaginationDto);
+
+        ResultActions response = mockMvc.perform(get("/api/v1/admin/badges").param("page", "0")
+                .param("pageSize", "3").param("direction", "next"));
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.page",
+                        CoreMatchers.is(expectedPaginationDto.getPage())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.pageSize",
+                        CoreMatchers.is(expectedPaginationDto.getPageSize())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.totalPages",
+                        CoreMatchers.is(expectedPaginationDto.getTotalPages())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.page",
+                        CoreMatchers.is(expectedPaginationDto.getPage())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.totalElements",
+                        CoreMatchers.is(Math.toIntExact(expectedPaginationDto.getTotalElements()))))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.items",
+                        Matchers.hasSize(Math.toIntExact(1L))));
+
 
     }
 }
