@@ -268,6 +268,16 @@ public class BadgeServiceTest {
         verify(badgeRepository, times(1)).delete(badge);
     }
 
+    @Test
+    public void BadgeService_FindBadgeByTitle_ReturnOptionalBadge() {
+        String badgeTitle = badge.getTitle().toLowerCase();
+        when(badgeRepository.findBadgeByTitle(badgeTitle)).thenReturn(Optional.of(badge));
+
+        Optional<Badge> result = badgeService.findBadgeByTitle(badgeTitle);
+
+        Assertions.assertThat(result).isPresent();
+        Assertions.assertThat(result.get().getTitle()).isEqualTo(badge.getTitle());
+    }
 }
 
 
