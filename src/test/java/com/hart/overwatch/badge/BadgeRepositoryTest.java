@@ -1,6 +1,5 @@
 package com.hart.overwatch.badge;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
