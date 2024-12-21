@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.badge.dto.BadgeDto;
+import com.hart.overwatch.badge.dto.MinBadgeDto;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.token.TokenRepository;
@@ -143,7 +144,26 @@ public class BadgeControllerTest {
                         CoreMatchers.is(Math.toIntExact(expectedPaginationDto.getTotalElements()))))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.items",
                         Matchers.hasSize(Math.toIntExact(1L))));
+    }
 
+    @Test
+    public void BadgeController_GetBadge_ReturnGetBadgeResponse() throws Exception {
+        Long badgeId = badge.getId();
+        MinBadgeDto minBadgeDto = new MinBadgeDto();
+        minBadgeDto.setImage(badge.getImageUrl());
+        minBadgeDto.setTitle(badge.getTitle());
+        minBadgeDto.setDescription(badge.getDescription());
+        when(badgeService.getBadge(badgeId)).thenReturn(minBadgeDto);
+
+        ResultActions response =
+                mockMvc.perform(get(String.format("/api/v1/admin/badges/%d", badgeId)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.title",
+                        CoreMatchers.is(badge.getTitle())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.description", CoreMatchers.is(badge.getDescription())))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.data.image", CoreMatchers.is(badge.getImageUrl())));
 
     }
 }
