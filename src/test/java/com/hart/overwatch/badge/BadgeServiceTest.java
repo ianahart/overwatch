@@ -24,6 +24,7 @@ import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.amazon.AmazonService;
 import com.hart.overwatch.badge.dto.BadgeDto;
+import com.hart.overwatch.badge.dto.MinBadgeDto;
 import com.hart.overwatch.badge.request.CreateBadgeRequest;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
@@ -170,13 +171,26 @@ public class BadgeServiceTest {
     }
 
     @Test
-    public void BadgeService_GetBadge_ReturnMinBadgeDto() {
+    public void BadgeService_GetBadge_ThrowNotFoundException() {
         Long badgeId = null;
 
         Assertions.assertThatThrownBy(() -> {
             badgeService.getBadge(badgeId);
         }).isInstanceOf(NotFoundException.class).hasMessage("Could not find data for badge");
+    }
 
+    @Test
+    public void BadgeService_GetBadge_ReturnMinBadgeDto() {
+        Long badgeId = badge.getId();
+
+        when(badgeRepository.findById(badgeId)).thenReturn(Optional.of(badge));
+
+        MinBadgeDto minBadgeDto = badgeService.getBadge(badgeId);
+
+        Assertions.assertThat(minBadgeDto).isNotNull();
+        Assertions.assertThat(minBadgeDto.getImage()).isEqualTo(badge.getImageUrl());
+        Assertions.assertThat(minBadgeDto.getTitle()).isEqualTo(badge.getTitle());
+        Assertions.assertThat(minBadgeDto.getDescription()).isEqualTo(badge.getDescription());
     }
 }
 
