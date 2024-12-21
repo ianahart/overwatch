@@ -21,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import com.hart.overwatch.advice.BadRequestException;
+import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.amazon.AmazonService;
 import com.hart.overwatch.badge.dto.BadgeDto;
 import com.hart.overwatch.badge.request.CreateBadgeRequest;
@@ -166,6 +167,16 @@ public class BadgeServiceTest {
         Assertions.assertThat(actualBadgeDto.getTitle()).isEqualTo(badgeDto.getTitle());
         Assertions.assertThat(actualBadgeDto.getDescription()).isEqualTo(badgeDto.getDescription());
         Assertions.assertThat(actualBadgeDto.getImageUrl()).isEqualTo(badgeDto.getImageUrl());
+    }
+
+    @Test
+    public void BadgeService_GetBadge_ReturnMinBadgeDto() {
+        Long badgeId = null;
+
+        Assertions.assertThatThrownBy(() -> {
+            badgeService.getBadge(badgeId);
+        }).isInstanceOf(NotFoundException.class).hasMessage("Could not find data for badge");
+
     }
 }
 
