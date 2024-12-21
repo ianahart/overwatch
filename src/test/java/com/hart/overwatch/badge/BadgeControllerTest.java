@@ -185,6 +185,17 @@ public class BadgeControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
     }
 
+    @Test
+    public void BadgeController_DeleteBadge_ReturnDeleteBadgeResponse() throws Exception{
+         Long badgeId = badge.getId();
+
+        doNothing().when(badgeService).deleteBadge(badgeId);
+
+        ResultActions response = mockMvc.perform(delete("/api/v1/admin/badges/1"));
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
 }
 
 
