@@ -186,4 +186,100 @@ public class StripePaymentIntent {
     public void setPaymentIntentId(String paymentIntentId) {
         this.paymentIntentId = paymentIntentId;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
+        result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
+        result = prime * result + ((amount == null) ? 0 : amount.hashCode());
+        result = prime * result + ((currency == null) ? 0 : currency.hashCode());
+        result = prime * result + ((applicationFee == null) ? 0 : applicationFee.hashCode());
+        result = prime * result + ((status == null) ? 0 : status.hashCode());
+        result = prime * result + ((clientSecret == null) ? 0 : clientSecret.hashCode());
+        result = prime * result + ((description == null) ? 0 : description.hashCode());
+        result = prime * result + ((paymentIntentId == null) ? 0 : paymentIntentId.hashCode());
+        result = prime * result + ((user == null) ? 0 : user.hashCode());
+        result = prime * result + ((reviewer == null) ? 0 : reviewer.hashCode());
+        result = prime * result + ((stripePaymentRefund == null) ? 0 : stripePaymentRefund.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        StripePaymentIntent other = (StripePaymentIntent) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (createdAt == null) {
+            if (other.createdAt != null)
+                return false;
+        } else if (!createdAt.equals(other.createdAt))
+            return false;
+        if (updatedAt == null) {
+            if (other.updatedAt != null)
+                return false;
+        } else if (!updatedAt.equals(other.updatedAt))
+            return false;
+        if (amount == null) {
+            if (other.amount != null)
+                return false;
+        } else if (!amount.equals(other.amount))
+            return false;
+        if (currency == null) {
+            if (other.currency != null)
+                return false;
+        } else if (!currency.equals(other.currency))
+            return false;
+        if (applicationFee == null) {
+            if (other.applicationFee != null)
+                return false;
+        } else if (!applicationFee.equals(other.applicationFee))
+            return false;
+        if (status != other.status)
+            return false;
+        if (clientSecret == null) {
+            if (other.clientSecret != null)
+                return false;
+        } else if (!clientSecret.equals(other.clientSecret))
+            return false;
+        if (description == null) {
+            if (other.description != null)
+                return false;
+        } else if (!description.equals(other.description))
+            return false;
+        if (paymentIntentId == null) {
+            if (other.paymentIntentId != null)
+                return false;
+        } else if (!paymentIntentId.equals(other.paymentIntentId))
+            return false;
+        if (user == null) {
+            if (other.user != null)
+                return false;
+        } else if (!user.equals(other.user))
+            return false;
+        if (reviewer == null) {
+            if (other.reviewer != null)
+                return false;
+        } else if (!reviewer.equals(other.reviewer))
+            return false;
+        if (stripePaymentRefund == null) {
+            if (other.stripePaymentRefund != null)
+                return false;
+        } else if (!stripePaymentRefund.equals(other.stripePaymentRefund))
+            return false;
+        return true;
+    }
+
+
 }

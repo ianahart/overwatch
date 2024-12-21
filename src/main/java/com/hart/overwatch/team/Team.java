@@ -165,5 +165,86 @@ public class Team {
     public void setTeamPosts(List<TeamPost> teamPosts) {
         this.teamPosts = teamPosts;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
+        result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
+        result = prime * result + ((teamName == null) ? 0 : teamName.hashCode());
+        result = prime * result + ((teamDescription == null) ? 0 : teamDescription.hashCode());
+        result = prime * result + ((user == null) ? 0 : user.hashCode());
+        result = prime * result + ((teamInvitations == null) ? 0 : teamInvitations.hashCode());
+        result = prime * result + ((teamMembers == null) ? 0 : teamMembers.hashCode());
+        result = prime * result + ((teamMessages == null) ? 0 : teamMessages.hashCode());
+        result = prime * result + ((teamPosts == null) ? 0 : teamPosts.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Team other = (Team) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (createdAt == null) {
+            if (other.createdAt != null)
+                return false;
+        } else if (!createdAt.equals(other.createdAt))
+            return false;
+        if (updatedAt == null) {
+            if (other.updatedAt != null)
+                return false;
+        } else if (!updatedAt.equals(other.updatedAt))
+            return false;
+        if (teamName == null) {
+            if (other.teamName != null)
+                return false;
+        } else if (!teamName.equals(other.teamName))
+            return false;
+        if (teamDescription == null) {
+            if (other.teamDescription != null)
+                return false;
+        } else if (!teamDescription.equals(other.teamDescription))
+            return false;
+        if (user == null) {
+            if (other.user != null)
+                return false;
+        } else if (!user.equals(other.user))
+            return false;
+        if (teamInvitations == null) {
+            if (other.teamInvitations != null)
+                return false;
+        } else if (!teamInvitations.equals(other.teamInvitations))
+            return false;
+        if (teamMembers == null) {
+            if (other.teamMembers != null)
+                return false;
+        } else if (!teamMembers.equals(other.teamMembers))
+            return false;
+        if (teamMessages == null) {
+            if (other.teamMessages != null)
+                return false;
+        } else if (!teamMessages.equals(other.teamMessages))
+            return false;
+        if (teamPosts == null) {
+            if (other.teamPosts != null)
+                return false;
+        } else if (!teamPosts.equals(other.teamPosts))
+            return false;
+        return true;
+    }
+
+
 }
 

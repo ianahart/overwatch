@@ -271,4 +271,119 @@ public class Repository {
         this.paymentPrice = paymentPrice;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
+        result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
+        result = prime * result + ((feedback == null) ? 0 : feedback.hashCode());
+        result = prime * result + ((comment == null) ? 0 : comment.hashCode());
+        result = prime * result + ((avatarUrl == null) ? 0 : avatarUrl.hashCode());
+        result = prime * result + ((repoUrl == null) ? 0 : repoUrl.hashCode());
+        result = prime * result + ((repoName == null) ? 0 : repoName.hashCode());
+        result = prime * result + ((language == null) ? 0 : language.hashCode());
+        result = prime * result + ((reviewStartTime == null) ? 0 : reviewStartTime.hashCode());
+        result = prime * result + ((reviewEndTime == null) ? 0 : reviewEndTime.hashCode());
+        result = prime * result + ((paymentPrice == null) ? 0 : paymentPrice.hashCode());
+        result = prime * result + ((reviewType == null) ? 0 : reviewType.hashCode());
+        result = prime * result + ((status == null) ? 0 : status.hashCode());
+        result = prime * result + ((reviewer == null) ? 0 : reviewer.hashCode());
+        result = prime * result + ((owner == null) ? 0 : owner.hashCode());
+        result = prime * result + ((reviewFeedbacks == null) ? 0 : reviewFeedbacks.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Repository other = (Repository) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (createdAt == null) {
+            if (other.createdAt != null)
+                return false;
+        } else if (!createdAt.equals(other.createdAt))
+            return false;
+        if (updatedAt == null) {
+            if (other.updatedAt != null)
+                return false;
+        } else if (!updatedAt.equals(other.updatedAt))
+            return false;
+        if (feedback == null) {
+            if (other.feedback != null)
+                return false;
+        } else if (!feedback.equals(other.feedback))
+            return false;
+        if (comment == null) {
+            if (other.comment != null)
+                return false;
+        } else if (!comment.equals(other.comment))
+            return false;
+        if (avatarUrl == null) {
+            if (other.avatarUrl != null)
+                return false;
+        } else if (!avatarUrl.equals(other.avatarUrl))
+            return false;
+        if (repoUrl == null) {
+            if (other.repoUrl != null)
+                return false;
+        } else if (!repoUrl.equals(other.repoUrl))
+            return false;
+        if (repoName == null) {
+            if (other.repoName != null)
+                return false;
+        } else if (!repoName.equals(other.repoName))
+            return false;
+        if (language == null) {
+            if (other.language != null)
+                return false;
+        } else if (!language.equals(other.language))
+            return false;
+        if (reviewStartTime == null) {
+            if (other.reviewStartTime != null)
+                return false;
+        } else if (!reviewStartTime.equals(other.reviewStartTime))
+            return false;
+        if (reviewEndTime == null) {
+            if (other.reviewEndTime != null)
+                return false;
+        } else if (!reviewEndTime.equals(other.reviewEndTime))
+            return false;
+        if (paymentPrice == null) {
+            if (other.paymentPrice != null)
+                return false;
+        } else if (!paymentPrice.equals(other.paymentPrice))
+            return false;
+        if (reviewType != other.reviewType)
+            return false;
+        if (status != other.status)
+            return false;
+        if (reviewer == null) {
+            if (other.reviewer != null)
+                return false;
+        } else if (!reviewer.equals(other.reviewer))
+            return false;
+        if (owner == null) {
+            if (other.owner != null)
+                return false;
+        } else if (!owner.equals(other.owner))
+            return false;
+        if (reviewFeedbacks == null) {
+            if (other.reviewFeedbacks != null)
+                return false;
+        } else if (!reviewFeedbacks.equals(other.reviewFeedbacks))
+            return false;
+        return true;
+    }
+
 }

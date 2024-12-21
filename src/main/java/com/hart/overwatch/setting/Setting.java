@@ -197,5 +197,98 @@ public class Setting {
         this.commentReplyOn = commentReplyOn;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
+        result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
+        result = prime * result + ((mfaEnabled == null) ? 0 : mfaEnabled.hashCode());
+        result = prime * result + ((reviewInProgressNotifOn == null) ? 0 : reviewInProgressNotifOn.hashCode());
+        result = prime * result + ((reviewInCompleteNotifOn == null) ? 0 : reviewInCompleteNotifOn.hashCode());
+        result = prime * result + ((reviewCompletedNotifOn == null) ? 0 : reviewCompletedNotifOn.hashCode());
+        result = prime * result
+                + ((paymentAcknowledgementNotifOn == null) ? 0 : paymentAcknowledgementNotifOn.hashCode());
+        result = prime * result + ((requestPendingNotifOn == null) ? 0 : requestPendingNotifOn.hashCode());
+        result = prime * result + ((requestAcceptedNotifOn == null) ? 0 : requestAcceptedNotifOn.hashCode());
+        result = prime * result + ((commentReplyOn == null) ? 0 : commentReplyOn.hashCode());
+        result = prime * result + ((user == null) ? 0 : user.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Setting other = (Setting) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (createdAt == null) {
+            if (other.createdAt != null)
+                return false;
+        } else if (!createdAt.equals(other.createdAt))
+            return false;
+        if (updatedAt == null) {
+            if (other.updatedAt != null)
+                return false;
+        } else if (!updatedAt.equals(other.updatedAt))
+            return false;
+        if (mfaEnabled == null) {
+            if (other.mfaEnabled != null)
+                return false;
+        } else if (!mfaEnabled.equals(other.mfaEnabled))
+            return false;
+        if (reviewInProgressNotifOn == null) {
+            if (other.reviewInProgressNotifOn != null)
+                return false;
+        } else if (!reviewInProgressNotifOn.equals(other.reviewInProgressNotifOn))
+            return false;
+        if (reviewInCompleteNotifOn == null) {
+            if (other.reviewInCompleteNotifOn != null)
+                return false;
+        } else if (!reviewInCompleteNotifOn.equals(other.reviewInCompleteNotifOn))
+            return false;
+        if (reviewCompletedNotifOn == null) {
+            if (other.reviewCompletedNotifOn != null)
+                return false;
+        } else if (!reviewCompletedNotifOn.equals(other.reviewCompletedNotifOn))
+            return false;
+        if (paymentAcknowledgementNotifOn == null) {
+            if (other.paymentAcknowledgementNotifOn != null)
+                return false;
+        } else if (!paymentAcknowledgementNotifOn.equals(other.paymentAcknowledgementNotifOn))
+            return false;
+        if (requestPendingNotifOn == null) {
+            if (other.requestPendingNotifOn != null)
+                return false;
+        } else if (!requestPendingNotifOn.equals(other.requestPendingNotifOn))
+            return false;
+        if (requestAcceptedNotifOn == null) {
+            if (other.requestAcceptedNotifOn != null)
+                return false;
+        } else if (!requestAcceptedNotifOn.equals(other.requestAcceptedNotifOn))
+            return false;
+        if (commentReplyOn == null) {
+            if (other.commentReplyOn != null)
+                return false;
+        } else if (!commentReplyOn.equals(other.commentReplyOn))
+            return false;
+        if (user == null) {
+            if (other.user != null)
+                return false;
+        } else if (!user.equals(other.user))
+            return false;
+        return true;
+    }
+
+
 }
 

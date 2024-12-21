@@ -164,4 +164,83 @@ public class ReviewFeedback {
         this.updatedAt = updatedAt;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
+        result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
+        result = prime * result + ((clarity == null) ? 0 : clarity.hashCode());
+        result = prime * result + ((helpfulness == null) ? 0 : helpfulness.hashCode());
+        result = prime * result + ((thoroughness == null) ? 0 : thoroughness.hashCode());
+        result = prime * result + ((responseTime == null) ? 0 : responseTime.hashCode());
+        result = prime * result + ((owner == null) ? 0 : owner.hashCode());
+        result = prime * result + ((reviewer == null) ? 0 : reviewer.hashCode());
+        result = prime * result + ((repository == null) ? 0 : repository.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        ReviewFeedback other = (ReviewFeedback) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (createdAt == null) {
+            if (other.createdAt != null)
+                return false;
+        } else if (!createdAt.equals(other.createdAt))
+            return false;
+        if (updatedAt == null) {
+            if (other.updatedAt != null)
+                return false;
+        } else if (!updatedAt.equals(other.updatedAt))
+            return false;
+        if (clarity == null) {
+            if (other.clarity != null)
+                return false;
+        } else if (!clarity.equals(other.clarity))
+            return false;
+        if (helpfulness == null) {
+            if (other.helpfulness != null)
+                return false;
+        } else if (!helpfulness.equals(other.helpfulness))
+            return false;
+        if (thoroughness == null) {
+            if (other.thoroughness != null)
+                return false;
+        } else if (!thoroughness.equals(other.thoroughness))
+            return false;
+        if (responseTime == null) {
+            if (other.responseTime != null)
+                return false;
+        } else if (!responseTime.equals(other.responseTime))
+            return false;
+        if (owner == null) {
+            if (other.owner != null)
+                return false;
+        } else if (!owner.equals(other.owner))
+            return false;
+        if (reviewer == null) {
+            if (other.reviewer != null)
+                return false;
+        } else if (!reviewer.equals(other.reviewer))
+            return false;
+        if (repository == null) {
+            if (other.repository != null)
+                return false;
+        } else if (!repository.equals(other.repository))
+            return false;
+        return true;
+    }
+
 }

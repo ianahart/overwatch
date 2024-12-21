@@ -169,4 +169,88 @@ public class StripePaymentRefund {
         this.stripePaymentIntent = stripePaymentIntent;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((refundId == null) ? 0 : refundId.hashCode());
+        result = prime * result + ((user == null) ? 0 : user.hashCode());
+        result = prime * result + ((stripePaymentIntent == null) ? 0 : stripePaymentIntent.hashCode());
+        result = prime * result + ((amount == null) ? 0 : amount.hashCode());
+        result = prime * result + ((currency == null) ? 0 : currency.hashCode());
+        result = prime * result + ((reason == null) ? 0 : reason.hashCode());
+        result = prime * result + ((adminNotes == null) ? 0 : adminNotes.hashCode());
+        result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
+        result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
+        result = prime * result + ((status == null) ? 0 : status.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        StripePaymentRefund other = (StripePaymentRefund) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (refundId == null) {
+            if (other.refundId != null)
+                return false;
+        } else if (!refundId.equals(other.refundId))
+            return false;
+        if (user == null) {
+            if (other.user != null)
+                return false;
+        } else if (!user.equals(other.user))
+            return false;
+        if (stripePaymentIntent == null) {
+            if (other.stripePaymentIntent != null)
+                return false;
+        } else if (!stripePaymentIntent.equals(other.stripePaymentIntent))
+            return false;
+        if (amount == null) {
+            if (other.amount != null)
+                return false;
+        } else if (!amount.equals(other.amount))
+            return false;
+        if (currency == null) {
+            if (other.currency != null)
+                return false;
+        } else if (!currency.equals(other.currency))
+            return false;
+        if (reason == null) {
+            if (other.reason != null)
+                return false;
+        } else if (!reason.equals(other.reason))
+            return false;
+        if (adminNotes == null) {
+            if (other.adminNotes != null)
+                return false;
+        } else if (!adminNotes.equals(other.adminNotes))
+            return false;
+        if (createdAt == null) {
+            if (other.createdAt != null)
+                return false;
+        } else if (!createdAt.equals(other.createdAt))
+            return false;
+        if (updatedAt == null) {
+            if (other.updatedAt != null)
+                return false;
+        } else if (!updatedAt.equals(other.updatedAt))
+            return false;
+        if (status != other.status)
+            return false;
+        return true;
+    }
+
+
+
 }

@@ -168,4 +168,85 @@ public class CustomField {
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
+        result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
+        result = prime * result + ((fieldName == null) ? 0 : fieldName.hashCode());
+        result = prime * result + ((selectedValue == null) ? 0 : selectedValue.hashCode());
+        result = prime * result + ((fieldType == null) ? 0 : fieldType.hashCode());
+        result = prime * result + ((isActive == null) ? 0 : isActive.hashCode());
+        result = prime * result + ((user == null) ? 0 : user.hashCode());
+        result = prime * result + ((todoCard == null) ? 0 : todoCard.hashCode());
+        result = prime * result + ((dropDownOptions == null) ? 0 : dropDownOptions.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        CustomField other = (CustomField) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (createdAt == null) {
+            if (other.createdAt != null)
+                return false;
+        } else if (!createdAt.equals(other.createdAt))
+            return false;
+        if (updatedAt == null) {
+            if (other.updatedAt != null)
+                return false;
+        } else if (!updatedAt.equals(other.updatedAt))
+            return false;
+        if (fieldName == null) {
+            if (other.fieldName != null)
+                return false;
+        } else if (!fieldName.equals(other.fieldName))
+            return false;
+        if (selectedValue == null) {
+            if (other.selectedValue != null)
+                return false;
+        } else if (!selectedValue.equals(other.selectedValue))
+            return false;
+        if (fieldType == null) {
+            if (other.fieldType != null)
+                return false;
+        } else if (!fieldType.equals(other.fieldType))
+            return false;
+        if (isActive == null) {
+            if (other.isActive != null)
+                return false;
+        } else if (!isActive.equals(other.isActive))
+            return false;
+        if (user == null) {
+            if (other.user != null)
+                return false;
+        } else if (!user.equals(other.user))
+            return false;
+        if (todoCard == null) {
+            if (other.todoCard != null)
+                return false;
+        } else if (!todoCard.equals(other.todoCard))
+            return false;
+        if (dropDownOptions == null) {
+            if (other.dropDownOptions != null)
+                return false;
+        } else if (!dropDownOptions.equals(other.dropDownOptions))
+            return false;
+        return true;
+    }
+
+
 }

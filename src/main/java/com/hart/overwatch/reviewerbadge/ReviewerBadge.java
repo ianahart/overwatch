@@ -98,4 +98,53 @@ public class ReviewerBadge {
         this.updatedAt = updatedAt;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
+        result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
+        result = prime * result + ((reviewer == null) ? 0 : reviewer.hashCode());
+        result = prime * result + ((badge == null) ? 0 : badge.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        ReviewerBadge other = (ReviewerBadge) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (createdAt == null) {
+            if (other.createdAt != null)
+                return false;
+        } else if (!createdAt.equals(other.createdAt))
+            return false;
+        if (updatedAt == null) {
+            if (other.updatedAt != null)
+                return false;
+        } else if (!updatedAt.equals(other.updatedAt))
+            return false;
+        if (reviewer == null) {
+            if (other.reviewer != null)
+                return false;
+        } else if (!reviewer.equals(other.reviewer))
+            return false;
+        if (badge == null) {
+            if (other.badge != null)
+                return false;
+        } else if (!badge.equals(other.badge))
+            return false;
+        return true;
+    }
+
 }

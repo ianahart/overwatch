@@ -216,4 +216,96 @@ public class Comment {
         this.replyComments = replyComments;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
+        result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
+        result = prime * result + ((content == null) ? 0 : content.hashCode());
+        result = prime * result + ((isEdited == null) ? 0 : isEdited.hashCode());
+        result = prime * result + ((user == null) ? 0 : user.hashCode());
+        result = prime * result + ((topic == null) ? 0 : topic.hashCode());
+        result = prime * result + ((commentVotes == null) ? 0 : commentVotes.hashCode());
+        result = prime * result + ((reportComments == null) ? 0 : reportComments.hashCode());
+        result = prime * result + ((savedComments == null) ? 0 : savedComments.hashCode());
+        result = prime * result + ((reactions == null) ? 0 : reactions.hashCode());
+        result = prime * result + ((replyComments == null) ? 0 : replyComments.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Comment other = (Comment) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (createdAt == null) {
+            if (other.createdAt != null)
+                return false;
+        } else if (!createdAt.equals(other.createdAt))
+            return false;
+        if (updatedAt == null) {
+            if (other.updatedAt != null)
+                return false;
+        } else if (!updatedAt.equals(other.updatedAt))
+            return false;
+        if (content == null) {
+            if (other.content != null)
+                return false;
+        } else if (!content.equals(other.content))
+            return false;
+        if (isEdited == null) {
+            if (other.isEdited != null)
+                return false;
+        } else if (!isEdited.equals(other.isEdited))
+            return false;
+        if (user == null) {
+            if (other.user != null)
+                return false;
+        } else if (!user.equals(other.user))
+            return false;
+        if (topic == null) {
+            if (other.topic != null)
+                return false;
+        } else if (!topic.equals(other.topic))
+            return false;
+        if (commentVotes == null) {
+            if (other.commentVotes != null)
+                return false;
+        } else if (!commentVotes.equals(other.commentVotes))
+            return false;
+        if (reportComments == null) {
+            if (other.reportComments != null)
+                return false;
+        } else if (!reportComments.equals(other.reportComments))
+            return false;
+        if (savedComments == null) {
+            if (other.savedComments != null)
+                return false;
+        } else if (!savedComments.equals(other.savedComments))
+            return false;
+        if (reactions == null) {
+            if (other.reactions != null)
+                return false;
+        } else if (!reactions.equals(other.reactions))
+            return false;
+        if (replyComments == null) {
+            if (other.replyComments != null)
+                return false;
+        } else if (!replyComments.equals(other.replyComments))
+            return false;
+        return true;
+    }
+
+
 };

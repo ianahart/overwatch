@@ -2,7 +2,6 @@ package com.hart.overwatch.tag;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Objects;
 import com.hart.overwatch.topic.Topic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -67,19 +66,42 @@ public class Tag {
         this.topics = topics;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        Tag tag = (Tag) o;
-        return Objects.equals(id, tag.id) && Objects.equals(name, tag.name);
-    }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((topics == null) ? 0 : topics.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Tag other = (Tag) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
+            return false;
+        if (topics == null) {
+            if (other.topics != null)
+                return false;
+        } else if (!topics.equals(other.topics))
+            return false;
+        return true;
     }
 
     @Override
