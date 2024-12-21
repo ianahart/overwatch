@@ -47,6 +47,7 @@ public class AmazonService {
                 .create(AwsBasicCredentials.create(accessKeyId, secretKey));
         this.s3Client = S3Client.builder().region(Region.US_EAST_1)
                 .credentialsProvider(credentialsProvider).build();
+        System.out.println("test");
     }
 
     private File convertMultipartFile(MultipartFile file) throws IOException {
