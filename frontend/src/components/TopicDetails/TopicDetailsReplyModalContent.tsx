@@ -62,11 +62,12 @@ const TopicDetailsReplyModalContent = ({
   };
 
   const emitNotification = (): void => {
+    const baseUrl = import.meta.env.VITE_CLIENT_URL;
     const payload = {
       receiverId: commentUserId,
       senderId: currentUserId,
       notificationType: NotificationType.COMMENT_REPLY,
-      link: `http://localhost:5173/comments/${commentId}/?sender=${currentUserId}&receiver=${commentUserId}`,
+      link: `http://${baseUrl}/comments/${commentId}/?sender=${currentUserId}&receiver=${commentUserId}`,
     };
     sendMessage('/api/v1/notify', JSON.stringify(payload));
   };

@@ -61,8 +61,9 @@ public class ApplicationConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration
-                .setAllowedOrigins(Arrays.asList("http://localhost:8080", "http://localhost:5173"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080",
+                "http://localhost:5173", "https://hart-codeoverwatch-ac78ceac3e31.herokuapp.com",
+                "https://codeoverwatch.com"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "UPDATE", "DELETE"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

@@ -1,6 +1,7 @@
 package com.hart.overwatch.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -22,6 +23,9 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Value("${app.production.url}")
+    private String productionUrl;
+
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final LogoutHandler logoutHandler;
@@ -41,7 +45,18 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors(cors -> cors.configurationSource(request -> {
             CorsConfiguration config = new CorsConfiguration();
-            config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:8080/ws"));
+            String localWebSocketUrl = "http://localhost:8080/ws";
+            String productionWebSocketUrl = "wss://codeoverwatch.com/ws";
+            String backendApiUrl = "https://hart-codeoverwatch-ac78ceac3e31.herokuapp.com";
+            String allowedOrigin =
+                    (productionUrl != null && productionUrl.equals("https://codeoverwatch.com"))
+                            ? "https://codeoverwatch.com"
+                            : "http://localhost:5173";
+
+            config.setAllowedOrigins(
+
+                    List.of(allowedOrigin, localWebSocketUrl, productionWebSocketUrl,
+                            backendApiUrl));
             config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
             config.setAllowedHeaders(
                     List.of("Authorization", "Cache-Control", "Content-Type", "GitHub-Token"));
