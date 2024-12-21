@@ -16,10 +16,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.amazon.AmazonService;
+import com.hart.overwatch.badge.dto.BadgeDto;
 import com.hart.overwatch.badge.request.CreateBadgeRequest;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
@@ -62,6 +65,16 @@ public class BadgeServiceTest {
         badgeEntity.setReviewerBadges(List.of());
 
         return badgeEntity;
+    }
+
+    private BadgeDto convertToDto(Badge badge) {
+        BadgeDto badgeDto = new BadgeDto();
+        badgeDto.setId(badge.getId());
+        badgeDto.setTitle(badge.getTitle());
+        badgeDto.setImageUrl(badge.getImageUrl());
+        badgeDto.setDescription(badge.getDescription());
+
+        return badgeDto;
     }
 
     @BeforeEach
@@ -111,10 +124,49 @@ public class BadgeServiceTest {
 
         badgeService.createBadge(request);
 
-        verify(amazonService, times(1)).putS3Object(BUCKET_NAME, request.getImage().getOriginalFilename(), request.getImage());
+        verify(amazonService, times(1)).putS3Object(BUCKET_NAME,
+
+                request.getImage().getOriginalFilename(), request.getImage());
         verify(badgeRepository, times(1)).save(any(Badge.class));
     }
 
+    @Test
+    public void BadgeService_GetBadges_ReturnPaginationDtoOfBadges() {
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.unsorted());
+        BadgeDto badgeDto = convertToDto(badge);
+        Page<BadgeDto> pageResult = new PageImpl<>(List.of(badgeDto), pageable, 1);
+        PaginationDto<BadgeDto> expectedPaginationDto =
+                new PaginationDto<>(pageResult.getContent(), pageResult.getNumber(), pageSize,
+                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
+
+        when(paginationService.getPageable(page, pageSize, direction)).thenReturn(pageable);
+        when(badgeRepository.getBadges(pageable)).thenReturn(pageResult);
+
+        PaginationDto<BadgeDto> actualPaginationDto =
+                badgeService.getBadges(page, pageSize, direction);
+
+        Assertions.assertThat(actualPaginationDto).isNotNull();
+        Assertions.assertThat(actualPaginationDto.getPage())
+                .isEqualTo(expectedPaginationDto.getPage());
+        Assertions.assertThat(actualPaginationDto.getPageSize())
+                .isEqualTo(expectedPaginationDto.getPageSize());
+        Assertions.assertThat(actualPaginationDto.getTotalPages())
+                .isEqualTo(expectedPaginationDto.getTotalPages());
+        Assertions.assertThat(actualPaginationDto.getTotalElements())
+                .isEqualTo(expectedPaginationDto.getTotalElements());
+        Assertions.assertThat(actualPaginationDto.getDirection())
+                .isEqualTo(expectedPaginationDto.getDirection());
+        Assertions.assertThat(actualPaginationDto.getItems()).hasSize(1);
+        BadgeDto actualBadgeDto = actualPaginationDto.getItems().get(0);
+        Assertions.assertThat(actualBadgeDto.getId()).isEqualTo(badgeDto.getId());
+        Assertions.assertThat(actualBadgeDto.getTitle()).isEqualTo(badgeDto.getTitle());
+        Assertions.assertThat(actualBadgeDto.getDescription()).isEqualTo(badgeDto.getDescription());
+        Assertions.assertThat(actualBadgeDto.getImageUrl()).isEqualTo(badgeDto.getImageUrl());
+    }
 }
 
 
