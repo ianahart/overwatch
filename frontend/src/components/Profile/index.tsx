@@ -18,18 +18,18 @@ const Profile = ({ profileId }: IProfileProps) => {
   console.log(profile);
 
   useEffect(() => {
-    if (data) {
+    if (data !== undefined) {
       setProfile(data.data);
     }
   }, [data]);
 
   return (
     <div>
-      {profile.userProfile.role === 'REVIEWER' ? (
+      {/* {profile.userProfile.role === 'REVIEWER' ? (
         <ReviewerProfile profile={profile} />
       ) : (
         <UserProfile profile={profile} />
-      )}
+      )}*/}
     </div>
   );
 };
