@@ -12,10 +12,10 @@ export interface IProfileProps {
 
 const Profile = ({ profileId }: IProfileProps) => {
   const tokens = retrieveTokens();
-    console.log(tokens, profileId)
-  const { data } = useFetchProfileQuery({ profileId, token: tokens.accessToken });
+  console.log(tokens, profileId);
+  const { data } = useFetchProfileQuery({ profileId, token: tokens.token });
   const [profile, setProfile] = useState<IFullProfile>(profileState);
-    console.log(profile)
+  console.log(profile);
 
   useEffect(() => {
     if (data) {
