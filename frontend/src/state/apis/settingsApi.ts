@@ -16,7 +16,7 @@ const settingsApi = createApi({
     return {
       fetchSettings: builder.query<IFetchSettingsResponse | undefined, IFetchSettingsRequest>({
         query: ({ settingId, token }) => {
-          if (settingId === 0) return '';
+          if (settingId === 0 || !token) return '';
           return {
             url: `/settings/${settingId}`,
             method: 'GET',
