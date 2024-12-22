@@ -16,10 +16,10 @@ const Profile = ({ profileId }: IProfileProps) => {
   const [profile, setProfile] = useState<IFullProfile>(profileState);
 
   useEffect(() => {
-    if (data) {
+    if (data && token) {
       setProfile(data.data);
     }
-  }, [data]);
+  }, [data,token]);
 
   return (
     <div>
