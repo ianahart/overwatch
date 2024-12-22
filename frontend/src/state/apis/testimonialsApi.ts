@@ -39,7 +39,7 @@ const testimonialsApi = createApi({
 
       fetchTestimonials: builder.query<IFetchTestimonialsResponse, IFetchTestimonialsRequest>({
         query: ({ userId, token, page, pageSize, direction }) => {
-          if (userId === 0 || userId === null) {
+          if (userId === 0 || userId === null || !token) {
             return '';
           }
           return {
