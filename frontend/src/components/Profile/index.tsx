@@ -25,6 +25,7 @@ const Profile = ({ profileId }: IProfileProps) => {
 
   return (
     <div>
+      <h1 className="text-xl">FOO BAR</h1>
       {/* {profile.userProfile.role === 'REVIEWER' ? (
         <ReviewerProfile profile={profile} />
       ) : (
