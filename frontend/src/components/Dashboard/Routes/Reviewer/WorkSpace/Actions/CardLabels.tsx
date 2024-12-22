@@ -15,7 +15,10 @@ const CardLabels = ({ card, handleOnOpenLabelForm }: ICardLabelsProps) => {
   const { labels } = useSelector((store: TRootState) => store.workSpace);
   const [deleteLabelMut] = useDeleteLabelMutation();
   const [activeLabelIds, setActiveLabelIds] = useState<number[]>([]);
-  const { data: activeLabelsData } = useFetchActiveLabelsQuery({ token, todoCardId: card.id });
+  const { data: activeLabelsData } = useFetchActiveLabelsQuery(
+    { token, todoCardId: card.id },
+    { skip: !token || !card.id }
+  );
 
   useEffect(() => {
     if (activeLabelsData !== undefined) {

@@ -20,7 +20,7 @@ const AppTestimonial = () => {
   const [createAppTestimonial] = useCreateAppTestimonialMutation();
   const [updateAppTestimonial] = useUpdateAppTestimonialMutation();
   const [deleteAppTestimonial] = useDeleteAppTestimonialMutation();
-  const { data } = useFetchAppTestimonialQuery({ token });
+  const { data } = useFetchAppTestimonialQuery({ token }, { skip: !token });
   const [showSubmitBtn, setShowSubmitBtn] = useState(false);
   const [developerType, setDeveloperType] = useState('');
   const [content, setContent] = useState('');

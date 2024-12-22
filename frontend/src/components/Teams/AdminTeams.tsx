@@ -26,7 +26,7 @@ const AdminTeams = () => {
       direction: adminTeamPagination.direction,
       userId: user.id,
     },
-    { skip: !token }
+    { skip: !token || !user.id }
   );
 
   useEffect(() => {

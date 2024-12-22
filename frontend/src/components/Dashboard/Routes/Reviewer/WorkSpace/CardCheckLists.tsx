@@ -17,7 +17,7 @@ export interface ICardCheckListsProps {
 
 const CardCheckLists = ({ card }: ICardCheckListsProps) => {
   const { token } = useSelector((store: TRootState) => store.user);
-  const { data, isLoading } = useFetchCheckListsQuery({ token, todoCardId: card.id });
+  const { data, isLoading } = useFetchCheckListsQuery({ token, todoCardId: card.id }, { skip: !token || !card.id });
   const [updateCheckListItemMut] = useUpdateCheckListItemMutation();
   const [deleteCheckListItemMut] = useDeleteCheckListItemMutation();
   const [checkLists, setCheckLists] = useState<ICheckList[]>([]);

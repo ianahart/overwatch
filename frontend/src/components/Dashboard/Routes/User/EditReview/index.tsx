@@ -14,7 +14,10 @@ const EditReview = () => {
   const token = retrieveTokens()?.token;
   const navigate = useNavigate();
   const { repositoryId } = useParams();
-  const { data } = useFetchUserCommentRepositoryQuery({ token, repositoryId: Number.parseInt(repositoryId as string) });
+  const { data } = useFetchUserCommentRepositoryQuery(
+    { token, repositoryId: Number.parseInt(repositoryId as string) },
+    { skip: !token || !Number.parseInt(repositoryId as string) }
+  );
   const [updateRepositoryComment] = useUpdateRepositoryCommentMutation();
   const [comment, setComment] = useState('');
 

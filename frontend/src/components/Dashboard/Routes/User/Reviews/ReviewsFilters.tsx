@@ -24,16 +24,19 @@ const ReviewsFilters = () => {
   const { sortFilter, statusFilter, languageFilter } = useSelector((store: TRootState) => store.repositoryReviews);
   const token = retrieveTokens()?.token;
   const [languageOptions, setLanguageOptions] = useState<ILanguageOption[]>([]);
-  const { data: languageData } = useFetchDistinctRepositoryLanguagesQuery({ token });
-  const { data: repositoriesData } = useFetchRepositoriesQuery({
-    token: retrieveTokens()?.token,
-    page: -1,
-    pageSize: 5,
-    direction: 'next',
-    sortFilter,
-    statusFilter,
-    languageFilter,
-  });
+  const { data: languageData } = useFetchDistinctRepositoryLanguagesQuery({ token }, { skip: !token });
+  const { data: repositoriesData } = useFetchRepositoriesQuery(
+    {
+      token,
+      page: -1,
+      pageSize: 5,
+      direction: 'next',
+      sortFilter,
+      statusFilter,
+      languageFilter,
+    },
+    { skip: !token }
+  );
 
   useEffect(() => {
     if (repositoriesData !== undefined) {

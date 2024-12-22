@@ -18,12 +18,15 @@ const BadgeList = () => {
   const [pag, setPag] = useState<IPaginationState>(paginationState);
   const [badges, setBadges] = useState<IAdminBadge[]>([]);
   const [fetchBadges] = useLazyFetchBadgesQuery();
-  const { data: res } = useFetchBadgesQuery({
-    token,
-    page: -1,
-    pageSize: 10,
-    direction: 'next',
-  });
+  const { data: res } = useFetchBadgesQuery(
+    {
+      token,
+      page: -1,
+      pageSize: 10,
+      direction: 'next',
+    },
+    { skip: !token }
+  );
 
   const handleSetBadges = (res: IGetAllBadgesResponse): void => {
     const { direction, items, page, pageSize, totalElements, totalPages } = res.data;

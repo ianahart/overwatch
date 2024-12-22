@@ -9,7 +9,7 @@ const OTP = () => {
   const navigate = useNavigate();
   const [otpCode, setOtpCode] = useState('');
   const location = useLocation();
-  useFetchOTPQuery(location.state.userId);
+  useFetchOTPQuery(location.state.userId, { skip: !location.state.userId });
   const [verifyOTP] = useVerifyOTPMutation();
   const [error, setError] = useState('');
 

@@ -23,14 +23,17 @@ const TopicDetailsComments = ({ topicId }: ITopicDetailsCommentsProps) => {
     sort: 'DESC',
   };
   const [fetchComments] = useLazyFetchCommentsQuery();
-  const { data, isLoading } = useFetchCommentsQuery({
-    topicId,
-    page: pagState.page,
-    pageSize: pagState.pageSize,
-    direction: pagState.direction,
-    sort: pagState.sort,
-    token: retrieveTokens()?.token,
-  });
+  const { data, isLoading } = useFetchCommentsQuery(
+    {
+      topicId,
+      page: pagState.page,
+      pageSize: pagState.pageSize,
+      direction: pagState.direction,
+      sort: pagState.sort,
+      token: retrieveTokens()?.token,
+    },
+    { skip: !retrieveTokens()?.token || !topicId }
+  );
   const [pag, setPag] = useState<IEnhancedPaginationState>(pagState);
   const [comments, setComments] = useState<IComment[]>([]);
 

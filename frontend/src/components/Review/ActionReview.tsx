@@ -46,7 +46,7 @@ const ActionReview = ({
   const [createReview, { isLoading: createReviewIsLoading }] = useCreateReviewMutation();
   const [editReview, { isLoading: editReviewIsLoading }] = useEditReviewMutation();
   const { token } = useSelector((store: TRootState) => store.user);
-  const { data } = useFetchReviewQuery({ token, reviewId });
+  const { data } = useFetchReviewQuery({ token, reviewId }, { skip: !token || !reviewId });
   const NUM_OF_STARS = 5;
   const [error, setError] = useState('');
   const [rating, setRating] = useState(0);

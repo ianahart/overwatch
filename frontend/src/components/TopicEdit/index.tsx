@@ -14,7 +14,7 @@ const TopicEdit = () => {
   const parsedTopicId = Number.parseInt(topicId as string);
   const { user, token } = useSelector((store: TRootState) => store.user);
   const [topic, setTopic] = useState<ITopic>(topicState);
-  const { data } = useFetchTopicQuery({ topicId: parsedTopicId });
+  const { data } = useFetchTopicQuery({ topicId: parsedTopicId }, { skip: !parsedTopicId });
   const [updateTopic] = useUpdateTopicMutation();
   const [errors, setErrors] = useState<string[]>([]);
 

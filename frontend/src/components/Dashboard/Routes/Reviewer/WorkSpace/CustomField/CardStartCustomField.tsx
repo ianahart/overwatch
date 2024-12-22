@@ -31,7 +31,10 @@ const CardStartCustomField = ({
 }: ICardStartCustomFieldProps) => {
   const { token } = useSelector((store: TRootState) => store.user);
   const isActive = 'false';
-  const { data, isLoading } = useFetchCustomFieldsQuery({ token, todoCardId, isActive });
+  const { data, isLoading } = useFetchCustomFieldsQuery(
+    { token, todoCardId, isActive },
+    { skip: !token || !todoCardId }
+  );
   const [deleteDropDownOptionMut] = useDeleteDropDownOptionMutation();
   const [deleteCustomFieldMut] = useDeleteCustomFieldMutation();
   const [updateCustomFieldMut] = useUpdateCustomFieldMutation();

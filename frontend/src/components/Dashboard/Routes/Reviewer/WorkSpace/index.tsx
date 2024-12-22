@@ -21,7 +21,7 @@ const WorkSpaceContainer = () => {
   const token = retrieveTokens()?.token;
   const { workSpace } = useSelector((store: TRootState) => store.workSpace);
   const { user } = useSelector((store: TRootState) => store.user);
-  const { data, isLoading } = useFetchLatestWorkspaceQuery({ token, userId: user.id });
+  const { data, isLoading } = useFetchLatestWorkspaceQuery({ token, userId: user.id }, { skip: !token || !user.id });
   const [fetchTodoLists] = useLazyFetchTodoListsQuery();
 
   useEffect(() => {

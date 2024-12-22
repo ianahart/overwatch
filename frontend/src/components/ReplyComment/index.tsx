@@ -24,7 +24,7 @@ const ReplyComment = () => {
   const parsedSenderId = senderId ? Number.parseInt(senderId) : 0;
   const [fetchReplyCommentsByUser] = useLazyFetchReplyCommentsByUserQuery();
   const { token } = useSelector((store: TRootState) => store.user);
-  const { data } = useFetchCommentQuery({ token, commentId: parsedCommentId });
+  const { data } = useFetchCommentQuery({ token, commentId: parsedCommentId }, { skip: !token || !parsedCommentId });
   const [comment, setComment] = useState<IMinComment>(minCommentState);
   const [replyComments, setReplyComments] = useState<IReplyComment[]>([]);
   const [pag, setPag] = useState(paginationState);

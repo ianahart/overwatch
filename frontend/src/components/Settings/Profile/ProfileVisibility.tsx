@@ -7,7 +7,10 @@ import { TRootState, useFetchProfileVisibilityQuery, useUpdateProfileVisibilityM
 const ProfileVisibility = () => {
   const { user, token } = useSelector((store: TRootState) => store.user);
   const [updateProfileVisibilityMut] = useUpdateProfileVisibilityMutation();
-  const { data, refetch } = useFetchProfileVisibilityQuery({ profileId: user.profileId, token });
+  const { data, refetch } = useFetchProfileVisibilityQuery(
+    { profileId: user.profileId, token },
+    { skip: !user.profileId || !token }
+  );
   const [isToggled, setIsToggled] = useState(true);
 
   useEffect(() => {

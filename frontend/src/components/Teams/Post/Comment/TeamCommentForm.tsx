@@ -47,7 +47,10 @@ const TeamCommentForm = ({
   const [content, setContent] = useState('');
   const [tag, setTag] = useState('');
   const [isTagOpen, setIsTagOpen] = useState(false);
-  const { data } = useFetchTeamCommentQuery({ token, teamCommentId, teamPostId });
+  const { data } = useFetchTeamCommentQuery(
+    { token, teamCommentId, teamPostId },
+    { skip: !token || !teamCommentId || !teamPostId }
+  );
   const [createTeamCommentMutation] = useCreateTeamCommentMutation();
   const [updateTeamCommentMutation] = useUpdateTeamCommentMutation();
   const [searchForTeamMembersQuery] = useLazySearchTeamMembersQuery();

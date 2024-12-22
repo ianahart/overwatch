@@ -21,7 +21,10 @@ const Card = ({ data }: ICardProps) => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCardHovered, setIsCardHovered] = useState(false);
-  const { data: activeLabelsData } = useFetchActiveLabelsQuery({ token, todoCardId: data.id });
+  const { data: activeLabelsData } = useFetchActiveLabelsQuery(
+    { token, todoCardId: data.id },
+    { skip: !token || !data.id }
+  );
   const [activeLabel, setActiveLabel] = useState<IActiveLabel | null>(null);
 
   useEffect(() => {

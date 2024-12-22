@@ -22,7 +22,7 @@ const InvitationList = () => {
       direction: teamInvitationPagination.direction,
       userId: user.id,
     },
-    { skip: !token }
+    { skip: !token || !user.id }
   );
 
   useEffect(() => {

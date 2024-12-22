@@ -20,13 +20,16 @@ const Reviews = ({ userId, fullName, avatarUrl }: IReviewsProps) => {
   const [fetchReviews] = useLazyFetchReviewsQuery();
 
   const navigate = useNavigate();
-  const { data, isLoading } = useFetchReviewsQuery({
-    userId,
-    token,
-    page: -1,
-    pageSize: 2,
-    direction: 'next',
-  });
+  const { data, isLoading } = useFetchReviewsQuery(
+    {
+      userId,
+      token,
+      page: -1,
+      pageSize: 2,
+      direction: 'next',
+    },
+    { skip: !token || !userId }
+  );
 
   useEffect(() => {
     if (data !== undefined) {

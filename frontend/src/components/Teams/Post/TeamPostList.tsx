@@ -27,7 +27,7 @@ const TeamPostList = () => {
       direction: teamPostPagination.direction,
       teamId,
     },
-    { skip: !token }
+    { skip: !token || !teamId }
   );
 
   useEffect(() => {

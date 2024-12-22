@@ -47,7 +47,7 @@ const EditProfileForm = () => {
     [user.token, user.user.profileId]
   );
 
-  const { data } = useFetchPopulateProfileQuery(queryParameters);
+  const { data } = useFetchPopulateProfileQuery(queryParameters, { skip: !user.token || !user.user.profileId });
 
   useEffect(() => {
     if (data) {

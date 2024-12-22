@@ -10,7 +10,7 @@ export interface ITestimonialsProps {
 
 const Testimonials = ({ userId }: ITestimonialsProps) => {
   const { token } = useSelector((store: TRootState) => store.user);
-  const { data, isLoading } = useFetchTopTestimonialsQuery({ token, userId });
+  const { data, isLoading } = useFetchTopTestimonialsQuery({ token, userId }, { skip: !token || !userId });
   const [items, setItems] = useState<ITestimonial[]>([]);
 
   useEffect(() => {

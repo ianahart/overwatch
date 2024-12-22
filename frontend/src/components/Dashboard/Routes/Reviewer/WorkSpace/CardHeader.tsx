@@ -28,7 +28,7 @@ const CardHeader = ({ card, handleOnModalClose }: ICardHeaderProps) => {
   const [showInput, setShowInput] = useState(false);
   const [title, setTitle] = useState(card.title);
   const [activeLabels, setActiveLabels] = useState<IActiveLabel[]>([]);
-  const { data } = useFetchActiveLabelsQuery({ token, todoCardId: card.id });
+  const { data } = useFetchActiveLabelsQuery({ token, todoCardId: card.id }, { skip: !token || !card.id });
 
   useEffect(() => {
     if (data !== undefined) {

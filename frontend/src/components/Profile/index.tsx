@@ -12,10 +12,8 @@ export interface IProfileProps {
 
 const Profile = ({ profileId }: IProfileProps) => {
   const tokens = retrieveTokens();
-  console.log(tokens, profileId);
   const { data } = useFetchProfileQuery({ profileId, token: tokens.token }, { skip: !profileId || !tokens.token });
   const [profile, setProfile] = useState<IFullProfile>(profileState);
-  console.log(profile);
 
   useEffect(() => {
     if (data !== undefined) {

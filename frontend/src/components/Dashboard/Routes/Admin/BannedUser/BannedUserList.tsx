@@ -20,12 +20,15 @@ const BannedUserList = ({ handleSetView }: IBannedUserListProps) => {
   const [pag, setPag] = useState<IPaginationState>(paginationState);
   const [users, setUsers] = useState<IBan[]>([]);
   const [fetchBannedUsers] = useLazyFetchBannedUsersQuery();
-  const { data } = useFetchBannedUsersQuery({
-    token,
-    page: -1,
-    pageSize: 10,
-    direction: 'next',
-  });
+  const { data } = useFetchBannedUsersQuery(
+    {
+      token,
+      page: -1,
+      pageSize: 10,
+      direction: 'next',
+    },
+    { skip: !token }
+  );
 
   useEffect(() => {
     if (data !== undefined) {

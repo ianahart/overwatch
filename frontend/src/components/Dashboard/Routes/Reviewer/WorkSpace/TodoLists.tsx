@@ -16,17 +16,22 @@ import { retrieveTokens } from '../../../../../util';
 const TodoLists = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  //@ts-ignore
   const { workSpace } = useSelector((store: TRootState) => store.workSpace);
+  //@ts-ignore
   const { todoLists: lists } = useSelector((store: TRootState) => store.todoList);
   const {
     data,
     isLoading,
     isError,
     error: serverError,
-  } = useFetchTodoListsQuery({
-    token: retrieveTokens().token,
-    workSpaceId: workSpace.id,
-  });
+  } = useFetchTodoListsQuery(
+    {
+      token: retrieveTokens().token,
+      workSpaceId: workSpace.id,
+    },
+    { skip: !retrieveTokens().token || !workSpace.id }
+  );
 
   const showErrorPage = (error: TServerError) => {
     navigate('*', { state: { ...error } });

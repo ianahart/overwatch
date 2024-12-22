@@ -4,13 +4,16 @@ import { TRootState, useFetchBlockedUsersQuery } from '../../../state/store';
 
 const BlockedUserList = () => {
   const { token, user } = useSelector((store: TRootState) => store.user);
-  const { data } = useFetchBlockedUsersQuery({
-    blockerUserId: user.id,
-    token,
-    page: -1,
-    pageSize: 1,
-    direction: 'next',
-  });
+  const { data } = useFetchBlockedUsersQuery(
+    {
+      blockerUserId: user.id,
+      token,
+      page: -1,
+      pageSize: 1,
+      direction: 'next',
+    },
+    { skip: !token || !user.id }
+  );
 
   useEffect(() => {
     if (data !== undefined) {

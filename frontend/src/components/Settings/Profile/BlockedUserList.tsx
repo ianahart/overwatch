@@ -21,13 +21,16 @@ const BlockedUserList = () => {
   const [pag, setPag] = useState<IPaginationState>(paginationState);
   const [blockedUsers, setBlockedUsers] = useState<IBlockedUser[]>([]);
   const [fetchBlockedUsers] = useLazyFetchBlockedUsersQuery();
-  const { data } = useFetchBlockedUsersQuery({
-    blockerUserId: user.id,
-    token,
-    page: -1,
-    pageSize: 3,
-    direction: 'next',
-  });
+  const { data } = useFetchBlockedUsersQuery(
+    {
+      blockerUserId: user.id,
+      token,
+      page: -1,
+      pageSize: 3,
+      direction: 'next',
+    },
+    { skip: !user.id || !token }
+  );
 
   useEffect(() => {
     if (data !== undefined) {

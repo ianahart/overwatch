@@ -15,7 +15,7 @@ const initialPhoneState = {
 
 const PhoneNumber = () => {
   const { token, user } = useSelector((store: TRootState) => store.user);
-  const { data, isSuccess } = useFetchPhoneQuery({ token, userId: user.id });
+  const { data, isSuccess } = useFetchPhoneQuery({ token, userId: user.id }, { skip: !token || !user.id });
   const [createPhone, results] = useCreatePhoneMutation();
   const [deletePhone] = useDeletePhoneMutation();
   const [error, setError] = useState('');

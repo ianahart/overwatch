@@ -24,7 +24,7 @@ const WorkSpace = () => {
   const { token } = useSelector((store: TRootState) => store.user);
   const { workSpace } = useSelector((store: TRootState) => store.workSpace);
   const { todoLists } = useSelector((store: TRootState) => store.todoList);
-  const { data } = useFetchLabelsQuery({ token, workSpaceId: workSpace.id });
+  const { data } = useFetchLabelsQuery({ token, workSpaceId: workSpace.id }, { skip: !token || !workSpace.id });
 
   useEffect(() => {
     if (data !== undefined) {

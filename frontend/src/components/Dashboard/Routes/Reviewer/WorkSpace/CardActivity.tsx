@@ -32,13 +32,16 @@ const CardActivity = ({ card }: ICardActivityProps) => {
   const [pag, setPag] = useState<IPaginationState>(paginationState);
   const [fetchActivities] = useLazyFetchActivitiesQuery();
   const [deleteActivity] = useDeleteActivityMutation();
-  const { data, isLoading } = useFetchActivitiesQuery({
-    token,
-    page: -1,
-    pageSize: 2,
-    direction: 'next',
-    todoCardId: card.id,
-  });
+  const { data, isLoading } = useFetchActivitiesQuery(
+    {
+      token,
+      page: -1,
+      pageSize: 2,
+      direction: 'next',
+      todoCardId: card.id,
+    },
+    { skip: !token || !card.id }
+  );
 
   useEffect(() => {
     if (data !== undefined) {

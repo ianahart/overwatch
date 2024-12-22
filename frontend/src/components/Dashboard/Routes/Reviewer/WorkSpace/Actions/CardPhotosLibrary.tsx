@@ -13,7 +13,7 @@ const CardPhotosLibrary = ({ updateCardPhoto }: ICardPhotosLibraryProps) => {
   const [fetchPhotosByQuery] = useLazyFetchPexelPhotosQuery();
   const [photos, setPhotos] = useState<string[]>([]);
   const [feedbackMsg, setFeedbackMsg] = useState('');
-  const { data, isLoading } = useFetchPexelPhotosQuery({ token });
+  const { data, isLoading } = useFetchPexelPhotosQuery({ token }, { skip: !token });
   useEffect(() => {
     if (data !== undefined) {
       setPhotos(data.data);

@@ -10,7 +10,7 @@ const ChosenReviewer = () => {
   const navigate = useNavigate();
   const { token, user } = useSelector((store: TRootState) => store.user);
   const { selectedReviewer } = useSelector((store: TRootState) => store.addReview);
-  const { data, error } = useFetchPaymentMethodQuery({ token, userId: user.id });
+  const { data, error } = useFetchPaymentMethodQuery({ token, userId: user.id }, { skip: !token || !user.id });
 
   useEffect(() => {
     if (error) {

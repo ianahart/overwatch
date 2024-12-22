@@ -14,7 +14,10 @@ export interface ICardCustomFieldListProps {
 const CardCustomFieldList = ({ card }: ICardCustomFieldListProps) => {
   const { token } = useSelector((store: TRootState) => store.user);
   const isActive = 'true';
-  const { data, isLoading } = useFetchCustomFieldsQuery({ token, todoCardId: card.id, isActive });
+  const { data, isLoading } = useFetchCustomFieldsQuery(
+    { token, todoCardId: card.id, isActive },
+    { skip: !token || !card.id }
+  );
   const [customFields, setCustomFields] = useState<ICustomField[]>([]);
 
   useEffect(() => {

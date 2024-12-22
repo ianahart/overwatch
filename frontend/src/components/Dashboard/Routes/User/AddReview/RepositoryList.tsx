@@ -30,7 +30,7 @@ const RepositoryList = () => {
   const [repositories, setRepositories] = useState<IGitHubRepositoryPreview[]>([]);
   const [nextPageUrl, setNextPageUrl] = useState('');
   const [error, setError] = useState('');
-  const { data } = useFetchGitHubUserReposQuery({ token, accessToken, page });
+  const { data } = useFetchGitHubUserReposQuery({ token, accessToken, page }, { skip: !token || !accessToken });
   const [packages, setPackages] = useState<IPackagePlan[]>([]);
   const [selectedPackagePrice, setSelectedPackagePrice] = useState('');
   const [paginateRepositories] = useLazyFetchGitHubUserReposQuery();

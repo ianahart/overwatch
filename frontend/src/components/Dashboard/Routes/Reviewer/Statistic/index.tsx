@@ -11,7 +11,7 @@ import TopRequesterHorizontalBarChart from './TopRequesterHorizontalBarChart';
 
 const Statistic = () => {
   const { user, token } = useSelector((store: TRootState) => store.user);
-  const { data, isLoading } = useFetchStatisticsQuery({ reviewerId: user.id, token });
+  const { data, isLoading } = useFetchStatisticsQuery({ reviewerId: user.id, token }, { skip: !token || !user.id });
 
   return (
     <div>

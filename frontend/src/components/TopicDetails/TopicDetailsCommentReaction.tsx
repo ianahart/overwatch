@@ -26,7 +26,7 @@ const TopicDetailsCommentReaction = ({
   const { token } = useSelector((store: TRootState) => store.user);
   const [createReaction] = useCreateReactionMutation();
   const [deleteReaction] = useDeleteReactionMutation();
-  const { data } = useFetchReactionQuery({ token, commentId, userId });
+  const { data } = useFetchReactionQuery({ token, commentId, userId }, { skip: !token || !commentId || !userId });
   const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
 
   useEffect(() => {

@@ -32,7 +32,7 @@ const Billing = () => {
   const showToast = searchParams.get('toast') === 'show' ? true : false;
   const { user, token } = useSelector((store: TRootState) => store.user);
   const [paymentMethod, setPaymentMethod] = useState(paymentMethodState);
-  const { data } = useFetchPaymentMethodQuery({ userId: user.id, token });
+  const { data } = useFetchPaymentMethodQuery({ userId: user.id, token }, { skip: !user.id || !token });
   const [connectReviewerAccount] = useConnectAccountMutation();
   const [view, setView] = useState('main');
 

@@ -19,7 +19,7 @@ const TopicDetails = () => {
   const { user } = useSelector((store: TRootState) => store.user);
   let { topicId: potentialTopicId } = useParams();
   const topicId = Number.parseInt(potentialTopicId as string);
-  const { data, isLoading } = useFetchTopicQuery({ topicId });
+  const { data, isLoading } = useFetchTopicQuery({ topicId }, { skip: !topicId });
   const [topic, setTopic] = useState<ITopic>(topicState);
   const [modalOpen, setModalOpen] = useState(false);
 

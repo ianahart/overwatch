@@ -23,7 +23,7 @@ const Location = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [form, setForm] = useState(formState);
   const [error, setError] = useState('');
-  const { data } = useFetchSingleLocationQuery({ token, userId: user.id });
+  const { data } = useFetchSingleLocationQuery({ token, userId: user.id }, { skip: !token || !user.id });
 
   const syncLocation = (data: ILocation) => {
     for (let prop in data) {

@@ -24,13 +24,16 @@ const CurrentWorkSpaceDropdown = ({ onClickAway, handleSetOpen }: ICurrentWorkSp
   const [pagination, setPagination] = useState<IPaginationState>(paginationState);
   const [workSpaces, setWorkSpaces] = useState<IWorkSpaceEntity[]>([]);
   const [fetchWorkSpaces] = useLazyFetchWorkspacesQuery();
-  const { data } = useFetchWorkspacesQuery({
-    userId: user.id,
-    token,
-    page: -1,
-    pageSize: 3,
-    direction: 'next',
-  });
+  const { data } = useFetchWorkspacesQuery(
+    {
+      userId: user.id,
+      token,
+      page: -1,
+      pageSize: 3,
+      direction: 'next',
+    },
+    { skip: !token || !user.id }
+  );
 
   useEffect(() => {
     if (data !== undefined) {

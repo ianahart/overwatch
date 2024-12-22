@@ -30,14 +30,17 @@ const AddReview = () => {
   const { user } = useSelector((store: TRootState) => store.user);
   const { reviewers, selectedReviewer } = useSelector((store: TRootState) => store.addReview);
 
-  const { data, isLoading } = useFetchConnectionsQuery({
-    userId: user.id,
-    token: retrieveTokens()?.token,
-    page: -1,
-    pageSize: 3,
-    direction: 'next',
-    override: 'true',
-  });
+  const { data, isLoading } = useFetchConnectionsQuery(
+    {
+      userId: user.id,
+      token: retrieveTokens()?.token,
+      page: -1,
+      pageSize: 3,
+      direction: 'next',
+      override: 'true',
+    },
+    { skip: !user.id || !retrieveTokens()?.token }
+  );
 
   useEffect(() => {
     if (!Session.getItem('github_access_token') && searchParams.has('verified')) {

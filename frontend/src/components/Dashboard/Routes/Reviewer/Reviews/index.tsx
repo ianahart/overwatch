@@ -17,7 +17,7 @@ const Reviews = () => {
     };
   }, [dispatch]);
 
-  const { data, error } = useFetchPaymentMethodQuery({ token, userId: user.id });
+  const { data, error } = useFetchPaymentMethodQuery({ token, userId: user.id }, { skip: !token || !user.id });
 
   useEffect(() => {
     if (error) {
