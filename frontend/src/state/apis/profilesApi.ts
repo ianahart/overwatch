@@ -74,7 +74,7 @@ const profilesApi = createApi({
       }),
       fetchPopulateProfile: builder.query<IFetchProfileResponse, IFetchProfileRequest>({
         query: ({ token, profileId }) => {
-          if (profileId === 0 || profileId === undefined) {
+          if (profileId === 0 || profileId === undefined || !token) {
             return '';
           }
           return {
