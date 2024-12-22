@@ -1,6 +1,6 @@
 import { useFetchProfileQuery } from '../../state/store';
-//import UserProfile from './UserProfile';
-//import ReviewerProfile from './ReviewerProfile';
+import UserProfile from './UserProfile';
+import ReviewerProfile from './ReviewerProfile';
 import { useEffect, useState } from 'react';
 import { profileState } from '../../data';
 import { IFullProfile } from '../../interfaces';
@@ -26,11 +26,12 @@ const Profile = ({ profileId }: IProfileProps) => {
   return (
     <div>
       <h1 className="text-xl">FOO BAR</h1>
-      {/* {profile.userProfile.role === 'REVIEWER' ? (
+      <h2>changed</h2>
+      {profile.userProfile.role === 'REVIEWER' ? (
         <ReviewerProfile profile={profile} />
       ) : (
         <UserProfile profile={profile} />
-      )}*/}
+      )}
     </div>
   );
 };
