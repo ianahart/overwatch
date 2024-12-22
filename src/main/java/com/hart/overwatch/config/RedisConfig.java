@@ -32,12 +32,13 @@ public class RedisConfig {
         configuration.setHostName(uri.getHost());
         configuration.setPort(uri.getPort());
 
-        if (uri.getUserInfo() != null) {
+        if (uri.getUserInfo() != null && uri.getUserInfo().contains(":")) {
             String password = uri.getUserInfo().split(":")[1];
             configuration.setPassword(password);
         }
-
-        return new LettuceConnectionFactory(configuration);
+        LettuceConnectionFactory connectionFactory = new LettuceConnectionFactory(configuration);
+        connectionFactory.setUseSsl(true);
+        return connectionFactory;
     }
 
     @Bean
