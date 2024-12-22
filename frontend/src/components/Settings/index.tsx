@@ -8,10 +8,13 @@ const Settings = () => {
   const dispatch = useDispatch();
   const { token, user } = useSelector((store: TRootState) => store.user);
 
-  const { data, isSuccess } = useFetchSettingsQuery({
-    token,
-    settingId: user.settingId,
-  });
+  const { data, isSuccess } = useFetchSettingsQuery(
+    {
+      token,
+      settingId: user.settingId,
+    },
+    { skip: !token || !user.settingId }
+  );
 
   useEffect(() => {
     if (isSuccess) {
