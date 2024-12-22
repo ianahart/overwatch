@@ -37,19 +37,25 @@ const Connections = () => {
   const [createPinnedConnection] = useCreatePinnedConnectionMutation();
   const [createBlockedUser] = useCreateBlockedUserMutation();
   const [fetchPinnedConnections] = useLazyFetchPinnedConnectionsQuery();
-  const { data: pinnedConnectionsData } = useFetchPinnedConnectionsQuery({
-    userId: user.id,
-    token: retrieveTokens().token,
-  });
+  const { data: pinnedConnectionsData } = useFetchPinnedConnectionsQuery(
+    {
+      userId: user.id,
+      token: retrieveTokens().token,
+    },
+    { skip: !user.id || !token }
+  );
 
-  const { data, isLoading } = useFetchConnectionsQuery({
-    userId: user.id,
-    token,
-    page: -1,
-    pageSize: 3,
-    direction: 'next',
-    override: 'false',
-  });
+  const { data, isLoading } = useFetchConnectionsQuery(
+    {
+      userId: user.id,
+      token,
+      page: -1,
+      pageSize: 3,
+      direction: 'next',
+      override: 'false',
+    },
+    { skip: !token || !user.id }
+  );
 
   useEffect(() => {
     if (pinnedConnectionsData !== undefined) {

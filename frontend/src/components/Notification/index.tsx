@@ -20,13 +20,16 @@ const Notifications = () => {
   const [fetchNotifications] = useLazyFetchNotificationsQuery();
   const [deleteNotification] = useDeleteNotificationMutation();
 
-  const { data } = useFetchNotificationsQuery({
-    userId: user.id,
-    token,
-    page: -1,
-    pageSize: 2,
-    direction: 'next',
-  });
+  const { data } = useFetchNotificationsQuery(
+    {
+      userId: user.id,
+      token,
+      page: -1,
+      pageSize: 2,
+      direction: 'next',
+    },
+    { skip: !token || !user.id }
+  );
 
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
