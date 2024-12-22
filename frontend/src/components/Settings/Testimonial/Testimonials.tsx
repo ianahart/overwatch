@@ -18,13 +18,16 @@ const Testimonials = () => {
   const [testimonials, setTestimonials] = useState<ITestimonial[]>([]);
   const [deleteTestimonial] = useDeleteTestimonialMutation();
   const [fetchTestimonials] = useLazyFetchTestimonialsQuery();
-  const { data, isLoading } = useFetchTestimonialsQuery({
-    userId: user.id,
-    token,
-    page: -1,
-    pageSize: 2,
-    direction: 'next',
-  });
+  const { data, isLoading } = useFetchTestimonialsQuery(
+    {
+      userId: user.id,
+      token,
+      page: -1,
+      pageSize: 2,
+      direction: 'next',
+    },
+    { skip: !user.id || !token }
+  );
 
   useEffect(() => {
     if (data !== undefined) {
