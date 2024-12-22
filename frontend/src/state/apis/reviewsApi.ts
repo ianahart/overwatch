@@ -36,7 +36,7 @@ const reviewsApi = createApi({
 
       fetchReviews: builder.query<IFetchReviewsResponse, IFetchReviewsRequest>({
         query: ({ userId, token, page, pageSize, direction }) => {
-          if (userId === 0 || userId === null) {
+          if (userId === 0 || userId === null || !token) {
             return '';
           }
           return {
