@@ -1,5 +1,6 @@
 package com.hart.overwatch.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -18,10 +19,23 @@ import org.springframework.data.redis.core.RedisTemplate;
 @Configuration
 public class RedisConfig {
 
+    @Value("${REDIS_URL}")
+    private String redisUrl;
+
     @Bean
-    public LettuceConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory();
+    public LettuceConnectionFactory redisConnectionFactory() throws URISyntaxException {
+    URI uri = new URI(redisUrl);
+    RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
+    configuration.setHostName(uri.getHost());
+    configuration.setPort(uri.getPort());
+
+    if (uri.getUserInfo() != null) {
+        String password = uri.getUserInfo().split(":")[1];
+        configuration.setPassword(password);
     }
+
+    return new LettuceConnectionFactory(configuration);
+}
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate() {
