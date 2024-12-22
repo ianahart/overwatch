@@ -12,7 +12,6 @@ export interface IProfileProps {
 
 const Profile = ({ profileId }: IProfileProps) => {
   const tokens = retrieveTokens();
-  console.log(profileId, tokens);
   const { data } = useFetchProfileQuery({ profileId, token: tokens.accessToken });
   const [profile, setProfile] = useState<IFullProfile>(profileState);
 

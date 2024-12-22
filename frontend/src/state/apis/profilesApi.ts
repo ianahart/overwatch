@@ -62,7 +62,7 @@ const profilesApi = createApi({
         query: ({ token, profileId }) => {
           if (!profileId || !token) {
             console.log('RUN!!!!!!');
-            return '';
+            throw new Error('missing profileId or token');
           }
           return {
             url: `/profiles/${profileId}`,
