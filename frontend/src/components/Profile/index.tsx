@@ -12,15 +12,15 @@ export interface IProfileProps {
 
 const Profile = ({ profileId }: IProfileProps) => {
   const { token } = useSelector((store: TRootState) => store.user);
-  const { data } = useFetchProfileQuery({ profileId, token });
+  //  const { data } = useFetchProfileQuery({ profileId, token });
   const [profile, setProfile] = useState<IFullProfile>(profileState);
 
-  useEffect(() => {
-    if (data && token) {
-      setProfile(data.data);
-    }
-  }, [data,token]);
-
+  //  useEffect(() => {
+  //    if (data && token) {
+  //      setProfile(data.data);
+  //    }
+  //  }, [data, token]);
+  //
   return (
     <div>
       {profile.userProfile.role === 'REVIEWER' ? (
