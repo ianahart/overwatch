@@ -1,9 +1,9 @@
 import { BsLightningCharge } from 'react-icons/bs';
 import { useEffect, useState } from 'react';
 
-import {  useDeleteConnectionMutation, useVerifyConnectionQuery } from '../../state/store';
+import { useDeleteConnectionMutation, useVerifyConnectionQuery } from '../../state/store';
 import { RequestStatus } from '../../enums';
-import {retrieveTokens} from '../../util';
+import { retrieveTokens } from '../../util';
 
 export interface IDisconnectProps {
   receiverId: number;
@@ -12,7 +12,10 @@ export interface IDisconnectProps {
 
 const Disconnect = ({ receiverId, senderId }: IDisconnectProps) => {
   const token = retrieveTokens().token;
-  const { data } = useVerifyConnectionQuery({ token, receiverId, senderId });
+  const { data } = useVerifyConnectionQuery(
+    { token, receiverId, senderId },
+    { skip: !receiverId || !senderId || !token }
+  );
   const [deleteConnection] = useDeleteConnectionMutation();
   const [status, setStatus] = useState<RequestStatus>(RequestStatus.UNINITIATED);
   const [connectionId, setConnectionId] = useState(0);

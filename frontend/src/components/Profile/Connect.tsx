@@ -22,7 +22,10 @@ const Connect = ({ receiverId, senderId, fullName, avatarUrl, abbreviation }: IC
   const [error, setError] = useState('');
   const [createConnection, { isLoading }] = useCreateConnectionMutation();
   const [deleteConnection] = useDeleteConnectionMutation();
-  const { data } = useVerifyConnectionQuery({ token, receiverId, senderId });
+  const { data } = useVerifyConnectionQuery(
+    { token, receiverId, senderId },
+    { skip: !receiverId || !senderId || !token }
+  );
   const [status, setStatus] = useState<RequestStatus>(RequestStatus.UNINITIATED);
   const [connectionId, setConnectionId] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -34,7 +37,6 @@ const Connect = ({ receiverId, senderId, fullName, avatarUrl, abbreviation }: IC
 
   const onError = (err: any) => {
     console.error('WebSocket error:', err);
-    // Reconnect after a delay
   };
 
   useEffect(() => {
