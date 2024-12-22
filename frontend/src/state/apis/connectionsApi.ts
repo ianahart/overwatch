@@ -48,7 +48,7 @@ const connectionsApi = createApi({
       }),
       verifyConnection: builder.query<IVerifyConnectionResponse, IVerifyConnectionRequest>({
         query: ({ senderId, receiverId, token }) => {
-          if (senderId === null || senderId === 0 || receiverId === 0 || receiverId === null || !token) {
+          if (!senderId || !receiverId || !token) {
             return '';
           }
           return {

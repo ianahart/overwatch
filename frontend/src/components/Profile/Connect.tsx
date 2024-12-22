@@ -1,17 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { BsLightningCharge } from 'react-icons/bs';
-import { useSelector } from 'react-redux';
 import { AiOutlineCheck } from 'react-icons/ai';
 
 import { NotificationType, RequestStatus } from '../../enums';
 import Avatar from '../Shared/Avatar';
 import { connectWebSocket, disconnectWebSocket, sendMessage } from '../../util/WebSocketService';
-import {
-  TRootState,
-  useCreateConnectionMutation,
-  useDeleteConnectionMutation,
-  useVerifyConnectionQuery,
-} from '../../state/store';
+import { useCreateConnectionMutation, useDeleteConnectionMutation, useVerifyConnectionQuery } from '../../state/store';
+import { retrieveTokens } from '../../util';
 
 export interface IConnectProps {
   receiverId: number;
@@ -23,7 +18,7 @@ export interface IConnectProps {
 
 const Connect = ({ receiverId, senderId, fullName, avatarUrl, abbreviation }: IConnectProps) => {
   const shouldRun = useRef(true);
-  const { token } = useSelector((store: TRootState) => store.user);
+  const token = retrieveTokens().token;
   const [error, setError] = useState('');
   const [createConnection, { isLoading }] = useCreateConnectionMutation();
   const [deleteConnection] = useDeleteConnectionMutation();
