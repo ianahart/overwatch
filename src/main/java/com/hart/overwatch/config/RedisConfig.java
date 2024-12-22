@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
@@ -27,18 +28,29 @@ public class RedisConfig {
 
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() throws URISyntaxException {
+        if (redisUrl == null || redisUrl.isEmpty()) {
+            RedisStandaloneConfiguration localRedisConfig = new RedisStandaloneConfiguration();
+            localRedisConfig.setHostName("localhost");
+            localRedisConfig.setPort(6379);
+            return new LettuceConnectionFactory(localRedisConfig);
+        }
+
         URI uri = new URI(redisUrl);
-        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
-        configuration.setHostName(uri.getHost());
-        configuration.setPort(uri.getPort());
+        RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration();
+        redisConfig.setHostName(uri.getHost());
+        redisConfig.setPort(uri.getPort());
 
         if (uri.getUserInfo() != null && uri.getUserInfo().contains(":")) {
             String password = uri.getUserInfo().split(":")[1];
-            configuration.setPassword(password);
+            redisConfig.setPassword(password);
         }
-        LettuceConnectionFactory connectionFactory = new LettuceConnectionFactory(configuration);
-        connectionFactory.setUseSsl(true);
-        return connectionFactory;
+
+        LettuceClientConfiguration clientConfig =
+                LettuceClientConfiguration.builder().useSsl().disablePeerVerification()
+
+                        .build();
+
+        return new LettuceConnectionFactory(redisConfig, clientConfig);
     }
 
     @Bean
