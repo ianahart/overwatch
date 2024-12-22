@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
@@ -14,17 +15,36 @@ import com.hart.overwatch.chatmessage.ChatMessageSubscriber;
 import com.hart.overwatch.email.request.EmailRequest;
 import com.hart.overwatch.teammessage.TeamMessageSubscriber;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.beans.factory.annotation.Value;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @Configuration
 public class RedisConfig {
 
+    @Value("${STACKHERO_REDIS_URL_TLS}")
+    private String redisUrl;
+
     @Bean
-    public LettuceConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory();
+    public LettuceConnectionFactory redisConnectionFactory() throws URISyntaxException {
+        URI uri = new URI(redisUrl);
+
+        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
+
+        configuration.setHostName(uri.getHost());
+        configuration.setPort(uri.getPort());
+
+        if (uri.getUserInfo() != null) {
+            String password = uri.getUserInfo().split(":")[1];
+            configuration.setPassword(password);
+        }
+
+        return new LettuceConnectionFactory(configuration);
     }
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
+    public RedisTemplate<String, Object> redisTemplate() throws URISyntaxException {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory());
         template.setValueSerializer(new GenericToStringSerializer<>(Object.class));
@@ -55,7 +75,7 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, EmailRequest> emailRedisTemplate() {
+    public RedisTemplate<String, EmailRequest> emailRedisTemplate() throws URISyntaxException {
         RedisTemplate<String, EmailRequest> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory());
 
@@ -64,3 +84,4 @@ public class RedisConfig {
         return template;
     }
 }
+
