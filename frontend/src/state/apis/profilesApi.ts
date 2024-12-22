@@ -61,8 +61,7 @@ const profilesApi = createApi({
       fetchProfile: builder.query<IFetchFullProfileResponse, IFetchFullProfileRequest>({
         query: ({ token, profileId }) => {
           if (!profileId || !token) {
-            console.log('RUN!!!!!!');
-            throw new Error('missing profileId or token');
+            return '';
           }
           return {
             url: `/profiles/${profileId}`,
