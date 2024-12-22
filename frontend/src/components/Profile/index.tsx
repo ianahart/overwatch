@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
-import { TRootState, useFetchProfileQuery } from '../../state/store';
+import { TRootState } from '../../state/store';
 import UserProfile from './UserProfile';
 import ReviewerProfile from './ReviewerProfile';
-import { useEffect, useState } from 'react';
+import {  useState } from 'react';
 import { profileState } from '../../data';
 import { IFullProfile } from '../../interfaces';
 
@@ -14,6 +14,7 @@ const Profile = ({ profileId }: IProfileProps) => {
   const { token } = useSelector((store: TRootState) => store.user);
   //  const { data } = useFetchProfileQuery({ profileId, token });
   const [profile, setProfile] = useState<IFullProfile>(profileState);
+  console.log(token, profileId, setProfile);
 
   //  useEffect(() => {
   //    if (data && token) {
