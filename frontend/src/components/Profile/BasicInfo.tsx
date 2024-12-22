@@ -43,7 +43,7 @@ const BasicInfo = ({ userId, city, abbreviation, avatarUrl, fullName, country }:
             </div>
           )}
         </div>
-
+      {/*
         {userId !== user.id && user.role === 'REVIEWER' && <Disconnect senderId={userId} receiverId={user.id} />}
         {userId !== user.id && user.role !== 'REVIEWER' && (
           <Connect
@@ -54,6 +54,7 @@ const BasicInfo = ({ userId, city, abbreviation, avatarUrl, fullName, country }:
             senderId={user.id}
           />
         )}
+                */}
       </>
     </ProfileContainer>
   );
