@@ -17,7 +17,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import com.hart.overwatch.chatmessage.ChatMessageSubscriber;
 import com.hart.overwatch.email.request.EmailRequest;
 import com.hart.overwatch.teammessage.TeamMessageSubscriber;
-import jakarta.annotation.PostConstruct;
 import org.springframework.data.redis.core.RedisTemplate;
 
 @Configuration
@@ -25,11 +24,6 @@ public class RedisConfig {
 
     @Value("${REDIS_URL}")
     private String redisUrl;
-
-    @PostConstruct
-    public void logRedisUrl() {
-        System.out.println("REDIS_URL: " + redisUrl);
-    }
 
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() throws URISyntaxException {
