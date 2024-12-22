@@ -15,7 +15,7 @@ const notificationsApi = createApi({
     return {
       fetchNotifications: builder.query<IFetchNotificationsResponse, IFetchNotificationsRequest>({
         query: ({ userId, token, page, pageSize, direction }) => {
-          if (userId === 0 || userId === null) {
+          if (userId === 0 || userId === null || !token) {
             return '';
           }
           return {
