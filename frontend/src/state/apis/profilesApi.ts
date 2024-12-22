@@ -60,7 +60,7 @@ const profilesApi = createApi({
 
       fetchProfile: builder.query<IFetchFullProfileResponse, IFetchFullProfileRequest>({
         query: ({ token, profileId }) => {
-          if (profileId === 0 || profileId === undefined || !token) {
+          if (!profileId || !token) {
             console.log('RUN!!!!!!');
             return '';
           }

@@ -1,18 +1,19 @@
-import { useSelector } from 'react-redux';
-import { TRootState, useFetchProfileQuery } from '../../state/store';
+import { useFetchProfileQuery } from '../../state/store';
 import UserProfile from './UserProfile';
 import ReviewerProfile from './ReviewerProfile';
 import { useEffect, useState } from 'react';
 import { profileState } from '../../data';
 import { IFullProfile } from '../../interfaces';
+import { retrieveTokens } from '../../util';
 
 export interface IProfileProps {
   profileId: number;
 }
 
 const Profile = ({ profileId }: IProfileProps) => {
-  const { token } = useSelector((store: TRootState) => store.user);
-  const { data } = useFetchProfileQuery({ profileId, token });
+  const tokens = retrieveTokens();
+  console.log(profileId, tokens);
+  const { data } = useFetchProfileQuery({ profileId, token: tokens.accessToken });
   const [profile, setProfile] = useState<IFullProfile>(profileState);
 
   useEffect(() => {
