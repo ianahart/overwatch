@@ -62,12 +62,14 @@ public class SecurityConfig {
                     List.of("Authorization", "Cache-Control", "Content-Type", "GitHub-Token"));
             config.setAllowCredentials(true);
             return config;
-        })).csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(req -> req
-                .requestMatchers("/api/v1/auth/**", "ws/**", "wss/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/v1/topics/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/v1/app-testimonials/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/v1/topics/**").authenticated()
-                .requestMatchers("/api/v1/admin/**").hasRole("ADMIN").anyRequest().authenticated())
+        })).csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(req -> req.requestMatchers("/api/v1/").permitAll()
+                        .requestMatchers("/api/v1/auth/**", "ws/**", "wss/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/topics/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/app-testimonials/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/topics/**").authenticated()
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN").anyRequest()
+                        .authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(this.authenticationProvider)
                 .addFilterBefore(this.rateLimitingFilter,
