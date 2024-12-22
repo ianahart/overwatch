@@ -1,4 +1,3 @@
-import { IAccountForm } from '../../../interfaces';
 import { maskEmail } from '../../../util';
 
 interface IAccountInfoProps {

@@ -1,5 +1,4 @@
 import { NavLink } from 'react-router-dom';
-import { IUser } from '../../interfaces';
 import { useDispatch } from 'react-redux';
 import { closeMobile } from '../../state/store';
 

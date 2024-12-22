@@ -12,7 +12,6 @@ import {
 export interface ITopicDetailsCommentReactionProps {
   userId: number;
   commentId: number;
-  handleCloseClickAway: () => void;
   updateCommentReaction: (emoji: string, commentId: number) => void;
   removeCommentReaction: (emoji: string, commentId: number) => void;
 }
@@ -20,7 +19,6 @@ export interface ITopicDetailsCommentReactionProps {
 const TopicDetailsCommentReaction = ({
   userId,
   commentId,
-  handleCloseClickAway,
   updateCommentReaction,
   removeCommentReaction,
 }: ITopicDetailsCommentReactionProps) => {

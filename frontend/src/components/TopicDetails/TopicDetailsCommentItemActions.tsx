@@ -120,7 +120,6 @@ const TopicDetailsCommentItemActions = ({
                 <TopicDetailsCommentReaction
                   userId={user.id}
                   commentId={commentId}
-                  handleCloseClickAway={handleCloseClickAway}
                   updateCommentReaction={updateCommentReaction}
                   removeCommentReaction={removeCommentReaction}
                 />

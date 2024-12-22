@@ -1,5 +1,4 @@
 import { useCallback, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { createEditor, BaseEditor, Descendant } from 'slate';
 import { Slate, Editable, withReact, ReactEditor, RenderElementProps, RenderLeafProps } from 'slate-react';
 import CodeElement from '../RepositoryReview/ReviewEditor/CodeElement';
@@ -11,7 +10,6 @@ import ListItemElement from '../RepositoryReview/ReviewEditor/ListItemElement';
 import { TCustomElement, TCustomText } from '../../../../../types';
 import Toolbar from '../RepositoryReview/ReviewEditor/Toolbar';
 import HeadingElement from '../RepositoryReview/ReviewEditor/HeadingElement';
-import { TRootState } from '../../../../../state/store';
 
 declare module 'slate' {
   interface CustomTypes {
@@ -26,7 +24,6 @@ export interface IDetailsEditorProps {
 }
 
 const DetailsEditor = ({ details }: IDetailsEditorProps) => {
-  const { token } = useSelector((store: TRootState) => store.user);
   const [editor] = useState(() => withReact(createEditor()));
 
   const initialValue: Descendant[] = useMemo(() => {

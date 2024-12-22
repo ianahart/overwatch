@@ -11,7 +11,6 @@ import {
   setCurrentTeam,
 } from '../../state/store';
 import { AiOutlineTeam } from 'react-icons/ai';
-import { disconnectWebSocket } from '../../util/WebSocketService';
 
 const AdminTeams = () => {
   const { adminTeams, adminTeamPagination, currentTeam } = useSelector((store: TRootState) => store.team);

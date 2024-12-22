@@ -1,19 +1,9 @@
-import { useEffect, useState } from 'react';
-import { IPaginationState } from '../../../interfaces';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { TRootState, useFetchBlockedUsersQuery } from '../../../state/store';
 
 const BlockedUserList = () => {
-  const paginationState = {
-    page: 0,
-    pageSize: 1,
-    totalPages: 0,
-    direction: 'next',
-    totalElements: 0,
-  };
   const { token, user } = useSelector((store: TRootState) => store.user);
-  const [pag, setPag] = useState<IPaginationState>(paginationState);
-  const [];
   const { data } = useFetchBlockedUsersQuery({
     blockerUserId: user.id,
     token,

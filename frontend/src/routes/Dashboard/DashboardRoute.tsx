@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 import { TRootState } from '../../state/store';
-import { Role } from '../../enums';
 import ReviewerDashboardRoute from './ReviewerDashboardRoute';
 import UserDashboardRoute from './UserDashboardRoute';
 import AdminDashboardRoute from './AdminDashboardRoute';

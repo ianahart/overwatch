@@ -55,6 +55,7 @@ const CardHeader = ({ card, handleOnModalClose }: ICardHeaderProps) => {
   };
 
   const handleUpdateCard = (title: string) => {
+    //@ts-ignore
     const payload: TPureTodoCard = {
       title,
       createdAt: card.createdAt,

@@ -112,7 +112,7 @@ const Connections = () => {
   const blockUser = (blockerUserId: number, blockedUserId: number, connection: IConnection): void => {
     createBlockedUser({ token, blockerUserId, blockedUserId })
       .unwrap()
-      .then((res) => {
+      .then(() => {
         dispatch(removeConnection(connection));
         dispatch(clearMessages());
       })
