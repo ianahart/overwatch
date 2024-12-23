@@ -18,7 +18,9 @@
 
 ## Description
 
-OverWatch is a marketplace for users to get code reviews from industry professionals. More of a description to come.
+[Overwatch](https://codeoverwatch.com)
+
+Overwatch is a cutting-edge platform connecting users and reviewers for seamless code review experiences. Reviewers can earn through Stripe by reviewing code, managing tasks in Trello-like workspaces, and viewing code directly in the browser. Teams enable collaborative group messaging for enhanced communication. Users can connect with reviewers, request detailed code reviews, and chat directly. Overwatch offers robust features, including notification management, multi-factor authentication, and email alerts for key actions, ensuring a secure and streamlined experience for all.
 
 ## Table of Contents
 
