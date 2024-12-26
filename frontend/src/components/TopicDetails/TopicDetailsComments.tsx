@@ -32,7 +32,7 @@ const TopicDetailsComments = ({ topicId }: ITopicDetailsCommentsProps) => {
       sort: pagState.sort,
       token: retrieveTokens()?.token,
     },
-    { skip: !retrieveTokens()?.token || !topicId }
+    { skip: !topicId }
   );
   const [pag, setPag] = useState<IEnhancedPaginationState>(pagState);
   const [comments, setComments] = useState<IComment[]>([]);
