@@ -56,6 +56,11 @@ More to come.
 
 ## Visuals
 
+<div>
+    <video src="https://github.com/user-attachments/assets/39d221c5-1ab4-4d1b-91f2-f9c1b63177d9" width="650" controls type="video/mp4"></video>
+</div>
+
+
 <img width="700" alt="overwatch_screenshot" src="https://github.com/ianahart/overwatch/assets/29121238/d036be82-0f5d-45e1-b78d-548c11d3fb10">
 <img width="700" alt="explore-page" src="https://github.com/user-attachments/assets/43c900a8-a887-4cc8-88c9-66f921e5c7e0">
 <img width="700" alt="explore-single-view" src="https://github.com/user-attachments/assets/b48cf039-ebae-4942-9bba-f39f2998ced4">
