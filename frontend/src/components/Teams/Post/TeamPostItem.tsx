@@ -1,10 +1,10 @@
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { BsThreeDots, BsTrash } from 'react-icons/bs';
 import dayjs from 'dayjs';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { tomorrowNightBright } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+
 import Avatar from '../../Shared/Avatar';
 import { ITeamComment, ITeamPost } from '../../../interfaces';
 import {
@@ -18,9 +18,31 @@ import TeamModal from '../TeamModal';
 import TeamCommentForm from './Comment/TeamCommentForm';
 import { paginationState } from '../../../data';
 import TeamCommentList from './Comment/TeamCommentList';
-import js from 'react-syntax-highlighter/dist/esm/languages/hljs/javascript';
 
-SyntaxHighlighter.registerLanguage('javascript', js);
+// Define SupportedLanguage type
+type SupportedLanguage = 'javascript' | 'python' | 'html' | 'java' | 'go' | 'rust' | 'cpp' | 'sql';
+
+// Define language modules for lazy loading
+const languageModules: Record<SupportedLanguage, () => Promise<any>> = {
+  javascript: () => import('react-syntax-highlighter/dist/esm/languages/hljs/javascript'),
+  python: () => import('react-syntax-highlighter/dist/esm/languages/hljs/python'),
+  html: () => import('react-syntax-highlighter/dist/esm/languages/hljs/xml'),
+  java: () => import('react-syntax-highlighter/dist/esm/languages/hljs/java'),
+  go: () => import('react-syntax-highlighter/dist/esm/languages/hljs/go'),
+  rust: () => import('react-syntax-highlighter/dist/esm/languages/hljs/rust'),
+  cpp: () => import('react-syntax-highlighter/dist/esm/languages/hljs/cpp'),
+  sql: () => import('react-syntax-highlighter/dist/esm/languages/hljs/sql'),
+};
+
+const loadLanguage = async (language: SupportedLanguage) => {
+  if (languageModules[language]) {
+    const module = await languageModules[language]();
+    SyntaxHighlighter.registerLanguage(language, module.default);
+  } else {
+    console.warn(`Language "${language}" is not supported.`);
+  }
+};
+
 export interface ITeamPostItemProps {
   teamPost: ITeamPost;
 }
@@ -41,18 +63,16 @@ const TeamPostItem = ({ teamPost }: ITeamPostItemProps) => {
   const [deleteTeamPost] = useDeleteTeamPostMutation();
   const [fetchTeamComments] = useLazyFetchTeamCommentsQuery();
 
-  const handleOnOpenModal = (): void => {
-    setIsModalOpen(true);
-  };
+  useEffect(() => {
+    if (teamPost.language) {
+      loadLanguage(teamPost.language as SupportedLanguage).catch((err) =>
+        console.error(`Failed to load language ${teamPost.language}`, err)
+      );
+    }
+  }, [teamPost.language]);
 
-  const handleOnCloseModal = (): void => {
-    setIsModalOpen(false);
-  };
-
-  const handleResetComments = () => {
-    setTeamComments([]);
-    setPag(paginationState);
-  };
+  const handleOnOpenModal = (): void => setIsModalOpen(true);
+  const handleOnCloseModal = (): void => setIsModalOpen(false);
 
   const handleDeleteTeamPost = async (): Promise<void> => {
     try {
@@ -60,7 +80,7 @@ const TeamPostItem = ({ teamPost }: ITeamPostItemProps) => {
       dispatch(removeTeamPost(teamPost.id));
       setIsClickAwayOpen(false);
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
@@ -71,28 +91,18 @@ const TeamPostItem = ({ teamPost }: ITeamPostItemProps) => {
       .then((res) => {
         const { items, page, pageSize, totalPages, direction, totalElements } = res.data;
         setTeamComments((prevState) => [...prevState, ...items]);
-        setPag((prevState) => ({
-          ...prevState,
-          page,
-          pageSize,
-          totalPages,
-          totalElements,
-          direction,
-        }));
+        setPag({ ...pag, page, pageSize, totalPages, totalElements, direction });
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 
   const updateTeamComment = (teamCommentId: number, content: string, tag: string): void => {
-    setTeamComments(
-      teamComments.map((teamComment) => {
-        if (teamComment.id === teamCommentId) {
-          return { ...teamComment, content, tag, isEdited: true };
-        }
-        return { ...teamComment };
-      })
+    setTeamComments((prevComments) =>
+      prevComments.map((comment) =>
+        comment.id === teamCommentId ? { ...comment, content, tag, isEdited: true } : comment
+      )
     );
   };
 
@@ -154,7 +164,7 @@ const TeamPostItem = ({ teamPost }: ITeamPostItemProps) => {
               <TeamCommentForm
                 updateTeamComment={() => {}}
                 teamCommentId={0}
-                handleResetComments={handleResetComments}
+                handleResetComments={() => setTeamComments([])}
                 teamPostId={teamPost.id}
                 formType="create"
                 closeModal={handleOnCloseModal}
@@ -175,7 +185,7 @@ const TeamPostItem = ({ teamPost }: ITeamPostItemProps) => {
         pag={pag}
         teamComments={teamComments}
         paginateTeamComments={paginateTeamComments}
-        handleResetComments={handleResetComments}
+        handleResetComments={() => setTeamComments([])}
         updateTeamComment={updateTeamComment}
       />
     </div>
