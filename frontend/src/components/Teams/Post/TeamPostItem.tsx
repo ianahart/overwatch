@@ -1,12 +1,10 @@
-import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { SyntaxHighlighter } from 'react-syntax-highlighter';
 import { BsThreeDots, BsTrash } from 'react-icons/bs';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-//import { tomorrowNightBright } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import { tomorrowNightBright } from 'react-syntax-highlighter/styles/hljs';
-
+import { tomorrowNightBright } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import Avatar from '../../Shared/Avatar';
 import { ITeamComment, ITeamPost } from '../../../interfaces';
 import {
