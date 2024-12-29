@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import tomorrowNight from 'react-syntax-highlighter/dist/esm/styles/hljs/tomorrow-night';
+import { tomorrowNightBright } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import Avatar from '../../Shared/Avatar';
 import { ITeamComment, ITeamPost } from '../../../interfaces';
 import {
@@ -18,7 +18,9 @@ import TeamModal from '../TeamModal';
 import TeamCommentForm from './Comment/TeamCommentForm';
 import { paginationState } from '../../../data';
 import TeamCommentList from './Comment/TeamCommentList';
+import js from 'react-syntax-highlighter/dist/esm/languages/hljs/javascript';
 
+SyntaxHighlighter.registerLanguage('javascript', js);
 export interface ITeamPostItemProps {
   teamPost: ITeamPost;
 }
@@ -130,7 +132,7 @@ const TeamPostItem = ({ teamPost }: ITeamPostItemProps) => {
       </div>
       <SyntaxHighlighter
         language={teamPost.language}
-        style={tomorrowNight}
+        style={tomorrowNightBright}
         customStyle={{
           backgroundColor: '#2e2e2e',
           borderRadius: '8px',
