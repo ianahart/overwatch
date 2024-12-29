@@ -1,9 +1,17 @@
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { BsThreeDots, BsTrash } from 'react-icons/bs';
 import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { tomorrowNightBright } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import javascript from 'react-syntax-highlighter/dist/esm/languages/hljs/javascript';
+import python from 'react-syntax-highlighter/dist/esm/languages/hljs/python';
+import xml from 'react-syntax-highlighter/dist/esm/languages/hljs/xml';
+import java from 'react-syntax-highlighter/dist/esm/languages/hljs/java';
+import go from 'react-syntax-highlighter/dist/esm/languages/hljs/go';
+import rust from 'react-syntax-highlighter/dist/esm/languages/hljs/rust';
+import cpp from 'react-syntax-highlighter/dist/esm/languages/hljs/cpp';
+import sql from 'react-syntax-highlighter/dist/esm/languages/hljs/sql';
 
 import Avatar from '../../Shared/Avatar';
 import { ITeamComment, ITeamPost } from '../../../interfaces';
@@ -19,29 +27,15 @@ import TeamCommentForm from './Comment/TeamCommentForm';
 import { paginationState } from '../../../data';
 import TeamCommentList from './Comment/TeamCommentList';
 
-// Define SupportedLanguage type
-type SupportedLanguage = 'javascript' | 'python' | 'html' | 'java' | 'go' | 'rust' | 'cpp' | 'sql';
-
-// Define language modules for lazy loading
-const languageModules: Record<SupportedLanguage, () => Promise<any>> = {
-  javascript: () => import('react-syntax-highlighter/dist/esm/languages/hljs/javascript'),
-  python: () => import('react-syntax-highlighter/dist/esm/languages/hljs/python'),
-  html: () => import('react-syntax-highlighter/dist/esm/languages/hljs/xml'),
-  java: () => import('react-syntax-highlighter/dist/esm/languages/hljs/java'),
-  go: () => import('react-syntax-highlighter/dist/esm/languages/hljs/go'),
-  rust: () => import('react-syntax-highlighter/dist/esm/languages/hljs/rust'),
-  cpp: () => import('react-syntax-highlighter/dist/esm/languages/hljs/cpp'),
-  sql: () => import('react-syntax-highlighter/dist/esm/languages/hljs/sql'),
-};
-
-const loadLanguage = async (language: SupportedLanguage) => {
-  if (languageModules[language]) {
-    const module = await languageModules[language]();
-    SyntaxHighlighter.registerLanguage(language, module.default);
-  } else {
-    console.warn(`Language "${language}" is not supported.`);
-  }
-};
+// Register languages
+SyntaxHighlighter.registerLanguage('javascript', javascript);
+SyntaxHighlighter.registerLanguage('python', python);
+SyntaxHighlighter.registerLanguage('html', xml);
+SyntaxHighlighter.registerLanguage('java', java);
+SyntaxHighlighter.registerLanguage('go', go);
+SyntaxHighlighter.registerLanguage('rust', rust);
+SyntaxHighlighter.registerLanguage('cpp', cpp);
+SyntaxHighlighter.registerLanguage('sql', sql);
 
 export interface ITeamPostItemProps {
   teamPost: ITeamPost;
@@ -63,16 +57,18 @@ const TeamPostItem = ({ teamPost }: ITeamPostItemProps) => {
   const [deleteTeamPost] = useDeleteTeamPostMutation();
   const [fetchTeamComments] = useLazyFetchTeamCommentsQuery();
 
-  useEffect(() => {
-    if (teamPost.language) {
-      loadLanguage(teamPost.language as SupportedLanguage).catch((err) =>
-        console.error(`Failed to load language ${teamPost.language}`, err)
-      );
-    }
-  }, [teamPost.language]);
+  const handleOnOpenModal = (): void => {
+    setIsModalOpen(true);
+  };
 
-  const handleOnOpenModal = (): void => setIsModalOpen(true);
-  const handleOnCloseModal = (): void => setIsModalOpen(false);
+  const handleOnCloseModal = (): void => {
+    setIsModalOpen(false);
+  };
+
+  const handleResetComments = () => {
+    setTeamComments([]);
+    setPag(paginationState);
+  };
 
   const handleDeleteTeamPost = async (): Promise<void> => {
     try {
@@ -80,7 +76,7 @@ const TeamPostItem = ({ teamPost }: ITeamPostItemProps) => {
       dispatch(removeTeamPost(teamPost.id));
       setIsClickAwayOpen(false);
     } catch (err) {
-      console.error(err);
+      console.log(err);
     }
   };
 
@@ -91,18 +87,28 @@ const TeamPostItem = ({ teamPost }: ITeamPostItemProps) => {
       .then((res) => {
         const { items, page, pageSize, totalPages, direction, totalElements } = res.data;
         setTeamComments((prevState) => [...prevState, ...items]);
-        setPag({ ...pag, page, pageSize, totalPages, totalElements, direction });
+        setPag((prevState) => ({
+          ...prevState,
+          page,
+          pageSize,
+          totalPages,
+          totalElements,
+          direction,
+        }));
       })
       .catch((err) => {
-        console.error(err);
+        console.log(err);
       });
   };
 
   const updateTeamComment = (teamCommentId: number, content: string, tag: string): void => {
-    setTeamComments((prevComments) =>
-      prevComments.map((comment) =>
-        comment.id === teamCommentId ? { ...comment, content, tag, isEdited: true } : comment
-      )
+    setTeamComments(
+      teamComments.map((teamComment) => {
+        if (teamComment.id === teamCommentId) {
+          return { ...teamComment, content, tag, isEdited: true };
+        }
+        return { ...teamComment };
+      })
     );
   };
 
@@ -164,7 +170,7 @@ const TeamPostItem = ({ teamPost }: ITeamPostItemProps) => {
               <TeamCommentForm
                 updateTeamComment={() => {}}
                 teamCommentId={0}
-                handleResetComments={() => setTeamComments([])}
+                handleResetComments={handleResetComments}
                 teamPostId={teamPost.id}
                 formType="create"
                 closeModal={handleOnCloseModal}
@@ -185,7 +191,7 @@ const TeamPostItem = ({ teamPost }: ITeamPostItemProps) => {
         pag={pag}
         teamComments={teamComments}
         paginateTeamComments={paginateTeamComments}
-        handleResetComments={() => setTeamComments([])}
+        handleResetComments={handleResetComments}
         updateTeamComment={updateTeamComment}
       />
     </div>
