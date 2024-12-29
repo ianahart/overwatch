@@ -1,10 +1,10 @@
-import { SyntaxHighlighter } from 'react-syntax-highlighter';
+import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { BsThreeDots, BsTrash } from 'react-icons/bs';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { tomorrowNightBright } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import tomorrowNight from 'react-syntax-highlighter/dist/esm/styles/hljs/tomorrow-night';
 import Avatar from '../../Shared/Avatar';
 import { ITeamComment, ITeamPost } from '../../../interfaces';
 import {
@@ -130,7 +130,7 @@ const TeamPostItem = ({ teamPost }: ITeamPostItemProps) => {
       </div>
       <SyntaxHighlighter
         language={teamPost.language}
-        style={tomorrowNightBright}
+        style={tomorrowNight}
         customStyle={{
           backgroundColor: '#2e2e2e',
           borderRadius: '8px',
