@@ -4,13 +4,17 @@ import { GrTransaction } from 'react-icons/gr';
 import DashboardTitle from './DashboardTitle';
 import { AiOutlineComment, AiOutlineUser } from 'react-icons/ai';
 import NavigationBlock from './Routes/Admin/NavigationBlock';
+import { TbUsersGroup } from 'react-icons/tb';
 
 const AdminSidebarNavigation = () => {
   const transactionLinks = [
     { path: 'refunds', label: 'Refunds', id: 2, icon: <FaMoneyBill /> },
     { path: 'transactions', label: 'Transactions', id: 3, icon: <GrTransaction /> },
   ];
-  const userLinks = [{ path: 'banned-users', label: 'Banned Users', id: 4, icon: <AiOutlineUser /> }];
+  const userLinks = [
+    { path: 'banned-users', label: 'Banned Users', id: 4, icon: <AiOutlineUser /> },
+    { path: 'all-users', label: 'All Users', id: 10, icon: <TbUsersGroup /> },
+  ];
   const contentLinks = [
     { path: 'flagged-comments', label: 'Flagged Comments', id: 1, icon: <FaComment /> },
     { path: 'testimonials', label: 'Testimonials', id: 6, icon: <FaNewspaper /> },

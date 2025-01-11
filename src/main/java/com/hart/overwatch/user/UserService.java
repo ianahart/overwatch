@@ -12,6 +12,7 @@ import com.hart.overwatch.user.dto.MinUserDto;
 import com.hart.overwatch.user.dto.ReviewerDto;
 import com.hart.overwatch.user.dto.UpdateUserDto;
 import com.hart.overwatch.user.dto.UserDto;
+import com.hart.overwatch.user.dto.ViewUserDto;
 import com.hart.overwatch.user.request.UpdateUserRequest;
 import com.hart.overwatch.util.MyUtil;
 import org.jsoup.Jsoup;
@@ -208,11 +209,24 @@ public class UserService {
         Pageable pageable = this.paginationService.getPageable(page, pageSize, direction);
 
         Page<MinUserDto> result =
-                this.userRepository.geallUsersBySearch(pageable, search.toLowerCase());
+                this.userRepository.getAllUsersBySearch(pageable, search.toLowerCase());
 
         return new PaginationDto<MinUserDto>(result.getContent(), result.getNumber(), pageSize,
                 result.getTotalPages(), direction, result.getTotalElements());
     }
+
+
+    public PaginationDto<ViewUserDto> getAllUsers(int page, int pageSize, String direction) {
+
+        Pageable pageable =
+                this.paginationService.getSortedPageable(page, pageSize, direction, "desc");
+
+        Page<ViewUserDto> result = this.userRepository.getAllUsers(pageable);
+
+        return new PaginationDto<ViewUserDto>(result.getContent(), result.getNumber(), pageSize,
+                result.getTotalPages(), direction, result.getTotalElements());
+    }
+
 
 
 }

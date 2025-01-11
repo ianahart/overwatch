@@ -74,6 +74,7 @@ import AdminSuggestionRoute from './routes/Dashboard/Admin/AdminSuggestionRoute'
 import AdminBadgeRoute from './routes/Dashboard/Admin/AdminBadgeRoute';
 import CreateBadgeRoute from './routes/Dashboard/Admin/CreateBadgeRoute';
 import BadgeRoute from './routes/Dashboard/Reviewer/BadgeRoute';
+import AllUserRoute from './routes/Dashboard/Admin/AllUserRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -178,6 +179,14 @@ const router = createBrowserRouter(
           element={
             <RequireAdminUser>
               <BannedUserRoute />
+            </RequireAdminUser>
+          }
+        />
+        <Route
+          path="all-users"
+          element={
+            <RequireAdminUser>
+              <AllUserRoute />
             </RequireAdminUser>
           }
         />

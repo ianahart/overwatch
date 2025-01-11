@@ -1,6 +1,16 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface IViewUser {
+  id: number;
+  firstName: string;
+  lastName: string;
+  avatarUrl: string;
+  role: string;
+  email: string;
+  createdAt: string;
+}
+
 export interface IBadge {
   id: number;
   badgeId: number;
@@ -2912,6 +2922,25 @@ export interface IGetAllReviewerBadgesResponse {
   message: string;
   data: {
     items: IBadge[];
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    direction: string;
+    totalElements: number;
+  };
+}
+
+export interface IGetAllAdminUsersRequest {
+  token: string;
+  page: number;
+  pageSize: number;
+  direction: string;
+}
+
+export interface IGetAllAdminUsersResponse {
+  message: string;
+  data: {
+    items: IViewUser[];
     page: number;
     pageSize: number;
     totalPages: number;

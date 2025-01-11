@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import com.hart.overwatch.user.dto.MinUserDto;
 import com.hart.overwatch.user.dto.ReviewerDto;
+import com.hart.overwatch.user.dto.ViewUserDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -42,7 +43,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
                 WHERE LOWER(u.fullName) LIKE LOWER(CONCAT('%', :search, '%'))
                 AND u.role <> 'ADMIN'
             """)
-    Page<MinUserDto> geallUsersBySearch(@Param("pageable") Pageable pageable,
+    Page<MinUserDto> getAllUsersBySearch(@Param("pageable") Pageable pageable,
             @Param("search") String search);
 
     @Query(value = """
@@ -56,4 +57,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
             """)
     Page<ReviewerDto> getReviewersBySearch(@Param("pageable") Pageable pageable,
             @Param("search") String search);
+
+    @Query(value = """
+                SELECT NEW com.hart.overwatch.user.dto.ViewUserDto(
+                 u.id AS id, u.createdAt AS createdAt, u.firstName AS firstName,
+                 u.lastName AS lastName, p.avatarUrl AS avatarUrl, u.role AS role,
+                 u.email AS email
+                ) FROM User u
+                INNER JOIN u.profile p
+            """)
+    Page<ViewUserDto> getAllUsers(@Param("pageable") Pageable pageable);
 }

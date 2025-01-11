@@ -11,6 +11,8 @@ import {
   IUpdateUserRequest,
   IGetAllUserAndReviewerResponse,
   IGetAllUserAndReviewerRequest,
+  IGetAllAdminUsersResponse,
+  IGetAllAdminUsersRequest,
 } from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
@@ -106,11 +108,24 @@ const usersApi = createApi({
           };
         },
       }),
+      fetchAllUsers: builder.query<IGetAllAdminUsersResponse, IGetAllAdminUsersRequest>({
+        query: ({ token, page, pageSize, direction }) => {
+          return {
+            url: `/admin/users?page=${page}&pageSize=${pageSize}&direction=${direction}`,
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+      }),
     };
   },
 });
 
 export const {
+  useFetchAllUsersQuery,
+  useLazyFetchAllUsersQuery,
   useLazyFetchAllUserAndReviewersQuery,
   useLazyFetchReviewersQuery,
   useSyncUserQuery,

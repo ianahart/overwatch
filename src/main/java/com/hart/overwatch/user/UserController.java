@@ -18,6 +18,7 @@ import com.hart.overwatch.user.request.UpdateUserPasswordRequest;
 import com.hart.overwatch.user.request.UpdateUserRequest;
 import com.hart.overwatch.user.response.DeleteUserResponse;
 import com.hart.overwatch.user.response.GetAllUsersResponse;
+import com.hart.overwatch.user.response.GetAllViewUsersResponse;
 import com.hart.overwatch.user.response.GetReviewersResponse;
 import com.hart.overwatch.user.response.UpdateUserPasswordResponse;
 import com.hart.overwatch.user.response.UpdateUserResponse;
@@ -25,7 +26,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(path = "/api/v1/users")
+@RequestMapping(path = "/api/v1")
 public class UserController {
 
     private final UserService userService;
@@ -36,7 +37,15 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping(path = "/search-all")
+
+    @GetMapping(path = "/admin/users")
+    public ResponseEntity<GetAllViewUsersResponse> getAllUsers(@RequestParam("page") int page,
+            @RequestParam("pageSize") int pageSize, @RequestParam("direction") String direction) {
+        return ResponseEntity.status(HttpStatus.OK).body(new GetAllViewUsersResponse("success",
+                userService.getAllUsers(page, pageSize, direction)));
+    }
+
+    @GetMapping(path = "/users/search-all")
     public ResponseEntity<GetAllUsersResponse> searchAllUsers(@RequestParam("search") String search,
             @RequestParam("page") int page, @RequestParam("pageSize") int pageSize,
             @RequestParam("direction") String direction) {
@@ -44,7 +53,7 @@ public class UserController {
                 userService.searchAllUsers(search, page, pageSize, direction)));
     }
 
-    @GetMapping(path = "/search")
+    @GetMapping(path = "/users/search")
     public ResponseEntity<GetReviewersResponse> searchReviewers(
             @RequestParam("search") String search, @RequestParam("page") int page,
             @RequestParam("pageSize") int pageSize, @RequestParam("direction") String direction) {
@@ -52,7 +61,7 @@ public class UserController {
                 userService.searchReviewers(search, page, pageSize, direction)));
     }
 
-    @GetMapping("/sync")
+    @GetMapping("/users/sync")
     public ResponseEntity<UserDto> syncUser(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
 
@@ -64,7 +73,7 @@ public class UserController {
                 .body(this.userService.getUserByToken(authHeader.substring(7)));
     }
 
-    @PatchMapping(path = "/{userId}/password")
+    @PatchMapping(path = "/users/{userId}/password")
     public ResponseEntity<UpdateUserPasswordResponse> updateUserPassword(
             @PathVariable("userId") Long userId, @RequestBody UpdateUserPasswordRequest request) {
         this.userService.updateUserPassword(request.getCurrentPassword(), request.getNewPassword(),
@@ -73,14 +82,14 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(new UpdateUserPasswordResponse("success"));
     }
 
-    @PostMapping(path = "/{userId}/delete")
+    @PostMapping(path = "/users/{userId}/delete")
     public ResponseEntity<DeleteUserResponse> deleteUser(@PathVariable("userId") Long usersId,
             @RequestBody DeleteUserRequest request) {
         this.userService.deleteUser(usersId, request.getPassword());
         return ResponseEntity.status(HttpStatus.OK).body(new DeleteUserResponse("success"));
     }
 
-    @PatchMapping(path = "/{userId}")
+    @PatchMapping(path = "/users/{userId}")
     public ResponseEntity<UpdateUserResponse> updateUser(
             @Valid @RequestBody UpdateUserRequest request, @PathVariable("userId") Long userId) {
         return ResponseEntity.status(HttpStatus.OK).body(
