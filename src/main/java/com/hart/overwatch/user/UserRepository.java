@@ -60,7 +60,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = """
                 SELECT NEW com.hart.overwatch.user.dto.ViewUserDto(
-                 u.id AS id, u.createdAt AS createdAt, u.firstName AS u.firstName,
+                 u.id AS id, u.createdAt AS createdAt, u.firstName AS firstName,
                  u.lastName AS lastName, p.avatarUrl AS avatarUrl, u.role AS role,
                  u.email AS email
                 ) FROM User u
