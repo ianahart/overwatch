@@ -38,7 +38,7 @@ public class UserController {
     }
 
 
-    @GetMapping(path = "/admin/users/search-all")
+    @GetMapping(path = "/admin/users")
     public ResponseEntity<GetAllViewUsersResponse> getAllUsers(@RequestParam("page") int page,
             @RequestParam("pageSize") int pageSize, @RequestParam("direction") String direction) {
         return ResponseEntity.status(HttpStatus.OK).body(new GetAllViewUsersResponse("success",

@@ -13,7 +13,7 @@ const AdminSidebarNavigation = () => {
   ];
   const userLinks = [
     { path: 'banned-users', label: 'Banned Users', id: 4, icon: <AiOutlineUser /> },
-    { path: 'all-users', label: 'All Users', id: 4, icon: <TbUsersGroup /> },
+    { path: 'all-users', label: 'All Users', id: 10, icon: <TbUsersGroup /> },
   ];
   const contentLinks = [
     { path: 'flagged-comments', label: 'Flagged Comments', id: 1, icon: <FaComment /> },

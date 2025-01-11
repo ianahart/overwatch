@@ -1,4 +1,4 @@
-import AllUser from '../../../components/Dashboard/Routes/Admin/AllUser/index.tsx';
+import AllUser from '../../../components/Dashboard/Routes/Admin/AllUser';
 
 const AllUserRoute = () => {
   return <AllUser />;
