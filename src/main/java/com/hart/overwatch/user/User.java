@@ -21,6 +21,7 @@ import com.hart.overwatch.connection.Connection;
 import com.hart.overwatch.connectionpin.ConnectionPin;
 import com.hart.overwatch.customfield.CustomField;
 import com.hart.overwatch.favorite.Favorite;
+import com.hart.overwatch.feedbacktemplate.FeedbackTemplate;
 import com.hart.overwatch.label.Label;
 import com.hart.overwatch.location.Location;
 import com.hart.overwatch.notification.Notification;
@@ -324,6 +325,10 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<ReviewerBadge> reviewerBadges;
 
+        @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<FeedbackTemplate> feedbackTemplates;
+
 
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -398,6 +403,10 @@ public class User implements UserDetails {
 
     public List<ReviewerBadge> getReviewerBadges() {
         return reviewerBadges;
+    }
+
+    public List<FeedbackTemplate> getFeedbackTemplates() {
+        return feedbackTemplates;
     }
 
     public Ban getBan() {
@@ -900,6 +909,10 @@ public class User implements UserDetails {
 
     public void setTeamComments(List<TeamComment> teamComments) {
         this.teamComments = teamComments;
+    }
+
+    public void setFeedbackTemplates(List<FeedbackTemplate> feedbackTemplates) {
+        this.feedbackTemplates = feedbackTemplates;
     }
 
     public String getUsername() {

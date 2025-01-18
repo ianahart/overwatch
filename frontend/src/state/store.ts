@@ -180,6 +180,7 @@ import { bannedUsersApi } from './apis/bannedUsersApi';
 import { suggestionsApi } from './apis/suggestionsApi';
 import { badgesApi } from './apis/badgesApi';
 import { reviewerBadgesApi } from './apis/reviewerBadgesApi';
+import { feedbackTemplatesApi } from './apis/feedbackTemplatesApi';
 
 export const store = configureStore({
   reducer: {
@@ -252,6 +253,7 @@ export const store = configureStore({
     [suggestionsApi.reducerPath]: suggestionsApi.reducer,
     [badgesApi.reducerPath]: badgesApi.reducer,
     [reviewerBadgesApi.reducerPath]: reviewerBadgesApi.reducer,
+    [feedbackTemplatesApi.reducerPath]: feedbackTemplatesApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -316,7 +318,8 @@ export const store = configureStore({
       .concat(bannedUsersApi.middleware)
       .concat(suggestionsApi.middleware)
       .concat(badgesApi.middleware)
-      .concat(reviewerBadgesApi.middleware);
+      .concat(reviewerBadgesApi.middleware)
+      .concat(feedbackTemplatesApi.middleware);
   },
 });
 
@@ -750,6 +753,13 @@ export {
 export { useLazyFetchReviewerBadgesQuery } from './apis/reviewerBadgesApi';
 
 export {
+  useCreateFeedbackTemplateMutation,
+  useDeleteFeedbackTemplateMutation,
+  useLazyFetchFeedbackTemplateQuery,
+  useFetchFeedbackTemplatesQuery,
+} from './apis/feedbackTemplatesApi';
+
+export {
   testimonialsApi,
   authsApi,
   heartbeatApi,
@@ -795,4 +805,5 @@ export {
   suggestionsApi,
   badgesApi,
   reviewerBadgesApi,
+  feedbackTemplatesApi,
 };
