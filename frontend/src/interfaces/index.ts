@@ -1,6 +1,17 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface IMinFeedbackTemplate {
+  id: number;
+  userId: number;
+}
+
+export interface IFeedbackTemplate {
+  id: number;
+  userId: number;
+  feedback: string;
+}
+
 export interface IViewUser {
   id: number;
   firstName: string;
@@ -2948,6 +2959,40 @@ export interface IGetAllAdminUsersResponse {
     totalElements: number;
   };
 }
+
+export interface ICreateFeedbackTemplateRequest {
+  token: string;
+  userId: number;
+  feedback: string;
+}
+
+export interface IGetAllFeedbackTemplateRequest {
+  token: string;
+}
+
+export interface IGetAllFeedbackTemplateResponse {
+  message: string;
+  data: IMinFeedbackTemplate[];
+}
+
+export interface IGetFeedbackTemplateRequest {
+  token: string;
+  feedbackTemplateId: number;
+}
+
+export interface IGetFeedbackTemplateResponse {
+  message: string;
+  data: IFeedbackTemplate;
+}
+
+export interface IDeleteFeedbackTemplateRequest {
+  token: string;
+  feedbackTemplateId: number;
+}
+
+export interface IDeleteFeedbackTemplateResponse extends IBaseResponse {}
+
+export interface ICreateFeedbackTemplateResponse extends IBaseResponse {}
 
 export interface IDeleteBadgeResponse extends IBaseResponse {}
 

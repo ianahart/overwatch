@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { createEditor, BaseEditor, Descendant } from 'slate';
+import { createEditor, BaseEditor, Descendant, Transforms } from 'slate';
 import { Slate, Editable, withReact, ReactEditor, RenderElementProps, RenderLeafProps } from 'slate-react';
 import CodeElement from './CodeElement';
 import DefaultElement from './DefaultElement';
@@ -14,9 +14,18 @@ import ListItemElement from './ListItemElement';
 import { TCustomElement, TCustomText } from '../../../../../../types';
 import Toolbar from './Toolbar';
 import HeadingElement from './HeadingElement';
-import { TRootState, updateRepository, useUpdateRepositoryReviewMutation } from '../../../../../../state/store';
+import {
+  TRootState,
+  updateRepository,
+  useCreateFeedbackTemplateMutation,
+  useDeleteFeedbackTemplateMutation,
+  useFetchFeedbackTemplatesQuery,
+  useLazyFetchFeedbackTemplateQuery,
+  useUpdateRepositoryReviewMutation,
+} from '../../../../../../state/store';
 import { NotificationType } from '../../../../../../enums';
 import { connectWebSocket, disconnectWebSocket, sendMessage } from '../../../../../../util/WebSocketService';
+import { IMinFeedbackTemplate } from '../../../../../../interfaces';
 
 declare module 'slate' {
   interface CustomTypes {
@@ -35,6 +44,22 @@ const ReviewEditor = () => {
   const { repository } = useSelector((store: TRootState) => store.repositoryTree);
   const [status, setStatus] = useState(repository.status ? repository.status : 'COMPLETED');
   const [updateRepositoryReview] = useUpdateRepositoryReviewMutation();
+  const [createFeedbackTemplate] = useCreateFeedbackTemplateMutation();
+  const [getFeedbackTemplate] = useLazyFetchFeedbackTemplateQuery();
+  const [deleteFeedbackTemplate] = useDeleteFeedbackTemplateMutation();
+  const [templates, setTemplates] = useState<IMinFeedbackTemplate[]>([]);
+  const { data } = useFetchFeedbackTemplatesQuery(
+    {
+      token,
+    },
+    { skip: !token }
+  );
+
+  useEffect(() => {
+    if (data !== undefined) {
+      setTemplates(data.data);
+    }
+  }, [data]);
 
   const onConnected = () => {
     console.log('WebSocket connected');
@@ -143,8 +168,8 @@ const ReviewEditor = () => {
     }
   };
 
-  const initiateToast = () => {
-    toast.success('Go to the Get Paid Settings page to finalize your payment', {
+  const initiateToast = (message: string, redirect: boolean) => {
+    toast.success(message, {
       position: 'top-center',
       autoClose: 10000,
       hideProgressBar: false,
@@ -154,7 +179,7 @@ const ReviewEditor = () => {
       progress: undefined,
       type: 'success',
       theme: 'dark',
-      onClose: () => navigate(`/settings/${user.slug}/pay`),
+      onClose: () => (redirect ? navigate(`/settings/${user.slug}/pay`) : () => {}),
     });
   };
 
@@ -168,7 +193,7 @@ const ReviewEditor = () => {
         dispatch(updateRepository({ status, feedback }));
         emitNotification();
         if (status === 'COMPLETED') {
-          initiateToast();
+          initiateToast('Go to the Get Paid Settings page to finalize your payment', true);
         } else {
           navigate(`/dashboard/${user.slug}/reviewer/reviews`);
         }
@@ -178,9 +203,52 @@ const ReviewEditor = () => {
       });
   };
 
+  const utilizeTemplate = (feedbackTemplateId: number) => {
+    getFeedbackTemplate({ token, feedbackTemplateId })
+      .unwrap()
+      .then((res) => {
+        const feedback = JSON.parse(res.data.feedback);
+        Transforms.removeNodes(editor, { at: [0] });
+        Transforms.insertNodes(editor, feedback as Descendant[], { at: [0] });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const deleteTemplate = (feedbackTemplateId: number) => {
+    deleteFeedbackTemplate({ feedbackTemplateId, token })
+      .unwrap()
+      .then(() => {
+        setTemplates(templates.filter((template) => template.id !== feedbackTemplateId));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const onSaveTemplate = () => {
+    const feedback = JSON.stringify(editor.children);
+    const payload = { userId: user.id, token, feedback };
+    createFeedbackTemplate(payload)
+      .unwrap()
+      .then((res) => {
+        console.log(res);
+        initiateToast('You saved the current feedback as a template!', false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <Slate editor={editor} initialValue={initialValue} onChange={handleOnChange}>
-      <Toolbar />
+      <Toolbar
+        deleteTemplate={deleteTemplate}
+        onSaveTemplate={onSaveTemplate}
+        utilizeTemplate={utilizeTemplate}
+        templates={templates}
+      />
       <Editable
         className="custom-editor"
         renderLeaf={renderLeaf}
