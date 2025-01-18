@@ -19,15 +19,23 @@ import ToolTip from '../../../../../Shared/ToolTip';
 import ClickAway from '../../../../../Shared/ClickAway';
 import { IMinFeedbackTemplate } from '../../../../../../interfaces';
 import { BsTrash } from 'react-icons/bs';
+import { useSelector } from 'react-redux';
+import { TRootState } from '../../../../../../state/store';
 
 export interface IToolbarProps {
-  onSaveTemplate: () => void;
-  utilizeTemplate: (feedbackTemplateId: number) => void;
-  deleteTemplate: (feedbackTemplateId: number) => void;
-  templates: IMinFeedbackTemplate[];
+  onSaveTemplate?: () => void;
+  utilizeTemplate?: (feedbackTemplateId: number) => void;
+  deleteTemplate?: (feedbackTemplateId: number) => void;
+  templates?: IMinFeedbackTemplate[];
 }
 
-const Toolbar = ({ onSaveTemplate, templates, utilizeTemplate, deleteTemplate }: IToolbarProps) => {
+const Toolbar = ({
+  onSaveTemplate = () => {},
+  templates = [],
+  utilizeTemplate = () => {},
+  deleteTemplate = () => {},
+}: IToolbarProps) => {
+  const { user } = useSelector((store: TRootState) => store.user);
   const [activeButton, setActiveButton] = useState<string>('paragraph');
   const [clickAwayOpen, setClickAwayOpen] = useState(false);
   const editor = useSlate();
@@ -149,31 +157,35 @@ const Toolbar = ({ onSaveTemplate, templates, utilizeTemplate, deleteTemplate }:
           handleActiveButtonClick('paragraph', CustomEditor.toggleParagraph);
         }}
       />
-      <ToolTip message="Save as template">
-        <CiSaveUp2 onClick={handleOnSaveTemplate} className="mr-2 editor-btn bg-gray-900" />
-      </ToolTip>
-      <div className="relative w-[120px]">
-        <ToolTip message="Your templates">
-          <CiViewList onClick={() => setClickAwayOpen(true)} className="mr-2 editor-btn bg-gray-900" />
-        </ToolTip>
-        {clickAwayOpen && (
-          <ClickAway onClickAway={handleCloseClickAway}>
-            <div className="absolute top-5 left-0 bg-stone-950 z-10 p-2 w-full rounded">
-              <p className="mb-2 text-xs">Your Templates</p>
-              {templates.map((template) => {
-                return (
-                  <div key={template.id} className="flex justify-between my-2 rounded">
-                    <p onClick={() => utilizeTemplate(template.id)} className="text-xs cursor-pointer">
-                      Template{template.id}
-                    </p>
-                    <BsTrash onClick={() => deleteTemplate(template.id)} className="cursor-pointer" />
-                  </div>
-                );
-              })}
-            </div>
-          </ClickAway>
-        )}
-      </div>
+      {user.role === 'REVIEWER' && (
+        <>
+          <ToolTip message="Save as template">
+            <CiSaveUp2 onClick={handleOnSaveTemplate} className="mr-2 editor-btn bg-gray-900" />
+          </ToolTip>
+          <div className="relative w-[120px]">
+            <ToolTip message="Your templates">
+              <CiViewList onClick={() => setClickAwayOpen(true)} className="mr-2 editor-btn bg-gray-900" />
+            </ToolTip>
+            {clickAwayOpen && (
+              <ClickAway onClickAway={handleCloseClickAway}>
+                <div className="absolute top-5 left-0 bg-stone-950 z-10 p-2 w-full rounded">
+                  <p className="mb-2 text-xs">Your Templates</p>
+                  {templates.map((template) => {
+                    return (
+                      <div key={template.id} className="flex justify-between my-2 rounded">
+                        <p onClick={() => utilizeTemplate(template.id)} className="text-xs cursor-pointer">
+                          Template{template.id}
+                        </p>
+                        <BsTrash onClick={() => deleteTemplate(template.id)} className="cursor-pointer" />
+                      </div>
+                    );
+                  })}
+                </div>
+              </ClickAway>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 };
