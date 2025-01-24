@@ -28,7 +28,7 @@ const RepositoryReview = () => {
   const params = useParams();
 
   const token = retrieveTokens()?.token;
-  const accessToken = Session.getItem('github_access_token');
+  const githubId = Session.getItem('github_access_token') ?? '';
   const repositoryId = Number.parseInt(params.id as string);
 
   const [fetchRepository] = useLazyFetchRepositoryQuery();
@@ -40,14 +40,15 @@ const RepositoryReview = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (accessToken === null) {
+    if (githubId === '' || githubId === null) {
+      console.log('run');
       const gitHubClientId = import.meta.env.VITE_GITHUB_CLIENT_ID;
       const githubLoginUrl = `https://github.com/login/oauth/authorize?client_id=${gitHubClientId}`;
       window.location.assign(githubLoginUrl);
     }
-    if (accessToken !== null && shouldRun.current) {
+    if (githubId !== null && shouldRun.current) {
       shouldRun.current = false;
-      fetchRepository({ repositoryId, token, accessToken, repositoryPage })
+      fetchRepository({ repositoryId, token, githubId: Number.parseInt(githubId), repositoryPage })
         .unwrap()
         .then((res) => {
           localStorage.setItem('content', res.data.repository.feedback);
@@ -60,7 +61,7 @@ const RepositoryReview = () => {
           console.log(err);
         });
     }
-  }, [accessToken, shouldRun.current, fetchRepository, repositoryId, token, repositoryPage]);
+  }, [githubId, shouldRun.current, fetchRepository, repositoryId, token, repositoryPage]);
 
   useEffect(() => {
     return () => {

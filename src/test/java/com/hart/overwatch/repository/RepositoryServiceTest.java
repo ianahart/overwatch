@@ -389,8 +389,8 @@ public class RepositoryServiceTest {
         when(gitHubService.getRepository(repository.getRepoName(), "dummy_github_access_token", 1,
                 10)).thenReturn(gitHubTreeDto);
 
-        RepositoryContentsDto result = repositoryService.getRepositoryReview(repository.getId(),
-                "dummy_github_access_token", 1, 10);
+        RepositoryContentsDto result =
+                repositoryService.getRepositoryReview(repository.getId(), 1L, 1, 10);
 
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result.getRepository()).usingRecursiveComparison()

@@ -30,10 +30,10 @@ public class GitHubController {
 
     @GetMapping(path = "/user/repos")
     public ResponseEntity<FetchGitHubUserReposResponse> getUserRepos(
-            @RequestHeader("GitHub-Token") String gitHubAccessToken, @RequestParam("page") int page)
+            @RequestParam("githubId") Long githubId, @RequestParam("page") int page)
             throws IOException {
         return ResponseEntity.status(HttpStatus.OK).body(new FetchGitHubUserReposResponse("success",
-                this.gitHubService.getUserRepos(gitHubAccessToken, page)));
+                this.gitHubService.getUserRepos(githubId, page)));
     }
 
 }

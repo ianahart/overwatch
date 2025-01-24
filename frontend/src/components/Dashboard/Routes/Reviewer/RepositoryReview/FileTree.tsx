@@ -26,7 +26,8 @@ const FileTree = () => {
   const params = useParams();
   const dispatch = useDispatch();
   const repositoryId = Number.parseInt(params.id as string);
-  const accessToken = Session.getItem('github_access_token') ?? '';
+  let githubId = Session.getItem('github_access_token') ?? '';
+  console.log(githubId);
   const { token } = useSelector((store: TRootState) => store.user);
   const { repositoryTree, searchingCodeQuery, repositoryNavView, repositoryPage, repository } = useSelector(
     (store: TRootState) => store.repositoryTree
@@ -46,7 +47,9 @@ const FileTree = () => {
         dispatch(setSearchingCodeQuery(''));
         dispatch(setInitialRepositoryTree([]));
       }
-      fetchRepository({ repositoryId, token, accessToken, repositoryPage: page })
+      const parsedGithubId = Number.parseInt(githubId);
+
+      fetchRepository({ repositoryId, token, githubId: parsedGithubId, repositoryPage: page })
         .unwrap()
         .then((res) => {
           dispatch(setRepository(res.data.repository));
@@ -61,7 +64,7 @@ const FileTree = () => {
           console.log(err);
         });
     },
-    [dispatch, fetchRepository, repositoryId, token, accessToken, repositoryPage, isLoading]
+    [dispatch, fetchRepository, repositoryId, token, githubId, repositoryPage, isLoading]
   );
 
   const handleOnLoadMoreSearchFiles = useCallback(
@@ -73,9 +76,11 @@ const FileTree = () => {
         dispatch(setInitialRepositoryTree([]));
       }
 
+      const parsedGithubId = Number.parseInt(githubId);
+
       const payload = {
         token,
-        gitHubAccessToken: accessToken,
+        githubId: parsedGithubId,
         repositoryPage: page,
         repoName: repository.repoName,
         query: searchingCodeQuery,
@@ -96,7 +101,7 @@ const FileTree = () => {
           console.log(err);
         });
     },
-    [dispatch, searchRepository, token, accessToken, repositoryPage, repository.repoName, searchingCodeQuery]
+    [dispatch, searchRepository, token, githubId, repositoryPage, repository.repoName, searchingCodeQuery]
   );
 
   const scrollToTop = useCallback(() => {
@@ -106,7 +111,8 @@ const FileTree = () => {
   const handleOnClickFile = useCallback(
     (path: string) => {
       const [owner, repoName] = repository.repoName.split('/');
-      createRepositoryFile({ owner, repoName, path, token, accessToken })
+      const parsedGithubId = Number.parseInt(githubId);
+      createRepositoryFile({ owner, repoName, path, token, githubId: parsedGithubId })
         .unwrap()
         .then((res) => {
           const content = atob(res.data);
@@ -128,7 +134,7 @@ const FileTree = () => {
           console.log(err);
         });
     },
-    [createRepositoryFile, repository.repoName, token, accessToken, repositoryNavView, dispatch, scrollToTop]
+    [createRepositoryFile, repository.repoName, token, githubId, repositoryNavView, dispatch, scrollToTop]
   );
 
   const filteredRepositoryTree: IGitHubTree[] = repositoryTree.filter((node) =>

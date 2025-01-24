@@ -32,18 +32,17 @@ const repositoriesApi = createApi({
   endpoints(builder) {
     return {
       searchRepository: builder.query<IFetchSearchRepositoryResponse, IFetchSearchRepositoryRequest>({
-        query: ({ token, query, repoName, repositoryPage, gitHubAccessToken }) => {
-          if (!token || !gitHubAccessToken) {
+        query: ({ token, query, repoName, repositoryPage, githubId }) => {
+          if (!token || !githubId) {
             return '';
           }
           return {
-            url: `/repositories/search?page=${repositoryPage}&size=30&query=${encodeURIComponent(
+            url: `/repositories/search?githubId=${githubId}&page=${repositoryPage}&size=30&query=${encodeURIComponent(
               `repo:${repoName} ${query}`
             )}&repoName=${repoName}`,
             method: 'GET',
             headers: {
               Authorization: `Bearer ${token}`,
-              'GitHub-Token': gitHubAccessToken,
             },
           };
         },
@@ -79,25 +78,24 @@ const repositoriesApi = createApi({
         },
       }),
       createRepositoryFile: builder.mutation<ICreateRepositoryFileResponse, ICreateRepositoryFileRequest>({
-        query: ({ token, accessToken, repoName, owner, path }) => {
+        query: ({ token, githubId, repoName, owner, path }) => {
           return {
             url: `/repositories/file`,
             method: 'POST',
             headers: {
               Authorization: `Bearer ${token}`,
             },
-            body: { repoName, owner, path, accessToken },
+            body: { repoName, owner, path, githubId },
           };
         },
       }),
       fetchRepository: builder.query<IFetchRepositoryResponse, IFetchRepositoryRequest>({
-        query: ({ token, repositoryId, accessToken, repositoryPage }) => {
+        query: ({ token, repositoryId, githubId, repositoryPage }) => {
           return {
-            url: `/repositories/${repositoryId}?page=${repositoryPage}&size=50`,
+            url: `/repositories/${repositoryId}?page=${repositoryPage}&size=50&githubId=${githubId}`,
             method: 'GET',
             headers: {
               Authorization: `Bearer ${token}`,
-              'GitHub-Token': accessToken,
             },
           };
         },
