@@ -1425,11 +1425,11 @@ export interface IFetchGitHubTokenRequest {
 
 export interface IFetchGitHubTokenResponse {
   message: string;
-  accessToken: string;
+  githubId: number;
 }
 
 export interface IFetchGitHubUserReposRequest {
-  accessToken: string;
+  githubId: number;
   token: string;
   page: number;
 }
@@ -1503,13 +1503,13 @@ export interface IFetchUserCommentRepositoryResponse {
 export interface IFetchRepositoryRequest {
   repositoryId: number;
   token: string;
-  accessToken: string;
+  githubId: number;
   repositoryPage: number;
 }
 
 export interface IFetchSearchRepositoryRequest {
   repositoryPage: number;
-  gitHubAccessToken: string;
+  githubId: number;
   query: string;
   token: string;
   repoName: string;
@@ -1545,7 +1545,7 @@ export interface IUpdateRepositoryCommentRequest {
 
 export interface ICreateRepositoryFileRequest {
   token: string;
-  accessToken: string;
+  githubId: number;
   owner: string;
   repoName: string;
   path: string;

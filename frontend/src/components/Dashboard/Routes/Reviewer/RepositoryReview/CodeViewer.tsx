@@ -16,14 +16,20 @@ import { Session } from '../../../../../util/SessionService';
 const CodeViewer = () => {
   const dispatch = useDispatch();
   const { token } = useSelector((store: TRootState) => store.user);
-  const gitHubAccessToken = Session.getItem('github_access_token') ?? '';
+  const githubId = Session.getItem('github_access_token') ?? '';
   const { repositoryFile, repositoryPage, repository } = useSelector((store: TRootState) => store.repositoryTree);
   const [searchRepository] = useLazySearchRepositoryQuery();
   const codeContainerRef = useRef<HTMLPreElement>(null);
 
   const handleOnSearch = (query: string) => {
     dispatch(setRepositoryPage(0));
-    const payload = { token, gitHubAccessToken, repositoryPage: 0, repoName: repository.repoName, query };
+    const payload = {
+      token,
+      githubId: Number.parseInt(githubId),
+      repositoryPage: 0,
+      repoName: repository.repoName,
+      query,
+    };
     searchRepository(payload)
       .unwrap()
       .then((res) => {

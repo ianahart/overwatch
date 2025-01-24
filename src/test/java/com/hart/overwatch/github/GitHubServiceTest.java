@@ -69,9 +69,9 @@ public class GitHubServiceTest {
         when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
         when(mockCall.execute()).thenReturn(mockResponse);
 
-        String accessToken = gitHubService.getAccessToken("dummy_code");
+        Long accessToken = gitHubService.getAccessToken("dummy_token");
 
-        Assertions.assertThat(accessToken).isEqualTo("dummy_token");
+        Assertions.assertThat(accessToken).isEqualTo(1L);
 
         verify(mockClient).newCall(any(Request.class));
         verify(mockCall).execute();
@@ -95,7 +95,7 @@ public class GitHubServiceTest {
         when(mockResponseBody.string()).thenReturn(responseBody);
         when(mockResponse.header("Link")).thenReturn(linkHeader);
 
-        GitHubPaginationDto paginationDto = gitHubService.getUserRepos(accessToken, page);
+        GitHubPaginationDto paginationDto = gitHubService.getUserRepos(1L, page);
 
         Assertions.assertThat(paginationDto.getNextPageUrl())
                 .isEqualTo("https://api.github.com/user/repos?page=2");

@@ -62,7 +62,7 @@ public class GitHubControllerTest {
 
     @Test
     public void GitHubController_GetAccessToken_Return_FetchGitHubAccessTokenResponse() throws Exception {
-        when(gitHubService.getAccessToken("dummy_code")).thenReturn("dummy_token");
+        when(gitHubService.getAccessToken("dummy_code")).thenReturn(1L);
 
         ResultActions response = mockMvc.perform(get("/api/v1/github/auth")
             .contentType(MediaType.APPLICATION_JSON)
@@ -75,7 +75,7 @@ public class GitHubControllerTest {
 
     @Test
     public void GitHubController_GetUserRepos_ReturnFetchGitHubUserReposResponse() throws Exception {
-        when(gitHubService.getUserRepos("dummy_token", 1)).thenReturn(gitHubPaginationDto);
+        when(gitHubService.getUserRepos(1L, 1)).thenReturn(gitHubPaginationDto);
 
         ResultActions response = mockMvc.perform(get("/api/v1/github/user/repos").contentType(MediaType.APPLICATION_JSON).header("GitHub-Token", "dummy_token").param("page", "1"));
 

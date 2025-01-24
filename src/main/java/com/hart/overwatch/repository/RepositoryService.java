@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.github.GitHubService;
 import com.hart.overwatch.github.dto.GitHubTreeDto;
+import com.hart.overwatch.githubtoken.GitHubTokenService;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.advice.BadRequestException;
@@ -58,18 +59,20 @@ public class RepositoryService {
 
     private final ReviewerBadgeService reviewerBadgeService;
 
+    private final GitHubTokenService githubTokenService;
+
     @Autowired
     public RepositoryService(RepositoryRepository repositoryRepository, UserService userService,
             PaginationService paginationService, GitHubService gitHubService,
             @Lazy ReviewFeedbackService reviewFeedbackService,
-
-            ReviewerBadgeService reviewerBadgeService) {
+            ReviewerBadgeService reviewerBadgeService, GitHubTokenService githubTokenService) {
         this.repositoryRepository = repositoryRepository;
         this.userService = userService;
         this.paginationService = paginationService;
         this.gitHubService = gitHubService;
         this.reviewFeedbackService = reviewFeedbackService;
         this.reviewerBadgeService = reviewerBadgeService;
+        this.githubTokenService = githubTokenService;
     }
 
     public Repository getRepositoryById(Long repositoryId) {
@@ -239,9 +242,10 @@ public class RepositoryService {
     }
 
 
-    public RepositoryContentsDto searchRepository(String accessToken, int page, int size,
+    public RepositoryContentsDto searchRepository(Long githubId, int page, int size,
             String repoName, String query) throws IOException {
         try {
+            String accessToken = githubTokenService.getGitHubToken(githubId);
             FullRepositoryDto repository = new FullRepositoryDto();
             GitHubTreeDto contents =
                     gitHubService.searchRepository(accessToken, page, query, repoName, size);
@@ -254,9 +258,10 @@ public class RepositoryService {
     }
 
 
-    public RepositoryContentsDto getRepositoryReview(Long repositoryId, String accessToken,
-            int page, int size) throws IOException {
+    public RepositoryContentsDto getRepositoryReview(Long repositoryId, Long githubId, int page,
+            int size) throws IOException {
         try {
+            String accessToken = githubTokenService.getGitHubToken(githubId);
             Repository entity = getRepositoryById(repositoryId);
             FullRepositoryDto repository = constructRepository(entity);
             GitHubTreeDto contents = this.gitHubService.getRepository(repository.getRepoName(),
@@ -269,7 +274,8 @@ public class RepositoryService {
     }
 
     public String getRepositoryFile(CreateRepositoryFileRequest request) throws IOException {
-        return this.gitHubService.getRepositoryFile(request.getAccessToken(), request.getPath(),
+        String accessToken = githubTokenService.getGitHubToken(request.getGithubId());
+        return this.gitHubService.getRepositoryFile(accessToken, request.getPath(),
                 request.getOwner(), request.getRepoName());
     }
 

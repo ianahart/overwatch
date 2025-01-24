@@ -1,6 +1,7 @@
 package com.hart.overwatch.config;
 
 import com.hart.overwatch.advice.NotFoundException;
+import com.hart.overwatch.githubtoken.GitHubTokenService;
 import com.hart.overwatch.refreshtoken.RefreshTokenService;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.user.User;
@@ -23,13 +24,16 @@ public class LogoutService implements LogoutHandler {
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
     private final RefreshTokenService refreshTokenService;
+    private final GitHubTokenService githubTokenService;
 
     public LogoutService(JwtService jwtService, UserRepository userRepository,
-            TokenRepository tokenRepository, RefreshTokenService refreshTokenService) {
+            TokenRepository tokenRepository, RefreshTokenService refreshTokenService,
+            GitHubTokenService githubTokenService) {
         this.jwtService = jwtService;
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
         this.refreshTokenService = refreshTokenService;
+        this.githubTokenService = githubTokenService;
     }
 
     @Override
@@ -50,6 +54,7 @@ public class LogoutService implements LogoutHandler {
 
         Boolean isLoggedIn = false;
         LocalDateTime lastActive = LocalDateTime.now();
+        githubTokenService.deleteGitHubToken(user.getId());
         userRepository.updateLoggedIn(user.getId(), isLoggedIn, lastActive);
         storedToken.setRevoked(true);
         storedToken.setExpired(true);

@@ -20,13 +20,14 @@ const GitHubSuccessRoute = () => {
         const makeReq = async () => {
           try {
             const response = await fetchGitHubAccessToken({ code, token }).unwrap();
-            const { accessToken } = response;
+            const { githubId } = response;
+            console.log(githubId);
             if (user.role === Role.REVIEWER) {
-              Session.setItem(accessToken);
+              Session.setItem(githubId.toString());
               navigate(`/dashboard/${user.slug}/reviewer/reviews`);
               //navigate(-1);
             } else {
-              navigate(`/dashboard/${user.slug}/user/add-review?verified=true`, { state: { accessToken } });
+              navigate(`/dashboard/${user.slug}/user/add-review?verified=true`, { state: { githubId } });
             }
           } catch (err) {
             console.log(err);

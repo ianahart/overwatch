@@ -15,6 +15,7 @@ import com.hart.overwatch.github.dto.GitHubPaginationDto;
 import com.hart.overwatch.github.dto.GitHubRepositoryDto;
 import com.hart.overwatch.github.dto.GitHubTreeDto;
 import com.hart.overwatch.github.dto.GitHubTreeNodeDto;
+import com.hart.overwatch.githubtoken.GitHubTokenService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,8 @@ public class GitHubService {
 
     private final OkHttpClient okHttpClient;
 
+    private final GitHubTokenService githubTokenService;
+
     @Value("${GITHUB_CLIENT_ID}")
     private String clientId;
 
@@ -43,11 +46,12 @@ public class GitHubService {
     private String tokenUri;
 
     @Autowired
-    public GitHubService(OkHttpClient okHttpClient) {
+    public GitHubService(OkHttpClient okHttpClient, GitHubTokenService githubTokenService) {
         this.okHttpClient = okHttpClient;
+        this.githubTokenService = githubTokenService;
     }
 
-    public String getAccessToken(String code) {
+    public Long getAccessToken(String code) {
         String json = String.format(
                 "{\"client_id\":\"%s\", \"client_secret\":\"%s\", \"code\":\"%s\", \"redirect_uri\":\"%s\"}",
                 clientId, clientSecret, code, redirectUri);
@@ -62,7 +66,9 @@ public class GitHubService {
             if (response.isSuccessful()) {
                 String responseBody = response.body().string();
                 JSONObject jsonObject = new JSONObject(responseBody);
-                return jsonObject.getString("access_token");
+                String accessToken = jsonObject.getString("access_token");
+                Long githubId = githubTokenService.createGitHubToken(accessToken);
+                return githubId;
             } else {
                 throw new RuntimeException("Failed to get access token: " + response.message());
             }
@@ -80,11 +86,6 @@ public class GitHubService {
                 .header("Authorization", "Bearer " + accessToken).build();
 
         Response response = this.okHttpClient.newCall(request).execute();
-//        String rateLimitRemaining = response.header("X-RateLimit-Remaining");
-//        String rateLimitReset = response.header("X-RateLimit-Reset");
-//        System.out.println("Remaining requests: " + rateLimitRemaining);
-//        System.out.println("Reset time: " + rateLimitReset);
-//
         if (!response.isSuccessful()) {
             throw new IOException("Unexpected code " + response);
         }
@@ -152,8 +153,10 @@ public class GitHubService {
         }
     }
 
-    public GitHubPaginationDto getUserRepos(String accessToken, int page) throws IOException {
+    public GitHubPaginationDto getUserRepos(Long githubId, int page) throws IOException {
 
+
+        String accessToken = githubTokenService.getGitHubToken(githubId);
         String url = String.format("https://api.github.com/user/repos?page=%d", page);
         Map<String, String> result = makeGitHubRequest(url, accessToken);
 

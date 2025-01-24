@@ -5,32 +5,32 @@ public class FetchGitHubAccessTokenResponse {
 
     private String message;
 
-    private String accessToken;
+    private Long githubId;
 
 
     public FetchGitHubAccessTokenResponse() {
 
     }
 
-    public FetchGitHubAccessTokenResponse(String message, String accessToken) {
+    public FetchGitHubAccessTokenResponse(String message, Long githubId) {
         this.message = message;
-        this.accessToken = accessToken;
+        this.githubId = githubId;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public String getAccessToken() {
-        return accessToken;
+    public Long getGithubId() {
+        return githubId;
     }
 
     public void setMessage(String message) {
         this.message = message;
     }
 
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
+    public void setGithubId(Long githubId) {
+        this.githubId = githubId;
     }
 
 

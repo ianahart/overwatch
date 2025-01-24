@@ -272,7 +272,7 @@ public class RepositoryControllerTest {
     public void RepositoryController_GetRepositoryReview_ReturnGetRepositoryReviewResponse()
             throws Exception {
         String gitHubAccessToken = "dummy_access_token";
-        when(repositoryService.getRepositoryReview(repository.getId(), gitHubAccessToken, 0, 3))
+        when(repositoryService.getRepositoryReview(repository.getId(), 1L, 0, 3))
                 .thenReturn(new RepositoryContentsDto());
 
         ResultActions response = mockMvc.perform(get("/api/v1/repositories/1")
@@ -287,9 +287,8 @@ public class RepositoryControllerTest {
     public void RepositoryController_CreateRepositoryFile_ReturnCreateRepositoryFileResponse()
             throws Exception {
         String path = "some/github.com/path";
-        String gitHubAccessToken = "dummy_access_token";
-        CreateRepositoryFileRequest request = new CreateRepositoryFileRequest("owner",
-                repository.getRepoName(), path, gitHubAccessToken);
+        CreateRepositoryFileRequest request =
+                new CreateRepositoryFileRequest("owner", repository.getRepoName(), path, 1L);
 
         when(repositoryService.getRepositoryFile(request)).thenReturn("data");
 

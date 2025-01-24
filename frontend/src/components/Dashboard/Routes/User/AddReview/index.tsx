@@ -44,7 +44,7 @@ const AddReview = () => {
 
   useEffect(() => {
     if (!Session.getItem('github_access_token') && searchParams.has('verified')) {
-      Session.setItem(location.state.accessToken);
+      Session.setItem(location.state.githubId);
     }
   }, [location, searchParams]);
 

@@ -22,7 +22,7 @@ export interface IPackagePlan {
 
 const RepositoryList = () => {
   const navigate = useNavigate();
-  const accessToken = Session.getItem('github_access_token') ?? '';
+  const githubId = Session.getItem('github_access_token') ?? '';
   const token = retrieveTokens().token;
   const [page, setPage] = useState(1);
   const [comment, setComment] = useState('');
@@ -30,7 +30,10 @@ const RepositoryList = () => {
   const [repositories, setRepositories] = useState<IGitHubRepositoryPreview[]>([]);
   const [nextPageUrl, setNextPageUrl] = useState('');
   const [error, setError] = useState('');
-  const { data } = useFetchGitHubUserReposQuery({ token, accessToken, page }, { skip: !token || !accessToken });
+  const { data } = useFetchGitHubUserReposQuery(
+    { token, githubId: Number.parseInt(githubId), page },
+    { skip: !token || !githubId }
+  );
   const [packages, setPackages] = useState<IPackagePlan[]>([]);
   const [selectedPackagePrice, setSelectedPackagePrice] = useState('');
   const [paginateRepositories] = useLazyFetchGitHubUserReposQuery();
@@ -75,7 +78,7 @@ const RepositoryList = () => {
       if (nextPageUrl === '') return;
       setPage((prevState) => prevState + 1);
 
-      const response = await paginateRepositories({ token, page, accessToken }).unwrap();
+      const response = await paginateRepositories({ token, page, githubId: Number.parseInt(githubId) }).unwrap();
 
       setRepositories((prevState) => [...prevState, ...response.data.repositories]);
     } catch (err) {

@@ -22,6 +22,7 @@ import com.hart.overwatch.connectionpin.ConnectionPin;
 import com.hart.overwatch.customfield.CustomField;
 import com.hart.overwatch.favorite.Favorite;
 import com.hart.overwatch.feedbacktemplate.FeedbackTemplate;
+import com.hart.overwatch.githubtoken.GitHubToken;
 import com.hart.overwatch.label.Label;
 import com.hart.overwatch.location.Location;
 import com.hart.overwatch.notification.Notification;
@@ -325,9 +326,13 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<ReviewerBadge> reviewerBadges;
 
-        @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
             orphanRemoval = true)
     private List<FeedbackTemplate> feedbackTemplates;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<GitHubToken> githubTokens;
 
 
 
@@ -387,6 +392,10 @@ public class User implements UserDetails {
 
     public List<ReplyComment> getReplyComments() {
         return replyComments;
+    }
+
+    public List<GitHubToken> getGithubTokens() {
+        return githubTokens;
     }
 
     public List<Suggestion> getSuggestions() {
@@ -925,6 +934,10 @@ public class User implements UserDetails {
 
     public void setReviewerBadges(List<ReviewerBadge> reviewerBadges) {
         this.reviewerBadges = reviewerBadges;
+    }
+
+    public void setGithubTokens(List<GitHubToken> githubTokens) {
+        this.githubTokens = githubTokens;
     }
 
     @Override

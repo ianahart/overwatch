@@ -7,26 +7,25 @@ public class CreateRepositoryFileRequest {
 
     private String path;
 
-    private String accessToken;
+    private Long githubId;
 
     public CreateRepositoryFileRequest() {
 
     }
 
-    public CreateRepositoryFileRequest(String owner, String repoName, String path,
-            String accessToken) {
+    public CreateRepositoryFileRequest(String owner, String repoName, String path, Long githubId) {
         this.owner = owner;
         this.repoName = repoName;
         this.path = path;
-        this.accessToken = accessToken;
+        this.githubId = githubId;
     }
 
     public String getPath() {
         return path;
     }
 
-    public String getAccessToken() {
-        return accessToken;
+    public Long getGithubId() {
+        return githubId;
     }
 
     public String getOwner() {
@@ -49,7 +48,7 @@ public class CreateRepositoryFileRequest {
         this.repoName = repoName;
     }
 
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
+    public void setGithubId(Long githubId) {
+        this.githubId = githubId;
     }
 }

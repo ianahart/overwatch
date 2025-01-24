@@ -13,13 +13,12 @@ const githubApi = createApi({
   endpoints(builder) {
     return {
       fetchGitHubUserRepos: builder.query<IFetchGitHubUserReposResponse, IFetchGitHubUserReposRequest>({
-        query: ({ accessToken, token, page }) => {
+        query: ({ githubId, token, page }) => {
           return {
-            url: `/github/user/repos?page=${page}`,
+            url: `/github/user/repos?page=${page}&githubId=${githubId}`,
             method: 'GET',
             headers: {
               Authorization: `Bearer ${token}`,
-              'GitHub-Token': accessToken,
             },
           };
         },
