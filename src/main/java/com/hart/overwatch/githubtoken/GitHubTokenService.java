@@ -36,8 +36,10 @@ public class GitHubTokenService {
 
     public Long createGitHubToken(String accessToken) {
         User currentUser = userService.getCurrentlyLoggedInUser();
+        if (currentUser.getGithubTokens() != null || currentUser.getGithubTokens().size() > 0) {
+            deleteGitHubToken(currentUser.getId());
+        }
 
-        deleteGitHubToken(currentUser.getId());
         if (accessToken.isEmpty()) {
             throw new BadRequestException("Could not create Github token without access token");
         }
