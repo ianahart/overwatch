@@ -36,7 +36,7 @@ public class GitHubTokenService {
 
     public Long createGitHubToken(String accessToken) {
         User currentUser = userService.getCurrentlyLoggedInUser();
-        if (currentUser.getGithubTokens() != null || currentUser.getGithubTokens().size() > 0) {
+        if (currentUser.getGithubTokens() != null && currentUser.getGithubTokens().size() > 0) {
             deleteGitHubToken(currentUser.getId());
         }
 
