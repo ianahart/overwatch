@@ -2,6 +2,7 @@ package com.hart.overwatch.githubtoken;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.advice.BadRequestException;
@@ -34,11 +35,10 @@ public class GitHubTokenService {
     }
 
 
+    @Transactional
     public Long createGitHubToken(String accessToken) {
         User currentUser = userService.getCurrentlyLoggedInUser();
-        if (currentUser.getGithubTokens() != null && currentUser.getGithubTokens().size() > 0) {
-            deleteGitHubToken(currentUser.getId());
-        }
+        deleteGitHubToken(currentUser.getId());
 
         if (accessToken.isEmpty()) {
             throw new BadRequestException("Could not create Github token without access token");
