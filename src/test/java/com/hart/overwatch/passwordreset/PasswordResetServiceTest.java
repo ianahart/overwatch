@@ -1,9 +1,8 @@
 package com.hart.overwatch.passwordreset;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -18,8 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import com.hart.overwatch.advice.BadRequestException;
@@ -40,13 +37,13 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import java.io.IOException;
-import java.io.StringWriter;
+import java.io.Writer;
 import java.lang.reflect.Field;
 import java.util.Optional;
 import javax.crypto.SecretKey;
+import com.sendgrid.*;
+
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
@@ -59,13 +56,16 @@ public class PasswordResetServiceTest {
     JwtService jwtService;
 
     @Mock
+    private SendGrid sendGrid;
+
+    @Mock
     Configuration configuration;
 
     @Mock
-    JavaMailSender javaMailSender;
+    UserRepository userRepository;
 
     @Mock
-    UserRepository userRepository;
+    Template mockTemplate;
 
     @Mock
     UserService userService;
@@ -129,26 +129,33 @@ public class PasswordResetServiceTest {
 
     @Test
     public void PasswordResetService_SendForgotPasswordEmail_ReturnForgotPasswordResponse()
-            throws MessagingException, IOException, TemplateException {
-        ForgotPasswordRequest request = new ForgotPasswordRequest(user.getEmail());
+            throws IOException, TemplateException {
+        ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest();
+        forgotPasswordRequest.setEmail(user.getEmail());
 
-        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
-        when(jwtService.generateToken(any(User.class), anyLong())).thenReturn("token");
+        when(userRepository.findByEmail(forgotPasswordRequest.getEmail()))
+                .thenReturn(Optional.of(user));
 
-        MimeMessage mimeMessage = mock(MimeMessage.class);
-        when(javaMailSender.createMimeMessage()).thenReturn(mimeMessage);
+        Template mockTemplate = mock(Template.class);
+        when(configuration.getTemplate(anyString())).thenReturn(mockTemplate);
 
-        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
-        doNothing().when(javaMailSender).send(mimeMessage);
+        doAnswer(invocation -> {
+            Writer writer = invocation.getArgument(1);
+            writer.write("mock-email-content");
+            return null;
+        }).when(mockTemplate).process(any(), any(Writer.class));
 
-        Template template = mock(Template.class);
-        when(configuration.getTemplate(anyString())).thenReturn(template);
-        doNothing().when(template).process(anyMap(), any(StringWriter.class));
+        when(sendGrid.api(any(Request.class))).thenReturn(new Response(202, "", null));
 
-        ForgotPasswordResponse response = passwordResetService.sendForgotPasswordEmail(request);
+        ForgotPasswordResponse response =
+                passwordResetService.sendForgotPasswordEmail(forgotPasswordRequest);
 
         Assertions.assertThat(response.getMessage()).isEqualTo("Email sent successfully...");
-        verify(javaMailSender, times(1)).send(mimeMessage);
+
+        verify(userRepository).findByEmail(forgotPasswordRequest.getEmail());
+        verify(configuration).getTemplate(anyString());
+        verify(mockTemplate).process(any(), any(Writer.class));
+        verify(sendGrid).api(any(Request.class));
     }
 
     @Test

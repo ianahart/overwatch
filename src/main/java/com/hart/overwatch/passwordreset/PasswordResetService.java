@@ -37,8 +37,6 @@ import com.sendgrid.helpers.mail.objects.Email;
 
 @Service
 public class PasswordResetService {
-    @Value("${sendgrid.api.key}")
-    private String sendGridApiKey;
 
     @Value("${secretkey}")
     private String secretKey;
@@ -46,6 +44,7 @@ public class PasswordResetService {
     @Value("${DEFAULT_TTL}")
     private Long DEFAULT_TTL;
 
+    private final SendGrid sendGrid;
     private final JwtService jwtService;
     private final Configuration configuration;
     private final UserRepository userRepository;
@@ -56,7 +55,7 @@ public class PasswordResetService {
     @Autowired
     public PasswordResetService(JwtService jwtService, Configuration configuration,
             UserRepository userRepository, PasswordResetRepository passwordResetRepository,
-            UserService userService, PasswordEncoder passwordEncoder) {
+            UserService userService, PasswordEncoder passwordEncoder, SendGrid sendGrid) {
 
         this.jwtService = jwtService;
         this.configuration = configuration;
@@ -64,6 +63,7 @@ public class PasswordResetService {
         this.passwordResetRepository = passwordResetRepository;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
+        this.sendGrid = sendGrid;
     }
 
     @Value("${emailsender}")
@@ -96,14 +96,13 @@ public class PasswordResetService {
         Content content = new Content("text/html", emailContent);
         Mail mail = new Mail(from, subject, to, content);
 
-        SendGrid sg = new SendGrid(sendGridApiKey);
         Request request = new Request();
         try {
             System.out.println("test");
             request.setMethod(Method.POST);
             request.setEndpoint("mail/send");
             request.setBody(mail.build());
-            Response response = sg.api(request);
+            Response response = sendGrid.api(request);
 
             if (response.getStatusCode() != 202) {
                 throw new IOException("Failed to send email. Response: " + response.getBody());
