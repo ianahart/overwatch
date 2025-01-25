@@ -14,11 +14,15 @@ import com.sendgrid.helpers.mail.objects.Email;
 @Service
 public class EmailSender {
 
-    @Value("${sendgrid.api.key}")
-    private String sendGridApiKey;
 
     @Value("${emailsender}")
     private String fromSender;
+
+    private final SendGrid sendGrid;
+
+    public EmailSender(SendGrid sendGrid) {
+        this.sendGrid = sendGrid;
+    }
 
 
     public void sendEmail(EmailRequest emailRequest) {
@@ -29,7 +33,6 @@ public class EmailSender {
 
         Mail mail = new Mail(from, subject, to, content);
 
-        SendGrid sg = new SendGrid(sendGridApiKey);
         Request request = new Request();
 
         try {
@@ -37,7 +40,7 @@ public class EmailSender {
             request.setEndpoint("mail/send");
             request.setBody(mail.build());
 
-            Response response = sg.api(request);
+            Response response = sendGrid.api(request);
             System.out.println();
             System.out.println("Status Code: " + response.getStatusCode());
             System.out.printf("Sending email to: %s, Subject: %s%n", emailRequest.getTo(),
