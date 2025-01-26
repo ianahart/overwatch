@@ -271,12 +271,11 @@ public class RepositoryControllerTest {
     @Test
     public void RepositoryController_GetRepositoryReview_ReturnGetRepositoryReviewResponse()
             throws Exception {
-        String gitHubAccessToken = "dummy_access_token";
         when(repositoryService.getRepositoryReview(repository.getId(), 1L, 0, 3))
                 .thenReturn(new RepositoryContentsDto());
 
         ResultActions response = mockMvc.perform(get("/api/v1/repositories/1")
-                .header("GitHub-Token", gitHubAccessToken).param("page", "0").param("size", "3")
+                .param("githubId", "1").param("page", "0").param("size", "3")
                 .contentType(MediaType.APPLICATION_JSON));
 
         response.andExpect(MockMvcResultMatchers.status().isOk())

@@ -61,23 +61,25 @@ public class GitHubControllerTest {
     }
 
     @Test
-    public void GitHubController_GetAccessToken_Return_FetchGitHubAccessTokenResponse() throws Exception {
-        when(gitHubService.getAccessToken("dummy_code")).thenReturn(1L);
+    public void GitHubController_GetAccessToken_Return_FetchGitHubAccessTokenResponse()
+            throws Exception {
+        Long githubId = 1L;
+        when(gitHubService.getAccessToken("dummy_code")).thenReturn(githubId);
 
         ResultActions response = mockMvc.perform(get("/api/v1/github/auth")
-            .contentType(MediaType.APPLICATION_JSON)
-            .param("code", "dummy_code"));
+                .contentType(MediaType.APPLICATION_JSON).param("code", "dummy_code"));
 
         response.andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.accessToken", CoreMatchers.is("dummy_token")));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.githubId",
+                        CoreMatchers.is(githubId.intValue())));
     }
 
     @Test
     public void GitHubController_GetUserRepos_ReturnFetchGitHubUserReposResponse() throws Exception {
         when(gitHubService.getUserRepos(1L, 1)).thenReturn(gitHubPaginationDto);
 
-        ResultActions response = mockMvc.perform(get("/api/v1/github/user/repos").contentType(MediaType.APPLICATION_JSON).header("GitHub-Token", "dummy_token").param("page", "1"));
+        ResultActions response = mockMvc.perform(get("/api/v1/github/user/repos").contentType(MediaType.APPLICATION_JSON).header("GitHub-Token", "dummy_token").param("page", "1").param("githubId", "1"));
 
         response.andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))

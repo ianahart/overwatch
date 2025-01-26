@@ -24,6 +24,7 @@ import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.github.GitHubService;
 import com.hart.overwatch.github.dto.GitHubTreeDto;
 import com.hart.overwatch.github.dto.GitHubTreeNodeDto;
+import com.hart.overwatch.githubtoken.GitHubTokenService;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
@@ -51,6 +52,9 @@ public class RepositoryServiceTest {
 
     @Mock
     PaginationService paginationService;
+
+    @Mock
+    GitHubTokenService gitHubTokenService;
 
     @Mock
     GitHubService gitHubService;
@@ -385,6 +389,7 @@ public class RepositoryServiceTest {
         repositoryContentsDto.setRepository(fullRepositoryDto);
         repositoryContentsDto.setContents(gitHubTreeDto);
 
+        when(gitHubTokenService.getGitHubToken(1L)).thenReturn("dummy_github_access_token");
         when(repositoryRepository.findById(repository.getId())).thenReturn(Optional.of(repository));
         when(gitHubService.getRepository(repository.getRepoName(), "dummy_github_access_token", 1,
                 10)).thenReturn(gitHubTreeDto);

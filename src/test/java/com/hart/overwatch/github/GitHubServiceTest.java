@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.hart.overwatch.github.dto.GitHubPaginationDto;
 import com.hart.overwatch.github.dto.GitHubRepositoryDto;
 import com.hart.overwatch.github.dto.GitHubTreeDto;
+import com.hart.overwatch.githubtoken.GitHubTokenService;
 import org.springframework.test.util.ReflectionTestUtils;
 import okhttp3.Call;
 import okhttp3.MediaType;
@@ -35,6 +36,9 @@ public class GitHubServiceTest {
 
     @Mock
     private OkHttpClient mockClient;
+
+    @Mock
+    private GitHubTokenService gitHubTokenService;
 
     @Mock
     private Call mockCall;
@@ -68,6 +72,7 @@ public class GitHubServiceTest {
 
         when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
         when(mockCall.execute()).thenReturn(mockResponse);
+        when(gitHubTokenService.createGitHubToken("dummy_token")).thenReturn(1L);
 
         Long accessToken = gitHubService.getAccessToken("dummy_token");
 
@@ -79,7 +84,6 @@ public class GitHubServiceTest {
 
     @Test
     public void GitHubService_GetUserRepos_ReturnGitHubPaginationDto() throws IOException {
-        String accessToken = "dummy_token";
         int page = 1;
         String linkHeader = "<https://api.github.com/user/repos?page=2>; rel=\"next\"";
         String responseBody =
@@ -88,6 +92,7 @@ public class GitHubServiceTest {
                         .put("html_url", "http://repository.url").put("language", "Java")
                         .put("stargazers_count", 100)).toString();
 
+        when(gitHubTokenService.getGitHubToken(1L)).thenReturn("dummy_token");
         when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
         when(mockCall.execute()).thenReturn(mockResponse);
         when(mockResponse.isSuccessful()).thenReturn(true);
