@@ -87,6 +87,27 @@ public class FeedbackTemplateServiceTest {
                 .hasMessage(String.format("You cannot exceed %d template limit", TEMPLATE_LIMIT));
     }
 
+    @Test
+    public void FeedbackTemplateService_CreateFeedbackTemplate_ReturnNothing() {
+        CreateFeedbackTemplateRequest request = new CreateFeedbackTemplateRequest();
+        request.setUserId(user.getId());
+        request.setFeedback("new feedback");
+
+        when(feedbackTemplateRepository.countFeedbackTemplatesByUserId(user.getId()))
+                .thenReturn(TEMPLATE_LIMIT - 1);
+        when(userService.getUserById(request.getUserId())).thenReturn(user);
+
+        FeedbackTemplate newFeedbackTemplate = new FeedbackTemplate(request.getFeedback(), user);
+
+        when(feedbackTemplateRepository.save(any(FeedbackTemplate.class)))
+                .thenReturn(newFeedbackTemplate);
+
+        feedbackTemplateService.createFeedbackTemplate(request);
+
+        Assertions.assertThatNoException();
+        verify(feedbackTemplateRepository, times(1)).save(any(FeedbackTemplate.class));
+    }
+
 
 }
 
