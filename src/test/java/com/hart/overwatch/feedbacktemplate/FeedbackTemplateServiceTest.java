@@ -191,7 +191,20 @@ public class FeedbackTemplateServiceTest {
 
         Assertions.assertThatThrownBy(() -> {
             feedbackTemplateService.deleteFeedbackTemplate(feedbackTemplates.get(0).getId());
-        }).isInstanceOf(ForbiddenException.class).hasMessage("Cannot delete another user's feedback template");
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("Cannot delete another user's feedback template");
+    }
+
+    @Test
+    public void FeedbackTemplateService_DeleteFeedbackTemplate_ReturnNothing() {
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+        when(feedbackTemplateRepository.findById(feedbackTemplates.get(0).getId()))
+                .thenReturn(Optional.of(feedbackTemplates.get(0)));
+
+        doNothing().when(feedbackTemplateRepository).delete(feedbackTemplates.get(0));
+
+        feedbackTemplateService.deleteFeedbackTemplate(feedbackTemplates.get(0).getId());
+        verify(feedbackTemplateRepository, times(1)).delete(feedbackTemplates.get(0));
     }
 
 }
