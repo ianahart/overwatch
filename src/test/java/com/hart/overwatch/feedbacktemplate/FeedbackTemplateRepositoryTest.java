@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import com.hart.overwatch.config.DatabaseSetupService;
+import com.hart.overwatch.feedbacktemplate.dto.MinFeedbackTemplateDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.topic.Topic;
@@ -96,7 +97,19 @@ public class FeedbackTemplateRepositoryTest {
         int count = feedbackTemplateRepository.countFeedbackTemplatesByUserId(userId);
 
         Assertions.assertThat(count).isEqualTo(2);
+    }
 
+    @Test
+    public void FeedbackTemplateRepository_GetFeedbackTemplates_ReturnListOfMinFeedbackTemplateDto() {
+        Long userId = user.getId();
+        List<MinFeedbackTemplateDto> feedbackTemplateDtos =
+                feedbackTemplateRepository.getFeedbackTemplates(userId);
+
+        Assertions.assertThat(feedbackTemplateDtos).hasSize(2);
+
+        for (MinFeedbackTemplateDto feedbackTemplateDto : feedbackTemplateDtos) {
+            Assertions.assertThat(feedbackTemplateDto.getUserId()).isEqualTo(userId);
+        }
     }
 
 }
