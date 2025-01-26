@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.assertj.core.api.Assertions;
@@ -15,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.hart.overwatch.advice.BadRequestException;
+import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.feedbacktemplate.request.CreateFeedbackTemplateRequest;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
@@ -115,6 +117,20 @@ public class FeedbackTemplateServiceTest {
         Assertions.assertThatThrownBy(() -> {
             feedbackTemplateService.getFeedbackTemplate(feedbackTemplateId);
         }).isInstanceOf(BadRequestException.class).hasMessage("Missing feedback template id");
+    }
+
+    @Test
+    public void FeedbackTemplateService_GetFeedbackTemplate_ThrowForbiddenException() {
+        FeedbackTemplate feedbackTemplate = feedbackTemplates.get(0);
+        User forbiddenUser = new User();
+        forbiddenUser.setId(2L);
+
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(forbiddenUser);
+        when(feedbackTemplateRepository.findById(feedbackTemplate.getId())).thenReturn(Optional.of(feedbackTemplate));
+
+        Assertions.assertThatThrownBy(() -> {
+             feedbackTemplateService.getFeedbackTemplate(feedbackTemplate.getId());
+        }).isInstanceOf(ForbiddenException.class).hasMessage("Cannot access another user's feedback template");
     }
 
 }
