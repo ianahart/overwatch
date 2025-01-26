@@ -36,6 +36,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matchers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -147,6 +148,18 @@ public class FeedbackTemplateControllerTest {
                         CoreMatchers.is(feedbackTemplate.getUser().getId().intValue())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.feedback",
                         CoreMatchers.is(feedbackTemplate.getFeedback())));
+    }
+
+    @Test
+    public void FeedbackTemplateController_GetAllFeedbackTemplates_ReturnGetAllFeedbackTemplateResponse()
+            throws Exception {
+        List<MinFeedbackTemplateDto> minFeedbackTemplateDtos = convertToDtos(feedbackTemplates);
+        when(feedbackTemplateService.getFeedbackTemplates()).thenReturn(minFeedbackTemplateDtos);
+
+        ResultActions response = mockMvc.perform(get("/api/v1/feedback-templates"));
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data", Matchers.hasSize(2)));
     }
 
 
