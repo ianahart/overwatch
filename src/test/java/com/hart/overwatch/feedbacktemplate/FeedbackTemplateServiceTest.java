@@ -108,6 +108,14 @@ public class FeedbackTemplateServiceTest {
         verify(feedbackTemplateRepository, times(1)).save(any(FeedbackTemplate.class));
     }
 
+    @Test
+    public void FeedbackTemplateService_GetFeedbackTemplate_ThrowBadRequestException() {
+        Long feedbackTemplateId = null;
+
+        Assertions.assertThatThrownBy(() -> {
+            feedbackTemplateService.getFeedbackTemplate(feedbackTemplateId);
+        }).isInstanceOf(BadRequestException.class).hasMessage("Missing feedback template id");
+    }
 
 }
 
