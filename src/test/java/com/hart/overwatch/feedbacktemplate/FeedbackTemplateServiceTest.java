@@ -179,7 +179,19 @@ public class FeedbackTemplateServiceTest {
             Assertions.assertThat(minFeedbackTemplateDtos.get(i).getUserId())
                     .isEqualTo(feedbackTemplates.get(i).getUser().getId());
         }
+    }
 
+    @Test
+    public void FeedbackTemplateService_DeleteFeedbackTemplate_ThrowForbiddenException() {
+        User forbiddenUser = new User();
+        forbiddenUser.setId(2L);
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(forbiddenUser);
+        when(feedbackTemplateRepository.findById(feedbackTemplates.get(0).getId()))
+                .thenReturn(Optional.of(feedbackTemplates.get(0)));
+
+        Assertions.assertThatThrownBy(() -> {
+            feedbackTemplateService.deleteFeedbackTemplate(feedbackTemplates.get(0).getId());
+        }).isInstanceOf(ForbiddenException.class).hasMessage("Cannot delete another user's feedback template");
     }
 
 }
