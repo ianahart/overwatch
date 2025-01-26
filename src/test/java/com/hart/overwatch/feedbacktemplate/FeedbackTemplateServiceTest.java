@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.feedbacktemplate.dto.FeedbackTemplateDto;
+import com.hart.overwatch.feedbacktemplate.dto.MinFeedbackTemplateDto;
 import com.hart.overwatch.feedbacktemplate.request.CreateFeedbackTemplateRequest;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
@@ -63,6 +65,12 @@ public class FeedbackTemplateServiceTest {
             feedbackTemplateEntities.add(feedbackTemplateEntity);
         }
         return feedbackTemplateEntities;
+    }
+
+    private List<MinFeedbackTemplateDto> convertToDtos(List<FeedbackTemplate> feedbackTemplates) {
+        return feedbackTemplates.stream()
+                .map(v -> new MinFeedbackTemplateDto(v.getId(), v.getUser().getId()))
+                .collect(Collectors.toList());
     }
 
 
@@ -150,6 +158,28 @@ public class FeedbackTemplateServiceTest {
                 .isEqualTo(feedbackTemplate.getUser().getId());
         Assertions.assertThat(feedbackTemplateDto.getFeedback())
                 .isEqualTo(feedbackTemplate.getFeedback());
+    }
+
+    @Test
+    public void FeedbackTemplateService_GetFeedbackTemplates_ReturnListOfMinFeedbackTemplateDtos() {
+        Long userId = user.getId();
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+
+        when(feedbackTemplateRepository.getFeedbackTemplates(userId))
+                .thenReturn(convertToDtos(feedbackTemplates));
+
+        List<MinFeedbackTemplateDto> minFeedbackTemplateDtos =
+                feedbackTemplateService.getFeedbackTemplates();
+
+        Assertions.assertThat(minFeedbackTemplateDtos).hasSize(2);
+
+        for (int i = 0; i < minFeedbackTemplateDtos.size(); i++) {
+            Assertions.assertThat(minFeedbackTemplateDtos.get(i).getId())
+                    .isEqualTo(feedbackTemplates.get(i).getId());
+            Assertions.assertThat(minFeedbackTemplateDtos.get(i).getUserId())
+                    .isEqualTo(feedbackTemplates.get(i).getUser().getId());
+        }
+
     }
 
 }
