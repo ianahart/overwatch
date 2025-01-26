@@ -115,7 +115,8 @@ public class FeedbackTemplateRepositoryTest {
     public void FeedbackTemplateRepository_GetFeedbackTemplate_ReturnFeedbackTemplateDto() {
         Long feedbackTemplateId = feedbackTemplates.get(0).getId();
 
-        FeedbackTemplateDto feedbackTemplateDto = feedbackTemplateRepository.getFeedbackTemplate(feedbackTemplateId);
+        FeedbackTemplateDto feedbackTemplateDto =
+                feedbackTemplateRepository.getFeedbackTemplate(feedbackTemplateId);
 
         Assertions.assertThat(feedbackTemplateDto).isNotNull();
         Assertions.assertThat(feedbackTemplateDto.getId()).isEqualTo(feedbackTemplateId);
