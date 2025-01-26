@@ -2,7 +2,6 @@ package com.hart.overwatch.feedbacktemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,11 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import com.hart.overwatch.config.DatabaseSetupService;
+import com.hart.overwatch.feedbacktemplate.dto.FeedbackTemplateDto;
 import com.hart.overwatch.feedbacktemplate.dto.MinFeedbackTemplateDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
-import com.hart.overwatch.topic.Topic;
-import com.hart.overwatch.topic.TopicRepository;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserRepository;
@@ -107,11 +105,21 @@ public class FeedbackTemplateRepositoryTest {
 
         Assertions.assertThat(feedbackTemplateDtos).hasSize(2);
 
-        for (MinFeedbackTemplateDto feedbackTemplateDto : feedbackTemplateDtos) {
-            Assertions.assertThat(feedbackTemplateDto.getUserId()).isEqualTo(userId);
+        for (int i = 0; i < feedbackTemplateDtos.size(); i++) {
+            Assertions.assertThat(feedbackTemplateDtos.get(i).getUserId())
+                    .isEqualTo(feedbackTemplates.get(i).getUser().getId());
         }
     }
 
+    @Test
+    public void FeedbackTemplateRepository_GetFeedbackTemplate_ReturnFeedbackTemplateDto() {
+        Long feedbackTemplateId = feedbackTemplates.get(0).getId();
+
+        FeedbackTemplateDto feedbackTemplateDto = feedbackTemplateRepository.getFeedbackTemplate(feedbackTemplateId);
+
+        Assertions.assertThat(feedbackTemplateDto).isNotNull();
+        Assertions.assertThat(feedbackTemplateDto.getId()).isEqualTo(feedbackTemplateId);
+    }
 }
 
 
