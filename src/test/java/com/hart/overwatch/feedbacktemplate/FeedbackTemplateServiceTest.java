@@ -14,22 +14,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.hart.overwatch.github.dto.GitHubPaginationDto;
-import com.hart.overwatch.github.dto.GitHubRepositoryDto;
-import com.hart.overwatch.github.dto.GitHubTreeDto;
-import com.hart.overwatch.githubtoken.GitHubTokenService;
+import com.hart.overwatch.advice.BadRequestException;
+import com.hart.overwatch.feedbacktemplate.request.CreateFeedbackTemplateRequest;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
-import org.springframework.test.util.ReflectionTestUtils;
-import okhttp3.Call;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
@@ -45,6 +36,8 @@ public class FeedbackTemplateServiceTest {
 
     @Mock
     private UserService userService;
+
+    private final int TEMPLATE_LIMIT = 5;
 
     private User user;
 
@@ -79,6 +72,20 @@ public class FeedbackTemplateServiceTest {
         feedbackTemplates = createFeedbackTemplates(user);
     }
 
+    @Test
+    public void FeedbackTemplateService_CreateFeedbackTemplate_ThrowBadRequestException() {
+        CreateFeedbackTemplateRequest request = new CreateFeedbackTemplateRequest();
+        request.setUserId(user.getId());
+        request.setFeedback("feedback text");
+
+        when(feedbackTemplateRepository.countFeedbackTemplatesByUserId(user.getId()))
+                .thenReturn(TEMPLATE_LIMIT + 1);
+
+        Assertions.assertThatThrownBy(() -> {
+            feedbackTemplateService.createFeedbackTemplate(request);
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage(String.format("You cannot exceed %d template limit", TEMPLATE_LIMIT));
+    }
 
 
 }
