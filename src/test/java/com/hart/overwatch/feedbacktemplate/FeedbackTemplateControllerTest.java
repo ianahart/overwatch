@@ -5,8 +5,6 @@ import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.feedbacktemplate.dto.FeedbackTemplateDto;
 import com.hart.overwatch.feedbacktemplate.dto.MinFeedbackTemplateDto;
 import com.hart.overwatch.feedbacktemplate.request.CreateFeedbackTemplateRequest;
-import com.hart.overwatch.github.dto.GitHubPaginationDto;
-import com.hart.overwatch.github.dto.GitHubRepositoryDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.token.TokenRepository;
