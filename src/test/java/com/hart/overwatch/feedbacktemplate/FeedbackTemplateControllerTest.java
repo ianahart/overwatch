@@ -1,7 +1,9 @@
 package com.hart.overwatch.feedbacktemplate;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.config.JwtService;
 import com.hart.overwatch.feedbacktemplate.dto.MinFeedbackTemplateDto;
+import com.hart.overwatch.feedbacktemplate.request.CreateFeedbackTemplateRequest;
 import com.hart.overwatch.github.dto.GitHubPaginationDto;
 import com.hart.overwatch.github.dto.GitHubRepositoryDto;
 import com.hart.overwatch.profile.Profile;
@@ -24,9 +26,14 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import org.hamcrest.CoreMatchers;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +60,9 @@ public class FeedbackTemplateControllerTest {
 
     @MockBean
     private TokenRepository tokenRepository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     private User user;
 
@@ -91,6 +101,27 @@ public class FeedbackTemplateControllerTest {
     public void setUp() {
         user = createUser();
         feedbackTemplates = createFeedbackTemplates(user);
+    }
+
+
+    @Test
+    public void FeedbackTemplateController_CreateFeedbackTemplate_ReturnCreateFeedbackTemplateResponse()
+            throws Exception {
+        CreateFeedbackTemplateRequest request = new CreateFeedbackTemplateRequest();
+        request.setUserId(user.getId());
+        request.setFeedback("new feedback");
+
+        doNothing().when(feedbackTemplateService)
+                .createFeedbackTemplate(any(CreateFeedbackTemplateRequest.class));
+
+        ResultActions response = mockMvc
+                .perform(post("/api/v1/feedback-templates").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+        response.andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+
+        verify(feedbackTemplateService, times(1))
+                .createFeedbackTemplate(any(CreateFeedbackTemplateRequest.class));
     }
 
 
