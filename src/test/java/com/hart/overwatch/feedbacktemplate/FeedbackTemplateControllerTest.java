@@ -2,6 +2,7 @@ package com.hart.overwatch.feedbacktemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.config.JwtService;
+import com.hart.overwatch.feedbacktemplate.dto.FeedbackTemplateDto;
 import com.hart.overwatch.feedbacktemplate.dto.MinFeedbackTemplateDto;
 import com.hart.overwatch.feedbacktemplate.request.CreateFeedbackTemplateRequest;
 import com.hart.overwatch.github.dto.GitHubPaginationDto;
@@ -122,6 +123,30 @@ public class FeedbackTemplateControllerTest {
 
         verify(feedbackTemplateService, times(1))
                 .createFeedbackTemplate(any(CreateFeedbackTemplateRequest.class));
+    }
+
+    @Test
+    public void FeedbackTemplateController_GetFeedbackTemplate_ReturnGetFeedbackTemplateResponse()
+            throws Exception {
+        FeedbackTemplate feedbackTemplate = feedbackTemplates.get(0);
+        FeedbackTemplateDto feedbackTemplateDto = new FeedbackTemplateDto();
+        feedbackTemplateDto.setId(feedbackTemplate.getId());
+        feedbackTemplateDto.setUserId(feedbackTemplate.getUser().getId());
+        feedbackTemplateDto.setFeedback(feedbackTemplate.getFeedback());
+
+        when(feedbackTemplateService.getFeedbackTemplate(feedbackTemplate.getId()))
+                .thenReturn(feedbackTemplateDto);
+
+        ResultActions response = mockMvc.perform(get("/api/v1/feedback-templates/1"));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.id",
+                        CoreMatchers.is(feedbackTemplate.getId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.userId",
+                        CoreMatchers.is(feedbackTemplate.getUser().getId().intValue())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.feedback",
+                        CoreMatchers.is(feedbackTemplate.getFeedback())));
     }
 
 
