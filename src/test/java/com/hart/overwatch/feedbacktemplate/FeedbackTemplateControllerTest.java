@@ -162,6 +162,18 @@ public class FeedbackTemplateControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data", Matchers.hasSize(2)));
     }
 
+    @Test
+    public void FeedbackTemplateController_DeleteFeedbackTemplate_ReturnDeleteFeedbackResponse()
+            throws Exception {
+        Long feedbackTemplateId = feedbackTemplates.get(0).getId();
+        doNothing().when(feedbackTemplateService).deleteFeedbackTemplate(feedbackTemplateId);
+
+        ResultActions response = mockMvc.perform(delete("/api/v1/feedback-templates/1"));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+    }
+
 
 }
 
