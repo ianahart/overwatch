@@ -2,12 +2,9 @@ package com.hart.overwatch.feedbacktemplate;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
+import com.hart.overwatch.feedbacktemplate.dto.FeedbackTemplateDto;
 import com.hart.overwatch.feedbacktemplate.request.CreateFeedbackTemplateRequest;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
@@ -126,11 +124,32 @@ public class FeedbackTemplateServiceTest {
         forbiddenUser.setId(2L);
 
         when(userService.getCurrentlyLoggedInUser()).thenReturn(forbiddenUser);
-        when(feedbackTemplateRepository.findById(feedbackTemplate.getId())).thenReturn(Optional.of(feedbackTemplate));
+        when(feedbackTemplateRepository.findById(feedbackTemplate.getId()))
+                .thenReturn(Optional.of(feedbackTemplate));
 
         Assertions.assertThatThrownBy(() -> {
-             feedbackTemplateService.getFeedbackTemplate(feedbackTemplate.getId());
-        }).isInstanceOf(ForbiddenException.class).hasMessage("Cannot access another user's feedback template");
+            feedbackTemplateService.getFeedbackTemplate(feedbackTemplate.getId());
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("Cannot access another user's feedback template");
+    }
+
+    @Test
+    public void FeedbackTemplateService_GetFeedbackTemplate_ReturnFeedbackTemplateDto() {
+        FeedbackTemplate feedbackTemplate = feedbackTemplates.get(0);
+
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+        when(feedbackTemplateRepository.findById(feedbackTemplate.getId()))
+                .thenReturn(Optional.of(feedbackTemplate));
+
+        FeedbackTemplateDto feedbackTemplateDto =
+                feedbackTemplateService.getFeedbackTemplate(feedbackTemplate.getId());
+
+        Assertions.assertThat(feedbackTemplateDto).isNotNull();
+        Assertions.assertThat(feedbackTemplateDto.getId()).isEqualTo(feedbackTemplate.getId());
+        Assertions.assertThat(feedbackTemplateDto.getUserId())
+                .isEqualTo(feedbackTemplate.getUser().getId());
+        Assertions.assertThat(feedbackTemplateDto.getFeedback())
+                .isEqualTo(feedbackTemplate.getFeedback());
     }
 
 }
