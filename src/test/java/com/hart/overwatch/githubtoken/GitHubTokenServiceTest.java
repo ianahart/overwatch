@@ -2,10 +2,7 @@ package com.hart.overwatch.githubtoken;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +12,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
-import com.hart.overwatch.github.GitHubService;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.user.Role;
@@ -124,6 +120,20 @@ public class GitHubTokenServiceTest {
         }).isInstanceOf(ForbiddenException.class)
                 .hasMessage("Cannot use another user's github token");
     }
+
+
+    @Test
+    public void GitHubTokenService_GetGitHubToken_ReturnStringToken() {
+
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+        when(gitHubTokenRepository.findById(gitHubToken.getId()))
+                .thenReturn(Optional.of(gitHubToken));
+
+        String accessToken = gitHubTokenService.getGitHubToken(gitHubToken.getId());
+
+        Assertions.assertThat(accessToken).isEqualTo(gitHubToken.getAccessToken());
+    }
+
 
 }
 
