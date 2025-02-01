@@ -110,6 +110,21 @@ public class GitHubTokenServiceTest {
         Assertions.assertThat(gitHubTokenId).isEqualTo(2L);
     }
 
+    @Test
+    public void GitHubTokenService_GetGitHubToken_ThrowForbiddenException() {
+        User forbiddenUser = new User();
+        forbiddenUser.setId(2L);
+
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(forbiddenUser);
+        when(gitHubTokenRepository.findById(gitHubToken.getId()))
+                .thenReturn(Optional.of(gitHubToken));
+
+        Assertions.assertThatThrownBy(() -> {
+            gitHubTokenService.getGitHubToken(gitHubToken.getId());
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("Cannot use another user's github token");
+    }
+
 }
 
 
