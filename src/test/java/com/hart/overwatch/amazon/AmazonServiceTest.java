@@ -89,6 +89,21 @@ public class AmazonServiceTest {
         Assertions.assertThat(result.get("objectUrl")).isEqualTo(expectedUrl);
     }
 
+    @Test
+    public void AmazonService_DeleteBucketObject_ReturnNothing() {
+        String bucketName = "test-bucket";
+        String objectName = "testFile.txt";
+
+        DeleteObjectResponse mockDeleteObjectResponse = DeleteObjectResponse.builder().build();
+
+        when(s3Client.deleteObject(any(DeleteObjectRequest.class)))
+                .thenReturn(mockDeleteObjectResponse);
+
+        amazonService.deleteBucketObject(bucketName, objectName);
+
+        verify(s3Client).deleteObject(
+                eq(DeleteObjectRequest.builder().bucket(bucketName).key(objectName).build()));
+    }
 }
 
 
