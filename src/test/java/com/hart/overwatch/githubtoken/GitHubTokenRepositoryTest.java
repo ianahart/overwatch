@@ -87,7 +87,7 @@ public class GitHubTokenRepositoryTest {
         gitHubTokenRepository.deleteByUserId(user.getId());
 
         Assertions.assertThat(gitHubTokenRepository.findAll().isEmpty());
-    } 
+    }
 }
 
 
