@@ -88,9 +88,27 @@ public class GitHubTokenServiceTest {
 
         Assertions.assertThatThrownBy(() -> {
             gitHubTokenService.createGitHubToken(accessToken);
-        }).isInstanceOf(BadRequestException.class).hasMessage("Could not create Github token without access token");
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage("Could not create Github token without access token");
     }
 
+    @Test
+    public void GitHubTokenService_CreateGitHubToken_Return_Long() {
+        String accessToken = "dummy_access_token";
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(user);
+        doNothing().when(gitHubTokenRepository).deleteByUserId(user.getId());
+
+        when(gitHubTokenRepository.save(any(GitHubToken.class))).thenAnswer(invocation -> {
+            GitHubToken savedToken = invocation.getArgument(0);
+            savedToken.setId(2L);
+            return savedToken;
+        });
+        Long gitHubTokenId = gitHubTokenService.createGitHubToken(accessToken);
+
+        verify(gitHubTokenRepository, times(1)).save(any(GitHubToken.class));
+
+        Assertions.assertThat(gitHubTokenId).isEqualTo(2L);
+    }
 
 }
 
