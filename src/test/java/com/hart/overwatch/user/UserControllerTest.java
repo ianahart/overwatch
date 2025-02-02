@@ -17,10 +17,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -41,16 +41,16 @@ public class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private UserService userService;
 
-    @MockBean
+    @MockitoBean
     private JwtService jwtService;
 
-    @MockBean
+    @MockitoBean
     private UserDetailsService userDetailsService;
 
-    @MockBean
+    @MockitoBean
     private TokenRepository tokenRepository;
 
     @Autowired
@@ -66,20 +66,23 @@ public class UserControllerTest {
         setting.setId(1L);
         profile.setId(1L);
         profile.setAvatarUrl("http://example.com/avatar.jpg");
-        user = new User("john@mail.com", "John", "Doe", "John Doe", Role.USER, loggedIn,
-                profile, "Test12345%", setting);
+        user = new User("john@mail.com", "John", "Doe", "John Doe", Role.USER, loggedIn, profile,
+                "Test12345%", setting);
 
         user.setId(1L);
 
     }
 
     @Test
-    public void UserController_UpdateUserPassword_ReturnUpdateUserPasswordResponse() throws Exception {
+    public void UserController_UpdateUserPassword_ReturnUpdateUserPasswordResponse()
+            throws Exception {
         String currentPassword = "Test12345%";
         String newPassword = "Test12345%%";
-        UpdateUserPasswordRequest request = new UpdateUserPasswordRequest(currentPassword, newPassword);
+        UpdateUserPasswordRequest request =
+                new UpdateUserPasswordRequest(currentPassword, newPassword);
 
-        doNothing().when(userService).updateUserPassword(currentPassword, newPassword, user.getId());
+        doNothing().when(userService).updateUserPassword(currentPassword, newPassword,
+                user.getId());
 
         ResultActions response = mockMvc
                 .perform(patch("/api/v1/users/1/password").contentType(MediaType.APPLICATION_JSON)
@@ -101,8 +104,9 @@ public class UserControllerTest {
 
         when(userService.updateUser(request, user.getId())).thenReturn(updateUserDto);
 
-        ResultActions response = mockMvc.perform(patch("/api/v1/users/1").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)));
+        ResultActions response =
+                mockMvc.perform(patch("/api/v1/users/1").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
 
         response.andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
@@ -116,8 +120,9 @@ public class UserControllerTest {
 
         doNothing().when(userService).deleteUser(user.getId(), deleteUserRequest.getPassword());
 
-        ResultActions response = mockMvc.perform(post("/api/v1/users/1/delete").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(deleteUserRequest)));
+        ResultActions response = mockMvc
+                .perform(post("/api/v1/users/1/delete").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(deleteUserRequest)));
 
         response.andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))

@@ -4,7 +4,6 @@ import java.util.List;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,27 +69,6 @@ public class ActiveLabelRepositoryTest {
 
     private ActiveLabel activeLabel;
 
-    @BeforeEach
-    public void setUp() {
-        user = generateUser();
-        userRepository.save(user);
-
-        workSpace = generatedWorkSpace(user);
-        workSpaceRepository.save(workSpace);
-
-        TodoList todoList = generateTodoList(user, workSpace);
-
-        todoListRepository.save(todoList);
-
-        todoCard = generateTodoCard(user, todoList);
-        todoCardRepository.save(todoCard);
-
-        labels = generateLabels(user, workSpace);
-        labelRepository.saveAll(labels);
-
-        activeLabel = generateActiveLabel(labels.get(0), todoCard);
-        activeLabelRepository.save(activeLabel);
-    }
 
     private TodoList generateTodoList(User user, WorkSpace workSpace) {
         TodoList todoList = new TodoList();
@@ -99,7 +77,7 @@ public class ActiveLabelRepositoryTest {
         todoList.setTitle("title");
         todoList.setIndex(0);
 
-        return todoList;
+        return todoListRepository.save(todoList);
     }
 
     private ActiveLabel generateActiveLabel(Label label, TodoCard todoCard) {
@@ -107,7 +85,7 @@ public class ActiveLabelRepositoryTest {
         activeLabel.setLabel(label);
         activeLabel.setTodoCard(todoCard);
 
-        return activeLabel;
+        return activeLabelRepository.save(activeLabel);
     }
 
     private TodoCard generateTodoCard(User user, TodoList todoList) {
@@ -117,7 +95,7 @@ public class ActiveLabelRepositoryTest {
         todoCard.setIndex(0);
         todoCard.setTodoList(todoList);
 
-        return todoCard;
+        return todoCardRepository.save(todoCard);
     }
 
     private WorkSpace generatedWorkSpace(User user) {
@@ -126,7 +104,7 @@ public class ActiveLabelRepositoryTest {
         workSpace.setBackgroundColor("#000000");
         workSpace.setUser(user);
 
-        return workSpace;
+        return workSpaceRepository.save(workSpace);
     }
 
     private User generateUser() {
@@ -141,11 +119,13 @@ public class ActiveLabelRepositoryTest {
         user.setPassword("Test12345%");
         user.setSetting(new Setting());
 
-        return user;
+        return userRepository.save(user);
     }
 
     private List<Label> generateLabels(User user, WorkSpace workSpace) {
         LocalDateTime timestamp = LocalDateTime.now();
+        workSpace = workSpaceRepository.saveAndFlush(workSpace);
+        entityManager.flush();
         String[] titles = new String[] {"priority", "warning"};
         List<Label> labels = new ArrayList<>();
         int toGenerate = 2;
@@ -160,22 +140,31 @@ public class ActiveLabelRepositoryTest {
             label.setUpdatedAt(timestamp);
             labels.add(label);
         }
-        return labels;
+
+        return labelRepository.saveAllAndFlush(labels);
     }
 
-    @AfterEach
-    public void tearDown() {
-        System.out.println("Tearing down the test data...");
-        activeLabelRepository.deleteAll();
-        todoCardRepository.deleteAll();
-        todoListRepository.deleteAll();
-        workSpaceRepository.deleteAll();
-        labelRepository.deleteAll();
-        userRepository.deleteAll();
-        activeLabelRepository.deleteAll();
+    @BeforeEach
+    public void setUp() {
+        user = generateUser();
         entityManager.flush();
-        entityManager.clear();
+
+        workSpace = generatedWorkSpace(user);
+        entityManager.flush();
+
+        TodoList todoList = generateTodoList(user, workSpace);
+        entityManager.flush();
+
+        todoCard = generateTodoCard(user, todoList);
+        entityManager.flush();
+
+        labels = generateLabels(user, workSpace);
+        entityManager.flush();
+
+        activeLabel = generateActiveLabel(labels.get(0), todoCard);
+        entityManager.flush();
     }
+
 
     @Test
     public void ActiveLabelRepository_GetActiveLabels_ReturnListOfActiveLabelDtos() {

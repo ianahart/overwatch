@@ -1,7 +1,6 @@
 package com.hart.overwatch.todocard;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,23 +75,12 @@ public class TodoCardRepositoryTest {
         List<TodoCard> todoCards = new ArrayList<>();
         for (int i = 1; i <= numOfCards; i++) {
             TodoCard todoCard = new TodoCard();
-            todoCard.setId(Long.valueOf(i));
             todoCard.setUser(user);
             todoCard.setTodoList(todoList);
             todoCard.setTitle(String.format("Card-%d", i));
             todoCards.add(todoCard);
         }
         return todoCards;
-    }
-
-    @AfterEach
-    public void tearDown() {
-        System.out.println("Tearing down the test data...");
-        todoCardRepository.deleteAll();
-        todoListRepository.deleteAll();
-        userRepository.deleteAll();
-        entityManager.flush();
-        entityManager.clear();
     }
 
     @Test
