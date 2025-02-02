@@ -4,7 +4,6 @@ import java.util.List;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,7 +91,6 @@ public class CheckListRepositoryTest {
 
         for (int i = 1; i <= toGenerate; i++) {
             CheckList checkList = new CheckList();
-            checkList.setId(Long.valueOf(i));
             checkList.setUser(user);
             checkList.setTodoCard(todoCard);
             checkList.setIsCompleted(false);
@@ -150,18 +148,6 @@ public class CheckListRepositoryTest {
         return user;
     }
 
-
-    @AfterEach
-    public void tearDown() {
-        System.out.println("Tearing down the test data...");
-        checkListRepository.deleteAll();
-        todoCardRepository.deleteAll();
-        todoListRepository.deleteAll();
-        workSpaceRepository.deleteAll();
-        userRepository.deleteAll();
-        entityManager.flush();
-        entityManager.clear();
-    }
 
     @Test
     public void CheckListRepository_GetCheckListsByTodoCardId_ReturnPageOfCheckListDto() {

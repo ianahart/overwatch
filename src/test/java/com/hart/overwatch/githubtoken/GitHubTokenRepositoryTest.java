@@ -1,7 +1,6 @@
 package com.hart.overwatch.githubtoken;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +56,7 @@ public class GitHubTokenRepositoryTest {
         GitHubToken gitHubTokenEntity = new GitHubToken();
         gitHubTokenEntity.setAccessToken("dummy_access_token");
         gitHubTokenEntity.setUser(user);
+        user.getGithubTokens().add(gitHubTokenEntity);
 
         gitHubTokenRepository.save(gitHubTokenEntity);
         return gitHubTokenEntity;
@@ -67,17 +67,10 @@ public class GitHubTokenRepositoryTest {
     @BeforeEach
     public void setUp() {
         user = createUser();
+        entityManager.persist(user);
         gitHubToken = createGitHubToken(user);
     }
 
-    @AfterEach
-    public void tearDown() {
-        System.out.println("Tearing down the test data...");
-        gitHubTokenRepository.deleteAll();
-        userRepository.deleteAll();
-        entityManager.flush();
-        entityManager.clear();
-    }
 
     @Test
     public void GitHubTokenRepository_DeleteByUserId_ReturnNothing() {

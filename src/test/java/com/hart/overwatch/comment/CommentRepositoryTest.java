@@ -3,7 +3,6 @@ package com.hart.overwatch.comment;
 import java.util.ArrayList;
 import java.util.List;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,7 +104,6 @@ public class CommentRepositoryTest {
         List<Comment> comments = new ArrayList<>();
         for (int i = 0; i < numOfComments; i++) {
             Comment comment = new Comment();
-            comment.setId(Long.valueOf(i + 1));
             comment.setTopic(topic);
             comment.setUser(user);
             comment.setContent(String.format("content-%d", i + 1));
@@ -125,19 +123,6 @@ public class CommentRepositoryTest {
 
         topic.setTags(tags);
         tags.forEach(tag -> tag.setTopics(List.of(topic)));
-    }
-
-    @AfterEach
-    public void tearDown() {
-        System.out.println("Tearing down the test data...");
-        topic.getTags().clear();
-        topicRepository.save(topic);
-        commentRepository.deleteAll();
-        tagRepository.deleteAll();
-        topicRepository.deleteAll();
-        userRepository.deleteAll();
-        entityManager.flush();
-        entityManager.clear();
     }
 
 

@@ -2,7 +2,6 @@ package com.hart.overwatch.activity;
 
 import java.time.LocalDateTime;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,20 +82,6 @@ public class ActivityRepositoryTest {
         activity = new Activity("some activity text", user, todoCard);
 
         activityRepository.save(activity);
-    }
-
-    @AfterEach
-    public void tearDown() {
-        System.out.println("Tearing down the test data...");
-
-        activityRepository.deleteAll();
-        workSpaceRepository.deleteAll();
-        todoListRepository.deleteAll();
-        todoCardRepository.deleteAll();
-        profileRepository.deleteAll();
-        userRepository.deleteAll();
-        entityManager.flush();
-        entityManager.clear();
     }
 
 
