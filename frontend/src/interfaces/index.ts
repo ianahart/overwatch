@@ -731,6 +731,7 @@ export interface ISetting {
   reviewInCompleteNotifOn: boolean;
   reviewCompletedNotifOn: boolean;
   commentReplyOn: boolean;
+  emailOn: boolean;
 }
 
 export interface ISkillsFormField {
@@ -1001,6 +1002,14 @@ export interface IFetchSettingsRequest {
 export interface IFetchSettingsResponse {
   message: string;
   data: ISetting;
+}
+
+export interface IUnsubscribeSettingsResponse {
+  message: string;
+}
+
+export interface IUnsubscribeSettingsRequest {
+  email: string;
 }
 
 export interface ICreatePhoneRequest {

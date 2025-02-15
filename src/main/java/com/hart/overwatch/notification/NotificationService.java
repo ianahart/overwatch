@@ -82,13 +82,19 @@ public class NotificationService {
                     notificationText.put("receiver",
                             String.format("You started to review one of %s's repositories.",
                                     sender.getFullName()));
-                    queueEmail(receiver, "Review In Progress", notificationText.get("receiver"));
+                    if (receiverSetting.getEmailOn()) {
+                        queueEmail(receiver, "Review In Progress",
+                                notificationText.get("receiver"));
+                    }
                 }
                 if (senderSetting.getReviewInProgressNotifOn()) {
                     notificationText.put("sender",
                             String.format("%s started to review one of your repositories.",
                                     receiver.getFullName()));
-                    queueEmail(sender, "Review In Progress", notificationText.get("sender"));
+                    if (senderSetting.getEmailOn()) {
+
+                        queueEmail(sender, "Review In Progress", notificationText.get("sender"));
+                    }
                 }
                 break;
             case REVIEW_INCOMPLETE:
@@ -96,30 +102,34 @@ public class NotificationService {
                     notificationText.put("receiver",
                             String.format("You accepted to review one of %s's repositories.",
                                     sender.getFullName()));
-                    queueEmail(receiver, "Review Started", notificationText.get("receiver"));
-
+                    if (receiverSetting.getEmailOn()) {
+                        queueEmail(receiver, "Review Started", notificationText.get("receiver"));
+                    }
                 }
                 if (senderSetting.getReviewInCompleteNotifOn()) {
                     notificationText.put("sender",
                             String.format("%s accepted to review one of your repositories.",
                                     receiver.getFullName()));
-                    queueEmail(sender, "Review Started", notificationText.get("ssender"));
-
+                    if (senderSetting.getEmailOn()) {
+                        queueEmail(sender, "Review Started", notificationText.get("ssender"));
+                    }
                 }
                 break;
             case REVIEW_COMPLETED:
                 if (receiverSetting.getReviewCompletedNotifOn()) {
                     notificationText.put("receiver", String
                             .format("You completed %s's repository review.", sender.getFullName()));
-                    queueEmail(receiver, "Review Completed", notificationText.get("receiver"));
-
+                    if (receiverSetting.getEmailOn()) {
+                        queueEmail(receiver, "Review Completed", notificationText.get("receiver"));
+                    }
                 }
                 if (senderSetting.getReviewCompletedNotifOn()) {
                     notificationText.put("sender",
                             String.format("%s completed a review on one of your repositories.",
                                     receiver.getFullName()));
-                    queueEmail(sender, "Review Completed", notificationText.get("sender"));
-
+                    if (senderSetting.getEmailOn()) {
+                        queueEmail(sender, "Review Completed", notificationText.get("sender"));
+                    }
                 }
                 break;
             case PAYMENT_ACKNOWLEDGEMENT:
@@ -134,30 +144,37 @@ public class NotificationService {
                 if (receiverSetting.getRequestPendingNotifOn()) {
                     notificationText.put("receiver", String
                             .format("%s sent you a connection request.", sender.getFullName()));
-                    queueEmail(receiver, "Connection Request", notificationText.get("receiver"));
+                    if (receiverSetting.getEmailOn()) {
+                        queueEmail(receiver, "Connection Request",
+                                notificationText.get("receiver"));
+
+                    }
 
                 }
                 if (senderSetting.getRequestPendingNotifOn()) {
                     notificationText.put("sender", String
                             .format("You sent %s a connection request.", receiver.getFullName()));
-                    queueEmail(sender, "Connection Request", notificationText.get("sender"));
-
+                    if (receiverSetting.getEmailOn()) {
+                        queueEmail(sender, "Connection Request", notificationText.get("sender"));
+                    }
                 }
                 break;
             case CONNECTION_REQUEST_ACCEPTED:
                 if (receiverSetting.getRequestAcceptedNotifOn()) {
                     notificationText.put("receiver",
                             String.format("You are now connected with %s.", sender.getFullName()));
-                    queueEmail(receiver, "Connection Request Accepted",
-                            notificationText.get("receiver"));
-
+                    if (receiverSetting.getEmailOn()) {
+                        queueEmail(receiver, "Connection Request Accepted",
+                                notificationText.get("receiver"));
+                    }
                 }
                 if (senderSetting.getRequestAcceptedNotifOn()) {
                     notificationText.put("sender", String.format(
                             "%s accepted your connection request.", receiver.getFullName()));
-                    queueEmail(sender, "Connection Request Accepted",
-                            notificationText.get("sender"));
-
+                    if (senderSetting.getEmailOn()) {
+                        queueEmail(sender, "Connection Request Accepted",
+                                notificationText.get("sender"));
+                    }
                 }
                 this.connectionService.updateConnectionStatus(sender.getId(), receiver.getId(),
                         RequestStatus.ACCEPTED);

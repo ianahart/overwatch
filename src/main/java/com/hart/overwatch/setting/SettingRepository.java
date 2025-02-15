@@ -15,7 +15,8 @@ public interface SettingRepository extends JpaRepository<Setting, Long> {
                 s.createdAt AS createdAt, s.reviewInProgressNotifOn AS reviewInProgressNotifOn,
                 s.reviewInCompleteNotifOn AS reviewInCompleteNotifOn, s.reviewCompletedNotifOn AS reviewCompletedNotifOn,
                 s.paymentAcknowledgementNotifOn AS paymentAcknowledgementNotifOn, s.requestPendingNotifOn AS requestPendingNotifOn,
-               s.requestAcceptedNotifOn AS requestAcceptedNotifOn, s.commentReplyOn AS commentReplyOn
+               s.requestAcceptedNotifOn AS requestAcceptedNotifOn, s.commentReplyOn AS commentReplyOn,
+               s.emailOn AS emailOn
                 ) FROM Setting s
                 INNER JOIN s.user u
                 WHERE s.id = :settingId

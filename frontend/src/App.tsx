@@ -75,6 +75,7 @@ import AdminBadgeRoute from './routes/Dashboard/Admin/AdminBadgeRoute';
 import CreateBadgeRoute from './routes/Dashboard/Admin/CreateBadgeRoute';
 import BadgeRoute from './routes/Dashboard/Reviewer/BadgeRoute';
 import AllUserRoute from './routes/Dashboard/Admin/AllUserRoute';
+import UnsubscribeRoute from './routes/Settings/UnsubscribeRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -83,6 +84,7 @@ const router = createBrowserRouter(
       <Route path="about" element={<AboutRoute />} />
       <Route path="contact" element={<ContactRoute />} />
       <Route path="privacy-policy" element={<PrivacyPolicyRoute />} />
+      <Route path="unsubscribe" element={<UnsubscribeRoute />} />
       <Route path="terms-of-service" element={<TermsRoute />} />
       <Route
         path="github/success"

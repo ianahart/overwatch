@@ -484,7 +484,12 @@ export {
   useDeletePaymentMethodMutation,
 } from './apis/paymentMethodsApi';
 export { useFetchHeartBeatQuery, useLazyFetchHeartBeatQuery } from './apis/heartbeatApi';
-export { useUpdateSettingsMutation, useUpdateSettingsMFAMutation, useFetchSettingsQuery } from './apis/settingsApi';
+export {
+  useUpdateSettingsMutation,
+  useUpdateSettingsMFAMutation,
+  useFetchSettingsQuery,
+  useUnsubscribeEmailSettingsQuery,
+} from './apis/settingsApi';
 export { useCreatePhoneMutation, useFetchPhoneQuery, useDeletePhoneMutation } from './apis/phonesApi';
 export {
   useLazyFetchLocationsQuery,

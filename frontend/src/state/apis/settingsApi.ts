@@ -2,6 +2,8 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import {
   IFetchSettingsRequest,
   IFetchSettingsResponse,
+  IUnsubscribeSettingsRequest,
+  IUnsubscribeSettingsResponse,
   IUpdateSettingRequest,
   IUpdateSettingResponse,
   IUpdateSettingsMFARequest,
@@ -14,6 +16,17 @@ const settingsApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints(builder) {
     return {
+      unsubscribeEmailSettings: builder.query<IUnsubscribeSettingsResponse, IUnsubscribeSettingsRequest>({
+        query: ({ email }) => {
+          return {
+            url: `/settings/unsubscribe?email=${email}`,
+            method: 'GET',
+          };
+        },
+        // @ts-ignoree
+        invalidatesTags: ['Setting'],
+      }),
+
       fetchSettings: builder.query<IFetchSettingsResponse | undefined, IFetchSettingsRequest>({
         query: ({ settingId, token }) => {
           if (settingId === 0 || !token) return '';
@@ -58,5 +71,10 @@ const settingsApi = createApi({
   },
 });
 
-export const { useUpdateSettingsMutation, useUpdateSettingsMFAMutation, useFetchSettingsQuery } = settingsApi;
+export const {
+  useUnsubscribeEmailSettingsQuery,
+  useUpdateSettingsMutation,
+  useUpdateSettingsMFAMutation,
+  useFetchSettingsQuery,
+} = settingsApi;
 export { settingsApi };
