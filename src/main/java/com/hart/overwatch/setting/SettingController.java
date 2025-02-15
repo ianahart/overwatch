@@ -8,10 +8,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.hart.overwatch.setting.request.UpdateSettingMfaEnabledRequest;
 import com.hart.overwatch.setting.request.UpdateSettingRequest;
 import com.hart.overwatch.setting.response.GetSettingResponse;
+import com.hart.overwatch.setting.response.UnsubscribeSettingResponse;
 import com.hart.overwatch.setting.response.UpdateSettingMfaEnabledResponse;
 import com.hart.overwatch.setting.response.UpdateSettingResponse;
 
@@ -26,6 +28,12 @@ public class SettingController {
         this.settingService = settingService;
     }
 
+    @GetMapping(path = "/unsubscribe")
+    ResponseEntity<UnsubscribeSettingResponse> unsubscribeFromEmail(
+            @RequestParam("email") String email) {
+        settingService.unsubscribeFromEmail(email);
+        return ResponseEntity.status(HttpStatus.OK).body(new UnsubscribeSettingResponse("success"));
+    }
 
     @GetMapping(path = "/{settingId}")
     ResponseEntity<GetSettingResponse> getSetting(@PathVariable("settingId") Long settingId) {

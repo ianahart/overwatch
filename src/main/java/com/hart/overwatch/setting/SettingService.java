@@ -7,6 +7,7 @@ import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.setting.dto.SettingDto;
 import com.hart.overwatch.setting.request.UpdateSettingRequest;
 import com.hart.overwatch.advice.ForbiddenException;
+import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 
@@ -32,6 +33,7 @@ public class SettingService {
         setting.setReviewInProgressNotifOn(true);
         setting.setPaymentAcknowledgementNotifOn(true);
         setting.setCommentReplyOn(true);
+        setting.setEmailOn(true);
 
         this.settingRepository.save(setting);
 
@@ -56,6 +58,11 @@ public class SettingService {
     public SettingDto getSetting(Long settingId) {
         try {
 
+            Setting setting = getSettingById(settingId);
+            if (setting.getEmailOn() == null) {
+                setting.setEmailOn(true);
+                settingRepository.save(setting);
+            }
             return this.settingRepository.fetchSettingById(settingId);
 
         } catch (DataAccessException ex) {
@@ -113,6 +120,7 @@ public class SettingService {
             currentUserSetting.setPaymentAcknowledgementNotifOn(
                     request.getSetting().getPaymentAcknowledgementNotifOn());
             currentUserSetting.setCommentReplyOn(request.getSetting().getCommentReplyOn());
+            currentUserSetting.setEmailOn(request.getSetting().getEmailOn());
 
 
             this.settingRepository.save(currentUserSetting);
@@ -137,8 +145,21 @@ public class SettingService {
         settingDto.setRequestPendingNotifOn(setting.getRequestPendingNotifOn());
         settingDto.setRequestAcceptedNotifOn(setting.getRequestAcceptedNotifOn());
         settingDto.setCommentReplyOn(setting.getCommentReplyOn());
+        settingDto.setEmailOn(setting.getEmailOn());
 
         return settingDto;
+    }
+
+    public void unsubscribeFromEmail(String email) {
+        if (email == null || email.isEmpty()) {
+            throw new BadRequestException("Unsuccessful in unsubscribing due to invalid email");
+        }
+        User user = userService.getUserByEmail(email);
+        Setting setting = getSettingById(user.getSetting().getId());
+
+        setting.setEmailOn(false);
+
+        settingRepository.save(setting);
     }
 }
 

@@ -60,6 +60,9 @@ public class Setting {
     @Column(name = "comment_reply_on")
     private Boolean commentReplyOn;
 
+    @Column(name = "email_on", nullable = true)
+    private Boolean emailOn;
+
     @JsonIgnore
     @OneToOne(mappedBy = "setting")
     private User user;
@@ -71,7 +74,8 @@ public class Setting {
     public Setting(Long id, Timestamp createdAt, Timestamp updatedAt, Boolean mfaEnabled,
             Boolean reviewInProgressNotifOn, Boolean reviewInCompleteNotifOn,
             Boolean reviewCompletedNotifOn, Boolean paymentAcknowledgementNotifOn,
-            Boolean requestPendingNotifOn, Boolean requestAcceptedNotifOn, Boolean commentReplyOn) {
+            Boolean requestPendingNotifOn, Boolean requestAcceptedNotifOn, Boolean commentReplyOn,
+            Boolean emailOn) {
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -83,12 +87,14 @@ public class Setting {
         this.requestPendingNotifOn = requestPendingNotifOn;
         this.requestAcceptedNotifOn = requestAcceptedNotifOn;
         this.commentReplyOn = commentReplyOn;
+        this.emailOn = emailOn;
     }
 
 
     public Setting(Boolean reviewInProgressNotifOn, Boolean reviewInCompleteNotifOn,
             Boolean reviewCompletedNotifOn, Boolean paymentAcknowledgementNotifOn,
-            Boolean requestPendingNotifOn, Boolean requestAcceptedNotifOn, Boolean commentReplyOn) {
+            Boolean requestPendingNotifOn, Boolean requestAcceptedNotifOn, Boolean commentReplyOn,
+            Boolean emailOn) {
         this.reviewInProgressNotifOn = reviewInProgressNotifOn;
         this.reviewInCompleteNotifOn = reviewInCompleteNotifOn;
         this.reviewCompletedNotifOn = reviewCompletedNotifOn;
@@ -96,11 +102,16 @@ public class Setting {
         this.requestPendingNotifOn = requestPendingNotifOn;
         this.requestAcceptedNotifOn = requestAcceptedNotifOn;
         this.commentReplyOn = commentReplyOn;
+        this.emailOn = emailOn;
     }
 
 
     public Long getId() {
         return id;
+    }
+
+    public Boolean getEmailOn() {
+        return emailOn;
     }
 
     public Boolean getMfaEnabled() {
@@ -151,6 +162,10 @@ public class Setting {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setEmailOn(Boolean emailOn) {
+        this.emailOn = emailOn;
     }
 
     public void setMfaEnabled(Boolean mfaEnabled) {
@@ -205,13 +220,19 @@ public class Setting {
         result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
         result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
         result = prime * result + ((mfaEnabled == null) ? 0 : mfaEnabled.hashCode());
-        result = prime * result + ((reviewInProgressNotifOn == null) ? 0 : reviewInProgressNotifOn.hashCode());
-        result = prime * result + ((reviewInCompleteNotifOn == null) ? 0 : reviewInCompleteNotifOn.hashCode());
-        result = prime * result + ((reviewCompletedNotifOn == null) ? 0 : reviewCompletedNotifOn.hashCode());
         result = prime * result
-                + ((paymentAcknowledgementNotifOn == null) ? 0 : paymentAcknowledgementNotifOn.hashCode());
-        result = prime * result + ((requestPendingNotifOn == null) ? 0 : requestPendingNotifOn.hashCode());
-        result = prime * result + ((requestAcceptedNotifOn == null) ? 0 : requestAcceptedNotifOn.hashCode());
+                + ((reviewInProgressNotifOn == null) ? 0 : reviewInProgressNotifOn.hashCode());
+        result = prime * result
+                + ((reviewInCompleteNotifOn == null) ? 0 : reviewInCompleteNotifOn.hashCode());
+        result = prime * result
+                + ((reviewCompletedNotifOn == null) ? 0 : reviewCompletedNotifOn.hashCode());
+        result = prime * result + ((paymentAcknowledgementNotifOn == null) ? 0
+                : paymentAcknowledgementNotifOn.hashCode());
+        result = prime * result
+                + ((requestPendingNotifOn == null) ? 0 : requestPendingNotifOn.hashCode());
+        result = prime * result
+                + ((requestAcceptedNotifOn == null) ? 0 : requestAcceptedNotifOn.hashCode());
+        result = prime * result + ((emailOn == null) ? 0 : emailOn.hashCode());
         result = prime * result + ((commentReplyOn == null) ? 0 : commentReplyOn.hashCode());
         result = prime * result + ((user == null) ? 0 : user.hashCode());
         return result;
@@ -221,71 +242,45 @@ public class Setting {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj == null)
+        if (obj == null || getClass() != obj.getClass())
             return false;
-        if (getClass() != obj.getClass())
-            return false;
+
         Setting other = (Setting) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
+
+        if (id == null ? other.id != null : !id.equals(other.id))
             return false;
-        if (createdAt == null) {
-            if (other.createdAt != null)
-                return false;
-        } else if (!createdAt.equals(other.createdAt))
+        if (createdAt == null ? other.createdAt != null : !createdAt.equals(other.createdAt))
             return false;
-        if (updatedAt == null) {
-            if (other.updatedAt != null)
-                return false;
-        } else if (!updatedAt.equals(other.updatedAt))
+        if (updatedAt == null ? other.updatedAt != null : !updatedAt.equals(other.updatedAt))
             return false;
-        if (mfaEnabled == null) {
-            if (other.mfaEnabled != null)
-                return false;
-        } else if (!mfaEnabled.equals(other.mfaEnabled))
+        if (mfaEnabled == null ? other.mfaEnabled != null : !mfaEnabled.equals(other.mfaEnabled))
             return false;
-        if (reviewInProgressNotifOn == null) {
-            if (other.reviewInProgressNotifOn != null)
-                return false;
-        } else if (!reviewInProgressNotifOn.equals(other.reviewInProgressNotifOn))
+        if (reviewInProgressNotifOn == null ? other.reviewInProgressNotifOn != null
+                : !reviewInProgressNotifOn.equals(other.reviewInProgressNotifOn))
             return false;
-        if (reviewInCompleteNotifOn == null) {
-            if (other.reviewInCompleteNotifOn != null)
-                return false;
-        } else if (!reviewInCompleteNotifOn.equals(other.reviewInCompleteNotifOn))
+        if (reviewInCompleteNotifOn == null ? other.reviewInCompleteNotifOn != null
+                : !reviewInCompleteNotifOn.equals(other.reviewInCompleteNotifOn))
             return false;
-        if (reviewCompletedNotifOn == null) {
-            if (other.reviewCompletedNotifOn != null)
-                return false;
-        } else if (!reviewCompletedNotifOn.equals(other.reviewCompletedNotifOn))
+        if (reviewCompletedNotifOn == null ? other.reviewCompletedNotifOn != null
+                : !reviewCompletedNotifOn.equals(other.reviewCompletedNotifOn))
             return false;
-        if (paymentAcknowledgementNotifOn == null) {
-            if (other.paymentAcknowledgementNotifOn != null)
-                return false;
-        } else if (!paymentAcknowledgementNotifOn.equals(other.paymentAcknowledgementNotifOn))
+        if (paymentAcknowledgementNotifOn == null ? other.paymentAcknowledgementNotifOn != null
+                : !paymentAcknowledgementNotifOn.equals(other.paymentAcknowledgementNotifOn))
             return false;
-        if (requestPendingNotifOn == null) {
-            if (other.requestPendingNotifOn != null)
-                return false;
-        } else if (!requestPendingNotifOn.equals(other.requestPendingNotifOn))
+        if (requestPendingNotifOn == null ? other.requestPendingNotifOn != null
+                : !requestPendingNotifOn.equals(other.requestPendingNotifOn))
             return false;
-        if (requestAcceptedNotifOn == null) {
-            if (other.requestAcceptedNotifOn != null)
-                return false;
-        } else if (!requestAcceptedNotifOn.equals(other.requestAcceptedNotifOn))
+        if (requestAcceptedNotifOn == null ? other.requestAcceptedNotifOn != null
+                : !requestAcceptedNotifOn.equals(other.requestAcceptedNotifOn))
             return false;
-        if (commentReplyOn == null) {
-            if (other.commentReplyOn != null)
-                return false;
-        } else if (!commentReplyOn.equals(other.commentReplyOn))
+        if (commentReplyOn == null ? other.commentReplyOn != null
+                : !commentReplyOn.equals(other.commentReplyOn))
             return false;
-        if (user == null) {
-            if (other.user != null)
-                return false;
-        } else if (!user.equals(other.user))
+        if (user == null ? other.user != null : !user.equals(other.user))
             return false;
+        if (emailOn == null ? other.emailOn != null : !emailOn.equals(other.emailOn))
+            return false;
+
         return true;
     }
 

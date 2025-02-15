@@ -16,6 +16,7 @@ export interface INotifDetailsMapper {
   requestPendingNotifOn: { name: string; details: string };
   requestAcceptedNotifOn: { name: string; details: string };
   commentReplyOn: { name: string; details: string };
+  emailOn: { name: string; details: string };
 }
 
 const NotificationSwitch = ({ propName, value, setting }: INotificationSwitchProps) => {
@@ -23,13 +24,11 @@ const NotificationSwitch = ({ propName, value, setting }: INotificationSwitchPro
   const [updateSettingsMut] = useUpdateSettingsMutation();
   const dispatch = useDispatch();
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.checked);
     const updatedSetting = { ...setting, [propName]: e.target.checked };
     updateSettingsMut({ setting: updatedSetting, token })
       .unwrap()
       .then((res) => {
         if (res.data !== null || res.data !== undefined) {
-          console.log(res.data);
           dispatch(updateSetting(res.data));
         }
       })
@@ -72,6 +71,11 @@ const NotificationSwitch = ({ propName, value, setting }: INotificationSwitchPro
     commentReplyOn: {
       name: 'Reply To Comments',
       details: "Toggling this on and off will result in you not getting notifications if you're comment is replied to.",
+    },
+    emailOn: {
+      name: 'Receive Emails',
+      details:
+        'Toggling this on and off will result in you receiving or not receiving emails you will still get payment emails though.',
     },
   };
 

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.profile.Profile;
@@ -92,13 +93,14 @@ public class SettingServiceTest {
     public void SettingService_GetSetting_ReturnSettingDto() {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         Boolean mfaEnabled = false;
-        SettingDto settingDto = new SettingDto(setting.getId(), user.getId(), mfaEnabled, timestamp,
-                true, true, true, true, true, true, true);
+        SettingDto settingDto = new SettingDto(1L, user.getId(), mfaEnabled, timestamp, true, true,
+                true, true, true, true, true, true);
 
-        when(settingRepository.fetchSettingById(setting.getId())).thenReturn(settingDto);
+        when(settingRepository.findById(setting.getId())).thenReturn(Optional.of(setting));
+        when(settingRepository.fetchSettingById(1L)).thenReturn(settingDto);
 
 
-        SettingDto returnedSettingDto = settingService.getSetting(setting.getId());
+        SettingDto returnedSettingDto = settingService.getSetting(1L);
 
         Assertions.assertThat(returnedSettingDto).isNotNull();
         Assertions.assertThat(returnedSettingDto.getId()).isEqualTo(settingDto.getId());
@@ -133,7 +135,30 @@ public class SettingServiceTest {
                         mfaEnabledToUpdate))
                 .isInstanceOf(ForbiddenException.class)
                 .hasMessage("Cannot update another user's setting");
+    }
 
+    @Test
+    public void SettingService_UnsubscribeFromEmail_ThrowBadRequestException() {
+        String email = null;
+
+        Assertions.assertThatThrownBy(() -> {
+            settingService.unsubscribeFromEmail(email);
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage("Unsuccessful in unsubscribing due to invalid email");
+    }
+
+    @Test
+    public void SettingService_UnsubscribeFromEmail_ReturnNothing() {
+        String email = user.getEmail();
+
+        when(userService.getUserByEmail(email)).thenReturn(user);
+        when(settingRepository.findById(user.getSetting().getId()))
+                .thenReturn(Optional.of(setting));
+        when(settingRepository.save(any(Setting.class))).thenReturn(setting);
+
+        settingService.unsubscribeFromEmail(email);
+
+        verify(settingRepository, times(1)).save(any(Setting.class));
     }
 }
 

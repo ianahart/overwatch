@@ -18,6 +18,7 @@ const initialState: ISettingState = {
     reviewInCompleteNotifOn: true,
     reviewCompletedNotifOn: true,
     commentReplyOn: true,
+    emailOn: false,
   },
 };
 

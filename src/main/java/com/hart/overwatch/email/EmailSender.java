@@ -29,7 +29,12 @@ public class EmailSender {
         Email from = new Email(fromSender);
         Email to = new Email(emailRequest.getTo());
         String subject = emailRequest.getSubject();
-        Content content = new Content("text/plain", emailRequest.getBody());
+        String body = emailRequest.getBody()
+                + "<br><br><a href='https://codeoverwatch.com/unsubscribe?email="
+                + emailRequest.getTo()
+                + "' style='color: red; text-decoration: none;'>Unsubscribe</a>";
+
+        Content content = new Content("text/html", body);
 
         Mail mail = new Mail(from, subject, to, content);
 
