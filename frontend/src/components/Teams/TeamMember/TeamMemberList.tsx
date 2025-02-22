@@ -4,8 +4,10 @@ import {
   TRootState,
   setTeamMembers,
   setTeamPagination,
+  useDeleteTeamMemberMutation,
   useFetchTeamMembersQuery,
   useLazyFetchTeamMembersQuery,
+  removeTeamMember,
 } from '../../../state/store';
 import { useParams } from 'react-router-dom';
 import TeamMemberItem from './TeamMemberItem';
@@ -16,6 +18,7 @@ const TeamMemberList = () => {
   const teamId = Number.parseInt(params.teamId as string);
   const { token } = useSelector((store: TRootState) => store.user);
   const { teamMembers, teamMemberPagination } = useSelector((store: TRootState) => store.team);
+  const [deleteTeamMemberMut] = useDeleteTeamMemberMutation();
   const [fetchTeamMembers] = useLazyFetchTeamMembersQuery();
   const { data, error, isLoading } = useFetchTeamMembersQuery(
     {
@@ -75,6 +78,19 @@ const TeamMemberList = () => {
       });
   };
 
+  const handleDeleteTeamMember = (teamMemberId: number): void => {
+    const payload = { teamMemberId, token };
+
+    deleteTeamMemberMut(payload)
+      .unwrap()
+      .then(() => {
+        dispatch(removeTeamMember(teamMemberId));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div>
       <div className="my-8 max-w-[600px] w-full">
@@ -84,11 +100,22 @@ const TeamMemberList = () => {
         </div>
         {data?.admin && (
           <div className="my-4">
-            <TeamMemberItem isAdmin={true} teamMember={data?.admin} />
+            <TeamMemberItem isAdmin={true} adminUserId={data?.admin.userId} teamMember={data?.admin} />
           </div>
         )}
         {teamMembers.map((teamMember) => {
-          return <TeamMemberItem key={teamMember.id} isAdmin={false} teamMember={teamMember} />;
+          return (
+            <div key={teamMember.id}>
+              {data?.admin && (
+                <TeamMemberItem
+                  adminUserId={data?.admin.userId}
+                  isAdmin={false}
+                  teamMember={teamMember}
+                  handleDeleteTeamMember={handleDeleteTeamMember}
+                />
+              )}
+            </div>
+          );
         })}
       </div>
       {teamMemberPagination.page < teamMemberPagination.totalPages - 1 && (
