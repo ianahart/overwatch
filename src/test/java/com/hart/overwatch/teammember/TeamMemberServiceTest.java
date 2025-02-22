@@ -272,7 +272,7 @@ public class TeamMemberServiceTest {
                 .isEqualTo(teamMemberDto.getAvatarUrl());
     }
 
-        @Test
+    @Test
     public void TeamMemberService_SearchTeamMembers_ReturnPaginationDtoOfTeamMemberDto() {
         int page = 0;
         int pageSize = 3;

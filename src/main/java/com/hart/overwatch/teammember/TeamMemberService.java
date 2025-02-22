@@ -84,12 +84,21 @@ public class TeamMemberService {
         return teamMemberRepository.countTeamMemberTeams(userId);
     }
 
+
+    private boolean canDeleteTeamMember(TeamMember teamMember, User user) {
+        Long teamAdminUserId = teamMember.getTeam().getUser().getId();
+        Long teamMemberUserId = teamMember.getUser().getId();
+        Long currentUserId = user.getId();
+
+        return !(!currentUserId.equals(teamMemberUserId) && !currentUserId.equals(teamAdminUserId));
+    }
+
     public void deleteTeamMember(Long teamMemberId) {
 
         User user = userService.getCurrentlyLoggedInUser();
         TeamMember teamMember = getTeamMemberById(teamMemberId);
 
-        if (!user.getId().equals(teamMember.getUser().getId())) {
+        if (!canDeleteTeamMember(teamMember, user)) {
             throw new ForbiddenException(
                     "Cannot perform the action of deleting a team member from a team");
         }
