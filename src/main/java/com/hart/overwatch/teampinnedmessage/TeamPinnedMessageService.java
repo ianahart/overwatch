@@ -1,11 +1,16 @@
 package com.hart.overwatch.teampinnedmessage;
 
+import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.hart.overwatch.team.Team;
 import com.hart.overwatch.team.TeamService;
+import com.hart.overwatch.teampinnedmessage.dto.TeamPinnedMessageDto;
 import com.hart.overwatch.teampinnedmessage.request.CreateTeamPinnedMessageRequest;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
@@ -66,5 +71,12 @@ public class TeamPinnedMessageService {
         teamPinnedMessage.setIsEdited(false);
 
         teamPinnedMessageRepository.save(teamPinnedMessage);
+    }
+
+    public List<TeamPinnedMessageDto> getTeamPinnedMessages(Long teamId) {
+        Pageable pageable = PageRequest.of(0, 5);
+        Page<TeamPinnedMessageDto> pageResult =
+                teamPinnedMessageRepository.getTeamPinnedMessagesByTeamId(teamId, pageable);
+        return pageResult.getContent();
     }
 }

@@ -1,6 +1,17 @@
 import { NotificationRole, NotificationType, RequestStatus, Role } from '../enums';
 import { TPureTodoCard } from '../types';
 
+export interface ITeamPinnedMessage {
+  id: number;
+  userId: number;
+  fullName: string;
+  avatarUrl: string;
+  createdAt: string;
+  message: string;
+  isEdited: boolean;
+  updatedAt: string;
+}
+
 export interface IMinFeedbackTemplate {
   id: number;
   userId: number;
@@ -3018,6 +3029,16 @@ export interface ICreateTeamPinnedMessageRequest {
 
 export interface ICreateTeamPinnedMessageResponse {
   message: string;
+}
+
+export interface IGetAllTeamPinnedMessageRequest {
+  token: string;
+  teamId: number;
+}
+
+export interface IGetAllTeamPinnedMessageResponse {
+  message: string;
+  data: ITeamPinnedMessage[];
 }
 
 export interface IDeleteFeedbackTemplateResponse extends IBaseResponse {}

@@ -62,13 +62,10 @@ const MessageForm = ({ formType, team, closeModal }: IMessageFormProps) => {
     const payload = { teamId: team.id, userId: team.userId, message, token };
     createMessageMut(payload)
       .unwrap()
-      .then((res) => {
-        console.log(res);
+      .then(() => {
         closeModal();
-        console.log('create message');
       })
       .catch((err) => {
-        console.log(err);
         applyServerErrors(err.data);
       });
   };
