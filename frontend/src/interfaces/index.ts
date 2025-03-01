@@ -2540,6 +2540,11 @@ export interface IGetAllTeamsRequest {
   direction: string;
 }
 
+export interface IGetTeamResponse {
+  message: string;
+  data: ITeam;
+}
+
 export interface IGetAllTeamsResponse {
   message: string;
   data: {
@@ -2550,6 +2555,11 @@ export interface IGetAllTeamsResponse {
     direction: string;
     totalElements: number;
   };
+}
+
+export interface IGetTeamRequest {
+  token: string;
+  teamId: number;
 }
 
 export interface IGetAllReviewersRequest {
@@ -2997,6 +3007,17 @@ export interface IGetFeedbackTemplateResponse {
 export interface IDeleteFeedbackTemplateRequest {
   token: string;
   feedbackTemplateId: number;
+}
+
+export interface ICreateTeamPinnedMessageRequest {
+  token: string;
+  userId: number;
+  teamId: number;
+  message: string;
+}
+
+export interface ICreateTeamPinnedMessageResponse {
+  message: string;
 }
 
 export interface IDeleteFeedbackTemplateResponse extends IBaseResponse {}

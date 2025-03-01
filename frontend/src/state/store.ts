@@ -181,6 +181,7 @@ import { suggestionsApi } from './apis/suggestionsApi';
 import { badgesApi } from './apis/badgesApi';
 import { reviewerBadgesApi } from './apis/reviewerBadgesApi';
 import { feedbackTemplatesApi } from './apis/feedbackTemplatesApi';
+import { teamPinnedMessagesApi } from './apis/teamPinnedMessagesApi';
 
 export const store = configureStore({
   reducer: {
@@ -254,6 +255,7 @@ export const store = configureStore({
     [badgesApi.reducerPath]: badgesApi.reducer,
     [reviewerBadgesApi.reducerPath]: reviewerBadgesApi.reducer,
     [feedbackTemplatesApi.reducerPath]: feedbackTemplatesApi.reducer,
+    [teamPinnedMessagesApi.reducerPath]: teamPinnedMessagesApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
@@ -319,7 +321,8 @@ export const store = configureStore({
       .concat(suggestionsApi.middleware)
       .concat(badgesApi.middleware)
       .concat(reviewerBadgesApi.middleware)
-      .concat(feedbackTemplatesApi.middleware);
+      .concat(feedbackTemplatesApi.middleware)
+      .concat(teamPinnedMessagesApi.middleware);
   },
 });
 
@@ -693,7 +696,7 @@ export {
   useCreateAppTestimonialMutation,
 } from './apis/appTestimonialsApi';
 
-export { useFetchTeamsQuery, useLazyFetchTeamsQuery, useCreateTeamMutation } from './apis/teamsApi';
+export { useFetchTeamsQuery, useLazyFetchTeamsQuery, useCreateTeamMutation, useFetchTeamQuery } from './apis/teamsApi';
 
 export {
   useUpdateTeamInvitationMutation,
@@ -764,6 +767,8 @@ export {
   useFetchFeedbackTemplatesQuery,
 } from './apis/feedbackTemplatesApi';
 
+export { useCreateTeamPinnedMessageMutation } from './apis/teamPinnedMessagesApi';
+
 export {
   testimonialsApi,
   authsApi,
@@ -811,4 +816,5 @@ export {
   badgesApi,
   reviewerBadgesApi,
   feedbackTemplatesApi,
+  teamPinnedMessagesApi,
 };

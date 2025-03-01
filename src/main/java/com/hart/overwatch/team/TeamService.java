@@ -77,4 +77,21 @@ public class TeamService {
         return new PaginationDto<TeamDto>(result.getContent(), result.getNumber(), pageSize,
                 result.getTotalPages(), direction, result.getTotalElements());
     }
+
+    public TeamDto convertDto(Team team) {
+        TeamDto teamDto = new TeamDto();
+        teamDto.setId(team.getId());
+        teamDto.setUserId(team.getUser().getId());
+        teamDto.setTeamName(team.getTeamName());
+        teamDto.setTotalTeams(0L);
+        teamDto.setTeamDescription(team.getTeamDescription());
+
+        return teamDto;
+    }
+
+    public TeamDto getTeam(Long teamId) {
+        Team team = getTeamByTeamId(teamId);
+
+        return convertDto(team);
+    }
 }

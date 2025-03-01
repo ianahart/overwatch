@@ -13,6 +13,14 @@ export const badgeFormState = {
   description: { name: 'description', value: '', error: '', type: 'text' },
 };
 
+export const teamState = {
+  id: 0,
+  userId: 0,
+  teamName: '',
+  teamDescription: '',
+  totalTeams: 0,
+};
+
 export const teamMember = {
   id: 0,
   userId: 0,

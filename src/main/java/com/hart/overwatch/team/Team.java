@@ -7,6 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import com.hart.overwatch.teaminvitation.TeamInvitation;
 import com.hart.overwatch.teammember.TeamMember;
 import com.hart.overwatch.teammessage.TeamMessage;
+import com.hart.overwatch.teampinnedmessage.TeamPinnedMessage;
 import com.hart.overwatch.teampost.TeamPost;
 import com.hart.overwatch.user.User;
 import jakarta.persistence.CascadeType;
@@ -66,6 +67,10 @@ public class Team {
             orphanRemoval = true)
     private List<TeamPost> teamPosts;
 
+    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<TeamPinnedMessage> teamPinnedMessages;
+
 
     public Team() {
 
@@ -92,6 +97,10 @@ public class Team {
 
     public User getUser() {
         return user;
+    }
+
+    public List<TeamPinnedMessage> getTeamPinnedMessages() {
+        return teamPinnedMessages;
     }
 
     public List<TeamMessage> getTeamMessages() {
@@ -166,6 +175,11 @@ public class Team {
         this.teamPosts = teamPosts;
     }
 
+    public void setTeamPinnedMessages(List<TeamPinnedMessage> teamPinnedMessages) {
+        this.teamPinnedMessages = teamPinnedMessages;
+    }
+
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -180,6 +194,8 @@ public class Team {
         result = prime * result + ((teamMembers == null) ? 0 : teamMembers.hashCode());
         result = prime * result + ((teamMessages == null) ? 0 : teamMessages.hashCode());
         result = prime * result + ((teamPosts == null) ? 0 : teamPosts.hashCode());
+        result = prime * result
+                + ((teamPinnedMessages == null) ? 0 : teamPinnedMessages.hashCode());
         return result;
     }
 
@@ -241,6 +257,11 @@ public class Team {
             if (other.teamPosts != null)
                 return false;
         } else if (!teamPosts.equals(other.teamPosts))
+            return false;
+        if (teamPinnedMessages == null) {
+            if (other.teamPinnedMessages != null)
+                return false;
+        } else if (!teamPinnedMessages.equals(other.teamPinnedMessages))
             return false;
         return true;
     }

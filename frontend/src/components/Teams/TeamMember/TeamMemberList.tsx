@@ -95,8 +95,8 @@ const TeamMemberList = () => {
     <div>
       <div className="my-8 max-w-[600px] w-full">
         <div className="text-center">
-          <h3 className="text-xl">Team Members</h3>
-          <p>Here you can see everyone on your team.</p>
+          <h3 className="text-xl text-left">Team Members</h3>
+          <p className="text-left">Here you can see everyone on your team.</p>
         </div>
         {data?.admin && (
           <div className="my-4">

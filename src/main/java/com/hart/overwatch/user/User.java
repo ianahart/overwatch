@@ -48,6 +48,7 @@ import com.hart.overwatch.teamcomment.TeamComment;
 import com.hart.overwatch.teaminvitation.TeamInvitation;
 import com.hart.overwatch.teammember.TeamMember;
 import com.hart.overwatch.teammessage.TeamMessage;
+import com.hart.overwatch.teampinnedmessage.TeamPinnedMessage;
 import com.hart.overwatch.teampost.TeamPost;
 import com.hart.overwatch.testimonial.Testimonial;
 import com.hart.overwatch.todocard.TodoCard;
@@ -335,6 +336,10 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private List<GitHubToken> githubTokens = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<TeamPinnedMessage> teamPinnedMessages = new ArrayList<>();
+
 
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -393,6 +398,10 @@ public class User implements UserDetails {
 
     public List<ReplyComment> getReplyComments() {
         return replyComments;
+    }
+
+    public List<TeamPinnedMessage> getTeamPinnedMessages() {
+        return teamPinnedMessages;
     }
 
     public List<GitHubToken> getGithubTokens() {
@@ -755,6 +764,10 @@ public class User implements UserDetails {
 
     public void setPhones(List<Phone> phones) {
         this.phones = phones;
+    }
+
+    public void setTeamPinnedMessages(List<TeamPinnedMessage> teamPinnedMessages) {
+        this.teamPinnedMessages = teamPinnedMessages;
     }
 
 
