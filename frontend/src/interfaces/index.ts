@@ -3041,6 +3041,24 @@ export interface IGetAllTeamPinnedMessageResponse {
   data: ITeamPinnedMessage[];
 }
 
+export interface IUpdateTeamPinnedMessageRequest {
+  teamId: number;
+  token: string;
+  userId: number;
+  message: string;
+  teamPinnedMessageId: number;
+}
+
+export interface IDeleteTeamPinnedMessageRequest {
+  teamId: number;
+  teamPinnedMessageId: number;
+  token: string;
+}
+
+export interface IDeleteTeamPinnedMessageResponse extends IBaseResponse {}
+
+export interface IUpdateTeamPinnedMessageResponse extends IBaseResponse {}
+
 export interface IDeleteFeedbackTemplateResponse extends IBaseResponse {}
 
 export interface ICreateFeedbackTemplateResponse extends IBaseResponse {}

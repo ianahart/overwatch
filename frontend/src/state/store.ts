@@ -767,7 +767,12 @@ export {
   useFetchFeedbackTemplatesQuery,
 } from './apis/feedbackTemplatesApi';
 
-export { useCreateTeamPinnedMessageMutation, useFetchTeamPinnedMessagesQuery } from './apis/teamPinnedMessagesApi';
+export {
+  useDeleteTeamPinnedMessageMutation,
+  useCreateTeamPinnedMessageMutation,
+  useFetchTeamPinnedMessagesQuery,
+  useUpdateTeamPinnedMessageMutation,
+} from './apis/teamPinnedMessagesApi';
 
 export {
   testimonialsApi,

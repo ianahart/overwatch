@@ -24,7 +24,7 @@ const MessageList = ({ team }: IMessageListProps) => {
     <div>
       <div>
         {messages.map((message) => {
-          return <MessageListItem user={user} key={message.id} message={message} />;
+          return <MessageListItem team={team} user={user} key={message.id} message={message} />;
         })}
       </div>
     </div>

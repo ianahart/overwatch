@@ -2,22 +2,35 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { ITeam } from '../../../../interfaces';
-import { TRootState, useCreateTeamPinnedMessageMutation } from '../../../../state/store';
+import {
+  TRootState,
+  useCreateTeamPinnedMessageMutation,
+  useUpdateTeamPinnedMessageMutation,
+} from '../../../../state/store';
 import { nanoid } from 'nanoid';
 
 export interface IMessageFormProps {
+  message: string;
   formType: string;
   team: ITeam;
   closeModal: () => void;
+  teamPinnedMessageId?: number;
 }
 
-const MessageForm = ({ formType, team, closeModal }: IMessageFormProps) => {
+const MessageForm = ({
+  formType,
+  team,
+  closeModal,
+  message: messageState,
+  teamPinnedMessageId = 0,
+}: IMessageFormProps) => {
   const { token } = useSelector((store: TRootState) => store.user);
   const MAX_TEXTAREA_LENGTH = 100;
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState(messageState);
   const [error, setError] = useState('');
   const [serverErrors, setServerErrors] = useState<string[]>([]);
   const [createMessageMut] = useCreateTeamPinnedMessageMutation();
+  const [updateMessageMut] = useUpdateTeamPinnedMessageMutation();
 
   const clearErrors = (): void => {
     setError('');
@@ -47,15 +60,22 @@ const MessageForm = ({ formType, team, closeModal }: IMessageFormProps) => {
       return;
     }
     if (formType === 'update') {
-      updateMessage();
+      updateMessage(team, message);
     } else if (formType === 'create') {
       createMessage(team, message);
     }
   };
 
-  const updateMessage = (): void => {
-    console.log('update message');
-    closeModal();
+  const updateMessage = (team: ITeam, message: string): void => {
+    const payload = { teamId: team.id, userId: team.userId, message, token, teamPinnedMessageId };
+    updateMessageMut(payload)
+      .unwrap()
+      .then(() => {
+        closeModal();
+      })
+      .catch((err) => {
+        applyServerErrors(err.data);
+      });
   };
 
   const createMessage = (team: ITeam, message: string): void => {
@@ -78,7 +98,7 @@ const MessageForm = ({ formType, team, closeModal }: IMessageFormProps) => {
     <form onSubmit={handleOnSubmit}>
       <div className="flex flex-col w-full">
         <div className="my-4">
-          <h3 className="text-xl">Create New Message</h3>
+          <h3 className="text-xl">{formType === 'update' ? 'Update Message' : 'Create New Message'}</h3>
           <p>This message will be pinned and saved on the team members page until it is deleted by the admin.</p>
           {error.length > 0 && <p className="text-sm text-red-400">{error}</p>}
           {serverErrors.map((serverError) => {
@@ -98,7 +118,7 @@ const MessageForm = ({ formType, team, closeModal }: IMessageFormProps) => {
         </div>
         <div className="my-4">
           <button type="submit" className="btn w-full my-1">
-            Create
+            {formType === 'update' ? 'Update' : 'Create'}
           </button>
           <button onClick={closeModal} type="submit" className="btn !text-black !bg-gray-600 w-full my-1">
             Cancel

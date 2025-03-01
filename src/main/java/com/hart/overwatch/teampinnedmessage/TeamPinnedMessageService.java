@@ -12,6 +12,7 @@ import com.hart.overwatch.team.Team;
 import com.hart.overwatch.team.TeamService;
 import com.hart.overwatch.teampinnedmessage.dto.TeamPinnedMessageDto;
 import com.hart.overwatch.teampinnedmessage.request.CreateTeamPinnedMessageRequest;
+import com.hart.overwatch.teampinnedmessage.request.UpdateTeamPinnedMessageRequest;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.advice.BadRequestException;
@@ -78,5 +79,32 @@ public class TeamPinnedMessageService {
         Page<TeamPinnedMessageDto> pageResult =
                 teamPinnedMessageRepository.getTeamPinnedMessagesByTeamId(teamId, pageable);
         return pageResult.getContent();
+    }
+
+    public void updateTeamPinnedMessage(Long teamId, Long teamPinnedMessageId,
+            UpdateTeamPinnedMessageRequest request) {
+        String cleanedMessage = Jsoup.clean(request.getMessage(), Safelist.none());
+        Team team = teamService.getTeamByTeamId(teamId);
+
+        if (!team.getUser().getId().equals(request.getUserId())) {
+            throw new ForbiddenException("You do not have permission to post an admin message");
+        }
+
+        TeamPinnedMessage teamPinnedMessage = getTeamPinnedMessageById(teamPinnedMessageId);
+
+        teamPinnedMessage.setMessage(cleanedMessage);
+        teamPinnedMessage.setIsEdited(true);
+
+        teamPinnedMessageRepository.save(teamPinnedMessage);
+    }
+
+    public void deleteTeamPinnedMessage(Long teamId, Long teamPinnedMessageId) {
+        Team team = teamService.getTeamByTeamId(teamId);
+        User user = userService.getCurrentlyLoggedInUser();
+
+        if (!team.getUser().getId().equals(user.getId())) {
+            throw new ForbiddenException("You do not have permission to post an admin message");
+        }
+        teamPinnedMessageRepository.deleteById(teamPinnedMessageId);
     }
 }

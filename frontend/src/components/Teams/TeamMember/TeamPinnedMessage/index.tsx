@@ -44,7 +44,7 @@ const TeamPinnedMessage = ({ team }: ITeamPinnedMessageProps) => {
             {isModalOpen && (
               <div>
                 <TeamModal closeModal={closeModal}>
-                  <MessageForm closeModal={closeModal} team={team} formType="create" />
+                  <MessageForm closeModal={closeModal} team={team} formType="create" message={''} />
                 </TeamModal>
               </div>
             )}
