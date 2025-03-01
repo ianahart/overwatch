@@ -1,5 +1,12 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { ICreateTeamRequest, ICreateTeamResponse, IGetAllTeamsRequest, IGetAllTeamsResponse } from '../../interfaces';
+import {
+  ICreateTeamRequest,
+  ICreateTeamResponse,
+  IGetAllTeamsRequest,
+  IGetAllTeamsResponse,
+  IGetTeamRequest,
+  IGetTeamResponse,
+} from '../../interfaces';
 import { baseQueryWithReauth } from '../util';
 
 const teamsApi = createApi({
@@ -8,6 +15,18 @@ const teamsApi = createApi({
   tagTypes: ['Team'],
   endpoints(builder) {
     return {
+      fetchTeam: builder.query<IGetTeamResponse, IGetTeamRequest>({
+        query: ({ teamId, token }) => {
+          return {
+            url: `/teams/${teamId}`,
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+      }),
+
       fetchTeams: builder.query<IGetAllTeamsResponse, IGetAllTeamsRequest>({
         query: ({ userId, token, page, pageSize, direction }) => {
           if (userId === 0 || userId === null || !token) {
@@ -44,5 +63,5 @@ const teamsApi = createApi({
     };
   },
 });
-export const { useFetchTeamsQuery, useCreateTeamMutation, useLazyFetchTeamsQuery } = teamsApi;
+export const { useFetchTeamsQuery, useCreateTeamMutation, useLazyFetchTeamsQuery, useFetchTeamQuery } = teamsApi;
 export { teamsApi };

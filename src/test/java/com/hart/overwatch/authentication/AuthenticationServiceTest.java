@@ -118,8 +118,8 @@ public class AuthenticationServiceTest {
 
     private String createAuthToken(String subject) {
         SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-        return Jwts.builder().setSubject(subject).signWith(secretKey).compact();
-
+        return Jwts.builder().setSubject(subject).signWith(secretKey, SignatureAlgorithm.HS256)
+                .compact();
     }
 
     private RegisterRequest createRegisterRequest() {

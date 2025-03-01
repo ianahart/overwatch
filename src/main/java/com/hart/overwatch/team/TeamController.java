@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.hart.overwatch.team.request.CreateTeamRequest;
 import com.hart.overwatch.team.response.CreateTeamResponse;
+import com.hart.overwatch.team.response.GetTeamResponse;
 import com.hart.overwatch.team.response.GetTeamsResponse;
 import jakarta.validation.Valid;
 
@@ -38,5 +40,11 @@ public class TeamController {
             @Valid @RequestBody CreateTeamRequest request) {
         teamService.createTeam(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(new CreateTeamResponse("success"));
+    }
+
+    @GetMapping(path = "/{teamId}")
+    public ResponseEntity<GetTeamResponse> getTeam(@PathVariable("teamId") Long teamId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new GetTeamResponse("success", teamService.getTeam(teamId)));
     }
 }
