@@ -20,9 +20,12 @@ public class TeamPinnedMessageDto {
 
     private LocalDateTime updatedAt;
 
+    private Integer index;
+
 
     public TeamPinnedMessageDto(Long id, Long userId, String fullName, String avatarUrl,
-            LocalDateTime createdAt, String message, Boolean isEdited, LocalDateTime updatedAt) {
+            LocalDateTime createdAt, String message, Boolean isEdited, LocalDateTime updatedAt,
+            Integer index) {
         this.id = id;
         this.userId = userId;
         this.fullName = fullName;
@@ -31,6 +34,7 @@ public class TeamPinnedMessageDto {
         this.message = message;
         this.isEdited = isEdited;
         this.updatedAt = updatedAt;
+        this.index = index;
     }
 
     public Long getId() {
@@ -39,6 +43,10 @@ public class TeamPinnedMessageDto {
 
     public Long getUserId() {
         return userId;
+    }
+
+    public Integer getIndex() {
+        return index;
     }
 
     public String getFullName() {
@@ -95,5 +103,9 @@ public class TeamPinnedMessageDto {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public void setIndex(Integer index) {
+        this.index = index;
     }
 }

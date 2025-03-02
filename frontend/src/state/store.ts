@@ -768,6 +768,7 @@ export {
 } from './apis/feedbackTemplatesApi';
 
 export {
+  useReorderTeamPinnedMessagesMutation,
   useDeleteTeamPinnedMessageMutation,
   useCreateTeamPinnedMessageMutation,
   useFetchTeamPinnedMessagesQuery,

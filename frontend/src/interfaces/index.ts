@@ -3055,6 +3055,17 @@ export interface IDeleteTeamPinnedMessageRequest {
   token: string;
 }
 
+export interface IReorderTeamPinnedMessageRequest {
+  teamPinnedMessages: ITeamPinnedMessage[];
+  token: string;
+  teamId: number;
+}
+
+export interface IReorderTeamPinnedMessageResponse {
+  message: string;
+  data: ITeamPinnedMessage[];
+}
+
 export interface IDeleteTeamPinnedMessageResponse extends IBaseResponse {}
 
 export interface IUpdateTeamPinnedMessageResponse extends IBaseResponse {}

@@ -24,7 +24,7 @@ public interface TeamPinnedMessageRepository extends JpaRepository<TeamPinnedMes
                 SELECT NEW com.hart.overwatch.teampinnedmessage.dto.TeamPinnedMessageDto(
                  tpm.id AS id, u.id AS userId, u.fullName AS fullName, p.avatarUrl AS avatarUrl,
                  tpm.createdAt AS createdAt, tpm.message AS message, tpm.isEdited AS isEdited,
-                 tpm.updatedAt AS updatedAt
+                 tpm.updatedAt AS updatedAt, tpm.index AS index
                 ) FROM TeamPinnedMessage tpm
                 INNER JOIN tpm.user u
                 INNER JOIN tpm.user.profile p
