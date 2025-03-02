@@ -1,6 +1,9 @@
 import dayjs from 'dayjs';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
+import { LuGrip } from 'react-icons/lu';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { RiPushpinFill } from 'react-icons/ri';
 import { BiSolidEditAlt } from 'react-icons/bi';
 
@@ -19,6 +22,7 @@ export interface IMessageListItemProps {
 }
 
 const MessageListItem = ({ message, user, team }: IMessageListItemProps) => {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: `list-${message.id}` });
   const { token } = useSelector((store: TRootState) => store.user);
   const [first, last] = message.fullName.split(' ');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -41,9 +45,26 @@ const MessageListItem = ({ message, user, team }: IMessageListItemProps) => {
       });
   };
 
+  const style = {
+    transition,
+    transform: CSS.Translate.toString(transform),
+  };
+
   return (
-    <div className="my-4 border border-gray-800 rounded-md p-2">
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      onClick={(e) => e.stopPropagation()}
+      className="my-4 border border-gray-800 rounded-md p-2"
+    >
       <div className="flex items-center">
+        {team.userId === user.id && (
+          <div>
+            <LuGrip className="cursor-pointer" />
+          </div>
+        )}
         <Avatar avatarUrl={message.avatarUrl} height="h-9" width="w-9" initials={`${initializeName(first, last)}`} />
         <div>
           <h4 className="text-sm ml-2">

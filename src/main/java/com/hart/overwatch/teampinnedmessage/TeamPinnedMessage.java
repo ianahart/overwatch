@@ -40,6 +40,9 @@ public class TeamPinnedMessage {
     @Column(name = "is_edited")
     private Boolean isEdited;
 
+    @Column(name = "index", nullable = true)
+    private Integer index;
+
     @ManyToOne()
     @JoinColumn(name = "team_id", referencedColumnName = "id")
     private Team team;
@@ -53,7 +56,7 @@ public class TeamPinnedMessage {
     }
 
     public TeamPinnedMessage(Long id, LocalDateTime createdAt, LocalDateTime updatedAt,
-            String message, Boolean isEdited) {
+            String message, Boolean isEdited, Integer index) {
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -61,11 +64,13 @@ public class TeamPinnedMessage {
         this.isEdited = isEdited;
     }
 
-    public TeamPinnedMessage(Team team, User user, String message, Boolean isEdited) {
+    public TeamPinnedMessage(Team team, User user, String message, Boolean isEdited,
+            Integer index) {
         this.team = team;
         this.user = user;
         this.message = message;
         this.isEdited = isEdited;
+        this.index = index;
     }
 
     public Long getId() {
@@ -74,6 +79,10 @@ public class TeamPinnedMessage {
 
     public Team getTeam() {
         return team;
+    }
+
+    public Integer getIndex() {
+        return index;
     }
 
     public User getUser() {
@@ -108,6 +117,10 @@ public class TeamPinnedMessage {
         this.user = user;
     }
 
+    public void setIndex(Integer index) {
+        this.index = index;
+    }
+
     public void setMessage(String message) {
         this.message = message;
     }
@@ -133,6 +146,7 @@ public class TeamPinnedMessage {
         result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
         result = prime * result + ((message == null) ? 0 : message.hashCode());
         result = prime * result + ((isEdited == null) ? 0 : isEdited.hashCode());
+        result = prime * result + ((index == null) ? 0 : index.hashCode());
         result = prime * result + ((team == null) ? 0 : team.hashCode());
         result = prime * result + ((user == null) ? 0 : user.hashCode());
         return result;
@@ -181,6 +195,11 @@ public class TeamPinnedMessage {
             if (other.user != null)
                 return false;
         } else if (!user.equals(other.user))
+            return false;
+        if (index == null) {
+            if (other.index != null)
+                return false;
+        } else if (!index.equals(other.index))
             return false;
         return true;
     }

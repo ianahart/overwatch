@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.hart.overwatch.teampinnedmessage.request.CreateTeamPinnedMessageRequest;
+import com.hart.overwatch.teampinnedmessage.request.ReorderTeamPinnedMessageRequest;
 import com.hart.overwatch.teampinnedmessage.request.UpdateTeamPinnedMessageRequest;
 import com.hart.overwatch.teampinnedmessage.response.CreateTeamPinnedMessageResponse;
 import com.hart.overwatch.teampinnedmessage.response.DeleteTeamPinnedMessageResponse;
 import com.hart.overwatch.teampinnedmessage.response.GetTeamPinnedMessagesResponse;
+import com.hart.overwatch.teampinnedmessage.response.ReorderTeamPinnedMessageResponse;
 import com.hart.overwatch.teampinnedmessage.response.UpdateTeamPinnedMessageResponse;
 import jakarta.validation.Valid;
 
@@ -67,5 +69,14 @@ public class TeamPinnedMessageController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new DeleteTeamPinnedMessageResponse("success"));
 
+    }
+
+    @PostMapping(path = "/{teamId}/team-pinned-messages/reorder")
+    public ResponseEntity<ReorderTeamPinnedMessageResponse> reorderTeamPinnedMessages(
+            @PathVariable("teamId") Long teamId,
+            @RequestBody ReorderTeamPinnedMessageRequest request) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ReorderTeamPinnedMessageResponse("success", teamPinnedMessageService
+                        .reorderTeamPinnedMessages(request.getTeamPinnedMessages(), teamId)));
     }
 }

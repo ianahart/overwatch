@@ -6,6 +6,8 @@ import {
   IDeleteTeamPinnedMessageResponse,
   IGetAllTeamPinnedMessageRequest,
   IGetAllTeamPinnedMessageResponse,
+  IReorderTeamPinnedMessageRequest,
+  IReorderTeamPinnedMessageResponse,
   IUpdateTeamPinnedMessageRequest,
   IUpdateTeamPinnedMessageResponse,
 } from '../../interfaces';
@@ -85,10 +87,23 @@ const teamPinnedMessagesApi = createApi({
           { type: 'TeamPinnedMessage', id: 'LIST' },
         ],
       }),
+      reorderTeamPinnedMessages: builder.mutation<IReorderTeamPinnedMessageResponse, IReorderTeamPinnedMessageRequest>({
+        query: ({ teamId, token, teamPinnedMessages }) => {
+          return {
+            url: `/teams/${teamId}/team-pinned-messages/reorder`,
+            method: 'POST',
+            body: { teamPinnedMessages },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+      }),
     };
   },
 });
 export const {
+  useReorderTeamPinnedMessagesMutation,
   useDeleteTeamPinnedMessageMutation,
   useCreateTeamPinnedMessageMutation,
   useFetchTeamPinnedMessagesQuery,
