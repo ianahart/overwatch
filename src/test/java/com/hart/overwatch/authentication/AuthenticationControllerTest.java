@@ -25,8 +25,6 @@ import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.user.dto.UserDto;
 import com.hart.overwatch.util.MyUtil;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -120,9 +118,8 @@ public class AuthenticationControllerTest {
     }
 
     private String createAuthToken(String subject) {
-        SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-        return Jwts.builder().setSubject(subject).signWith(secretKey).compact();
-
+        SecretKey secretKey = Jwts.SIG.HS256.key().build();
+        return Jwts.builder().subject(subject).signWith(secretKey).compact();
     }
 
     private RegisterRequest createRegisterRequest() {

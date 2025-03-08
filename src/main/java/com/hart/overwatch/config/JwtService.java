@@ -3,23 +3,21 @@ package com.hart.overwatch.config;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
-
-import org.springframework.stereotype.Service;
-
-import java.security.Key;
 import java.util.function.Function;
+
+import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 
 @Service
 public class JwtService {
-
     @Value("${secretkey}")
     private String secretKey;
 
@@ -47,34 +45,29 @@ public class JwtService {
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails,
             Long TTL) {
-
-        return Jwts.builder().setClaims(extraClaims).setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + TTL))
-                .signWith(getSignInKey(), SignatureAlgorithm.HS256).compact();
-
+        return Jwts.builder().claims(extraClaims).subject(userDetails.getUsername())
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + TTL)).signWith(getSignInKey())
+                .compact();
     }
 
-    private Key getSignInKey() {
+    private SecretKey getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token)
-                .getBody();
+        return Jwts.parser().verifyWith(getSignInKey()).build().parseSignedClaims(token)
+                .getPayload();
     }
 
     public boolean tokenElapsedDay(String token) {
         Claims claims = extractAllClaims(token);
         int currentTimeInSeconds = (int) ((System.currentTimeMillis() / 1000));
-
         Date expiry = claims.getExpiration();
         int expiryInSeconds = (int) (expiry.getTime() / 1000);
         int oneDay = 60 * 60 * 24;
-
         int secondsElapsed = (currentTimeInSeconds + oneDay) - expiryInSeconds;
-        return secondsElapsed < oneDay ? false : true;
+        return secondsElapsed >= oneDay;
     }
 }
-

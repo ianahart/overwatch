@@ -6,6 +6,7 @@ import java.security.Key;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import javax.crypto.SecretKey;
 
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.advice.BadRequestException;
@@ -140,16 +141,17 @@ public class PasswordResetService {
         return this.jwtService.tokenElapsedDay(token);
     }
 
-    private Key getSignInKey() {
+
+    private SecretKey getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
     private Claims extractUserIdFromToken(String token) {
-        return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token)
-                .getBody();
-
+        return Jwts.parser().verifyWith(getSignInKey()).build().parseSignedClaims(token)
+                .getPayload();
     }
+
 
     private boolean checkIfTokenExpired(String token) {
         return this.jwtService.tokenElapsedDay(token);

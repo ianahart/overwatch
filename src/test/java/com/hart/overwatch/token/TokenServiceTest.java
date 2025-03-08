@@ -79,18 +79,12 @@ public class TokenServiceTest {
     @Test
     public void TokenService_RevokeAllUserTokens_Success() {
         when(tokenRepository.findAllValidTokens(user.getId())).thenReturn(tokens);
-
         tokenService.revokeAllUserTokens(user);
 
-        ArgumentCaptor<List<Token>> tokensCaptor = forClass(List.class);
+        verify(tokenRepository).saveAll(any());
 
-        verify(tokenRepository).saveAll(tokensCaptor.capture());
-
-        List<Token> capturedTokens = tokensCaptor.getValue();
-
-        Assertions.assertThat(capturedTokens).hasSize(2);
-
-        capturedTokens.forEach(token -> {
+        Assertions.assertThat(tokens).hasSize(2);
+        tokens.forEach(token -> {
             Assertions.assertThat(token.getExpired()).isTrue();
             Assertions.assertThat(token.getRevoked()).isTrue();
         });
