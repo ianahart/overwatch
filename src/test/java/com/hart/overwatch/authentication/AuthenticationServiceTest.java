@@ -28,7 +28,6 @@ import com.hart.overwatch.user.UserService;
 import com.hart.overwatch.user.dto.UserDto;
 import com.hart.overwatch.util.MyUtil;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.test.context.ActiveProfiles;
 import com.hart.overwatch.config.JwtService;
@@ -117,9 +116,8 @@ public class AuthenticationServiceTest {
     }
 
     private String createAuthToken(String subject) {
-        SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-        return Jwts.builder().setSubject(subject).signWith(secretKey, SignatureAlgorithm.HS256)
-                .compact();
+        SecretKey secretKey = Jwts.SIG.HS256.key().build();
+        return Jwts.builder().subject(subject).signWith(secretKey).compact();
     }
 
     private RegisterRequest createRegisterRequest() {
@@ -213,11 +211,9 @@ public class AuthenticationServiceTest {
         doThrow(new BadCredentialsException("Invalid credentials")).when(authenticationManager)
                 .authenticate(any(UsernamePasswordAuthenticationToken.class));
 
-        ForbiddenException exception = Assertions.catchThrowableOfType(
-                () -> authenticationService.login(loginRequest), ForbiddenException.class);
-
-        Assertions.assertThat(exception).isInstanceOf(ForbiddenException.class)
-                .hasMessage("Credentials are invalid");
+        Assertions.assertThatThrownBy(() -> authenticationService.login(loginRequest))
+    .isInstanceOf(ForbiddenException.class)
+    .hasMessage("Credentials are invalid");
     }
 
     @Test

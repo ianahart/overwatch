@@ -35,8 +35,6 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Field;
@@ -92,17 +90,15 @@ public class PasswordResetServiceTest {
         defaultTTLField.setAccessible(true);
         senderfField.setAccessible(true);
 
-        SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        SecretKey secretKey = Jwts.SIG.HS256.key().build();
         byte[] encodedKey = secretKey.getEncoded();
         String encodedKeyBase64 = Base64.getEncoder().encodeToString(encodedKey);
-
-
 
         secretKeyField.set(passwordResetService, encodedKeyBase64);
         senderfField.set(passwordResetService, "noreply@example.com");
         defaultTTLField.set(passwordResetService, 86400000L);
 
-        token = Jwts.builder().setSubject("john@mail.com").signWith(secretKey).compact();
+        token = Jwts.builder().subject("john@mail.com").signWith(secretKey).compact();
 
         boolean loggedIn = true;
         user = new User("john@mail.com", "John", "Doe", "John Doe", Role.USER, loggedIn,
@@ -113,8 +109,6 @@ public class PasswordResetServiceTest {
 
         passwordReset.setUser(user);
         user.setPasswordResets(Arrays.asList(passwordReset));
-
-
     }
 
     @Test
@@ -122,7 +116,6 @@ public class PasswordResetServiceTest {
         doNothing().when(passwordResetRepository).deleteUserPasswordResetsById(user.getId());
 
         passwordResetService.deleteUserPasswordResetsById(user.getId());
-
 
         verify(passwordResetRepository, times(1)).deleteUserPasswordResetsById(user.getId());
     }
@@ -225,5 +218,3 @@ public class PasswordResetServiceTest {
                 "Password must include 1 uppercase, 1 lowercase, 1 digit and 1 special char");
     }
 }
-
-

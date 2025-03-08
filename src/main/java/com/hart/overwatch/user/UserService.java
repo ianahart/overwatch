@@ -2,7 +2,7 @@ package com.hart.overwatch.user;
 
 import java.security.Key;
 import java.util.Optional;
-
+import javax.crypto.SecretKey;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
@@ -78,16 +78,17 @@ public class UserService {
         return null;
     }
 
-    private Key getSignInKey() {
+
+    private SecretKey getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
     private Claims extractUserIdFromToken(String token) {
-        return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token)
-                .getBody();
-
+        return Jwts.parser().verifyWith(getSignInKey()).build().parseSignedClaims(token)
+                .getPayload();
     }
+
 
     public UserDto getUserByToken(String token) {
         Claims claims = extractUserIdFromToken(token);
