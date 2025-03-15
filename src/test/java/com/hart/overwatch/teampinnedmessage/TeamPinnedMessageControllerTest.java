@@ -1,18 +1,16 @@
 package com.hart.overwatch.teampinnedmessage;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hart.overwatch.config.JwtService;
-import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.team.Team;
 import com.hart.overwatch.teampinnedmessage.dto.TeamPinnedMessageDto;
 import com.hart.overwatch.teampinnedmessage.request.CreateTeamPinnedMessageRequest;
+import com.hart.overwatch.teampinnedmessage.request.ReorderTeamPinnedMessageRequest;
 import com.hart.overwatch.teampinnedmessage.request.UpdateTeamPinnedMessageRequest;
-import com.hart.overwatch.teampinnedmessage.response.UpdateTeamPinnedMessageResponse;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
@@ -24,9 +22,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.annotation.DirtiesContext;
@@ -211,6 +206,25 @@ public class TeamPinnedMessageControllerTest {
 
         response.andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+
+    }
+
+    @Test
+    public void TeamPinnedMessageController_ReorderTeamPinnedMessages_ReturnReorderTeamPinnedMessageResponse()
+            throws Exception {
+        Long teamId = team.getId();
+        List<TeamPinnedMessageDto> teamPinnedMessageDtos =
+                List.of(convertToDto(teamPinnedMessages.get(0)));
+        ReorderTeamPinnedMessageRequest request = new ReorderTeamPinnedMessageRequest();
+        request.setTeamPinnedMessages(teamPinnedMessageDtos);
+
+        ResultActions response = mockMvc.perform(
+                post(String.format("/api/v1/teams/%d/team-pinned-messages/reorder", teamId))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+
 
     }
 
