@@ -252,9 +252,31 @@ public class TeamPinnedMessageServiceTest {
                     teamPinnedMessages.get(0).getId(), request);
         }).isInstanceOf(ForbiddenException.class)
                 .hasMessage("You do not have permission to post an admin message");
-
     }
 
+    @Test
+    public void TeamPinnedMessageService_UpdateTeamPinnedMessage_ReturnNothing() {
+        Long teamPinnedMessageId = teamPinnedMessages.get(0).getId();
+        UpdateTeamPinnedMessageRequest request = new UpdateTeamPinnedMessageRequest();
+        request.setUserId(user.getId());
+        request.setMessage("message edited");
+
+        when(teamService.getTeamByTeamId(team.getId())).thenReturn(team);
+
+        when(teamPinnedMessageRepository.findById(teamPinnedMessageId))
+                .thenReturn(Optional.of(teamPinnedMessages.get(0)));
+
+        teamPinnedMessages.get(0).setMessage(request.getMessage());
+        teamPinnedMessages.get(0).setIsEdited(true);
+
+        when(teamPinnedMessageRepository.save(any(TeamPinnedMessage.class)))
+                .thenReturn(teamPinnedMessages.get(0));
+
+        teamPinnedMessageService.updateTeamPinnedMessage(teamPinnedMessageId, teamPinnedMessageId,
+                request);
+
+        verify(teamPinnedMessageRepository, times(1)).save(any(TeamPinnedMessage.class));
+    }
 }
 
 
