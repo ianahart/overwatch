@@ -25,6 +25,7 @@ import com.hart.overwatch.team.Team;
 import com.hart.overwatch.team.TeamService;
 import com.hart.overwatch.teampinnedmessage.dto.TeamPinnedMessageDto;
 import com.hart.overwatch.teampinnedmessage.request.CreateTeamPinnedMessageRequest;
+import com.hart.overwatch.teampinnedmessage.request.UpdateTeamPinnedMessageRequest;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
@@ -236,6 +237,22 @@ public class TeamPinnedMessageServiceTest {
                 .isEqualTo(expectedTeamPinnedMessage.getUser().getFullName());
         Assertions.assertThat(actualTeamPinnedMessageDto.getAvatarUrl())
                 .isEqualTo(expectedTeamPinnedMessage.getUser().getProfile().getAvatarUrl());
+    }
+
+    @Test
+    public void TeamPinnedMessageService_UpdateTeamPinnedMessage_ThrowForbiddenException() {
+        UpdateTeamPinnedMessageRequest request = new UpdateTeamPinnedMessageRequest();
+        request.setUserId(999L);
+        request.setMessage("message edited");
+
+        when(teamService.getTeamByTeamId(team.getId())).thenReturn(team);
+
+        Assertions.assertThatThrownBy(() -> {
+            teamPinnedMessageService.updateTeamPinnedMessage(team.getId(),
+                    teamPinnedMessages.get(0).getId(), request);
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("You do not have permission to post an admin message");
+
     }
 
 }
