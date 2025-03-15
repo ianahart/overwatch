@@ -133,9 +133,37 @@ public class TeamPinnedMessageControllerTest {
 
     }
 
+    @Test
+    public void TeamPinnedMessageController_GetTeamPinnedMessages_ReturnGetTeamPinnedMessagesResponse()
+            throws Exception {
+        Long teamId = team.getId();
+        int page = 0;
+        int pageSize = 3;
+        String direction = "next";
+        Pageable pageable = Pageable.ofSize(pageSize);
+        TeamPinnedMessageDto teamPinnedMessageDto = convertToDto(teamPinnedMessages.get(0));
+        Page<TeamPinnedMessageDto> pageResult =
+                new PageImpl<>(Collections.singletonList(teamPinnedMessageDto), pageable, 1);
+        PaginationDto<TeamPinnedMessageDto> expectedPaginationDto =
+                new PaginationDto<>(pageResult.getContent(), pageResult.getNumber(), pageSize,
+                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
+
+        when(teamPinnedMessageService.getTeamPinnedMessages(teamId))
+                .thenReturn(List.of(teamPinnedMessageDto));
+
+        ResultActions response =
+                mockMvc.perform(get(String.format("/api/v1/teams/%d/team-pinned-messages", teamId))
+                        .param("userId", String.valueOf(teamId)).param("page", "0")
+                        .param("pageSize", "3").param("direction", "next"));
+
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data",
+                        Matchers.hasSize(Math.toIntExact(1L))));
+    }
 
 
 }
-
 
 
