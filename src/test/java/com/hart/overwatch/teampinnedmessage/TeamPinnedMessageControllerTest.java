@@ -198,6 +198,22 @@ public class TeamPinnedMessageControllerTest {
 
     }
 
+    @Test
+    public void TeamPinnedMessageController_DeleteTeamPinnedMessage_ReturnDeleteTeamPinnedMessageResponse()
+            throws Exception {
+        Long teamId = team.getId();
+        Long teamPinnedMessageId = teamPinnedMessages.get(0).getId();
+
+        doNothing().when(teamPinnedMessageService).deleteTeamPinnedMessage(teamId,
+                teamPinnedMessageId);
+        ResultActions response = mockMvc.perform(delete(String
+                .format("/api/v1/teams/%d/team-pinned-messages/%d", teamId, teamPinnedMessageId)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+
+    }
+
 }
 
 
