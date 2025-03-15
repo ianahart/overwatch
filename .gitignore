@@ -35,6 +35,8 @@ build/
 
 .vim 
 .env
+.env.local
+.env.prod
 .DS_Store
 dump.rdb
 #src/main/resources/application-prod.properties
