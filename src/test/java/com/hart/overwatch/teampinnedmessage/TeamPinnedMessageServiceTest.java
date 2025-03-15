@@ -23,6 +23,7 @@ import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.team.Team;
 import com.hart.overwatch.team.TeamService;
+import com.hart.overwatch.teampinnedmessage.dto.TeamPinnedMessageDto;
 import com.hart.overwatch.teampinnedmessage.request.CreateTeamPinnedMessageRequest;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
@@ -92,6 +93,20 @@ public class TeamPinnedMessageServiceTest {
         }
 
         return messages;
+    }
+
+
+    private TeamPinnedMessageDto convertToDto(TeamPinnedMessage message) {
+        TeamPinnedMessageDto dto = new TeamPinnedMessageDto();
+        dto.setId(message.getId());
+        dto.setUserId(message.getUser().getId());
+        dto.setIndex(message.getIndex());
+        dto.setMessage(message.getMessage());
+        dto.setFullName(message.getUser().getFullName());
+        dto.setIsEdited(message.getIsEdited());
+        dto.setAvatarUrl(message.getUser().getProfile().getAvatarUrl());
+
+        return dto;
     }
 
 
@@ -188,6 +203,39 @@ public class TeamPinnedMessageServiceTest {
 
         verify(teamPinnedMessageRepository, times(1)).save(any(TeamPinnedMessage.class));
 
+    }
+
+    @Test
+    public void TeamPinnedMessageService_GetTeamPinnedMessages_Return_List_Of_TeamPinnedMessageDto() {
+        Long teamId = team.getId();
+        int pageSize = 5;
+        Pageable pageable = Pageable.ofSize(pageSize);
+        TeamPinnedMessageDto teamPinnedMessageDto = convertToDto(teamPinnedMessages.get(0));
+        Page<TeamPinnedMessageDto> pageResult =
+                new PageImpl<>(Collections.singletonList(teamPinnedMessageDto), pageable, 1);
+
+        when(teamPinnedMessageRepository.getTeamPinnedMessagesByTeamId(teamId, pageable))
+                .thenReturn(pageResult);
+
+        List<TeamPinnedMessageDto> result = teamPinnedMessageService.getTeamPinnedMessages(teamId);
+        TeamPinnedMessage expectedTeamPinnedMessage = teamPinnedMessages.get(0);
+        TeamPinnedMessageDto actualTeamPinnedMessageDto = result.get(0);
+
+        Assertions.assertThat(result.size()).isEqualTo(1);
+        Assertions.assertThat(actualTeamPinnedMessageDto.getId())
+                .isEqualTo(expectedTeamPinnedMessage.getId());
+        Assertions.assertThat(actualTeamPinnedMessageDto.getUserId())
+                .isEqualTo(expectedTeamPinnedMessage.getUser().getId());
+        Assertions.assertThat(actualTeamPinnedMessageDto.getIndex())
+                .isEqualTo(expectedTeamPinnedMessage.getIndex());
+        Assertions.assertThat(actualTeamPinnedMessageDto.getIsEdited())
+                .isEqualTo(expectedTeamPinnedMessage.getIsEdited());
+        Assertions.assertThat(actualTeamPinnedMessageDto.getMessage())
+                .isEqualTo(expectedTeamPinnedMessage.getMessage());
+        Assertions.assertThat(actualTeamPinnedMessageDto.getFullName())
+                .isEqualTo(expectedTeamPinnedMessage.getUser().getFullName());
+        Assertions.assertThat(actualTeamPinnedMessageDto.getAvatarUrl())
+                .isEqualTo(expectedTeamPinnedMessage.getUser().getProfile().getAvatarUrl());
     }
 
 }

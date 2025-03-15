@@ -22,6 +22,9 @@ public class TeamPinnedMessageDto {
 
     private Integer index;
 
+    public TeamPinnedMessageDto() {
+
+    }
 
     public TeamPinnedMessageDto(Long id, Long userId, String fullName, String avatarUrl,
             LocalDateTime createdAt, String message, Boolean isEdited, LocalDateTime updatedAt,
