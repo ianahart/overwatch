@@ -113,6 +113,21 @@ public class TeamPinnedMessageServiceTest {
 
     }
 
+    @Test
+    public void TeamPinnedMessageService_GetTeamPinnedMessageById_ReturnTeamPinnedMessage() {
+        TeamPinnedMessage teamPinnedMessage = teamPinnedMessages.get(0);
+
+        when(teamPinnedMessageRepository.findById(teamPinnedMessage.getId()))
+                .thenReturn(Optional.of(teamPinnedMessage));
+
+        TeamPinnedMessage returnedTeamPinnedMessage =
+                teamPinnedMessageService.getTeamPinnedMessageById(teamPinnedMessage.getId());
+
+        Assertions.assertThat(returnedTeamPinnedMessage).isNotNull();
+        Assertions.assertThat(returnedTeamPinnedMessage.getId())
+                .isEqualTo(teamPinnedMessage.getId());
+    }
+
 }
 
 
