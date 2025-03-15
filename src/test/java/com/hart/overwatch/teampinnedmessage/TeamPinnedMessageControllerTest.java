@@ -11,6 +11,8 @@ import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.team.Team;
 import com.hart.overwatch.teampinnedmessage.dto.TeamPinnedMessageDto;
 import com.hart.overwatch.teampinnedmessage.request.CreateTeamPinnedMessageRequest;
+import com.hart.overwatch.teampinnedmessage.request.UpdateTeamPinnedMessageRequest;
+import com.hart.overwatch.teampinnedmessage.response.UpdateTeamPinnedMessageResponse;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
@@ -172,6 +174,26 @@ public class TeamPinnedMessageControllerTest {
                         .content(objectMapper.writeValueAsString(request)));
 
         response.andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+
+    }
+
+    @Test
+    public void TeamPinnedMessageController_UpdateTeamPinnedMessage_ReturnUpdateTeamPinnedMessageResponse()
+            throws Exception {
+        UpdateTeamPinnedMessageRequest request = new UpdateTeamPinnedMessageRequest();
+        request.setUserId(user.getId());
+        request.setMessage("message edited");
+
+        doNothing().when(teamPinnedMessageService).updateTeamPinnedMessage(team.getId(),
+                teamPinnedMessages.get(0).getId(), request);
+
+        ResultActions response = mockMvc.perform(
+                patch(String.format("/api/v1/teams/%d/team-pinned-messages/%d", team.getId(),
+                        teamPinnedMessages.get(0).getId())).contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
 
     }
