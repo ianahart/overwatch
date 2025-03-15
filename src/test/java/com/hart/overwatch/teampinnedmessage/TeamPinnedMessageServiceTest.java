@@ -146,6 +146,22 @@ public class TeamPinnedMessageServiceTest {
                         MAX_TEAM_PINNED_MESSAGES));
     }
 
+    @Test
+    public void teamPinnedMessageService_CreateTeamPinnedMessage_ThrowsForbiddenException() {
+        CreateTeamPinnedMessageRequest request = new CreateTeamPinnedMessageRequest();
+        long notAdminUserId = 999L;
+        request.setUserId(notAdminUserId);
+        request.setMessage("message 4");
+
+        when(teamPinnedMessageRepository.totalTeamPinnedMessages(team.getId())).thenReturn(0L);
+        when(teamService.getTeamByTeamId(team.getId())).thenReturn(team);
+
+        Assertions.assertThatThrownBy(() -> {
+            teamPinnedMessageService.createTeamPinnedMessage(team.getId(), request);
+        }).isInstanceOf(ForbiddenException.class)
+                .hasMessage("You do not have permission to post an admin message");
+    }
+
 }
 
 
