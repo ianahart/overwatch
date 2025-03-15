@@ -43,9 +43,8 @@ public class TeamPinnedMessageService {
 
     public TeamPinnedMessage getTeamPinnedMessageById(Long teamPinnedMessageId) {
         return teamPinnedMessageRepository.findById(teamPinnedMessageId)
-                .orElseThrow(() -> new NotFoundException(
-                        String.format("Could not find team pinned messagge with the id %d",
-                                teamPinnedMessageId)));
+                .orElseThrow(() -> new NotFoundException(String.format(
+                        "Could not find team pinned message with the id %d", teamPinnedMessageId)));
     }
 
     private boolean canCreateTeamPinnedMessage(long totalTeamPinnedMessages) {

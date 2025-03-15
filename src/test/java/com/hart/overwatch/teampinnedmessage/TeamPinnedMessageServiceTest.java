@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.hart.overwatch.advice.ForbiddenException;
+import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.pagination.PaginationService;
 import com.hart.overwatch.pagination.dto.PaginationDto;
 import com.hart.overwatch.profile.Profile;
@@ -101,6 +102,16 @@ public class TeamPinnedMessageServiceTest {
 
     }
 
+    @Test
+    public void TeamPinnedMessageService_GetTeamPinnedMessageById_ThrowsNotFoundException() {
+        Long teamPinnedMessageId = 999L;
+
+        Assertions.assertThatThrownBy(() -> {
+            teamPinnedMessageService.getTeamPinnedMessageById(teamPinnedMessageId);
+        }).isInstanceOf(NotFoundException.class).hasMessage(String
+                .format("Could not find team pinned message with the id %d", teamPinnedMessageId));
+
+    }
 
 }
 
