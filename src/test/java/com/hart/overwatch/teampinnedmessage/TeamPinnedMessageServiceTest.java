@@ -277,6 +277,18 @@ public class TeamPinnedMessageServiceTest {
 
         verify(teamPinnedMessageRepository, times(1)).save(any(TeamPinnedMessage.class));
     }
+
+    @Test
+    public void TeamPinnedMessageService_DeleteTeamPinnedMessage_ThrowForbiddenException() {
+        when(teamService.getTeamByTeamId(team.getId())).thenReturn(team);
+        User forbiddenUser = new User();
+        forbiddenUser.setId(999L);
+        when(userService.getCurrentlyLoggedInUser()).thenReturn(forbiddenUser);
+
+        Assertions.assertThatThrownBy(() -> {
+            teamPinnedMessageService.deleteTeamPinnedMessage(team.getId(), teamPinnedMessages.get(0).getId());
+        }).isInstanceOf(ForbiddenException.class).hasMessage("You do not have permission to post an admin message");
+    }
 }
 
 
