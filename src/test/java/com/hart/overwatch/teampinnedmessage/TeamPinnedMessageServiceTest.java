@@ -147,7 +147,7 @@ public class TeamPinnedMessageServiceTest {
     }
 
     @Test
-    public void teamPinnedMessageService_CreateTeamPinnedMessage_ThrowsForbiddenException() {
+    public void TeamPinnedMessageService_CreateTeamPinnedMessage_ThrowsForbiddenException() {
         CreateTeamPinnedMessageRequest request = new CreateTeamPinnedMessageRequest();
         long notAdminUserId = 999L;
         request.setUserId(notAdminUserId);
@@ -160,6 +160,34 @@ public class TeamPinnedMessageServiceTest {
             teamPinnedMessageService.createTeamPinnedMessage(team.getId(), request);
         }).isInstanceOf(ForbiddenException.class)
                 .hasMessage("You do not have permission to post an admin message");
+    }
+
+
+    @Test
+    public void TeamPinnedMessageService_CreateTeamPinnedMessage_Return_Nothing() {
+        CreateTeamPinnedMessageRequest request = new CreateTeamPinnedMessageRequest();
+        request.setUserId(user.getId());
+        request.setMessage("message 4");
+        long MAX_TEAM_PINNED_MESSAGES = 0L;
+        when(teamPinnedMessageRepository.totalTeamPinnedMessages(team.getId()))
+                .thenReturn(MAX_TEAM_PINNED_MESSAGES);
+        when(teamService.getTeamByTeamId(team.getId())).thenReturn(team);
+        when(userService.getUserById(user.getId())).thenReturn(user);
+        TeamPinnedMessage teamPinnedMessage = new TeamPinnedMessage();
+        teamPinnedMessage.setId(4L);
+        teamPinnedMessage.setTeam(team);
+        teamPinnedMessage.setUser(user);
+        teamPinnedMessage.setMessage("message 4");
+        teamPinnedMessage.setIsEdited(false);
+        teamPinnedMessage.setIndex(3);
+
+        when(teamPinnedMessageRepository.save(any(TeamPinnedMessage.class)))
+                .thenReturn(teamPinnedMessage);
+
+        teamPinnedMessageService.createTeamPinnedMessage(team.getId(), request);
+
+        verify(teamPinnedMessageRepository, times(1)).save(any(TeamPinnedMessage.class));
+
     }
 
 }
