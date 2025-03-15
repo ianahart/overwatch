@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import com.hart.overwatch.advice.BadRequestException;
 import com.hart.overwatch.advice.ForbiddenException;
 import com.hart.overwatch.advice.NotFoundException;
 import com.hart.overwatch.pagination.PaginationService;
@@ -22,6 +23,7 @@ import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.team.Team;
 import com.hart.overwatch.team.TeamService;
+import com.hart.overwatch.teampinnedmessage.request.CreateTeamPinnedMessageRequest;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
 import com.hart.overwatch.user.UserService;
@@ -126,6 +128,22 @@ public class TeamPinnedMessageServiceTest {
         Assertions.assertThat(returnedTeamPinnedMessage).isNotNull();
         Assertions.assertThat(returnedTeamPinnedMessage.getId())
                 .isEqualTo(teamPinnedMessage.getId());
+    }
+
+    @Test
+    public void teamPinnedMessageService_CreateTeamPinnedMessage_Throw_BadRequestException() {
+        CreateTeamPinnedMessageRequest request = new CreateTeamPinnedMessageRequest();
+        request.setUserId(user.getId());
+        request.setMessage("message 4");
+        long MAX_TEAM_PINNED_MESSAGES = 5L;
+        when(teamPinnedMessageRepository.totalTeamPinnedMessages(team.getId()))
+                .thenReturn(MAX_TEAM_PINNED_MESSAGES + 1);
+
+        Assertions.assertThatThrownBy(() -> {
+            teamPinnedMessageService.createTeamPinnedMessage(team.getId(), null);
+        }).isInstanceOf(BadRequestException.class).hasMessage(
+                String.format("You have exceeded the maximum amount of admin messages %d",
+                        MAX_TEAM_PINNED_MESSAGES));
     }
 
 }
