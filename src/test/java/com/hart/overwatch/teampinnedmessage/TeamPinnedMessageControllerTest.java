@@ -10,6 +10,7 @@ import com.hart.overwatch.profile.Profile;
 import com.hart.overwatch.setting.Setting;
 import com.hart.overwatch.team.Team;
 import com.hart.overwatch.teampinnedmessage.dto.TeamPinnedMessageDto;
+import com.hart.overwatch.teampinnedmessage.request.CreateTeamPinnedMessageRequest;
 import com.hart.overwatch.token.TokenRepository;
 import com.hart.overwatch.user.Role;
 import com.hart.overwatch.user.User;
@@ -24,6 +25,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -137,16 +139,7 @@ public class TeamPinnedMessageControllerTest {
     public void TeamPinnedMessageController_GetTeamPinnedMessages_ReturnGetTeamPinnedMessagesResponse()
             throws Exception {
         Long teamId = team.getId();
-        int page = 0;
-        int pageSize = 3;
-        String direction = "next";
-        Pageable pageable = Pageable.ofSize(pageSize);
         TeamPinnedMessageDto teamPinnedMessageDto = convertToDto(teamPinnedMessages.get(0));
-        Page<TeamPinnedMessageDto> pageResult =
-                new PageImpl<>(Collections.singletonList(teamPinnedMessageDto), pageable, 1);
-        PaginationDto<TeamPinnedMessageDto> expectedPaginationDto =
-                new PaginationDto<>(pageResult.getContent(), pageResult.getNumber(), pageSize,
-                        pageResult.getTotalPages(), direction, pageResult.getTotalElements());
 
         when(teamPinnedMessageService.getTeamPinnedMessages(teamId))
                 .thenReturn(List.of(teamPinnedMessageDto));
@@ -163,6 +156,25 @@ public class TeamPinnedMessageControllerTest {
                         Matchers.hasSize(Math.toIntExact(1L))));
     }
 
+    @Test
+    public void TeamPinnedMessageController_CreateTeamPinnedMessage_ReturnCreateTeamPinnedMessageResponse()
+            throws Exception {
+        Long teamId = team.getId();
+        CreateTeamPinnedMessageRequest request = new CreateTeamPinnedMessageRequest();
+        request.setUserId(user.getId());
+        request.setMessage("message 4");
+
+        doNothing().when(teamPinnedMessageService).createTeamPinnedMessage(teamId, request);
+
+        ResultActions response =
+                mockMvc.perform(post(String.format("/api/v1/teams/%d/team-pinned-messages", teamId))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        response.andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("success")));
+
+    }
 
 }
 
