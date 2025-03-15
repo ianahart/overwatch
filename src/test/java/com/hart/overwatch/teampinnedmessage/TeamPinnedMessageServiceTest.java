@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import java.util.List;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -300,6 +301,57 @@ public class TeamPinnedMessageServiceTest {
         teamPinnedMessageService.deleteTeamPinnedMessage(team.getId(), teamPinnedMessageId);
         verify(teamPinnedMessageRepository, times(1)).deleteById(teamPinnedMessageId);
     }
+
+    @Test
+    public void TeamPinnedMessageService_ReorderTeamPinnedMessages_Return_List_Of_TeamPinnedMessageDto() {
+        List<TeamPinnedMessageDto> inputDtos = Arrays.asList(
+                convertToDto(teamPinnedMessages.get(1)), convertToDto(teamPinnedMessages.get(2)),
+                convertToDto(teamPinnedMessages.get(0)));
+
+        TeamPinnedMessageDto expectedDto1 = new TeamPinnedMessageDto();
+        expectedDto1.setId(1L);
+        expectedDto1.setIndex(2);
+        expectedDto1.setMessage("Message 1");
+
+        TeamPinnedMessageDto expectedDto2 = new TeamPinnedMessageDto();
+        expectedDto2.setId(2L);
+        expectedDto2.setIndex(0);
+        expectedDto2.setMessage("Message 2");
+
+        TeamPinnedMessageDto expectedDto3 = new TeamPinnedMessageDto();
+        expectedDto3.setId(3L);
+        expectedDto3.setIndex(1);
+        expectedDto3.setMessage("Message 3");
+
+        List<TeamPinnedMessageDto> expectedDtos =
+                Arrays.asList(expectedDto2, expectedDto3, expectedDto1);
+
+        when(teamPinnedMessageRepository.findById(1L))
+                .thenReturn(Optional.of(teamPinnedMessages.get(1)));
+        when(teamPinnedMessageRepository.findById(2L))
+                .thenReturn(Optional.of(teamPinnedMessages.get(0)));
+        when(teamPinnedMessageRepository.findById(3L))
+                .thenReturn(Optional.of(teamPinnedMessages.get(2)));
+
+        Page<TeamPinnedMessageDto> page = new PageImpl<>(expectedDtos);
+        when(teamPinnedMessageRepository.getTeamPinnedMessagesByTeamId(eq(team.getId()),
+                any(Pageable.class))).thenReturn(page);
+
+        List<TeamPinnedMessageDto> result =
+                teamPinnedMessageService.reorderTeamPinnedMessages(inputDtos, team.getId());
+
+        verify(teamPinnedMessageRepository).saveAll(any());
+
+        verify(teamPinnedMessageRepository).getTeamPinnedMessagesByTeamId(eq(team.getId()),
+                any(Pageable.class));
+
+        Assertions.assertThat(result).hasSize(3);
+        Assertions.assertThat(result).extracting(TeamPinnedMessageDto::getId).containsExactly(2L,
+                3L, 1L);
+        Assertions.assertThat(result).extracting(TeamPinnedMessageDto::getIndex).containsExactly(0,
+                1, 2);
+    }
+
 }
 
 
