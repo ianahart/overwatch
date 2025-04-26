@@ -26,10 +26,9 @@ describe('ToolTip', () => {
 
     await user.click(button);
 
-        if (toolTip) {
-    expect(toolTip).toBeInTheDocument();
-
-        }
+    if (toolTip) {
+      expect(toolTip).toBeInTheDocument();
+    }
 
     await user.click(button);
 
