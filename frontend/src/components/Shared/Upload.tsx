@@ -89,7 +89,7 @@ const Upload = ({
       {filename !== null && (
         <div className="flex items-center">
           <small>{filename}</small>
-          <div className="ml-2 cursor-pointer" onClick={clearFile}>
+          <div className="ml-2 cursor-pointer" data-testid="clear-file" onClick={clearFile}>
             <AiOutlineClose className="text-yellow-400" />
           </div>
         </div>
@@ -103,6 +103,7 @@ const Upload = ({
         <input
           onChange={handleOnChange}
           name="avatar"
+          data-testid="file-input"
           id="avatar"
           type="file"
           accept="image/*"

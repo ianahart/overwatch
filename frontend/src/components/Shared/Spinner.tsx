@@ -8,7 +8,7 @@ const Spinner = ({ message }: ISpinnerProps) => {
   return (
     <div className="flex justify-center flex-col items-center">
       <div className="animate-spin">
-        <FaSpinner className="text-green-400 text-3xl" />
+        <FaSpinner className="text-green-400 text-3xl" aria-label="Loading spinner" />
       </div>
       <p className="text-slate-400 text-sm">{message}</p>
     </div>
