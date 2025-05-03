@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice, nanoid } from '@reduxjs/toolkit';
 import { IAdditionalInfoResponse, IDayAvailability } from '../../interfaces';
-import { clearUser } from '../store';
+import { clearUser } from '../actions/globalActions';
 
 interface IAdditionalInfoFormState {
   availability: IDayAvailability[];

@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice, nanoid } from '@reduxjs/toolkit';
-import { clearUser } from '../store';
+import { clearUser } from '../actions/globalActions';
 import { IWorkExpResponse, IWorkExperience } from '../../interfaces';
 
 interface IWorkExperienceState {

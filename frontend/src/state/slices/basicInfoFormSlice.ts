@@ -1,6 +1,6 @@
 import { Draft, PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { IBasicInfoForm, IBasicInfoResponse, IFormField } from '../../interfaces';
-import { clearUser } from '../store';
+import { clearUser } from '../actions/globalActions';
 
 interface IBasicInfoFormState extends IBasicInfoForm {}
 

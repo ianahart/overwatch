@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { IConnection, ISelectedReviewer } from '../../interfaces';
-import { clearUser } from '../store';
+import { clearUser } from '../actions/globalActions';
 import { connectionState } from '../../data';
 
 interface IAddReviewState {

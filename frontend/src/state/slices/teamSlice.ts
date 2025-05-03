@@ -8,7 +8,7 @@ import {
   ITeamMessage,
   ITeamPost,
 } from '../../interfaces';
-import { clearUser } from '../store';
+import { clearUser } from '../actions/globalActions';
 
 interface IUpdateTeamMember {
   reset: boolean;
