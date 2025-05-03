@@ -120,20 +120,5 @@ export const createFullUser = () => {
     settingId: setting,
   });
 
-  const user: IUser = {
-    id: userEntity.id,
-    profileId: profile.id,
-    settingId: setting.id,
-    avatarUrl: userEntity.avatarUrl,
-    abbreviation: userEntity.abbreviation,
-    email: userEntity.email,
-    firstName: userEntity.firstName,
-    lastName: userEntity.lastName,
-    fullName: userEntity.fullName,
-    loggedIn: userEntity.loggedIn,
-    role: userEntity.role,
-    slug: userEntity.slug,
-  };
-
   return userEntity;
 };
