@@ -1,4 +1,3 @@
-import { IUser } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
 
