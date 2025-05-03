@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice, nanoid } from '@reduxjs/toolkit';
 import { ILanguage, IProgrammingLanguage, IQualification, ISkillsResponse } from '../../interfaces';
-import { clearUser } from '../store';
+import { clearUser } from '../actions/globalActions';
 
 interface ISkillsState {
   languages: ILanguage[];

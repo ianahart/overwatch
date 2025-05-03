@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { ITodoListsState, ITodoList, ITodoCard } from '../../interfaces';
-import { clearUser, clearWorkSpace } from '../store';
+import { clearUser, clearWorkSpace } from '../actions/globalActions';
 
 const initialState: ITodoListsState = {
   todoLists: [],

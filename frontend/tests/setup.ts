@@ -1,12 +1,12 @@
 import '@testing-library/jest-dom/vitest';
 import ResizeObserver from 'resize-observer-polyfill';
 import { vi } from 'vitest';
-// import { server } from './mocks/server';
+import { server } from './mocks/server';
 
-//beforeAll(() => server.listen());
-//afterEach(() => server.resetHandlers());
-//afterAll(() => server.close());
-//
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
+
 global.ResizeObserver = ResizeObserver;
 
 window.HTMLElement.prototype.scrollIntoView = vi.fn();
@@ -25,4 +25,14 @@ Object.defineProperty(window, 'matchMedia', {
     removeEventListener: vi.fn(),
     dispatchEvent: vi.fn(),
   })),
+});
+
+export const mockNavigate = vi.fn();
+
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom');
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
 });

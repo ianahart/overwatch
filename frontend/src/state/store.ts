@@ -183,80 +183,82 @@ import { reviewerBadgesApi } from './apis/reviewerBadgesApi';
 import { feedbackTemplatesApi } from './apis/feedbackTemplatesApi';
 import { teamPinnedMessagesApi } from './apis/teamPinnedMessagesApi';
 
+export const rootReducer = {
+  todoList: todoListsReducer,
+  workSpace: workSpaceReducer,
+  repositoryTree: repositoryTreeReducer,
+  repositoryReviews: repositoryReviewsReducer,
+  addReview: addReviewReducer,
+  chat: chatReducer,
+  additionalInfo: additionalInfoFormReducer,
+  package: packageFormReducer,
+  workExp: workExpFormReducer,
+  skills: skillsFormReducer,
+  profileSetup: profileSetupFormReducer,
+  basicInfo: basicInfoFormReducer,
+  setting: settingReducer,
+  navbar: navbarReducer,
+  signup: signUpReducer,
+  signin: signInReducer,
+  user: userReducer,
+  team: teamReducer,
+  [authsApi.reducerPath]: authsApi.reducer,
+  [usersApi.reducerPath]: usersApi.reducer,
+  [heartbeatApi.reducerPath]: heartbeatApi.reducer,
+  [settingsApi.reducerPath]: settingsApi.reducer,
+  [phonesApi.reducerPath]: phonesApi.reducer,
+  [locationsApi.reducerPath]: locationsApi.reducer,
+  [profilesApi.reducerPath]: profilesApi.reducer,
+  [paymentMethodsApi.reducerPath]: paymentMethodsApi.reducer,
+  [testimonialsApi.reducerPath]: testimonialsApi.reducer,
+  [reviewsApi.reducerPath]: reviewsApi.reducer,
+  [connectionsApi.reducerPath]: connectionsApi.reducer,
+  [notificationsApi.reducerPath]: notificationsApi.reducer,
+  [chatMessagesApi.reducerPath]: chatMessagesApi.reducer,
+  [favoritesApi.reducerPath]: favoritesApi.reducer,
+  [pinnedConnectionsApi.reducerPath]: pinnedConnectionsApi.reducer,
+  [githubApi.reducerPath]: githubApi.reducer,
+  [repositoriesApi.reducerPath]: repositoriesApi.reducer,
+  [workSpacesApi.reducerPath]: workSpacesApi.reducer,
+  [todoListsApi.reducerPath]: todoListsApi.reducer,
+  [todoCardsApi.reducerPath]: todoCardsApi.reducer,
+  [pexelApi.reducerPath]: pexelApi.reducer,
+  [labelsApi.reducerPath]: labelsApi.reducer,
+  [activeLabelsApi.reducerPath]: activeLabelsApi.reducer,
+  [checkListsApi.reducerPath]: checkListsApi.reducer,
+  [checkListItemsApi.reducerPath]: checkListItemsApi.reducer,
+  [activitiesApi.reducerPath]: activitiesApi.reducer,
+  [customFieldsApi.reducerPath]: customFieldsApi.reducer,
+  [dropDownOptionsApi.reducerPath]: dropDownOptionsApi.reducer,
+  [reviewFeedbacksApi.reducerPath]: reviewFeedbacksApi.reducer,
+  [statisticsApi.reducerPath]: statisticsApi.reducer,
+  [blockedUsersApi.reducerPath]: blockedUsersApi.reducer,
+  [topicsApi.reducerPath]: topicsApi.reducer,
+  [commentsApi.reducerPath]: commentsApi.reducer,
+  [commentVotesApi.reducerPath]: commentVotesApi.reducer,
+  [reportCommentsApi.reducerPath]: reportCommentsApi.reducer,
+  [saveCommentsApi.reducerPath]: saveCommentsApi.reducer,
+  [reactionsApi.reducerPath]: reactionsApi.reducer,
+  [replyCommentsApi.reducerPath]: replyCommentsApi.reducer,
+  [stripePaymentIntentsApi.reducerPath]: stripePaymentIntentsApi.reducer,
+  [stripePaymentRefundsApi.reducerPath]: stripePaymentRefundsApi.reducer,
+  [appTestimonialsApi.reducerPath]: appTestimonialsApi.reducer,
+  [teamsApi.reducerPath]: teamsApi.reducer,
+  [teamInvitationsApi.reducerPath]: teamInvitationsApi.reducer,
+  [teamMembersApi.reducerPath]: teamMembersApi.reducer,
+  [teamMessagesApi.reducerPath]: teamMessagesApi.reducer,
+  [teamPostsApi.reducerPath]: teamPostsApi.reducer,
+  [teamCommentsApi.reducerPath]: teamCommentsApi.reducer,
+  [bannedUsersApi.reducerPath]: bannedUsersApi.reducer,
+  [suggestionsApi.reducerPath]: suggestionsApi.reducer,
+  [badgesApi.reducerPath]: badgesApi.reducer,
+  [reviewerBadgesApi.reducerPath]: reviewerBadgesApi.reducer,
+  [feedbackTemplatesApi.reducerPath]: feedbackTemplatesApi.reducer,
+  [teamPinnedMessagesApi.reducerPath]: teamPinnedMessagesApi.reducer,
+};
+
 export const store = configureStore({
-  reducer: {
-    todoList: todoListsReducer,
-    workSpace: workSpaceReducer,
-    repositoryTree: repositoryTreeReducer,
-    repositoryReviews: repositoryReviewsReducer,
-    addReview: addReviewReducer,
-    chat: chatReducer,
-    additionalInfo: additionalInfoFormReducer,
-    package: packageFormReducer,
-    workExp: workExpFormReducer,
-    skills: skillsFormReducer,
-    profileSetup: profileSetupFormReducer,
-    basicInfo: basicInfoFormReducer,
-    setting: settingReducer,
-    navbar: navbarReducer,
-    signup: signUpReducer,
-    signin: signInReducer,
-    user: userReducer,
-    team: teamReducer,
-    [authsApi.reducerPath]: authsApi.reducer,
-    [usersApi.reducerPath]: usersApi.reducer,
-    [heartbeatApi.reducerPath]: heartbeatApi.reducer,
-    [settingsApi.reducerPath]: settingsApi.reducer,
-    [phonesApi.reducerPath]: phonesApi.reducer,
-    [locationsApi.reducerPath]: locationsApi.reducer,
-    [profilesApi.reducerPath]: profilesApi.reducer,
-    [paymentMethodsApi.reducerPath]: paymentMethodsApi.reducer,
-    [testimonialsApi.reducerPath]: testimonialsApi.reducer,
-    [reviewsApi.reducerPath]: reviewsApi.reducer,
-    [connectionsApi.reducerPath]: connectionsApi.reducer,
-    [notificationsApi.reducerPath]: notificationsApi.reducer,
-    [chatMessagesApi.reducerPath]: chatMessagesApi.reducer,
-    [favoritesApi.reducerPath]: favoritesApi.reducer,
-    [pinnedConnectionsApi.reducerPath]: pinnedConnectionsApi.reducer,
-    [githubApi.reducerPath]: githubApi.reducer,
-    [repositoriesApi.reducerPath]: repositoriesApi.reducer,
-    [workSpacesApi.reducerPath]: workSpacesApi.reducer,
-    [todoListsApi.reducerPath]: todoListsApi.reducer,
-    [todoCardsApi.reducerPath]: todoCardsApi.reducer,
-    [pexelApi.reducerPath]: pexelApi.reducer,
-    [labelsApi.reducerPath]: labelsApi.reducer,
-    [activeLabelsApi.reducerPath]: activeLabelsApi.reducer,
-    [checkListsApi.reducerPath]: checkListsApi.reducer,
-    [checkListItemsApi.reducerPath]: checkListItemsApi.reducer,
-    [activitiesApi.reducerPath]: activitiesApi.reducer,
-    [customFieldsApi.reducerPath]: customFieldsApi.reducer,
-    [dropDownOptionsApi.reducerPath]: dropDownOptionsApi.reducer,
-    [reviewFeedbacksApi.reducerPath]: reviewFeedbacksApi.reducer,
-    [statisticsApi.reducerPath]: statisticsApi.reducer,
-    [blockedUsersApi.reducerPath]: blockedUsersApi.reducer,
-    [topicsApi.reducerPath]: topicsApi.reducer,
-    [commentsApi.reducerPath]: commentsApi.reducer,
-    [commentVotesApi.reducerPath]: commentVotesApi.reducer,
-    [reportCommentsApi.reducerPath]: reportCommentsApi.reducer,
-    [saveCommentsApi.reducerPath]: saveCommentsApi.reducer,
-    [reactionsApi.reducerPath]: reactionsApi.reducer,
-    [replyCommentsApi.reducerPath]: replyCommentsApi.reducer,
-    [stripePaymentIntentsApi.reducerPath]: stripePaymentIntentsApi.reducer,
-    [stripePaymentRefundsApi.reducerPath]: stripePaymentRefundsApi.reducer,
-    [appTestimonialsApi.reducerPath]: appTestimonialsApi.reducer,
-    [teamsApi.reducerPath]: teamsApi.reducer,
-    [teamInvitationsApi.reducerPath]: teamInvitationsApi.reducer,
-    [teamMembersApi.reducerPath]: teamMembersApi.reducer,
-    [teamMessagesApi.reducerPath]: teamMessagesApi.reducer,
-    [teamPostsApi.reducerPath]: teamPostsApi.reducer,
-    [teamCommentsApi.reducerPath]: teamCommentsApi.reducer,
-    [bannedUsersApi.reducerPath]: bannedUsersApi.reducer,
-    [suggestionsApi.reducerPath]: suggestionsApi.reducer,
-    [badgesApi.reducerPath]: badgesApi.reducer,
-    [reviewerBadgesApi.reducerPath]: reviewerBadgesApi.reducer,
-    [feedbackTemplatesApi.reducerPath]: feedbackTemplatesApi.reducer,
-    [teamPinnedMessagesApi.reducerPath]: teamPinnedMessagesApi.reducer,
-  },
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
       serializableCheck: {
@@ -269,60 +271,61 @@ export const store = configureStore({
         ],
         ignoredPaths: ['profileSetup.avatar.value'],
       },
-    })
-      .concat(authsApi.middleware)
-      .concat(usersApi.middleware)
-      .concat(heartbeatApi.middleware)
-      .concat(settingsApi.middleware)
-      .concat(phonesApi.middleware)
-      .concat(locationsApi.middleware)
-      .concat(profilesApi.middleware)
-      .concat(paymentMethodsApi.middleware)
-      .concat(testimonialsApi.middleware)
-      .concat(reviewsApi.middleware)
-      .concat(connectionsApi.middleware)
-      .concat(notificationsApi.middleware)
-      .concat(chatMessagesApi.middleware)
-      .concat(favoritesApi.middleware)
-      .concat(pinnedConnectionsApi.middleware)
-      .concat(githubApi.middleware)
-      .concat(repositoriesApi.middleware)
-      .concat(workSpacesApi.middleware)
-      .concat(todoListsApi.middleware)
-      .concat(todoCardsApi.middleware)
-      .concat(pexelApi.middleware)
-      .concat(labelsApi.middleware)
-      .concat(activeLabelsApi.middleware)
-      .concat(checkListsApi.middleware)
-      .concat(checkListItemsApi.middleware)
-      .concat(activitiesApi.middleware)
-      .concat(customFieldsApi.middleware)
-      .concat(dropDownOptionsApi.middleware)
-      .concat(reviewFeedbacksApi.middleware)
-      .concat(statisticsApi.middleware)
-      .concat(blockedUsersApi.middleware)
-      .concat(topicsApi.middleware)
-      .concat(commentsApi.middleware)
-      .concat(commentVotesApi.middleware)
-      .concat(reportCommentsApi.middleware)
-      .concat(saveCommentsApi.middleware)
-      .concat(reactionsApi.middleware)
-      .concat(replyCommentsApi.middleware)
-      .concat(stripePaymentIntentsApi.middleware)
-      .concat(stripePaymentRefundsApi.middleware)
-      .concat(appTestimonialsApi.middleware)
-      .concat(teamsApi.middleware)
-      .concat(teamInvitationsApi.middleware)
-      .concat(teamMembersApi.middleware)
-      .concat(teamMessagesApi.middleware)
-      .concat(teamPostsApi.middleware)
-      .concat(teamCommentsApi.middleware)
-      .concat(bannedUsersApi.middleware)
-      .concat(suggestionsApi.middleware)
-      .concat(badgesApi.middleware)
-      .concat(reviewerBadgesApi.middleware)
-      .concat(feedbackTemplatesApi.middleware)
-      .concat(teamPinnedMessagesApi.middleware);
+    }).concat(
+      authsApi.middleware,
+      usersApi.middleware,
+      heartbeatApi.middleware,
+      settingsApi.middleware,
+      phonesApi.middleware,
+      locationsApi.middleware,
+      profilesApi.middleware,
+      paymentMethodsApi.middleware,
+      testimonialsApi.middleware,
+      reviewsApi.middleware,
+      connectionsApi.middleware,
+      notificationsApi.middleware,
+      chatMessagesApi.middleware,
+      favoritesApi.middleware,
+      pinnedConnectionsApi.middleware,
+      githubApi.middleware,
+      repositoriesApi.middleware,
+      workSpacesApi.middleware,
+      todoListsApi.middleware,
+      todoCardsApi.middleware,
+      pexelApi.middleware,
+      labelsApi.middleware,
+      activeLabelsApi.middleware,
+      checkListsApi.middleware,
+      checkListItemsApi.middleware,
+      activitiesApi.middleware,
+      customFieldsApi.middleware,
+      dropDownOptionsApi.middleware,
+      reviewFeedbacksApi.middleware,
+      statisticsApi.middleware,
+      blockedUsersApi.middleware,
+      topicsApi.middleware,
+      commentsApi.middleware,
+      commentVotesApi.middleware,
+      reportCommentsApi.middleware,
+      saveCommentsApi.middleware,
+      reactionsApi.middleware,
+      replyCommentsApi.middleware,
+      stripePaymentIntentsApi.middleware,
+      stripePaymentRefundsApi.middleware,
+      appTestimonialsApi.middleware,
+      teamsApi.middleware,
+      teamInvitationsApi.middleware,
+      teamMembersApi.middleware,
+      teamMessagesApi.middleware,
+      teamPostsApi.middleware,
+      teamCommentsApi.middleware,
+      bannedUsersApi.middleware,
+      suggestionsApi.middleware,
+      badgesApi.middleware,
+      reviewerBadgesApi.middleware,
+      feedbackTemplatesApi.middleware,
+      teamPinnedMessagesApi.middleware
+    );
   },
 });
 

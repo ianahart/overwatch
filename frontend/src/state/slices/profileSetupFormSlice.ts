@@ -1,6 +1,6 @@
 import { Draft, PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { IFormField, IProfileSetupForm, IProfileSetupResponse } from '../../interfaces';
-import { clearUser } from '../store';
+import { clearUser } from '../actions/globalActions';
 
 interface IProfileSetupFormState extends IProfileSetupForm {}
 

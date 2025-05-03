@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { clearUser } from '../store';
+import { clearUser } from '../actions/globalActions';
 import { IPackage, IPckgResponse } from '../../interfaces';
 import { nanoid } from 'nanoid';
 

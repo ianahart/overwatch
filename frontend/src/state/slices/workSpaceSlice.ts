@@ -1,6 +1,6 @@
 import { Draft, PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { IWorkSpaceState, IWorkSpaceEntity, ILabel } from '../../interfaces';
-import { clearUser } from '../store';
+import { clearUser } from '../actions/globalActions';
 
 export interface IUpdatePropertyPayload<T> {
   value: T;

@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { clearUser } from '../store';
+import { clearUser } from '../actions/globalActions';
 import { IPaginationState, IRepositoryReview } from '../../interfaces';
 import { repositoryPaginationState } from '../../data';
 

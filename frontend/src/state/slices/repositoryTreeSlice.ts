@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { clearUser } from '../store';
+import { clearUser } from '../actions/globalActions';
 import { IGitHubRepository, IGitHubTree } from '../../interfaces';
 import { repositoryState } from '../../data';
 import { ERepositoryView } from '../../enums';

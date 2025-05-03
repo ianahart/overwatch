@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { IConnection, IMessage, IPinnedConnection } from '../../interfaces';
-import { clearUser } from '../store';
+import { clearUser } from '../actions/globalActions';
 import { connectionState } from '../../data';
 
 interface IChatState {
