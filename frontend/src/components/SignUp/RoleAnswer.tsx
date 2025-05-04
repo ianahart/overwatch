@@ -24,7 +24,7 @@ const RoleAnswer = ({ answer, role }: IRoleAnswerProps) => {
           >
             {roleState.value === role && (
               <div className="text-green-700 text-2xl">
-                <AiOutlineCheck />
+                <AiOutlineCheck aria-label="checkmark" />
               </div>
             )}
             <p

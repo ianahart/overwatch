@@ -57,86 +57,87 @@ import { feedbackTemplatesApi } from '../src/state/apis/feedbackTemplatesApi';
 import { teamPinnedMessagesApi } from '../src/state/apis/teamPinnedMessagesApi';
 import { MemoryRouter } from 'react-router-dom';
 
-export function AllProviders({ children }: { children: ReactNode; preloadedState?: PreloadedState<TRootState> }) {
-  const createTestStore = (preloadedState?: Partial<TRootState>) => {
-    return configureStore({
-      reducer: rootReducer,
-      preloadedState,
-      middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware({
-          serializableCheck: {
-            ignoredActions: [
-              'profileSetup/updateAvatar',
-              'stripePaymentIntent/exportPaymentIntentsToPdf',
-              'stripePaymentIntent/exportPaymentIntentsToCsv',
-              'suggestions/createSuggestion',
-              'badges/createBadge',
-            ],
-            ignoredPaths: ['profileSetup.avatar.value'],
-          },
-        }).concat(
-          authsApi.middleware,
-          usersApi.middleware,
-          heartbeatApi.middleware,
-          settingsApi.middleware,
-          phonesApi.middleware,
-          locationsApi.middleware,
-          profilesApi.middleware,
-          paymentMethodsApi.middleware,
-          testimonialsApi.middleware,
-          reviewsApi.middleware,
-          connectionsApi.middleware,
-          notificationsApi.middleware,
-          chatMessagesApi.middleware,
-          favoritesApi.middleware,
-          pinnedConnectionsApi.middleware,
-          githubApi.middleware,
-          repositoriesApi.middleware,
-          workSpacesApi.middleware,
-          todoListsApi.middleware,
-          todoCardsApi.middleware,
-          pexelApi.middleware,
-          labelsApi.middleware,
-          activeLabelsApi.middleware,
-          checkListsApi.middleware,
-          checkListItemsApi.middleware,
-          activitiesApi.middleware,
-          customFieldsApi.middleware,
-          dropDownOptionsApi.middleware,
-          reviewFeedbacksApi.middleware,
-          statisticsApi.middleware,
-          blockedUsersApi.middleware,
-          topicsApi.middleware,
-          commentsApi.middleware,
-          commentVotesApi.middleware,
-          reportCommentsApi.middleware,
-          saveCommentsApi.middleware,
-          reactionsApi.middleware,
-          replyCommentsApi.middleware,
-          stripePaymentIntentsApi.middleware,
-          stripePaymentRefundsApi.middleware,
-          appTestimonialsApi.middleware,
-          teamsApi.middleware,
-          teamInvitationsApi.middleware,
-          teamMembersApi.middleware,
-          teamMessagesApi.middleware,
-          teamPostsApi.middleware,
-          teamCommentsApi.middleware,
-          bannedUsersApi.middleware,
-          suggestionsApi.middleware,
-          badgesApi.middleware,
-          reviewerBadgesApi.middleware,
-          feedbackTemplatesApi.middleware,
-          teamPinnedMessagesApi.middleware
-        ),
-    });
-  };
-  const testStore = createTestStore();
+interface AllProvidersProps {
+  children: ReactNode;
+  preloadedState?: PreloadedState<TRootState>;
+}
+
+export function AllProviders({ children, preloadedState }: AllProvidersProps) {
+  const store = configureStore({
+    reducer: rootReducer,
+    preloadedState,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: {
+          ignoredActions: [
+            'profileSetup/updateAvatar',
+            'stripePaymentIntent/exportPaymentIntentsToPdf',
+            'stripePaymentIntent/exportPaymentIntentsToCsv',
+            'suggestions/createSuggestion',
+            'badges/createBadge',
+          ],
+          ignoredPaths: ['profileSetup.avatar.value'],
+        },
+      }).concat(
+        authsApi.middleware,
+        usersApi.middleware,
+        heartbeatApi.middleware,
+        settingsApi.middleware,
+        phonesApi.middleware,
+        locationsApi.middleware,
+        profilesApi.middleware,
+        paymentMethodsApi.middleware,
+        testimonialsApi.middleware,
+        reviewsApi.middleware,
+        connectionsApi.middleware,
+        notificationsApi.middleware,
+        chatMessagesApi.middleware,
+        favoritesApi.middleware,
+        pinnedConnectionsApi.middleware,
+        githubApi.middleware,
+        repositoriesApi.middleware,
+        workSpacesApi.middleware,
+        todoListsApi.middleware,
+        todoCardsApi.middleware,
+        pexelApi.middleware,
+        labelsApi.middleware,
+        activeLabelsApi.middleware,
+        checkListsApi.middleware,
+        checkListItemsApi.middleware,
+        activitiesApi.middleware,
+        customFieldsApi.middleware,
+        dropDownOptionsApi.middleware,
+        reviewFeedbacksApi.middleware,
+        statisticsApi.middleware,
+        blockedUsersApi.middleware,
+        topicsApi.middleware,
+        commentsApi.middleware,
+        commentVotesApi.middleware,
+        reportCommentsApi.middleware,
+        saveCommentsApi.middleware,
+        reactionsApi.middleware,
+        replyCommentsApi.middleware,
+        stripePaymentIntentsApi.middleware,
+        stripePaymentRefundsApi.middleware,
+        appTestimonialsApi.middleware,
+        teamsApi.middleware,
+        teamInvitationsApi.middleware,
+        teamMembersApi.middleware,
+        teamMessagesApi.middleware,
+        teamPostsApi.middleware,
+        teamCommentsApi.middleware,
+        bannedUsersApi.middleware,
+        suggestionsApi.middleware,
+        badgesApi.middleware,
+        reviewerBadgesApi.middleware,
+        feedbackTemplatesApi.middleware,
+        teamPinnedMessagesApi.middleware
+      ),
+  });
+
   return (
-    <>
-      <Provider store={testStore}>
-        <MemoryRouter>{children}</MemoryRouter>
-      </Provider>
-    </>
+    <Provider store={store}>
+      <MemoryRouter>{children}</MemoryRouter>
+    </Provider>
   );
 }
