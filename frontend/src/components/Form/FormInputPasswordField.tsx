@@ -77,7 +77,11 @@ const FormInputPasswordField = ({
         <div className="absolute top-2 left-2">{icon}</div>
         {name === 'password' && visibility && (
           <div onClick={toggleVisiblity} className="absolute top-2 right-2">
-            {type === 'password' ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
+            {type === 'password' ? (
+              <AiOutlineEye aria-label="eye outline icon" />
+            ) : (
+              <AiOutlineEyeInvisible aria-label="invisible eye outline icon" />
+            )}
           </div>
         )}
       </div>
