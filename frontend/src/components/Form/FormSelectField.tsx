@@ -26,6 +26,7 @@ const FormSelectField = ({ handleUpdateField, options, name, value, error, label
         id={id}
         className="border border-gray-800 rounded h-9 bg-transparent"
         value={value}
+        data-testid="custom-select"
       >
         {options.map((option) => {
           return (
