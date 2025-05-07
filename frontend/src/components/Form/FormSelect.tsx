@@ -22,7 +22,7 @@ const FormSelect = ({ data, country, updateField }: IFormSelectProps) => {
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const country = e.target.value.toLowerCase();
-    const updated = filteredCountries.filter(({ value }) => value.toLowerCase().includes(country));
+    const updated = data.filter(({ value }) => value.toLowerCase().includes(country));
     country.length === 0 ? setFilteredCountries(data) : setFilteredCountries(updated);
   };
 

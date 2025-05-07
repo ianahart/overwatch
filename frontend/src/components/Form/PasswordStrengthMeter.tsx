@@ -46,7 +46,7 @@ const PasswordStrengthMeter = ({ password }: IPasswordStrengthMeterProps) => {
   return (
     <div className="mt-4">
       <p className="text-slate-400">{strength.text}</p>
-      <div className={`${strength.color} w-full h-1 border border-slate-700 mt-1`}></div>
+      <div role="presentation" className={`${strength.color} w-full h-1 border border-slate-700 mt-1`}></div>
     </div>
   );
 };
