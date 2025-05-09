@@ -40,7 +40,7 @@ const CommunityTopicList = () => {
   };
 
   return (
-    <div className="my-8">
+    <div data-testid="plain-topic-list" className="my-8">
       <div className="my-4 flex flex-col items-center">
         {topics.map((topic) => {
           return <CommunityTopicListItem key={topic.id} topic={topic} />;

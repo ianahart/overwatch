@@ -1,5 +1,32 @@
+import { ITag } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createSaveComments(numberOfComments: number) {
+  const user = db.user.create();
+
+  const saveComments = Array.from({ length: numberOfComments }).map(() => {
+    return db.saveComment.create({ userId: user });
+  });
+
+  return saveComments;
+}
+
+export function getTopicWithTags(numberOfTopics: number = 10) {
+  return db.topic.findMany({ take: numberOfTopics });
+}
+
+export function createTopicWithTags(numberOfTopics: number, numberOfTags: number) {
+  const tags: ITag[] = [];
+
+  for (let i = 0; i < numberOfTags; i++) {
+    tags.push(db.tag.create());
+  }
+
+  for (let i = 0; i < numberOfTopics; i++) {
+    db.topic.create({ tags });
+  }
+}
 
 export function createUserWithFullProfileAndRelations(userOverrides = {}) {
   const user = db.user.create({

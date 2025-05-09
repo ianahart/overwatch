@@ -52,7 +52,7 @@ const Community = () => {
       </div>
       <div className="my-8">
         {activeTab === 'topics' && <CommunityTopicList />}
-        {activeTab === 'savedComments' && user.id !== 0 && (
+        {activeTab === 'saveComments' && user.id !== 0 && (
           <CommunityTopicSavedCommentList userId={user.id} token={token} />
         )}
         {activeTab === 'userTopics' && user.id !== 0 && <CommunityUserTopicList userId={user.id} token={token} />}

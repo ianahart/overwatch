@@ -60,7 +60,7 @@ const CommunityTopicSavedCommentList = ({ userId, token }: ICommunityTopicSavedC
   };
 
   return (
-    <div className="my-4 max-w-[600px] w-full mx-auto">
+    <div data-testid="saved-comment-list" className="my-4 max-w-[600px] w-full mx-auto">
       {savedComments.map((savedComment) => {
         return (
           <div key={savedComment.id} className="border border-gray-800 p-2 rounded my-2">

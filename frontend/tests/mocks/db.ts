@@ -13,8 +13,23 @@ let settingIdCounter = 1;
 let minCommentIdCounter = 1;
 let replyCommentIdCounter = 1;
 let saveCommentIdCounter = 1;
+let topicIdCounter = 1;
+let tagIdCounter = 1;
 
 export const db = factory({
+  tag: {
+    id: primaryKey(() => tagIdCounter++),
+    name: () => faker.lorem.word(10),
+  },
+
+  topic: {
+    id: primaryKey(() => topicIdCounter++),
+    title: () => faker.lorem.word(15),
+    description: () => faker.lorem.paragraph(2),
+    tags: manyOf('tag'),
+    totalCommentCount: () => faker.number.int(10),
+  },
+
   saveComment: {
     id: primaryKey(() => saveCommentIdCounter++),
     userId: oneOf('user'),
