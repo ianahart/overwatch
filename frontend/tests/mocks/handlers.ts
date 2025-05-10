@@ -3,6 +3,7 @@ import { db } from './db';
 import { IGetTopicsWithTagsResponse, ISignInForm, ISignUpForm } from '../../src/interfaces';
 import { baseURL } from '../../src/util';
 import { createSaveComments, createTopicWithTags, getTopicWithTags } from './dbActions';
+import { paginate } from '../utils';
 
 export const handlers = [
   http.post(`${baseURL}/auth/login`, async ({ request }) => {
@@ -66,6 +67,35 @@ export const handlers = [
           totalPages: 2,
           direction,
           totalElements: items.length,
+        },
+      },
+      { status: 200 }
+    );
+  }),
+
+  http.get(`${baseURL}/topics/users/:userId`, async ({ request }) => {
+    const url = new URL(request.url);
+
+    let pg = Number(url.searchParams.get('page')) ?? 1;
+    const size = Number(url.searchParams.get('pageSize')) ?? 10;
+    const dir = url.searchParams.get('direction') ?? 'next';
+    const totalElements = 20;
+
+    createTopicWithTags(20, 5);
+    const data = getTopicWithTags(20);
+
+    const { page, totalPages, pageSize, direction, items } = paginate(pg, size, dir, data);
+
+    return HttpResponse.json<IGetTopicsWithTagsResponse>(
+      {
+        message: 'success',
+        data: {
+          items,
+          page,
+          pageSize,
+          totalPages,
+          direction,
+          totalElements,
         },
       },
       { status: 200 }

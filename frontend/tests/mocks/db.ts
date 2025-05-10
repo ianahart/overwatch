@@ -15,8 +15,15 @@ let replyCommentIdCounter = 1;
 let saveCommentIdCounter = 1;
 let topicIdCounter = 1;
 let tagIdCounter = 1;
+let tokenIdCounter = 1;
 
 export const db = factory({
+  token: {
+    id: primaryKey(() => tokenIdCounter++),
+    token: () => faker.lorem.word(20),
+    refreshToken: () => faker.lorem.word(20),
+  },
+
   tag: {
     id: primaryKey(() => tagIdCounter++),
     name: () => faker.lorem.word(10),
