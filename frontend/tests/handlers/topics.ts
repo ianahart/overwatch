@@ -3,8 +3,26 @@ import { baseURL } from '../../src/util';
 import { createTopicWithTags, getTopicWithTags } from '../mocks/dbActions';
 import { IGetTopicsWithTagsResponse } from '../../src/interfaces';
 import { paginate } from '../utils';
+import { db } from '../mocks/db';
 
 export const topicHandlers = [
+  http.get(`${baseURL}/topics/search`, async ({ request }) => {
+    const url = new URL(request.url);
+    const query = url.searchParams.get('query');
+
+    if (query === 'test') {
+      db.topic.create({ title: 'Test Topic' });
+      return HttpResponse.json({
+        message: 'success',
+        data: db.topic.getAll(),
+      });
+    }
+        return HttpResponse.json({
+            message: 'success',
+            data: []
+        })
+  }),
+
   http.get(`${baseURL}/topics`, async ({ request }) => {
     const url = new URL(request.url);
 
