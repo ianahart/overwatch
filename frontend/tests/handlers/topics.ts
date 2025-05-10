@@ -17,10 +17,10 @@ export const topicHandlers = [
         data: db.topic.getAll(),
       });
     }
-        return HttpResponse.json({
-            message: 'success',
-            data: []
-        })
+    return HttpResponse.json({
+      message: 'success',
+      data: [],
+    });
   }),
 
   http.get(`${baseURL}/topics`, async ({ request }) => {
