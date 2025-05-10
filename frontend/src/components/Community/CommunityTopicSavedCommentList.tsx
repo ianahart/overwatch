@@ -63,12 +63,13 @@ const CommunityTopicSavedCommentList = ({ userId, token }: ICommunityTopicSavedC
     <div data-testid="saved-comment-list" className="my-4 max-w-[600px] w-full mx-auto">
       {savedComments.map((savedComment) => {
         return (
-          <div key={savedComment.id} className="border border-gray-800 p-2 rounded my-2">
+          <div data-testid="saved-comment" key={savedComment.id} className="border border-gray-800 p-2 rounded my-2">
             <CommentHeader comment={savedComment} />
             <div className="my-6">{savedComment.content}</div>
             <div className="flex justify-end">
               <ToolTip message="Unsave">
                 <FaBookmark
+                  data-testid="saved comment bookmark"
                   onClick={() => handleDeleteSaveComment(savedComment.id)}
                   className="cursor-pointer text-yellow-400"
                 />
