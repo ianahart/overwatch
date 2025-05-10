@@ -47,7 +47,7 @@ const CommunityUserTopicList = ({ userId, token }: ICommunityUserTopicListProps)
   };
 
   return (
-    <div className="my-8">
+    <div data-testid="user-topic-list" className="my-8">
       <div className="my-4 flex flex-col items-center">
         {topics.map((topic) => {
           return (

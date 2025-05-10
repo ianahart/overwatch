@@ -21,3 +21,30 @@ export const getNameAbbreviation = (name?: IName) => {
   const { first, last } = splitName(name);
   return `${first[0]}.${last[0]}`;
 };
+
+export const paginate = <T>(page: number, pageSize: number, direction: string, data: T[]) => {
+  let currentPage = 0;
+  if (direction === 'next') {
+    currentPage = page + 1;
+  } else if (direction === 'prev' && page > 0) {
+    currentPage = page - 1;
+  } else {
+    currentPage = page;
+  }
+
+  const totalElements = 20;
+  const totalPages = Math.ceil(totalElements / pageSize);
+
+  const startIndex = currentPage * pageSize;
+  const endIndex = Math.min(startIndex + pageSize, totalElements);
+
+  const items = data.slice(startIndex, endIndex);
+
+  return {
+    page: currentPage,
+    pageSize,
+    direction,
+    items,
+    totalPages,
+  };
+};
