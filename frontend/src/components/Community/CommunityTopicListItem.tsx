@@ -13,7 +13,7 @@ const CommunityTopicListItem = ({ topic }: ICommunityTopicListItemProps) => {
   };
 
   return (
-    <div className="my-4 cursor-pointer" onClick={goToTopicPage}>
+    <div data-testid="community-topic-list-item" className="my-4 cursor-pointer" onClick={goToTopicPage}>
       <h3 className="text-xl">{topic.title}</h3>
       <p className="text-sm">{shortenString(topic.description, 10)}</p>
       <div className="flex flex-wrap my-2">

@@ -7,23 +7,27 @@ import { paginate } from '../utils';
 export const topicHandlers = [
   http.get(`${baseURL}/topics`, async ({ request }) => {
     const url = new URL(request.url);
-    const page = url.searchParams.get('page');
-    const pageSize = url.searchParams.get('pageSize');
-    const direction = url.searchParams.get('direction') ?? 'next';
+
+    let pg = Number(url.searchParams.get('page')) ?? 1;
+    const size = Number(url.searchParams.get('pageSize')) ?? 10;
+    const dir = url.searchParams.get('direction') ?? 'next';
+    const totalElements = 20;
 
     createTopicWithTags(20, 5);
-    const items = getTopicWithTags(20);
+    const data = getTopicWithTags(20);
+
+    const { page, totalPages, pageSize, direction, items } = paginate(pg, size, dir, data);
 
     return HttpResponse.json<IGetTopicsWithTagsResponse>(
       {
         message: 'success',
         data: {
           items,
-          page: Number(page),
-          pageSize: Number(pageSize),
-          totalPages: 2,
+          page,
+          pageSize,
+          totalPages,
           direction,
-          totalElements: items.length,
+          totalElements,
         },
       },
       { status: 200 }
