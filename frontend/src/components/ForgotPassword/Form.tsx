@@ -52,17 +52,18 @@ const Form = () => {
     <section className="min-h-screen pt-40">
       <section className="bg-stone-950 mx-auto rounded p-4 shadow-md md:max-w-[500px] max-w-full">
         <h1 className="text-gray-400 text-2xl my-8">Reset your password</h1>
-                {!results.isSuccess && 
-        <p className="mb-8 text-sm">
-          Enter the email address associated with your account and we'll send you a link to reset your password.
-        </p>}
+        {!results.isSuccess && (
+          <p className="mb-8 text-sm">
+            Enter the email address associated with your account and we'll send you a link to reset your password.
+          </p>
+        )}
         {results.isSuccess && (
           <div className="text-gray-400 text-sm flex items-center flex-col">
             <div className="w-10 h-10 rounded-full bg-slate-800 flex flex-col justify-center items-center mb-2">
               <AiOutlineCheck className="text-green-400 text-2xl" />
             </div>
             <p className="w-1/2 text-center">
-              Email sucessfully sent. Please check your inbox. If you do not see it check your spam folder.
+              Email successfully sent. Please check your inbox. If you do not see it check your spam folder.
             </p>
           </div>
         )}

@@ -2,7 +2,7 @@ import Form from './Form';
 
 const ForgotPassword = () => {
   return (
-    <section className="forgot-password-background">
+    <section data-testid="forgot-password-container" className="forgot-password-background">
       <Form />
     </section>
   );
