@@ -1,9 +1,34 @@
 import { http, HttpResponse } from 'msw';
 import { db } from '../mocks/db';
-import { IForgotPasswordForm, ISignInForm, ISignUpForm } from '../../src/interfaces';
+import {
+  IForgotPasswordForm,
+  IResetPasswordForm,
+  IResetPasswordResponse,
+  ISignInForm,
+  ISignUpForm,
+} from '../../src/interfaces';
 import { baseURL } from '../../src/util';
 
 export const authHandlers = [
+  http.post(`${baseURL}/auth/reset-password`, async ({ request }) => {
+    const body = (await request.json()) as IResetPasswordForm;
+
+    if (body.confirmPassword !== body.password) {
+      return HttpResponse.json(
+        {
+          message: 'Passwords do not match',
+        },
+        { status: 400 }
+      );
+    }
+    return HttpResponse.json<IResetPasswordResponse>(
+      {
+        message: 'success',
+      },
+      { status: 200 }
+    );
+  }),
+
   http.post(`${baseURL}/auth/forgot-password`, async ({ request }) => {
     const body = (await request.json()) as IForgotPasswordForm;
 
