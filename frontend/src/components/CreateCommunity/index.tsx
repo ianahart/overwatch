@@ -131,7 +131,7 @@ const CreateCommunity = () => {
                 name="tag"
                 type="text"
               />
-              <button type="button" onClick={handleOnAddTag} className="btn ml-2">
+              <button data-testid="add-tag-btn" type="button" onClick={handleOnAddTag} className="btn ml-2">
                 Add tag
               </button>
             </div>

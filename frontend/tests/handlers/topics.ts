@@ -1,11 +1,20 @@
 import { http, HttpResponse } from 'msw';
 import { baseURL } from '../../src/util';
 import { createTopicWithTags, getTopicWithTags } from '../mocks/dbActions';
-import { IGetTopicsWithTagsResponse } from '../../src/interfaces';
+import { ICreateTopicRequest, IGetTopicsWithTagsResponse } from '../../src/interfaces';
 import { paginate } from '../utils';
 import { db } from '../mocks/db';
 
 export const topicHandlers = [
+  http.post(`${baseURL}/topics`, async ({ request }) => {
+    const body = (await request.json()) as ICreateTopicRequest;
+
+    if (!body.description || !body.title) {
+      return HttpResponse.json({ message: 'Please fill out all fields' }, { status: 400 });
+    }
+
+    return HttpResponse.json({ message: 'success' }, { status: 201 });
+  }),
   http.get(`${baseURL}/topics/search`, async ({ request }) => {
     const url = new URL(request.url);
     const query = url.searchParams.get('query');
