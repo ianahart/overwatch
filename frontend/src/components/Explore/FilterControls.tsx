@@ -31,6 +31,7 @@ const FilterControls = ({ handleSetFilter, fetchReviewers, filter }: IFilterCont
       {filters.map(({ id, name, value, desc }) => {
         return (
           <li
+            data-testid="reviewer-filter"
             className={`px-2 cursor-pointer ${filter.value === value ? 'active-link' : ''}`}
             key={id}
             onClick={() => handleOnClick(value, desc)}
