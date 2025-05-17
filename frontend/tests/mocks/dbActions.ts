@@ -2,6 +2,13 @@ import { ITag } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
 
+export function createMinProfiles(numberOfProfiles: number) {
+  const minProfiles = Array.from({ length: numberOfProfiles }).map(() => {
+    return db.minProfile.create();
+  });
+  return minProfiles;
+}
+
 export function createSaveComments(numberOfComments: number) {
   const user = db.user.create();
 
