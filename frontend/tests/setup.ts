@@ -56,3 +56,10 @@ vi.mock('../src/util', async () => {
     retrieveTokens: vi.fn().mockReturnValue({ token: 'mocked-token' }),
   };
 });
+
+vi.mock('../src/util/WebSocketService', () => ({
+  connectWebSocket: vi.fn(),
+  disconnectWebSocket: vi.fn(),
+  subscribeToTopic: vi.fn(),
+  sendMessage: vi.fn(),
+}));

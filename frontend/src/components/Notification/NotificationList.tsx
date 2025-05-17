@@ -20,9 +20,13 @@ const NotificationList = ({ notifications, handleDeleteNotification, emitNotific
     <div className="p-2">
       {notifications.map((notification) => {
         return (
-          <div key={notification.id} className="my-2">
+          <div data-testid={`notification-item-${notification.id}`} key={notification.id} className="my-2">
             <div className="flex justify-end">
-              <AiOutlineClose onClick={() => handleDeleteNotification(notification)} className="text-gray-400" />
+              <AiOutlineClose
+                data-testid={`delete-notification-${notification.id}`}
+                onClick={() => handleDeleteNotification(notification)}
+                className="text-gray-400"
+              />
             </div>
             <div className="flex items-center">
               <Avatar initials="?.?" width="w-6" height="h-6" avatarUrl={notification.avatarUrl} />
