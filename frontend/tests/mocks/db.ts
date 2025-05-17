@@ -1,6 +1,7 @@
 import { factory, manyOf, oneOf, primaryKey } from '@mswjs/data';
 import { faker } from '@faker-js/faker';
 import { getFullName, getNameAbbreviation } from '../utils';
+import { NotificationRole, NotificationType } from '../../src/enums';
 let compatibleProgrammingLanguageIdCounter = 1;
 let userIdCounter = 1;
 let profileIdCounter = 1;
@@ -17,8 +18,21 @@ let topicIdCounter = 1;
 let tagIdCounter = 1;
 let tokenIdCounter = 1;
 let minProfileIdCounter = 1;
+let notificationIdCounter = 1;
 
 export const db = factory({
+  notification: {
+    id: primaryKey(() => notificationIdCounter++),
+    createdAt: () => faker.date.recent().toString(),
+    text: () => faker.lorem.sentence(),
+    receiverId: oneOf('user'),
+    senderId: oneOf('user'),
+    avatarUrl: () => faker.image.avatar(),
+    notificationType: () => NotificationType.REVIEW_COMPLETED,
+    notificationRole: () => NotificationRole.SENDER,
+    link: () => faker.internet.url(),
+  },
+
   compatibleProgrammingLanguage: {
     id: primaryKey(() => compatibleProgrammingLanguageIdCounter++),
     name: () => faker.lorem.word(10),

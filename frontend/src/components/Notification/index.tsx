@@ -146,7 +146,11 @@ const Notifications = () => {
   return (
     <div className="relative">
       <div ref={triggerRef} className="relative">
-        <AiOutlineBell onClick={() => setIsNotificationsOpen((prevState) => !prevState)} className="text-2xl mr-2" />
+        <AiOutlineBell
+          data-testid="notification-bell"
+          onClick={() => setIsNotificationsOpen((prevState) => !prevState)}
+          className="text-2xl mr-2"
+        />
         {pag.totalElements > 0 && (
           <div className="absolute z-10 -top-2 -left-4 bg-red-400 rounded-lg p-1 w-6 h-6 flex items-center justify-center flex-col">
             <p className="text-white font-bold text-sm">{pag.totalElements > 9 ? '+9' : pag.totalElements}</p>
@@ -155,6 +159,7 @@ const Notifications = () => {
       </div>
       {isNotificationsOpen && (
         <div
+          data-testid="notification-outside"
           ref={menuRef}
           className="h-36 overflow-y-auto absolute top-8 z-10 rounded md:-left-64 right-0 md:w-[300px] w-[180px] bg-gray-900 shadow-md"
         >

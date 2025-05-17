@@ -2,6 +2,26 @@ import { ITag } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
 
+export function deleteManyUser(ids: number[]) {
+  db.user.deleteMany({ where: { id: { in: ids } } });
+}
+
+export function createUser(overrides: any = {}) {
+  if (overrides.hasOwnProperty('id')) {
+    deleteManyUser([overrides.id]);
+  }
+
+  return db.user.create({ ...overrides });
+}
+
+export function createNotifications(numberOfNotifications: number, receiver?: any, sender?: any) {
+  const notifications = Array.from({ length: numberOfNotifications }).map(() => {
+    return db.notification.create({ receiverId: receiver, senderId: sender });
+  });
+
+  return notifications;
+}
+
 export function createMinProfiles(numberOfProfiles: number) {
   const minProfiles = Array.from({ length: numberOfProfiles }).map(() => {
     return db.minProfile.create();
