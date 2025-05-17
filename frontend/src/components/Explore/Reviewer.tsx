@@ -39,7 +39,7 @@ const Reviewer = ({ reviewer, filterValue, updateFavoritedReviewer }: IReviewerP
   };
 
   return (
-    <div className="my-4 border border-gray-800 rounded-lg p-4">
+    <div data-testid="reviewer-article" className="my-4 border border-gray-800 rounded-lg p-4">
       <div className="header md:flex md:justify-between">
         <div className="flex items-center">
           <Avatar width="w-16" height="h-16" avatarUrl={reviewer.avatarUrl} initials="??" />
@@ -58,6 +58,7 @@ const Reviewer = ({ reviewer, filterValue, updateFavoritedReviewer }: IReviewerP
           <div className="flex justify-end">
             <AiOutlineLike className="text-xl mx-1 cursor-pointer" />
             <FaHeart
+              data-testid="favorite-reviewer"
               onClick={handleToggleFavorite}
               className={`${reviewer.isFavorited ? 'text-red-400' : 'text-gray-400'}  text-xl mx-1 cursor-pointer`}
             />

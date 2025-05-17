@@ -1,7 +1,7 @@
 import { factory, manyOf, oneOf, primaryKey } from '@mswjs/data';
 import { faker } from '@faker-js/faker';
 import { getFullName, getNameAbbreviation } from '../utils';
-
+let compatibleProgrammingLanguageIdCounter = 1;
 let userIdCounter = 1;
 let profileIdCounter = 1;
 let packageItemIdCounter = 1;
@@ -16,8 +16,39 @@ let saveCommentIdCounter = 1;
 let topicIdCounter = 1;
 let tagIdCounter = 1;
 let tokenIdCounter = 1;
+let minProfileIdCounter = 1;
 
 export const db = factory({
+  compatibleProgrammingLanguage: {
+    id: primaryKey(() => compatibleProgrammingLanguageIdCounter++),
+    name: () => faker.lorem.word(10),
+    isCompatible: () => faker.datatype.boolean(),
+  },
+
+  minProfile: {
+    id: primaryKey(() => minProfileIdCounter++),
+    availability: manyOf('availability'),
+    programmingLanguages: manyOf('compatibleProgrammingLanguage'),
+    avatarUrl: () => faker.image.url(),
+    country: () => faker.location.country(),
+    fullName: () => faker.person.fullName(),
+    basic: {
+      id: () => 'package-1',
+      name: () => 'Basic Package',
+      price: () => faker.commerce.price(),
+      description: () => faker.lorem.sentence(),
+      items: manyOf('packageItem'),
+    },
+    userId: oneOf('user'),
+    numOfReviews: () => faker.number.int({ min: 0, max: 10 }),
+    createdAt: () => faker.date.recent.toString(),
+    weekendsAvailable: () => faker.datatype.boolean(),
+    reviewAvgRating: () => faker.number.int({ min: 0, max: 5 }),
+    isFavorited: () => faker.datatype.boolean(),
+    lastActive: () => faker.date.recent.toString(),
+    lastActiveReadable: () => faker.lorem.word(8),
+  },
+
   token: {
     id: primaryKey(() => tokenIdCounter++),
     token: () => faker.lorem.word(20),

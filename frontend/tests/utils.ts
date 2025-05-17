@@ -48,3 +48,21 @@ export const paginate = <T>(page: number, pageSize: number, direction: string, d
     totalPages,
   };
 };
+
+export function toPlainObject<T>(obj: T): T {
+  if (obj === null || typeof obj !== 'object') {
+    return obj;
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map(toPlainObject) as unknown as T;
+  }
+
+  const result: any = {};
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      result[key] = toPlainObject((obj as any)[key]);
+    }
+  }
+  return result;
+}
