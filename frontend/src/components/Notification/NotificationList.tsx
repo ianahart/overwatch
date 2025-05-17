@@ -34,7 +34,11 @@ const NotificationList = ({ notifications, handleDeleteNotification, emitNotific
                 {notification.text}
                 {notification.link !== null && (
                   <span className="text-xs text-blue-400 font-bold">
-                    <Link className="cursor-pointer" to={notification.link as string}>
+                    <Link
+                      data-testid={`notification-link-${notification.id}`}
+                      className="cursor-pointer"
+                      to={notification.link as string}
+                    >
                       {' '}
                       View here
                     </Link>

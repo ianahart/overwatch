@@ -159,7 +159,7 @@ const Notifications = () => {
       </div>
       {isNotificationsOpen && (
         <div
-                    data-testid="notification-outside"
+          data-testid="notification-outside"
           ref={menuRef}
           className="h-36 overflow-y-auto absolute top-8 z-10 rounded md:-left-64 right-0 md:w-[300px] w-[180px] bg-gray-900 shadow-md"
         >
