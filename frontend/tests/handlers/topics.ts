@@ -1,11 +1,42 @@
 import { http, HttpResponse } from 'msw';
 import { baseURL } from '../../src/util';
-import { createTopicWithTags, getTopicWithTags } from '../mocks/dbActions';
+import { createTopicWithTags, getSpecificTopicsWithTags, getTopicWithTags } from '../mocks/dbActions';
 import { ICreateTopicRequest, IGetTopicsWithTagsResponse } from '../../src/interfaces';
 import { paginate } from '../utils';
 import { db } from '../mocks/db';
 
 export const topicHandlers = [
+  http.get(`${baseURL}/topics/tags`, async ({ request }) => {
+    const url = new URL(request.url);
+    const query = url.searchParams.get('query');
+
+    let pg = Number(url.searchParams.get('page')) ?? 1;
+    const size = 2;
+    const dir = url.searchParams.get('direction') ?? 'next';
+    const totalElements = 10;
+    const numOfTags = 5;
+
+    query !== null ? createTopicWithTags(totalElements, numOfTags, query) : createTopicWithTags(20, 5);
+    const data = getSpecificTopicsWithTags(totalElements, query!);
+
+    const { page, totalPages, pageSize, direction, items } = paginate(pg, size, dir, data);
+
+    return HttpResponse.json<IGetTopicsWithTagsResponse>(
+      {
+        message: 'success',
+        data: {
+          items,
+          page,
+          pageSize,
+          totalPages,
+          direction,
+          totalElements,
+        },
+      },
+      { status: 200 }
+    );
+  }),
+
   http.post(`${baseURL}/topics`, async ({ request }) => {
     const body = (await request.json()) as ICreateTopicRequest;
 

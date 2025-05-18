@@ -39,19 +39,34 @@ export function createSaveComments(numberOfComments: number) {
   return saveComments;
 }
 
+export function getSpecificTopicsWithTags(numberOfTopics: number = 10, query: string) {
+  const topics = db.topic.findMany({ take: numberOfTopics });
+  const filteredTopics = topics.filter((topic) => topic.title === query);
+
+  return filteredTopics.slice(0, numberOfTopics);
+}
+
 export function getTopicWithTags(numberOfTopics: number = 10) {
   return db.topic.findMany({ take: numberOfTopics });
 }
 
-export function createTopicWithTags(numberOfTopics: number, numberOfTags: number) {
+export function createTopicWithTags(numberOfTopics: number, numberOfTags: number, query?: string) {
   const tags: ITag[] = [];
 
   for (let i = 0; i < numberOfTags; i++) {
-    tags.push(db.tag.create());
+    if (query !== undefined && i % 2 === 0) {
+      tags.push(db.tag.create({ name: query }));
+    } else {
+      tags.push(db.tag.create({}));
+    }
   }
 
   for (let i = 0; i < numberOfTopics; i++) {
-    db.topic.create({ tags });
+    if (query !== undefined) {
+      db.topic.create({ tags, title: query });
+    } else {
+      db.topic.create({ tags });
+    }
   }
 }
 
