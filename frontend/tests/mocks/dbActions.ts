@@ -50,6 +50,19 @@ export function getTopicWithTags(numberOfTopics: number = 10) {
   return db.topic.findMany({ take: numberOfTopics });
 }
 
+export function createTopicWithTag(overrides = {}) {
+  const tags: ITag[] = [];
+
+  for (let i = 0; i < 2; i++) {
+    tags.push(db.tag.create());
+  }
+  db.topic.create({ ...overrides, tags });
+}
+
+export function getTopicWithTag(id: number) {
+  return db.topic.findFirst({ where: { id: { equals: id } } });
+}
+
 export function createTopicWithTags(numberOfTopics: number, numberOfTags: number, query?: string) {
   const tags: ITag[] = [];
 

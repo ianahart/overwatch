@@ -1,11 +1,54 @@
 import { http, HttpResponse } from 'msw';
 import { baseURL } from '../../src/util';
-import { createTopicWithTags, getSpecificTopicsWithTags, getTopicWithTags } from '../mocks/dbActions';
-import { ICreateTopicRequest, IGetTopicsWithTagsResponse } from '../../src/interfaces';
+import {
+  createTopicWithTag,
+  createTopicWithTags,
+  getSpecificTopicsWithTags,
+  getTopicWithTag,
+  getTopicWithTags,
+} from '../mocks/dbActions';
+import {
+  ICreateTopicRequest,
+  IGetTopicResponse,
+  IGetTopicsWithTagsResponse,
+  IUpdateTopicRequest,
+} from '../../src/interfaces';
 import { paginate } from '../utils';
 import { db } from '../mocks/db';
 
 export const topicHandlers = [
+  http.patch(`${baseURL}/topics/:topicId`, async ({ request }) => {
+    const body = (await request.json()) as IUpdateTopicRequest;
+
+    if (body.description.length > 250) {
+      return HttpResponse.json({ message: 'Description must be between 1 and 250' }, { status: 400 });
+    }
+
+    return HttpResponse.json({ message: 'success' }, { status: 200 });
+  }),
+
+  http.get(`${baseURL}/topics/:topicId`, async ({ params }) => {
+    if (!params.topicId) {
+      return HttpResponse.json({ message: 'Missing topicId' }, { status: 400 });
+    }
+
+    const id = parseInt(params.topicId as string) as number;
+
+    createTopicWithTag({ title: 'title', description: 'description', id });
+    const topic = getTopicWithTag(id);
+
+    if (!topic) {
+      return HttpResponse.json({ message: 'Could not fetch topic with id ' + id }, { status: 400 });
+    }
+    return HttpResponse.json<IGetTopicResponse>(
+      {
+        message: 'success',
+        data: topic,
+      },
+      { status: 200 }
+    );
+  }),
+
   http.get(`${baseURL}/topics/tags`, async ({ request }) => {
     const url = new URL(request.url);
     const query = url.searchParams.get('query');

@@ -79,8 +79,7 @@ const TopicEdit = () => {
 
     updateTopic(payload)
       .unwrap()
-      .then((res) => {
-        console.log(res);
+      .then(() => {
         navigate('/community');
       })
       .catch((err) => {
@@ -107,6 +106,7 @@ const TopicEdit = () => {
           <div className="my-8">
             <label htmlFor="desc">Description</label>
             <textarea
+              data-testid="topic-edit-description"
               onChange={handleOnChange}
               className="resize-none w-full border border-gray-800 rounded p-2 h-20 bg-transparent"
               value={topic.description}
