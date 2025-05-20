@@ -59,10 +59,14 @@ const TagEditItem = ({ tag, handleUpdateTag, handleDeleteTag }: ITagEditItemProp
           </div>
           <div className="flex items-center">
             <ToolTip message="Edit">
-              <AiOutlineEdit onClick={() => setIsEditing(true)} className="cursor-pointer mx-2" />
+              <AiOutlineEdit
+                data-testid="update-tag-icon"
+                onClick={() => setIsEditing(true)}
+                className="cursor-pointer mx-2"
+              />
             </ToolTip>
             <ToolTip message="Delete">
-              <BsTrash onClick={handleOnDelete} className="cursor-pointer mx-2" />
+              <BsTrash data-testid="delete-tag-icon" onClick={handleOnDelete} className="cursor-pointer mx-2" />
             </ToolTip>
           </div>
         </div>

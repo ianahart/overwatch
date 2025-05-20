@@ -1,4 +1,6 @@
 import { faker } from '@faker-js/faker';
+import { db } from './mocks/db';
+import { getWrapper } from './RenderWithProviders';
 
 export interface IName {
   firstName: string;
@@ -65,4 +67,22 @@ export function toPlainObject<T>(obj: T): T {
     }
   }
   return result;
+}
+
+export function getLoggedInUser(overrides = {}) {
+  const curUser = {
+    ...db.user.create(),
+    id: 1,
+    ...overrides,
+    token: faker.lorem.word(),
+  };
+
+  const wrapper = getWrapper({
+    user: {
+      user: curUser,
+      token: curUser.token,
+    },
+  } as any);
+
+  return { curUser, wrapper };
 }
