@@ -68,5 +68,4 @@ describe('TopicEdit', () => {
 
     expect(await screen.findByText('Description must be between 1 and 250')).toBeInTheDocument();
   });
-
 });
