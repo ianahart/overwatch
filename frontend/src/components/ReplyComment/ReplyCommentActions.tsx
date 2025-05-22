@@ -10,14 +10,14 @@ export interface IReplyCommentActionsProps {
 const ReplyCommentActions = ({ handleSetIsEditing, handleDeleteReplyComment }: IReplyCommentActionsProps) => {
   return (
     <div className="flex items-center justify-end ml-2 relative">
-      <div onClick={() => handleSetIsEditing(true)} className="mx-1 cursor-pointer">
+      <div data-testid="reply-comment-edit" onClick={() => handleSetIsEditing(true)} className="mx-1 cursor-pointer">
         <ToolTip message="Edit">
-          <MdEdit />
+          <MdEdit role="edit-reply-comment-icon" />
         </ToolTip>
       </div>
-      <div onClick={handleDeleteReplyComment} className="mx-1 cursor-pointer">
+      <div data-testid="reply-comment-delete" onClick={handleDeleteReplyComment} className="mx-1 cursor-pointer">
         <ToolTip message="Delete">
-          <FaTrash />
+          <FaTrash role="delete-reply-comment-icon" />
         </ToolTip>
       </div>
     </div>

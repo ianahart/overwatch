@@ -78,7 +78,7 @@ const ReplyCommentItem = ({
   };
 
   return (
-    <div className="my-8">
+    <div className="my-8" data-testid="reply-comment-item">
       <div className="border border-gray-800 p-2 rounded">
         <CommentHeader comment={comment} />
         <div className="my-8">
