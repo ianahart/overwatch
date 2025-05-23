@@ -25,7 +25,7 @@ describe('ReplyCommentItem', () => {
       comment: { ...comment, userId: curUser.id },
     };
 
-    render(<ReplyCommentItem {...props} />, { wrapper });
+    render(<ReplyCommentItem dataTestId="reply-comment-item" {...props} />, { wrapper });
 
     return {
       user: userEvent.setup(),
