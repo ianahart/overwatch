@@ -13,6 +13,7 @@ export interface IReplyCommentItemProps {
   updateReplyComment?: (commentId: number, content: string) => void;
   deleteReplyComment?: (commentId: number) => void;
   parentCommentId?: number;
+  dataTestId: string;
 }
 
 const ReplyCommentItem = ({
@@ -20,6 +21,7 @@ const ReplyCommentItem = ({
   updateReplyComment = () => {},
   deleteReplyComment = () => {},
   parentCommentId = 0,
+  dataTestId,
 }: IReplyCommentItemProps) => {
   const MAX_CONTENT_LENGTH = 400;
   const [error, setError] = useState('');
@@ -78,7 +80,7 @@ const ReplyCommentItem = ({
   };
 
   return (
-    <div className="my-8">
+    <div className="my-8" data-testid={dataTestId}>
       <div className="border border-gray-800 p-2 rounded">
         <CommentHeader comment={comment} />
         <div className="my-8">
@@ -112,7 +114,7 @@ const ReplyCommentItem = ({
               </div>
             </form>
           ) : (
-            <p>{comment.content}</p>
+            <p data-testid="comment-content">{comment.content}</p>
           )}
           {user.id === comment.userId && (
             <ReplyCommentActions

@@ -1,6 +1,21 @@
-import { ITag } from '../../src/interfaces';
+import { toPlainObject } from 'lodash';
+import { IReplyComment, ITag } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createMinComment() {
+  const minComment = db.minComment.create();
+
+  return minComment;
+}
+
+export function createReplyComments(numberOfReplyComments: number) {
+  const replyComments: IReplyComment[] = [];
+  for (let i = 0; i < numberOfReplyComments; i++) {
+    replyComments.push(toPlainObject(db.replyComment.create()));
+  }
+  return replyComments;
+}
 
 export function deleteManyUser(ids: number[]) {
   db.user.deleteMany({ where: { id: { in: ids } } });

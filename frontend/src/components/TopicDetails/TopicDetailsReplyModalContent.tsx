@@ -67,7 +67,7 @@ const TopicDetailsReplyModalContent = ({
       receiverId: commentUserId,
       senderId: currentUserId,
       notificationType: NotificationType.COMMENT_REPLY,
-      link: `http://${baseUrl}/comments/${commentId}/?sender=${currentUserId}&receiver=${commentUserId}`,
+      link: `${baseUrl}/comments/${commentId}/?sender=${currentUserId}&receiver=${commentUserId}`,
     };
     sendMessage('/api/v1/notify', JSON.stringify(payload));
   };

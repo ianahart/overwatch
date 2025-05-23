@@ -98,6 +98,7 @@ const TopicDetailsCommentItem = ({
   };
 
   const updateReplyComment = (commentId: number, content: string): void => {
+    console.log('FOO BAR FOO BAR FOO BAR');
     setReplyComments(
       replyComments.map((rc) => {
         if (rc.id === commentId) {

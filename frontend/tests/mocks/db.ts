@@ -19,8 +19,31 @@ let tagIdCounter = 1;
 let tokenIdCounter = 1;
 let minProfileIdCounter = 1;
 let notificationIdCounter = 1;
+let commentIdCounter = 1;
+let reactionIdCounter = 1;
 
 export const db = factory({
+  reaction: {
+    id: primaryKey(() => reactionIdCounter++),
+    emoji: () => faker.internet.emoji(),
+    count: () => faker.number.int(5),
+  },
+
+  comment: {
+    id: primaryKey(() => commentIdCounter++),
+    content: () => faker.lorem.paragraph(3),
+    userId: oneOf('user'),
+    createdAt: () => faker.date.recent().toString(),
+    avatarUrl: () => faker.image.avatar(),
+    fullName: () => getFullName(),
+    isEdited: () => faker.datatype.boolean(),
+    voteDifference: () => faker.number.int(10),
+    curUserVoteType: () => faker.lorem.word(8),
+    curUserHasVoted: () => faker.datatype.boolean(),
+    curUserHasSaved: () => faker.datatype.boolean(),
+    replyCommentsCount: () => faker.number.int(10),
+    reactions: manyOf('reaction'),
+  },
   notification: {
     id: primaryKey(() => notificationIdCounter++),
     createdAt: () => faker.date.recent().toString(),
@@ -103,7 +126,7 @@ export const db = factory({
   minComment: {
     id: primaryKey(() => minCommentIdCounter++),
     userId: oneOf('user'),
-    content: () => faker.lorem.sentence(30),
+    content: () => faker.lorem.sentence(10),
     createdAt: () => faker.date.recent.toString(),
     avatarUrl: () => faker.image.url(),
     fullName: () => getFullName(),
