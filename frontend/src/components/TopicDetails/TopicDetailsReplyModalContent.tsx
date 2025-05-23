@@ -62,7 +62,8 @@ const TopicDetailsReplyModalContent = ({
   };
 
   const emitNotification = (): void => {
-    const baseUrl = import.meta.env.VITE_CLIENT_URL;
+    //const baseUrl = import.meta.env.VITE_CLIENT_URL;
+    const baseUrl = 'https://codeoverwatch.com';
     const payload = {
       receiverId: commentUserId,
       senderId: currentUserId,
