@@ -89,7 +89,11 @@ const TopicDetailsCommentItemActions = ({
   return (
     <div className="flex items-center justify-end ml-2 relative">
       {user.id === commentUserId && (
-        <div onClick={() => handleSetIsEditing(true)} className="mx-1 cursor-pointer">
+        <div
+          data-testid="topic-detail-comment-edit"
+          onClick={() => handleSetIsEditing(true)}
+          className="mx-1 cursor-pointer"
+        >
           <ToolTip message="Edit">
             <MdEdit />
           </ToolTip>

@@ -17,13 +17,13 @@ const TopicDetailsCommentItemVote = ({
   const activeDownVote = curUserHasVoted && curUserVoteType === 'DOWNVOTE' ? 'text-blue-400' : 'text-gray-400';
   return (
     <div className="m-2 flex items-center 2xl">
-      <div onClick={() => createVote('UPVOTE')} className="mx-1 cursor-pointer">
+      <div data-testid="comment-upvote" onClick={() => createVote('UPVOTE')} className="mx-1 cursor-pointer">
         <TbArrowBigUp className={`text-xl ${activeUpVote}`} />
       </div>
       <div className="mx-1">
         <p>{voteDifference}</p>
       </div>
-      <div onClick={() => createVote('DOWNVOTE')} className="mx-1 cursor-pointer">
+      <div data-testid="comment-downvote" onClick={() => createVote('DOWNVOTE')} className="mx-1 cursor-pointer">
         <TbArrowBigDown className={`text-xl ${activeDownVote}`} />
       </div>
     </div>

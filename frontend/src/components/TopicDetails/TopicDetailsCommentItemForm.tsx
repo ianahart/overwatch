@@ -45,7 +45,7 @@ const TopicDetailsCommentItemForm = ({ handleSetIsEditing, commentId, content }:
   };
 
   return (
-    <form onSubmit={handleOnSubmit} className="my-4">
+    <form data-testid="update-comment-form" onSubmit={handleOnSubmit} className="my-4">
       <div className="flex flex-col">
         <label htmlFor={`${attribute}`} className="text-sm">
           Edit comment
