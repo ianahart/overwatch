@@ -3,8 +3,28 @@ import { baseURL } from '../../src/util';
 import { paginate } from '../utils';
 import { createSaveComments } from '../mocks/dbActions';
 import { db } from '../mocks/db';
+import { ICreateSaveCommentRequest, ICreateSaveCommentResponse } from '../../src/interfaces';
 
 export const savedCommentHandlers = [
+  http.post(`${baseURL}/save-comments`, async ({ request }) => {
+    const body = (await request.json()) as ICreateSaveCommentRequest;
+
+    if (!body.commentId || !body.userId) {
+      return HttpResponse.json(
+        {
+          message: 'Missing commentId or userId',
+        },
+        { status: 400 }
+      );
+    }
+    return HttpResponse.json<ICreateSaveCommentResponse>(
+      {
+        message: 'success',
+      },
+      { status: 201 }
+    );
+  }),
+
   http.get(`${baseURL}/save-comments`, async ({ request }) => {
     const url = new URL(request.url);
 

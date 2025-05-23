@@ -100,14 +100,14 @@ const TopicDetailsCommentItemActions = ({
         </div>
       )}
       {user.id === commentUserId && (
-        <div onClick={handleDeleteComment} className="mx-1 cursor-pointer">
+        <div data-testid="topic-detail-comment-delete" onClick={handleDeleteComment} className="mx-1 cursor-pointer">
           <ToolTip message="Delete">
             <FaTrash />
           </ToolTip>
         </div>
       )}
       {user.id !== 0 && (
-        <div onClick={handleOnSaveComment} className="mx-1 cursor-pointer">
+        <div data-testid="save-saved-comment" onClick={handleOnSaveComment} className="mx-1 cursor-pointer">
           <ToolTip message={`${curUserHasSaved ? 'Saved' : 'Save'}`}>
             <FaBookmark className={`${curUserHasSaved ? 'text-yellow-400' : 'text-gray-400'}`} />
           </ToolTip>
@@ -116,7 +116,7 @@ const TopicDetailsCommentItemActions = ({
       {user.id !== 0 && (
         <div className="mx-1 cursor-pointer">
           <ToolTip message="React">
-            <MdEmojiEmotions onClick={() => setIsClickAwayOpen(true)} />
+            <MdEmojiEmotions data-testid="topic-emoji-popover" onClick={() => setIsClickAwayOpen(true)} />
           </ToolTip>
           {isClickAwayOpen && (
             <ClickAway onClickAway={handleCloseClickAway}>
@@ -133,7 +133,7 @@ const TopicDetailsCommentItemActions = ({
         </div>
       )}
       {user.id !== 0 && (
-        <div onClick={openReplyModal} className="mx-1 cursor-pointer">
+        <div data-testid="reply-comment-modal-trigger" onClick={openReplyModal} className="mx-1 cursor-pointer">
           <ToolTip message="Reply">
             <FaReply />
           </ToolTip>
@@ -154,7 +154,7 @@ const TopicDetailsCommentItemActions = ({
         </div>
       )}
       {user.id !== 0 && (
-        <div onClick={openReportModal} className="mx-1 cursor-pointer">
+        <div data-testid="report-comment-modal-trigger" onClick={openReportModal} className="mx-1 cursor-pointer">
           <ToolTip message="Report">
             <IoMdFlag />
           </ToolTip>
