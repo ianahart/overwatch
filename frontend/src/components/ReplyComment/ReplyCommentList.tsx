@@ -24,6 +24,7 @@ const ReplyCommentList = ({
             key={replyComment.id}
             comment={replyComment}
             parentCommentId={parentCommentId}
+            dataTestId="reply-comment-item"
           />
         );
       })}

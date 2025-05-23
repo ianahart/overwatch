@@ -3,6 +3,12 @@ import { IReplyComment, ITag } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
 
+export function createMinComment() {
+  const minComment = db.minComment.create();
+
+  return minComment;
+}
+
 export function createReplyComments(numberOfReplyComments: number) {
   const replyComments: IReplyComment[] = [];
   for (let i = 0; i < numberOfReplyComments; i++) {

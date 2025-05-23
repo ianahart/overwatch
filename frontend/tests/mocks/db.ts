@@ -21,6 +21,7 @@ let minProfileIdCounter = 1;
 let notificationIdCounter = 1;
 let commentIdCounter = 1;
 let reactionIdCounter = 1;
+
 export const db = factory({
   reaction: {
     id: primaryKey(() => reactionIdCounter++),
@@ -125,7 +126,7 @@ export const db = factory({
   minComment: {
     id: primaryKey(() => minCommentIdCounter++),
     userId: oneOf('user'),
-    content: () => faker.lorem.sentence(30),
+    content: () => faker.lorem.sentence(10),
     createdAt: () => faker.date.recent.toString(),
     avatarUrl: () => faker.image.url(),
     fullName: () => getFullName(),
