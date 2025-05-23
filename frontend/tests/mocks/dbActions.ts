@@ -1,5 +1,5 @@
 import { toPlainObject } from 'lodash';
-import { IReplyComment, ITag } from '../../src/interfaces';
+import { IReaction, IReplyComment, ITag } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
 
@@ -63,6 +63,14 @@ export function getSpecificTopicsWithTags(numberOfTopics: number = 10, query: st
 
 export function getTopicWithTags(numberOfTopics: number = 10) {
   return db.topic.findMany({ take: numberOfTopics });
+}
+
+export function createReactions(numberOfReactions: number) {
+  const reactions: IReaction[] = [];
+  for (let i = 0; i < numberOfReactions; i++) {
+    reactions.push(db.reaction.create());
+  }
+  return reactions;
 }
 
 export function createTopicWithTag(overrides = {}) {
