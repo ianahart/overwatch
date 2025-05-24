@@ -113,7 +113,7 @@ const TopicDetailsCommentItem = ({
   };
 
   return (
-    <div>
+    <div data-testid="topic-details-comment-item">
       <div className="border my-4 p-2 rounded-lg border-gray-800">
         <div className="my-2">
           <CommentHeader comment={comment} />

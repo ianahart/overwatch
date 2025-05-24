@@ -99,7 +99,7 @@ describe('TopicDetailsCommentItemActions', () => {
 
     await user.click(popover);
 
-    const emojis = await screen.findAllByRole('emoji');
+    const emojis = await screen.findAllByTestId(/^emoji-/);
 
     expect(emojis.length).toBeGreaterThan(0);
   });

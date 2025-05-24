@@ -6,14 +6,44 @@ import {
   ICreateCommentResponse,
   IDeleteCommentResponse,
   IGetCommentResponse,
+  IGetCommentsResponse,
   IMinComment,
   IUpdateCommentRequest,
   IUpdateCommentResponse,
 } from '../../src/interfaces';
 import { baseURL } from '../../src/util';
-import { createMinComment } from '../mocks/dbActions';
+import { createComments, createMinComment } from '../mocks/dbActions';
+import { paginate } from '../utils';
 
 export const commentHandlers = [
+  http.get(`${baseURL}/topics/:topicId/comments`, async ({ request }) => {
+    const url = new URL(request.url);
+
+    let pg = Number(url.searchParams.get('page')) ?? 1;
+    const size = 2;
+    const dir = url.searchParams.get('direction') ?? 'next';
+    const totalElements = 2;
+
+    const data = createComments(totalElements);
+
+    const { page, totalPages, pageSize, direction, items } = paginate(pg, size, dir, data);
+
+    return HttpResponse.json<IGetCommentsResponse>(
+      {
+        message: 'success',
+        data: {
+          items,
+          page,
+          pageSize,
+          totalPages,
+          direction,
+          totalElements,
+        },
+      },
+      { status: 200 }
+    );
+  }),
+
   http.patch(`${baseURL}/comments/:commentId`, async ({ request }) => {
     const body = (await request.json()) as IUpdateCommentRequest;
 

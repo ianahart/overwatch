@@ -1,7 +1,16 @@
 import { toPlainObject } from 'lodash';
-import { IReaction, IReplyComment, ITag } from '../../src/interfaces';
+import { IComment, IReaction, IReplyComment, ITag } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createComments(numberOfComments: number) {
+  const comments: IComment[] = [];
+
+  for (let i = 0; i < numberOfComments; i++) {
+    comments.push(toPlainObject(db.comment.create({ content: `comment-${numberOfComments}-${i}` })));
+  }
+  return comments;
+}
 
 export function createMinComment() {
   const minComment = db.minComment.create();
