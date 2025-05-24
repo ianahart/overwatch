@@ -18,13 +18,13 @@ const TopicDetailsCommentItemVote = ({
   return (
     <div className="m-2 flex items-center 2xl">
       <div data-testid="comment-upvote" onClick={() => createVote('UPVOTE')} className="mx-1 cursor-pointer">
-        <TbArrowBigUp className={`text-xl ${activeUpVote}`} />
+        <TbArrowBigUp data-testid="upvote-icon" className={`text-xl ${activeUpVote}`} />
       </div>
       <div className="mx-1">
         <p>{voteDifference}</p>
       </div>
       <div data-testid="comment-downvote" onClick={() => createVote('DOWNVOTE')} className="mx-1 cursor-pointer">
-        <TbArrowBigDown className={`text-xl ${activeDownVote}`} />
+        <TbArrowBigDown data-testid="downvote-icon" className={`text-xl ${activeDownVote}`} />
       </div>
     </div>
   );
