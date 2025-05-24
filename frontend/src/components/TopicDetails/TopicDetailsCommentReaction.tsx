@@ -76,10 +76,10 @@ const TopicDetailsCommentReaction = ({
       {emojis.map((emoji) => {
         return (
           <div
-            role="emoji"
+            data-testid={`emoji-${emoji}`}
             onClick={(e) => handleOnClick(e, emoji)}
             key={nanoid()}
-            className={`mx-1 cursor-pointer ${emoji === selectedEmoji ? 'bg-blue-400 rounded' : ''}`}
+            className={`mx-1 cursor-pointer${emoji === selectedEmoji ? ' bg-blue-400 rounded' : ''}`}
           >
             {emoji}
           </div>
