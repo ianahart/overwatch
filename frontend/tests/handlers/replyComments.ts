@@ -1,5 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import {
+  ICreateReplyCommentRequest,
+  ICreateReplyCommentResponse,
   IDeleteReplyCommentRequest,
   IDeleteReplyCommentResponse,
   IGetReplyCommentsByUserResponse,
@@ -12,6 +14,23 @@ import { createReplyComments } from '../mocks/dbActions';
 import { paginate } from '../utils';
 
 export const replyCommentHandlers = [
+  http.post(`${baseURL}/comments/:commentId/reply`, async ({ request }) => {
+    const body = (await request.json()) as ICreateReplyCommentRequest;
+
+    if (!body.userId || !body.content) {
+      return HttpResponse.json(
+        {
+          message: 'Missing userId or content',
+        },
+        { status: 400 }
+      );
+    }
+
+    return HttpResponse.json<ICreateReplyCommentResponse>({
+      message: 'success',
+    });
+  }),
+
   http.get(`${baseURL}/comments/:commentId/reply`, async ({ request }) => {
     const url = new URL(request.url);
 
