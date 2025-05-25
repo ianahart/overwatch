@@ -7,8 +7,10 @@ import { notificationHandlers } from '../handlers/notifications';
 import { replyCommentHandlers } from '../handlers/replyComments';
 import { commentHandlers } from '../handlers/comments';
 import { reactionHandlers } from '../handlers/reactions';
+import { reportCommentHandlers } from '../handlers/reportComments';
 
 export const handlers = [
+  ...reportCommentHandlers,
   ...reactionHandlers,
   ...commentHandlers,
   ...replyCommentHandlers,
