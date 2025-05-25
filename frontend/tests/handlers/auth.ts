@@ -6,10 +6,50 @@ import {
   IResetPasswordResponse,
   ISignInForm,
   ISignUpForm,
+  IUser,
+  IVerifyOTPRequest,
+  IVerifyOTPResponse,
 } from '../../src/interfaces';
 import { baseURL } from '../../src/util';
+import { toPlainObject } from 'lodash';
 
 export const authHandlers = [
+  http.post(`${baseURL}/auth/verify-otp`, async ({ request }) => {
+    const body = (await request.json()) as IVerifyOTPRequest;
+
+    if (!body.otpCode || !body.userId) {
+      return HttpResponse.json(
+        {
+          message: 'Missing otpCode or userId',
+        },
+        { status: 400 }
+      );
+    }
+    const userEnity = db.user.create();
+    const tokenEntity = db.token.create();
+
+    const user: IUser = { ...toPlainObject(userEnity), slug: 'slug', id: 1 };
+
+    return HttpResponse.json<IVerifyOTPResponse>(
+      {
+        token: tokenEntity.token,
+        refreshToken: tokenEntity.refreshToken,
+        user: toPlainObject(user),
+        userId: user.id,
+      },
+      { status: 200 }
+    );
+  }),
+
+  http.get(`${baseURL}/auth/generate-otp`, async () => {
+    return HttpResponse.json(
+      {
+        data: 123456,
+      },
+      { status: 200 }
+    );
+  }),
+
   http.post(`${baseURL}/auth/reset-password`, async ({ request }) => {
     const body = (await request.json()) as IResetPasswordForm;
 
