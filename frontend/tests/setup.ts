@@ -27,6 +27,7 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 export const mockNavigate = vi.fn();
+export const mockLocation = vi.fn();
 
 let params: Record<string, string> = {};
 let searchParams: Record<string, string> = {};
@@ -37,6 +38,7 @@ vi.mock('react-router-dom', async () => {
     ...actual,
     useParams: () => params,
     useNavigate: () => mockNavigate,
+    useLocation: () => mockLocation(),
     useSearchParams: () => [new URLSearchParams(Object.entries(searchParams)), vi.fn()],
   };
 });
