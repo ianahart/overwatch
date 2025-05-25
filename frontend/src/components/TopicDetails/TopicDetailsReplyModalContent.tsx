@@ -95,7 +95,7 @@ const TopicDetailsReplyModalContent = ({
   };
 
   return (
-    <form onSubmit={handleOnSubmit}>
+    <form data-testid="reply-modal-form" onSubmit={handleOnSubmit}>
       <div className="flex flex-col items-center">
         <p>Replying to {commentAuthorFullName}'s comment</p>
         <div className="my-2 p-2 rounded bg-gray-950">

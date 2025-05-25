@@ -1,7 +1,25 @@
 import { toPlainObject } from 'lodash';
-import { IReplyComment, ITag } from '../../src/interfaces';
+import { IComment, IReaction, IReplyComment, ITag } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createTags(numberOfTags: number) {
+  const tags: ITag[] = [];
+
+  for (let i = 0; i < numberOfTags; i++) {
+    tags.push(db.tag.create());
+  }
+  return tags;
+}
+
+export function createComments(numberOfComments: number) {
+  const comments: IComment[] = [];
+
+  for (let i = 0; i < numberOfComments; i++) {
+    comments.push(toPlainObject(db.comment.create({ content: `comment-${numberOfComments}-${i}` })));
+  }
+  return comments;
+}
 
 export function createMinComment() {
   const minComment = db.minComment.create();
@@ -63,6 +81,14 @@ export function getSpecificTopicsWithTags(numberOfTopics: number = 10, query: st
 
 export function getTopicWithTags(numberOfTopics: number = 10) {
   return db.topic.findMany({ take: numberOfTopics });
+}
+
+export function createReactions(numberOfReactions: number) {
+  const reactions: IReaction[] = [];
+  for (let i = 0; i < numberOfReactions; i++) {
+    reactions.push(db.reaction.create());
+  }
+  return reactions;
 }
 
 export function createTopicWithTag(overrides = {}) {

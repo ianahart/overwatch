@@ -98,7 +98,6 @@ const TopicDetailsCommentItem = ({
   };
 
   const updateReplyComment = (commentId: number, content: string): void => {
-    console.log('FOO BAR FOO BAR FOO BAR');
     setReplyComments(
       replyComments.map((rc) => {
         if (rc.id === commentId) {
@@ -114,7 +113,7 @@ const TopicDetailsCommentItem = ({
   };
 
   return (
-    <div>
+    <div data-testid="topic-details-comment-item">
       <div className="border my-4 p-2 rounded-lg border-gray-800">
         <div className="my-2">
           <CommentHeader comment={comment} />
@@ -159,7 +158,11 @@ const TopicDetailsCommentItem = ({
           </div>
           {comment.replyCommentsCount > 0 && pag.page === -1 && (
             <div className="flex justify-center">
-              <button onClick={() => paginateReplyComments('next')} className="text-sm">
+              <button
+                data-testid="paginate-reply-comments-button"
+                onClick={() => paginateReplyComments('next')}
+                className="text-sm"
+              >
                 Reply comments ({comment.replyCommentsCount})
               </button>
             </div>
