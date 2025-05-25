@@ -3,6 +3,15 @@ import { IComment, IReaction, IReplyComment, ITag } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
 
+export function createTags(numberOfTags: number) {
+  const tags: ITag[] = [];
+
+  for (let i = 0; i < numberOfTags; i++) {
+    tags.push(db.tag.create());
+  }
+  return tags;
+}
+
 export function createComments(numberOfComments: number) {
   const comments: IComment[] = [];
 
