@@ -21,8 +21,20 @@ let minProfileIdCounter = 1;
 let notificationIdCounter = 1;
 let commentIdCounter = 1;
 let reactionIdCounter = 1;
+let reviewIdCounter = 1;
 
 export const db = factory({
+  review: {
+    id: primaryKey(() => reviewIdCounter++),
+    authorId: oneOf('user'),
+    avatarUrl: () => faker.image.avatar(),
+    rating: () => faker.number.int({ min: 1, max: 5 }),
+    review: () => faker.lorem.paragraph(5),
+    createdAt: () => faker.date.recent().toString(),
+    isEdited: () => faker.datatype.boolean(),
+    name: () => getFullName(),
+  },
+
   reaction: {
     id: primaryKey(() => reactionIdCounter++),
     emoji: () => faker.internet.emoji(),

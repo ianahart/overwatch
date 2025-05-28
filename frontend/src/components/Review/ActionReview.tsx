@@ -172,7 +172,7 @@ const ActionReview = ({
               )}
               <div className="my-8">
                 {createReviewIsLoading || editReviewIsLoading ? (
-                  <Spinner message="Please wait..." />
+                  <Spinner data-testid="review-spinner" message="Please wait..." />
                 ) : (
                   <button type="submit" className="btn w-full">
                     {action === 'edit' ? 'Update' : 'Submit'}
