@@ -104,7 +104,11 @@ const Connect = ({ receiverId, senderId, fullName, avatarUrl, abbreviation }: IC
   return (
     <div className="flex justify-end text-gray-400">
       {!isLoading && (
-        <button onClick={() => setIsModalOpen(true)} className="btn flex items-center">
+        <button
+          data-testid="connect-modal-details"
+          onClick={() => setIsModalOpen(true)}
+          className="btn flex items-center"
+        >
           <BsLightningCharge />
           {renderConnectionStatus()}
         </button>
@@ -117,10 +121,18 @@ const Connect = ({ receiverId, senderId, fullName, avatarUrl, abbreviation }: IC
                 <div>
                   <p>Do you want to disconnect with {fullName}?</p>
                   <div className="flex justify-end">
-                    <button onClick={disconnect} className="outline-btn mx-1 bg-blue-400 font-bold">
+                    <button
+                      data-testid="connect-disconnect-btn"
+                      onClick={disconnect}
+                      className="outline-btn mx-1 bg-blue-400 font-bold"
+                    >
                       Disconnect
                     </button>
-                    <button onClick={() => setIsModalOpen(false)} className="outline-btn mx-1 bg-gray-400 font-bold">
+                    <button
+                      data-testid="connect-disconnect-cancel-btn"
+                      onClick={() => setIsModalOpen(false)}
+                      className="outline-btn mx-1 bg-gray-400 font-bold"
+                    >
                       Cancel
                     </button>
                   </div>
@@ -140,16 +152,24 @@ const Connect = ({ receiverId, senderId, fullName, avatarUrl, abbreviation }: IC
                   <ul className="ml-4 p-0 text-sm">
                     {points.map((point, index) => (
                       <li key={index} className="flex items-center">
-                        <AiOutlineCheck className="text-green-400 mr-1" />
+                        <AiOutlineCheck data-testid="connect-points-check" className="text-green-400 mr-1" />
                         <p>{point}</p>
                       </li>
                     ))}
                   </ul>
                   <div className="flex justify-end">
-                    <button onClick={handleConnectToReviewer} className="outline-btn mx-1 bg-blue-400 font-bold">
+                    <button
+                      data-testid="connect-new-connect-btn"
+                      onClick={handleConnectToReviewer}
+                      className="outline-btn mx-1 bg-blue-400 font-bold"
+                    >
                       Connect
                     </button>
-                    <button onClick={() => setIsModalOpen(false)} className="outline-btn mx-1 bg-gray-400 font-bold">
+                    <button
+                      data-testid="connect-new-cancel-btn"
+                      onClick={() => setIsModalOpen(false)}
+                      className="outline-btn mx-1 bg-gray-400 font-bold"
+                    >
                       Cancel
                     </button>
                   </div>
