@@ -3,6 +3,8 @@ import { http, HttpResponse } from 'msw';
 import {
   ICreateReviewRequest,
   ICreateReviewResponse,
+  IDeleteReviewRequest,
+  IDeleteReviewResponse,
   IEditReviewRequest,
   IEditReviewResponse,
   IFetchReviewResponse,
@@ -11,6 +13,21 @@ import { baseURL } from '../../src/util';
 import { db } from '../mocks/db';
 
 export const reviewsHandlers = [
+  http.delete(`${baseURL}/reviews/:reviewId`, async ({ request }) => {
+    const body = (await request.json()) as IDeleteReviewRequest;
+    if (!body.reviewId) {
+      return HttpResponse.json(
+        {
+          message: 'error response',
+        },
+        { status: 400 }
+      );
+    }
+    return HttpResponse.json<IDeleteReviewResponse>({
+      message: 'success',
+    });
+  }),
+
   http.patch(`${baseURL}/reviews/:reviewId`, async ({ request }) => {
     const body = (await request.json()) as IEditReviewRequest;
     if (!body.rating || !body.reviewerId) {

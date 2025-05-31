@@ -55,16 +55,20 @@ const ReviewDisplay = ({ review, currentUserId, reviewerId, avatarUrl, fullName 
       {currentUserId === review.authorId && (
         <div className="flex justify-end">
           <div className="relative">
-            <div ref={triggerRef} onClick={() => setMenuOpen(true)}>
+            <div data-testid="review-display-menu-container" ref={triggerRef} onClick={() => setMenuOpen(true)}>
               <BsThreeDots />
             </div>
             {menuOpen && (
               <div ref={menuRef} className="bg-stone-900 absolute top-4 right-0 rounded shadow-md p-2 w-28">
-                <div className="flex items-center my-1 cursor-pointer" onClick={handleEdit}>
+                <div data-testid="review-display-menu-edit" className="flex items-center my-1 cursor-pointer" onClick={handleEdit}>
                   <AiFillEdit className="mr-1" />
                   <p className="text-sm">Edit</p>
                 </div>
-                <div className="flex items-center my-1 cursor-pointer" onClick={handleDelete}>
+                <div
+                  data-testid="review-display-menu-delete"
+                  className="flex items-center my-1 cursor-pointer"
+                  onClick={handleDelete}
+                >
                   <BsTrash className="mr-1" />
                   <p className="text-sm">Delete</p>
                 </div>
