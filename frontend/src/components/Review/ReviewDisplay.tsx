@@ -51,7 +51,7 @@ const ReviewDisplay = ({ review, currentUserId, reviewerId, avatarUrl, fullName 
   };
 
   return (
-    <div className="my-4 p-4">
+    <div data-testid="review-display-item" className="my-4 p-4">
       {currentUserId === review.authorId && (
         <div className="flex justify-end">
           <div className="relative">
@@ -60,7 +60,11 @@ const ReviewDisplay = ({ review, currentUserId, reviewerId, avatarUrl, fullName 
             </div>
             {menuOpen && (
               <div ref={menuRef} className="bg-stone-900 absolute top-4 right-0 rounded shadow-md p-2 w-28">
-                <div data-testid="review-display-menu-edit" className="flex items-center my-1 cursor-pointer" onClick={handleEdit}>
+                <div
+                  data-testid="review-display-menu-edit"
+                  className="flex items-center my-1 cursor-pointer"
+                  onClick={handleEdit}
+                >
                   <AiFillEdit className="mr-1" />
                   <p className="text-sm">Edit</p>
                 </div>
