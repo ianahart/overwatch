@@ -117,7 +117,7 @@ const ActionReview = ({
   };
 
   return (
-    <div>
+    <div data-testid="action-review">
       <div className="flex justify-center mt-40">
         <div className="max-w-[600px] w-full border rounded-lg border-gray-800 p-4">
           <form onSubmit={handleOnSubmit}>
@@ -172,7 +172,7 @@ const ActionReview = ({
               )}
               <div className="my-8">
                 {createReviewIsLoading || editReviewIsLoading ? (
-                  <Spinner message="Please wait..." />
+                  <Spinner data-testid="review-spinner" message="Please wait..." />
                 ) : (
                   <button type="submit" className="btn w-full">
                     {action === 'edit' ? 'Update' : 'Submit'}

@@ -1,7 +1,16 @@
 import { toPlainObject } from 'lodash';
-import { IComment, IReaction, IReplyComment, ITag } from '../../src/interfaces';
+import { IComment, IReaction, IReplyComment, IReview, ITag } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createReviews(numberOfReviews: number) {
+  const reviews: IReview[] = [];
+
+  for (let i = 0; i < numberOfReviews; i++) {
+    reviews.push(toPlainObject(db.review.create()));
+  }
+  return reviews;
+}
 
 export function createTags(numberOfTags: number) {
   const tags: ITag[] = [];
