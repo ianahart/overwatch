@@ -179,7 +179,7 @@ export const db = factory({
     profile: {
       id: () => profileIdCounter.toString(),
       userId: oneOf('user'),
-      role: () => faker.helpers.arrayElement(['admin', 'user', 'reviewer']),
+      role: () => faker.helpers.arrayElement(['ADMIN', 'USER', 'REVIEWER']),
       country: () => faker.location.country(),
       abbreviation: () => `${faker.person.firstName()[0]}.${faker.person.lastName()}`,
       city: () => faker.location.city(),

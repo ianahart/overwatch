@@ -13,11 +13,11 @@ const AdditionalInfo = ({ tagLine, bio, moreInfo }: IAdditionalInfoProps) => {
         <p className="text-sm">{bio}</p>
       </div>
       <div className="my-4">
-        <h4 className="text-gray-400">Tag line</h4>
+        <h4 className="text-gray-400">Tagline</h4>
         <p className="text-sm">"{tagLine}"</p>
       </div>
       <div className="my-4">
-        <h4 className="text-gray-400">More info</h4>
+        <h4 className="text-gray-400">More Info</h4>
         <p className="text-sm">{moreInfo}</p>
       </div>
     </div>
