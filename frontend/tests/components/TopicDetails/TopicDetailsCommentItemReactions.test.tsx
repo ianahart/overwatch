@@ -1,4 +1,4 @@
-import { screen, render, waitFor } from '@testing-library/react';
+import { screen, render, waitFor, within } from '@testing-library/react';
 
 import TopicDetailsCommentItemReactions from '../../../src/components/TopicDetails/TopicDetailsCommentItemReactions';
 import { AllProviders } from '../../AllProviders';
@@ -37,9 +37,20 @@ describe('TopicDetailsCommentItemReactions', () => {
 
     await user.click(screen.getByText(reactions[0].emoji));
 
-    expect(screen.getByText(reactions[0].count)).toBeInTheDocument();
-  });
+    const popupContainer = screen.getByText(String(reactions[0].count)).closest('div.flex');
+    expect(popupContainer).toBeTruthy();
 
+    //@ts-ignore
+    const popupScope = within(popupContainer!);
+
+    const emoji1 = popupScope.getByText(reactions[0].emoji);
+    const emoji1Container = emoji1.closest('div');
+    expect(within(emoji1Container!).getByText(String(reactions[0].count))).toBeInTheDocument();
+
+    const emoji2 = popupScope.getByText(reactions[1].emoji);
+    const emoji2Container = emoji2.closest('div');
+    expect(within(emoji2Container!).getByText(String(reactions[1].count))).toBeInTheDocument();
+  });
   it('should close the popover when click-away is triggered', async () => {
     const reactions = getReactions(2);
     render(
