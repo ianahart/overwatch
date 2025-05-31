@@ -39,7 +39,7 @@ const BasicInfo = ({ userId, city, abbreviation, avatarUrl, fullName, country }:
           </div>
           {user.id === userId && (
             <div className="options">
-              <BsThreeDots className="text-gray-400" />
+              <BsThreeDots data-testid="cur-user-profile-options" className="text-gray-400" />
             </div>
           )}
         </div>

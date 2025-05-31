@@ -9,8 +9,10 @@ import { commentHandlers } from '../handlers/comments';
 import { reactionHandlers } from '../handlers/reactions';
 import { reportCommentHandlers } from '../handlers/reportComments';
 import { reviewsHandlers } from '../handlers/reviews';
+import { connectionsHandlers } from '../handlers/connections';
 
 export const handlers = [
+  ...connectionsHandlers,
   ...reviewsHandlers,
   ...reportCommentHandlers,
   ...reactionHandlers,
