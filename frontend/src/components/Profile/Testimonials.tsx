@@ -32,7 +32,7 @@ const Testimonials = ({ userId }: ITestimonialsProps) => {
           {items.length > 0 &&
             items.map((item) => {
               return (
-                <li key={item.id} className="my-4">
+                <li data-testid="profile-testimonial" key={item.id} className="my-4">
                   <p className="text-gray-400">{item.name}</p>
                   <p className="text-sm">&ldquo;{item.text}&rdquo;</p>
                 </li>

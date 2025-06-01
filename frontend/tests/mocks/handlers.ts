@@ -10,8 +10,10 @@ import { reactionHandlers } from '../handlers/reactions';
 import { reportCommentHandlers } from '../handlers/reportComments';
 import { reviewsHandlers } from '../handlers/reviews';
 import { connectionsHandlers } from '../handlers/connections';
+import { testimonialsHandlers } from '../handlers/testimonials';
 
 export const handlers = [
+  ...testimonialsHandlers,
   ...connectionsHandlers,
   ...reviewsHandlers,
   ...reportCommentHandlers,

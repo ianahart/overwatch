@@ -1,7 +1,16 @@
 import { toPlainObject } from 'lodash';
-import { IComment, IReaction, IReplyComment, IReview, ITag } from '../../src/interfaces';
+import { IComment, IReaction, IReplyComment, IReview, ITag, ITestimonial } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createTestimonials(numberOfTestimonials: number) {
+  const testimonials: ITestimonial[] = [];
+
+  for (let i = 0; i < numberOfTestimonials; i++) {
+    testimonials.push(toPlainObject(db.testimonial.create()));
+  }
+  return testimonials;
+}
 
 export function createReviews(numberOfReviews: number) {
   const reviews: IReview[] = [];
@@ -171,7 +180,7 @@ export function createUserWithFullProfileAndRelations(userOverrides = {}) {
   const fullProfile = db.fullProfile.create({
     profile: {
       userId: user,
-      role: faker.helpers.arrayElement(['admin', 'user', 'reviewer']),
+      role: faker.helpers.arrayElement(['ADMIN', 'USER', 'REVIEWER']),
       country: faker.location.country(),
       city: faker.location.city(),
       abbreviation: `${faker.person.firstName()[0]}.${faker.person.lastName()}`,

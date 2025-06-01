@@ -22,8 +22,17 @@ let notificationIdCounter = 1;
 let commentIdCounter = 1;
 let reactionIdCounter = 1;
 let reviewIdCounter = 1;
+let testimonialIdCounter = 1;
 
 export const db = factory({
+  testimonial: {
+    id: primaryKey(() => testimonialIdCounter++),
+    userId: oneOf('user'),
+    name: () => getFullName(),
+    text: () => faker.lorem.paragraph(3),
+    createdAt: () => faker.date.recent().toString(),
+  },
+
   review: {
     id: primaryKey(() => reviewIdCounter++),
     authorId: oneOf('user'),
