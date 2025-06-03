@@ -40,4 +40,3 @@ describe('UserProfile', () => {
     expect(screen.getByText(props.profile.basicInfo.fullName)).toBeInTheDocument();
   });
 });
-

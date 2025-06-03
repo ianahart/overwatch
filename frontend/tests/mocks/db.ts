@@ -282,6 +282,6 @@ export const db = factory({
     company: () => faker.company.name(),
     startDate: () => faker.date.past(),
     endDate: () => faker.date.recent(),
-    description: () => faker.lorem.sentence(),
+    desc: () => faker.lorem.sentence(),
   },
 });
