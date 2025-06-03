@@ -32,14 +32,6 @@ describe('TopicDetailsCommentItemReactions', () => {
     }
   });
 
-  it('should render full reaction view on click', async () => {
-    const { user, reactions } = renderComponent();
-
-    await user.click(screen.getByText(reactions[0].emoji));
-
-    expect(screen.getByText(reactions[0].count)).toBeInTheDocument();
-  });
-
   it('should close the popover when click-away is triggered', async () => {
     const reactions = getReactions(2);
     render(

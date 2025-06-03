@@ -1,7 +1,48 @@
 import { toPlainObject } from 'lodash';
-import { IComment, IReaction, IReplyComment, IReview, ITag } from '../../src/interfaces';
+import {
+  IComment,
+  IFetchProfileResponse,
+  IFullProfile,
+  IReaction,
+  IReplyComment,
+  IReview,
+  ITag,
+  ITestimonial,
+} from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createUserAndProfile(overrides = {}) {
+  const user = db.user.create();
+  const profileEntity = db.fullProfile.create();
+
+  const userProfile = {
+    id: 1,
+    userId: user.id,
+    role: 'REVIEWER',
+    country: 'USA',
+    abbreviation: 'JA',
+    city: 'Market',
+    ...overrides,
+  };
+  const profile: IFullProfile = { ...toPlainObject(profileEntity), userProfile };
+
+  const data: IFetchProfileResponse = {
+    message: 'success',
+    data: profile,
+  };
+
+  return data;
+}
+
+export function createTestimonials(numberOfTestimonials: number) {
+  const testimonials: ITestimonial[] = [];
+
+  for (let i = 0; i < numberOfTestimonials; i++) {
+    testimonials.push(toPlainObject(db.testimonial.create()));
+  }
+  return testimonials;
+}
 
 export function createReviews(numberOfReviews: number) {
   const reviews: IReview[] = [];
@@ -155,12 +196,12 @@ export function createUserWithFullProfileAndRelations(userOverrides = {}) {
 
   const slots = [
     db.slot.create({
-      startTime: faker.date.recent(),
-      endTime: faker.date.soon(),
+      startTime: faker.date.recent().toString(),
+      endTime: faker.date.soon().toString(),
     }),
     db.slot.create({
-      startTime: faker.date.recent(),
-      endTime: faker.date.soon(),
+      startTime: faker.date.recent().toString(),
+      endTime: faker.date.soon().toString(),
     }),
   ];
   const availability = db.availability.create({
@@ -171,7 +212,7 @@ export function createUserWithFullProfileAndRelations(userOverrides = {}) {
   const fullProfile = db.fullProfile.create({
     profile: {
       userId: user,
-      role: faker.helpers.arrayElement(['admin', 'user', 'reviewer']),
+      role: faker.helpers.arrayElement(['ADMIN', 'USER', 'REVIEWER']),
       country: faker.location.country(),
       city: faker.location.city(),
       abbreviation: `${faker.person.firstName()[0]}.${faker.person.lastName()}`,

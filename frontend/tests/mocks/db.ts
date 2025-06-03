@@ -22,8 +22,17 @@ let notificationIdCounter = 1;
 let commentIdCounter = 1;
 let reactionIdCounter = 1;
 let reviewIdCounter = 1;
+let testimonialIdCounter = 1;
 
 export const db = factory({
+  testimonial: {
+    id: primaryKey(() => testimonialIdCounter++),
+    userId: oneOf('user'),
+    name: () => getFullName(),
+    text: () => faker.lorem.paragraph(3),
+    createdAt: () => faker.date.recent().toString(),
+  },
+
   review: {
     id: primaryKey(() => reviewIdCounter++),
     authorId: oneOf('user'),
@@ -179,7 +188,7 @@ export const db = factory({
     profile: {
       id: () => profileIdCounter.toString(),
       userId: oneOf('user'),
-      role: () => faker.helpers.arrayElement(['admin', 'user', 'reviewer']),
+      role: () => faker.helpers.arrayElement(['ADMIN', 'USER', 'REVIEWER']),
       country: () => faker.location.country(),
       abbreviation: () => `${faker.person.firstName()[0]}.${faker.person.lastName()}`,
       city: () => faker.location.city(),
@@ -240,8 +249,8 @@ export const db = factory({
 
   slot: {
     id: primaryKey(() => slotIdCounter++),
-    startTime: () => faker.date.recent(),
-    endTime: () => faker.date.recent(),
+    startTime: () => faker.date.recent().toString(),
+    endTime: () => faker.date.recent().toString(),
   },
 
   packageItem: {
@@ -273,6 +282,6 @@ export const db = factory({
     company: () => faker.company.name(),
     startDate: () => faker.date.past(),
     endDate: () => faker.date.recent(),
-    description: () => faker.lorem.sentence(),
+    desc: () => faker.lorem.sentence(),
   },
 });

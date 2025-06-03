@@ -12,16 +12,16 @@ const ContactInfo = ({ userName, email, contactNumber }: IContactInfoProps) => {
       <h3 className="text-lg text-gray-400">Contact Info</h3>
       <div className="flex items-center">
         <div className="flex items-center">
-          <AiOutlineUser />
+          <AiOutlineUser data-testid="react-icon-user" />
           <p className="m-1">{userName}</p>
         </div>
         <div className="flex items-center">
-          <AiOutlinePhone />
+          <AiOutlinePhone data-testid="react-icon-phone" />
           <p className="m-1">{contactNumber}</p>
         </div>
       </div>
       <div className="flex items-center">
-        <AiOutlineMail />
+        <AiOutlineMail data-testid="react-icon-email" />
         <p className="m-1">{email}</p>
       </div>
     </div>

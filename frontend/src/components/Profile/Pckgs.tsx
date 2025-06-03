@@ -50,7 +50,7 @@ const Pckgs = ({ basic, standard, pro }: IPckgsProps) => {
                 {basic.items.map(({ id, name }) => {
                   return (
                     <li key={id} className="flex my-1">
-                      <AiOutlineCheck className="text-green-400 w-5" />
+                      <AiOutlineCheck data-testid="pckg-item-check" className="text-green-400 w-5" />
                       <p className="text-xs">{name}</p>
                     </li>
                   );
@@ -62,7 +62,7 @@ const Pckgs = ({ basic, standard, pro }: IPckgsProps) => {
                 {standard.items.map(({ id, name }) => {
                   return (
                     <li key={id} className="flex  my-1">
-                      <AiOutlineCheck className="text-green-400 w-5" />
+                      <AiOutlineCheck data-testid="pckg-item-check" className="text-green-400 w-5" />
                       <p className="text-xs">{name}</p>
                     </li>
                   );
@@ -74,7 +74,7 @@ const Pckgs = ({ basic, standard, pro }: IPckgsProps) => {
                 {pro.items.map(({ id, name }) => {
                   return (
                     <li key={id} className="flex my-1">
-                      <AiOutlineCheck className="text-green-400 w-5" />
+                      <AiOutlineCheck data-testid="pckg-item-check" className="text-green-400 w-5" />
                       <p className="text-xs">{name}</p>
                     </li>
                   );
