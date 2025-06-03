@@ -1,7 +1,39 @@
 import { toPlainObject } from 'lodash';
-import { IComment, IReaction, IReplyComment, IReview, ITag, ITestimonial } from '../../src/interfaces';
+import {
+  IComment,
+  IFetchProfileResponse,
+  IFullProfile,
+  IReaction,
+  IReplyComment,
+  IReview,
+  ITag,
+  ITestimonial,
+} from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createUserAndProfile(overrides = {}) {
+  const user = db.user.create();
+  const profileEntity = db.fullProfile.create();
+
+  const userProfile = {
+    id: 1,
+    userId: user.id,
+    role: 'REVIEWER',
+    country: 'USA',
+    abbreviation: 'JA',
+    city: 'Market',
+    ...overrides,
+  };
+  const profile: IFullProfile = { ...toPlainObject(profileEntity), userProfile };
+
+  const data: IFetchProfileResponse = {
+    message: 'success',
+    data: profile,
+  };
+
+  return data;
+}
 
 export function createTestimonials(numberOfTestimonials: number) {
   const testimonials: ITestimonial[] = [];
@@ -164,12 +196,12 @@ export function createUserWithFullProfileAndRelations(userOverrides = {}) {
 
   const slots = [
     db.slot.create({
-      startTime: faker.date.recent(),
-      endTime: faker.date.soon(),
+      startTime: faker.date.recent().toString(),
+      endTime: faker.date.soon().toString(),
     }),
     db.slot.create({
-      startTime: faker.date.recent(),
-      endTime: faker.date.soon(),
+      startTime: faker.date.recent().toString(),
+      endTime: faker.date.soon().toString(),
     }),
   ];
   const availability = db.availability.create({

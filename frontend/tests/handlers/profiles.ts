@@ -1,9 +1,16 @@
 import { http, HttpResponse } from 'msw';
 import { baseURL } from '../../src/util';
 import { paginate } from '../utils';
-import { createMinProfiles } from '../mocks/dbActions';
+import { createMinProfiles, createUserAndProfile } from '../mocks/dbActions';
+import { IFetchProfileResponse } from '../../src/interfaces';
 
 export const profileHandlers = [
+  http.get(`${baseURL}/profiles/:profileId`, () => {
+    const data = createUserAndProfile({ userId: 1 });
+
+    return HttpResponse.json<IFetchProfileResponse>(data, { status: 200 });
+  }),
+
   http.get(`${baseURL}/profiles/all/:filter`, async ({ request }) => {
     const url = new URL(request.url);
 
