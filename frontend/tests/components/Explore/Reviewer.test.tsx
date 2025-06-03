@@ -34,7 +34,7 @@ describe('Reviewer', () => {
     const availability = db.availability.create({
       id: 1,
       day: 'Monday',
-      slots: [db.slot.create({ id: 1, startTime: new Date(), endTime: new Date() })],
+      slots: [db.slot.create({ id: 1, startTime: new Date().toString(), endTime: new Date().toString() })],
     });
 
     const programmingLanguage = db.compatibleProgrammingLanguage.create({
