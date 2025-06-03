@@ -5,6 +5,7 @@ import {
   IResetPasswordForm,
   IResetPasswordResponse,
   ISignInForm,
+  ISignOutResponse,
   ISignUpForm,
   IUser,
   IVerifyOTPRequest,
@@ -14,6 +15,15 @@ import { baseURL } from '../../src/util';
 import { toPlainObject } from 'lodash';
 
 export const authHandlers = [
+  http.post(`${baseURL}/auth/logout`, async () => {
+    return HttpResponse.json<ISignOutResponse>(
+      {
+        message: 'success',
+      },
+      { status: 200 }
+    );
+  }),
+
   http.post(`${baseURL}/auth/verify-otp`, async ({ request }) => {
     const body = (await request.json()) as IVerifyOTPRequest;
 
