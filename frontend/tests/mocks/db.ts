@@ -249,8 +249,8 @@ export const db = factory({
 
   slot: {
     id: primaryKey(() => slotIdCounter++),
-    startTime: () => faker.date.recent(),
-    endTime: () => faker.date.recent(),
+    startTime: () => faker.date.recent().toString(),
+    endTime: () => faker.date.recent().toString(),
   },
 
   packageItem: {
