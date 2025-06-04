@@ -60,7 +60,7 @@ const AuthNavbar = () => {
                   dispatch(closeMobile());
                 }}
               >
-                <AiOutlineClose className="text-green-400 text-2xl" />
+                <AiOutlineClose data-testid="auth-navbar-close-icon" className="text-green-400 text-2xl" />
               </div>
             </div>
             <UserInfo user={user} />
