@@ -27,13 +27,13 @@ const GuestNavbar = () => {
           onClick={() => dispatch(openMobile())}
           className={`md:hidden text-3xl cursor-pointer text-green-400 ${isMobileOpen ? 'hidden' : 'block'}`}
         >
-          <RxHamburgerMenu />
+          <RxHamburgerMenu data-testid="guest-hamburger-menu" />
         </div>
         <div
           onClick={() => dispatch(closeMobile())}
           className={`md:hidden text-3xl cursor-pointer text-green-400 ${isMobileOpen ? 'block' : 'hidden'}`}
         >
-          <AiOutlineClose />
+          <AiOutlineClose data-testid="guest-close-menu" />
         </div>
         <div
           className={`md:bg-inherit md:relative md:block md:p-0 p-2 z-10 shadow-md bg-gray-900 rounded absolute md:top-0 top-16 md:min-h-full min-h-[calc(100vh-10vh)] md:w-full w-60 animate-slidemenu ${
