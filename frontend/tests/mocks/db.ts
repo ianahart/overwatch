@@ -1,6 +1,6 @@
 import { factory, manyOf, oneOf, primaryKey } from '@mswjs/data';
 import { faker } from '@faker-js/faker';
-import { getFullName, getNameAbbreviation } from '../utils';
+import { getFullName } from '../utils';
 import { NotificationRole, NotificationType } from '../../src/enums';
 let compatibleProgrammingLanguageIdCounter = 1;
 let userIdCounter = 1;
@@ -23,6 +23,8 @@ let commentIdCounter = 1;
 let reactionIdCounter = 1;
 let reviewIdCounter = 1;
 let testimonialIdCounter = 1;
+
+const fullName = getFullName();
 
 export const db = factory({
   testimonial: {
@@ -171,11 +173,11 @@ export const db = factory({
   user: {
     id: primaryKey(() => userIdCounter++),
     avatarUrl: () => faker.image.url(),
-    abbreviation: () => getNameAbbreviation(),
+    abbreviation: () => fullName.split(' ')[0][0] + '.' + fullName.split(' ')[1][0],
     email: () => faker.internet.email(),
-    firstName: () => getFullName()[0],
-    lastName: () => getFullName()[1],
-    fullName: () => getFullName(),
+    firstName: () => fullName.split(' ')[0],
+    lastName: () => fullName.split(' ')[1],
+    fullName: () => fullName,
     loggedIn: () => faker.datatype.boolean(),
     profileId: oneOf('fullProfile'),
     role: () => 'REVIEWER',

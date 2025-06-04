@@ -81,6 +81,7 @@ export function getLoggedInUser(overrides = {}) {
     user: {
       user: curUser,
       token: curUser.token,
+      refreshToken: faker.lorem.word(),
     },
   } as any);
 
