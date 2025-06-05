@@ -11,8 +11,14 @@ import { reportCommentHandlers } from '../handlers/reportComments';
 import { reviewsHandlers } from '../handlers/reviews';
 import { connectionsHandlers } from '../handlers/connections';
 import { testimonialsHandlers } from '../handlers/testimonials';
+import { usersHandlers } from '../handlers/users';
+import { teamsHandlers } from '../handlers/teams';
+import { teamInvitationsHandlers } from '../handlers/teamInvitations';
 
 export const handlers = [
+  ...teamsHandlers,
+  ...teamInvitationsHandlers,
+  ...usersHandlers,
   ...testimonialsHandlers,
   ...connectionsHandlers,
   ...reviewsHandlers,

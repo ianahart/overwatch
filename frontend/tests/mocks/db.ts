@@ -23,10 +23,17 @@ let commentIdCounter = 1;
 let reactionIdCounter = 1;
 let reviewIdCounter = 1;
 let testimonialIdCounter = 1;
+let reviewerIdCounter = 1;
 
 const fullName = getFullName();
 
 export const db = factory({
+  reviewer: {
+    id: primaryKey(() => reviewerIdCounter++),
+    fullName: () => faker.person.fullName(),
+    avatarUrl: () => faker.image.avatar(),
+  },
+
   testimonial: {
     id: primaryKey(() => testimonialIdCounter++),
     userId: oneOf('user'),
