@@ -6,11 +6,22 @@ import {
   IReaction,
   IReplyComment,
   IReview,
+  IReviewer,
   ITag,
   ITestimonial,
 } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createReviewers(numberOfReviewers: number) {
+  const reviewers: IReviewer[] = [];
+
+  for (let i = 0; i < numberOfReviewers; i++) {
+    reviewers.push(toPlainObject(db.reviewer.create()));
+  }
+
+  return reviewers;
+}
 
 export function createUserAndProfile(overrides = {}) {
   const user = db.user.create();

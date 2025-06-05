@@ -113,7 +113,12 @@ const AddTeamMemberSearchBar = () => {
         <div className="my-4 bg-stone-950 p-4">
           {reviewers.map((reviewer) => {
             return (
-              <div className="cursor-pointer my-2" onClick={() => handleOnClick(reviewer)} key={reviewer.id}>
+              <div
+                data-testid="searchbar-reviewer"
+                className="cursor-pointer my-2"
+                onClick={() => handleOnClick(reviewer)}
+                key={reviewer.id}
+              >
                 <div className="flex items-center">
                   <Avatar initials="?.?" avatarUrl={reviewer.avatarUrl} width="w-6" height="h-6" />
                   <p className="text-sm text-gray-400">{reviewer.fullName}</p>
