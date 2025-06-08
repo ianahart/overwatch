@@ -8,10 +8,32 @@ import {
   IReview,
   IReviewer,
   ITag,
+  ITeamInvitiation,
+  ITeamMemberTeam,
   ITestimonial,
 } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createTeamInvitations(numberOfInvitations: number) {
+  const teamInvitations: ITeamInvitiation[] = [];
+
+  for (let i = 1; i < numberOfInvitations + 1; i++) {
+    const invitation: ITeamInvitiation = toPlainObject(db.teamInvitation.create());
+    teamInvitations.push({ ...invitation, receiverId: i, senderId: i + 1, teamId: i });
+  }
+  return teamInvitations;
+}
+
+export function createTeamMemberTeams(numberOfTeams: number) {
+  const teams: ITeamMemberTeam[] = [];
+
+  for (let i = 0; i < numberOfTeams; i++) {
+    teams.push(toPlainObject(db.teamMemberTeam.create()));
+  }
+
+  return teams;
+}
 
 export function createReviewers(numberOfReviewers: number) {
   const reviewers: IReviewer[] = [];

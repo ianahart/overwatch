@@ -73,7 +73,7 @@ const InvitationItem = ({ teamInvitation }: IIInvitationItemProps) => {
   };
 
   return (
-    <div className="my-4">
+    <div data-testid="team-invitation-item" className="my-4">
       <div className="flex items-center">
         <Avatar
           width="w-12"
