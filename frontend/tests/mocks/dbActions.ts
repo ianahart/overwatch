@@ -8,10 +8,21 @@ import {
   IReview,
   IReviewer,
   ITag,
+  ITeamMemberTeam,
   ITestimonial,
 } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createTeamMemberTeams(numberOfTeams: number) {
+  const teams: ITeamMemberTeam[] = [];
+
+  for (let i = 0; i < numberOfTeams; i++) {
+    teams.push(toPlainObject(db.teamMemberTeam.create()));
+  }
+
+  return teams;
+}
 
 export function createReviewers(numberOfReviewers: number) {
   const reviewers: IReviewer[] = [];

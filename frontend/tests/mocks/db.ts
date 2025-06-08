@@ -24,10 +24,38 @@ let reactionIdCounter = 1;
 let reviewIdCounter = 1;
 let testimonialIdCounter = 1;
 let reviewerIdCounter = 1;
+let teamInvitationIdCounter = 1;
+let teamIdCounter = 1;
+let teamMemberTeamIdCounter = 1;
 
 const fullName = getFullName();
 
 export const db = factory({
+  teamMemberTeam: {
+    id: primaryKey(() => teamMemberTeamIdCounter++),
+    userId: oneOf('user'),
+    teamId: oneOf('team'),
+    teamName: () => faker.lorem.word(10),
+  },
+  team: {
+    id: primaryKey(() => teamIdCounter++),
+    userId: oneOf('user'),
+    totalTeams: () => faker.number.int({ min: 1, max: 10 }),
+    teamName: () => faker.lorem.word(10),
+    teamDescription: () => faker.lorem.sentence(4),
+  },
+
+  teamInvitation: {
+    id: primaryKey(() => teamInvitationIdCounter++),
+    senderId: oneOf('user'),
+    receiverId: oneOf('user'),
+    teamId: oneOf('team'),
+    status: () => faker.lorem.word(8),
+    senderAvatarUrl: () => faker.image.avatar(),
+    senderFullName: () => faker.person.fullName(),
+    createdAt: () => faker.date.recent().toString(),
+    teamName: () => faker.lorem.word(10),
+  },
   reviewer: {
     id: primaryKey(() => reviewerIdCounter++),
     fullName: () => faker.person.fullName(),
