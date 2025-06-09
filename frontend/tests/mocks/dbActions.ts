@@ -10,10 +10,21 @@ import {
   ITag,
   ITeamInvitiation,
   ITeamMemberTeam,
+  ITeamMessage,
   ITestimonial,
 } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createTeamMessages(numberOfMessages: number) {
+  const teamMessages: ITeamMessage[] = [];
+
+  for (let i = 0; i < numberOfMessages; i++) {
+    const teamMessage: ITeamMessage = toPlainObject(db.teamMessage.create());
+    teamMessages.push({ ...teamMessage, teamId: 1, userId: i + 1 });
+  }
+  return teamMessages;
+}
 
 export function createTeamInvitations(numberOfInvitations: number) {
   const teamInvitations: ITeamInvitiation[] = [];

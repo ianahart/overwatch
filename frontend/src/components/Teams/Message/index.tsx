@@ -80,6 +80,7 @@ const Message = () => {
         <div className="my-4 p-2 flex flex-col-reverse">
           {teamMessages.map((teamMessage) => (
             <div
+              data-testid="team-message"
               key={teamMessage.id}
               className={`flex flex-col ${teamMessage.userId === user.id ? 'items-end' : 'items-start'}`}
             >

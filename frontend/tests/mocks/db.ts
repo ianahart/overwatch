@@ -27,10 +27,20 @@ let reviewerIdCounter = 1;
 let teamInvitationIdCounter = 1;
 let teamIdCounter = 1;
 let teamMemberTeamIdCounter = 1;
+let teamMessageIdCounter = 1;
 
 const fullName = getFullName();
 
 export const db = factory({
+  teamMessage: {
+    id: primaryKey(() => teamMessageIdCounter++),
+    fullName: () => faker.person.fullName(),
+    createdAt: () => faker.date.recent.toString(),
+    text: () => faker.lorem.paragraph(2),
+    avatarUrl: () => faker.image.avatar(),
+    userId: oneOf('user'),
+    teamId: oneOf('team'),
+  },
   teamMemberTeam: {
     id: primaryKey(() => teamMemberTeamIdCounter++),
     userId: oneOf('user'),
