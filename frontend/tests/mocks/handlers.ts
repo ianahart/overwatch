@@ -16,8 +16,10 @@ import { teamsHandlers } from '../handlers/teams';
 import { teamInvitationsHandlers } from '../handlers/teamInvitations';
 import { teamMembersHandlers } from '../handlers/teamMembers';
 import { teamMessagesHandlers } from '../handlers/teamMessages';
+import { teamCommentsHandlers } from '../handlers/teamComments';
 
 export const handlers = [
+  ...teamCommentsHandlers,
   ...teamMessagesHandlers,
   ...teamMembersHandlers,
   ...teamsHandlers,
