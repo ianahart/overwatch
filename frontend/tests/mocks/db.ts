@@ -28,10 +28,47 @@ let teamInvitationIdCounter = 1;
 let teamIdCounter = 1;
 let teamMemberTeamIdCounter = 1;
 let teamMessageIdCounter = 1;
+let teamMemberIdCounter = 1;
+let teamCommentIdCounter = 1;
+let teamPostIdCounter = 1;
 
 const fullName = getFullName();
 
 export const db = factory({
+  teamPost: {
+    id: primaryKey(() => teamPostIdCounter++),
+    teamId: oneOf('team'),
+    createdAt: () => faker.date.recent.toString(),
+    userId: oneOf('user'),
+    code: () => faker.lorem.sentence(8),
+    isEdited: () => faker.datatype.boolean(),
+    fullName: () => faker.person.fullName(),
+    avatarUrl: () => faker.image.avatar(),
+    language: () => faker.lorem.word(8),
+    hasComments: () => faker.datatype.boolean(),
+  },
+
+  teamComment: {
+    id: primaryKey(() => teamCommentIdCounter++),
+    userId: oneOf('user'),
+    content: () => faker.lorem.paragraph(1),
+    createdAt: () => faker.date.recent.toString(),
+    fullName: () => faker.person.fullName(),
+    avatarUrl: () => faker.image.avatar(),
+    teamPostId: oneOf('teamPost'),
+    isEdited: () => faker.datatype.boolean(),
+    tag: () => faker.lorem.word(8),
+  },
+  teamMember: {
+    id: primaryKey(() => teamMemberIdCounter++),
+    userId: oneOf('user'),
+    teamId: oneOf('team'),
+    avatarUrl: () => faker.image.avatar(),
+    fullName: () => faker.person.fullName(),
+    creaetdAt: () => faker.date.recent().toString(),
+    profileId: oneOf('fullProfile'),
+  },
+
   teamMessage: {
     id: primaryKey(() => teamMessageIdCounter++),
     fullName: () => faker.person.fullName(),
