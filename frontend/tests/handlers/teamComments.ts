@@ -1,9 +1,24 @@
 import { http, HttpResponse } from 'msw';
 
-import { ICreateTeamCommentResponse, IGetTeamCommentResponse, IUpdateTeamCommentResponse } from '../../src/interfaces';
+import {
+  ICreateTeamCommentResponse,
+  IDeleteTeamCommentResponse,
+  IGetTeamCommentResponse,
+  IUpdateTeamCommentResponse,
+} from '../../src/interfaces';
 import { baseURL } from '../../src/util';
 
 export const teamCommentsHandlers = [
+  http.delete(`${baseURL}/team-posts/:teamPostId/team-comments/:teamCommentId`, () => {
+    return HttpResponse.json<IDeleteTeamCommentResponse>(
+      {
+        message: 'success',
+        data: 'content',
+      },
+      { status: 200 }
+    );
+  }),
+
   http.get(`${baseURL}/team-posts/:teamPostId/team-comments/:teamCommentId`, () => {
     return HttpResponse.json<IGetTeamCommentResponse>(
       {

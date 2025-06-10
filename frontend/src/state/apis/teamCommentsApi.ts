@@ -21,9 +21,6 @@ const teamCommentsApi = createApi({
     return {
       deleteTeamComment: builder.mutation<IDeleteTeamCommentResponse, IDeleteTeamCommentRequest>({
         query: ({ teamPostId, teamCommentId, token }) => {
-          if (!teamPostId || !teamCommentId || !token) {
-            return '';
-          }
           return {
             url: `/team-posts/${teamPostId}/team-comments/${teamCommentId}`,
             method: 'DELETE',
