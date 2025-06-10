@@ -99,14 +99,12 @@ describe('TeamCommentForm', () => {
       expect(props.updateTeamComment).toHaveBeenCalledWith(1, 'updated content', expect.any(String));
       expect(props.closeModal).toHaveBeenCalled();
     });
-
   });
-        it('should cancel when "Cancel" button is clicked', async () => {
-      const { user, props } = renderComponent();
+  it('should cancel when "Cancel" button is clicked', async () => {
+    const { user, props } = renderComponent();
 
-      await user.click(screen.getByRole('button', { name: /cancel/i }));
+    await user.click(screen.getByRole('button', { name: /cancel/i }));
 
-      expect(props.closeModal).toHaveBeenCalled();
-    });
-
+    expect(props.closeModal).toHaveBeenCalled();
+  });
 });

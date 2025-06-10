@@ -44,7 +44,7 @@ const TeamCommentListItem = ({ teamComment, updateTeamComment, handleResetCommen
   };
 
   return (
-    <div key={teamComment.id} className="border border-gray-800 rounded p-2 my-2">
+    <div data-testid="team-comment-list-item" key={teamComment.id} className="border border-gray-800 rounded p-2 my-2">
       <div className="flex items-center">
         <Avatar
           height="h-9"
