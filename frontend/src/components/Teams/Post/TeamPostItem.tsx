@@ -124,7 +124,7 @@ const TeamPostItem = ({ teamPost }: ITeamPostItemProps) => {
         </div>
 
         <div className="relative">
-          <div onClick={() => setIsClickAwayOpen(true)}>
+          <div data-testid="team-post-menu-trigger" onClick={() => setIsClickAwayOpen(true)}>
             <BsThreeDots />
           </div>
 
