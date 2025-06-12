@@ -113,7 +113,7 @@ const TeamPostItem = ({ teamPost }: ITeamPostItemProps) => {
   };
 
   return (
-    <div className="my-6">
+    <div data-testid="team-post-item" className="my-6">
       <div className="flex justify-between">
         <div className="flex items-center">
           <Avatar initials="?.?" avatarUrl={teamPost.avatarUrl} height="h-9" width="w-9" />
@@ -124,7 +124,7 @@ const TeamPostItem = ({ teamPost }: ITeamPostItemProps) => {
         </div>
 
         <div className="relative">
-          <div onClick={() => setIsClickAwayOpen(true)}>
+          <div data-testid="team-post-menu-trigger" onClick={() => setIsClickAwayOpen(true)}>
             <BsThreeDots />
           </div>
 

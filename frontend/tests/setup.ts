@@ -12,6 +12,14 @@ window.HTMLElement.prototype.scrollIntoView = vi.fn();
 window.HTMLElement.prototype.hasPointerCapture = vi.fn();
 window.HTMLElement.prototype.releasePointerCapture = vi.fn();
 
+global.Range.prototype.getClientRects = () => {
+  return {
+    length: 0,
+    item: () => null,
+    [Symbol.iterator]: function* () {},
+  } as any;
+};
+
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: vi.fn().mockImplementation((query) => ({
