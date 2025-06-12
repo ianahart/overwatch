@@ -13,10 +13,22 @@ import {
   ITeamMember,
   ITeamMemberTeam,
   ITeamMessage,
+  ITeamPost,
   ITestimonial,
 } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createTeamPosts(numberOfPosts: number) {
+  const teamPosts: ITeamPost[] = [];
+
+  for (let i = 0; i < numberOfPosts; i++) {
+    const teamPost: ITeamPost = toPlainObject(db.teamPost.create());
+    teamPosts.push(teamPost);
+  }
+
+  return teamPosts;
+}
 
 export function createTeamMember(numberOfTeamMembers: number) {
   const teamMembers: ITeamMember[] = [];

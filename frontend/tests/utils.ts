@@ -1,6 +1,11 @@
 import { faker } from '@faker-js/faker';
 import { db } from './mocks/db';
 import { getWrapper } from './RenderWithProviders';
+import { TRootState } from '../src/state/store';
+
+type TSliceOverrides = {
+  [K in keyof Omit<TRootState, 'user'>]?: Partial<TRootState[K]>;
+};
 
 export interface IName {
   firstName: string;
@@ -69,7 +74,7 @@ export function toPlainObject<T>(obj: T): T {
   return result;
 }
 
-export function getLoggedInUser(overrides = {}) {
+export function getLoggedInUser(overrides: Record<string, unknown> = {}, sliceOverrides: TSliceOverrides = {}) {
   const curUser = {
     ...db.user.create(),
     id: 1,
@@ -83,6 +88,7 @@ export function getLoggedInUser(overrides = {}) {
       token: curUser.token,
       refreshToken: faker.lorem.word(),
     },
+    ...sliceOverrides,
   } as any);
 
   return { curUser, wrapper };
