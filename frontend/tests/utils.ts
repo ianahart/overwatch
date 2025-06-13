@@ -74,7 +74,7 @@ export function toPlainObject<T>(obj: T): T {
   return result;
 }
 
-export function getLoggedInUser(overrides: Record<string, unknown> = {}, sliceOverrides: TSliceOverrides = {}) {
+export function getLoggedInUser(overrides = {}, sliceOverrides: TSliceOverrides = {}) {
   const curUser = {
     ...db.user.create(),
     id: 1,
