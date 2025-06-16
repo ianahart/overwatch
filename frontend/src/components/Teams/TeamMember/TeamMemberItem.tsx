@@ -46,7 +46,7 @@ const TeamMemberItem = ({
 
             {user.id === adminUserId && !isAdmin && (
               <ToolTip message="Remove member">
-                <BsTrash onClick={handleOnClick} className="text-sm ml-2" />
+                <BsTrash data-testid="remove-team-member-icon" onClick={handleOnClick} className="text-sm ml-2" />
               </ToolTip>
             )}
           </div>
