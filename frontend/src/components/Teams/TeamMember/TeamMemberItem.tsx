@@ -31,7 +31,7 @@ const TeamMemberItem = ({
   };
 
   return (
-    <div className="my-4">
+    <div data-testid={`${isAdmin ? 'team-member-admin' : 'team-member-item'}`} className="my-4">
       <div className="flex items-center">
         <Avatar width="w-9" height="h-9" avatarUrl={teamMember.avatarUrl} initials={initializeName(first, last)} />
         <div className="ml-1">
@@ -46,7 +46,7 @@ const TeamMemberItem = ({
 
             {user.id === adminUserId && !isAdmin && (
               <ToolTip message="Remove member">
-                <BsTrash onClick={handleOnClick} className="text-sm ml-2" />
+                <BsTrash data-testid="remove-team-member-icon" onClick={handleOnClick} className="text-sm ml-2" />
               </ToolTip>
             )}
           </div>
