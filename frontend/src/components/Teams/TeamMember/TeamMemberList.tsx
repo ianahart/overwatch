@@ -92,7 +92,7 @@ const TeamMemberList = () => {
   };
 
   return (
-    <div>
+    <div data-testid="team-member-list">
       <div className="my-8 max-w-[600px] w-full">
         <div className="text-center">
           <h3 className="text-xl text-left">Team Members</h3>

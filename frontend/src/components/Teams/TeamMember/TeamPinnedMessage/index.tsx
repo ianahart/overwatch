@@ -26,7 +26,7 @@ const TeamPinnedMessage = ({ team }: ITeamPinnedMessageProps) => {
 
   return (
     <>
-      <div className="flex md:flex-row flex-col md:items-center md:justify-between">
+      <div data-testid="team-pinned-message" className="flex md:flex-row flex-col md:items-center md:justify-between">
         <div className=" max-w-[600px] mx-auto">
           <div>
             <h3 className="text-xl">Pinned Messages</h3>
