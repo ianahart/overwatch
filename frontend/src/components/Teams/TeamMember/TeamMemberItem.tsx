@@ -31,7 +31,7 @@ const TeamMemberItem = ({
   };
 
   return (
-    <div className="my-4">
+    <div data-testid={`${isAdmin ? 'team-member-admin' : 'team-member-item'}`} className="my-4">
       <div className="flex items-center">
         <Avatar width="w-9" height="h-9" avatarUrl={teamMember.avatarUrl} initials={initializeName(first, last)} />
         <div className="ml-1">

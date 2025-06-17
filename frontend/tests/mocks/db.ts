@@ -65,7 +65,7 @@ export const db = factory({
     teamId: oneOf('team'),
     avatarUrl: () => faker.image.avatar(),
     fullName: () => faker.person.fullName(),
-    creaetdAt: () => faker.date.recent().toString(),
+    createdAt: () => faker.date.recent().toString(),
     profileId: oneOf('fullProfile'),
   },
 
