@@ -31,6 +31,7 @@ let teamMessageIdCounter = 1;
 let teamMemberIdCounter = 1;
 let teamCommentIdCounter = 1;
 let teamPostIdCounter = 1;
+let teamPinnedMessageIdCounter = 1;
 
 const fullName = getFullName();
 
@@ -67,6 +68,17 @@ export const db = factory({
     fullName: () => faker.person.fullName(),
     createdAt: () => faker.date.recent().toString(),
     profileId: oneOf('fullProfile'),
+  },
+
+  teamPinnedMessage: {
+    id: primaryKey(() => teamPinnedMessageIdCounter++),
+    userId: oneOf('user'),
+    fullName: () => faker.person.fullName(),
+    avatarUrl: () => faker.image.avatar(),
+    createdAt: () => faker.date.recent.toString(),
+    message: () => faker.lorem.sentence(10),
+    isEdited: () => faker.datatype.boolean(),
+    updatedAt: () => faker.date.recent.toString(),
   },
 
   teamMessage: {

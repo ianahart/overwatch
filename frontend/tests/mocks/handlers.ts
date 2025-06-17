@@ -18,8 +18,10 @@ import { teamMembersHandlers } from '../handlers/teamMembers';
 import { teamMessagesHandlers } from '../handlers/teamMessages';
 import { teamCommentsHandlers } from '../handlers/teamComments';
 import { teamPostsHandlers } from '../handlers/teamPosts';
+import { teamPinnedMessagesHandlers } from '../handlers/teamPinnedMessages';
 
 export const handlers = [
+  ...teamPinnedMessagesHandlers,
   ...teamCommentsHandlers,
   ...teamPostsHandlers,
   ...teamMessagesHandlers,
