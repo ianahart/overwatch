@@ -13,11 +13,23 @@ import {
   ITeamMember,
   ITeamMemberTeam,
   ITeamMessage,
+  ITeamPinnedMessage,
   ITeamPost,
   ITestimonial,
+  IUser,
 } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createTeamPinnedMessages(numberOfMessages: number, user: IUser) {
+  const messages: ITeamPinnedMessage[] = [];
+
+  for (let i = 0; i < numberOfMessages; i++) {
+    const message: ITeamPinnedMessage = { ...toPlainObject(db.teamPinnedMessage.create()), userId: user.id };
+    messages.push(message);
+  }
+  return messages;
+}
 
 export function createTeamPosts(numberOfPosts: number) {
   const teamPosts: ITeamPost[] = [];
