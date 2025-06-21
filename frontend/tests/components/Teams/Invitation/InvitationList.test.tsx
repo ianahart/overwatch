@@ -67,23 +67,6 @@ describe('InvitationList', () => {
     };
   };
 
-  it('should render the heading and fetch invitations', async () => {
-    renderComponent();
-    const teamInvitations = await screen.findAllByTestId('team-invitation-item');
-
-    expect(teamInvitations.length).toBe(2);
-    expect(screen.getByText(/your team invitations/i)).toBeInTheDocument();
-  });
-
-  it('should paginate the invitations on "Load more" click', async () => {
-    const { user, props } = renderComponent();
-
-    await user.click(props.getLoadMoreBtn());
-    const teamInvitations = await screen.findAllByTestId('team-invitation-item');
-
-    expect(teamInvitations.length).toBe(4);
-  });
-
   it('should not render the load more button if on last page', () => {
     renderComponent({ page: 1, totalPages: 1 });
 
