@@ -95,7 +95,7 @@ const MessageForm = ({
   };
 
   return (
-    <form onSubmit={handleOnSubmit}>
+    <form data-testid="message-form" onSubmit={handleOnSubmit}>
       <div className="flex flex-col w-full">
         <div className="my-4">
           <h3 className="text-xl">{formType === 'update' ? 'Update Message' : 'Create New Message'}</h3>

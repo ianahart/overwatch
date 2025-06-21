@@ -52,6 +52,7 @@ const MessageListItem = ({ message, user, team }: IMessageListItemProps) => {
 
   return (
     <div
+      data-testid="message-list-item"
       ref={setNodeRef}
       style={style}
       {...attributes}
@@ -62,7 +63,7 @@ const MessageListItem = ({ message, user, team }: IMessageListItemProps) => {
       <div className="flex items-center">
         {team.userId === user.id && (
           <div>
-            <LuGrip className="cursor-pointer" />
+            <LuGrip data-testid="message-drag-n-drop" className="cursor-pointer" />
           </div>
         )}
         <Avatar avatarUrl={message.avatarUrl} height="h-9" width="w-9" initials={`${initializeName(first, last)}`} />
@@ -81,10 +82,18 @@ const MessageListItem = ({ message, user, team }: IMessageListItemProps) => {
         <div className="flex justify-end">
           <div className="flex">
             <ToolTip message="Edit">
-              <BiSolidEditAlt onClick={openModal} className="mx-2 text-xl cursor-pointer" />
+              <BiSolidEditAlt
+                data-testid="edit-pinned-message-icon"
+                onClick={openModal}
+                className="mx-2 text-xl cursor-pointer"
+              />
             </ToolTip>
             <ToolTip message="UnPin">
-              <RiPushpinFill onClick={handleOnDeleteMessage} className="mx-2 text-xl cursor-pointer" />
+              <RiPushpinFill
+                data-testid="delete-pinned-message-icon"
+                onClick={handleOnDeleteMessage}
+                className="mx-2 text-xl cursor-pointer"
+              />
             </ToolTip>
           </div>
         </div>
