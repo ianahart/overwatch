@@ -106,7 +106,7 @@ const CreateTeamForm = ({ closeModal }: ICreateTeamFormProps) => {
           />
         </div>
         <div className="flex flex-col my-8">
-          <label htmlFor="name">Team description</label>
+          <label htmlFor="description">Team description</label>
           <textarea
             onChange={(e) => handleOnChange(e, 'textarea')}
             value={teamDescription}
