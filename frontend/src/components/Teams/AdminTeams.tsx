@@ -100,7 +100,12 @@ const AdminTeams = () => {
       <div className="h-20 overflow-y-auto">
         {adminTeams.map((adminTeam) => {
           return (
-            <div onClick={() => changeCurrentTeam(adminTeam.id)} className="my-1 cursor-pointer" key={adminTeam.id}>
+            <div
+              data-testid="admin-team-item"
+              onClick={() => changeCurrentTeam(adminTeam.id)}
+              className="my-1 cursor-pointer"
+              key={adminTeam.id}
+            >
               <p className="hover:text-gray-500 flex items-center">
                 <AiOutlineTeam className="mr-1 text-green-400" />
                 {adminTeam.teamName}

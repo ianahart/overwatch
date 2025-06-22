@@ -8,6 +8,7 @@ import {
   IReview,
   IReviewer,
   ITag,
+  ITeam,
   ITeamComment,
   ITeamInvitiation,
   ITeamMember,
@@ -20,6 +21,16 @@ import {
 } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createTeams(numberOfTeams: number) {
+  const teams: ITeam[] = [];
+
+  for (let i = 0; i < numberOfTeams; i++) {
+    const team: ITeam = toPlainObject(db.team.create());
+    teams.push(team);
+  }
+  return teams;
+}
 
 export function createTeamPinnedMessages(numberOfMessages: number, user: IUser) {
   const messages: ITeamPinnedMessage[] = [];
