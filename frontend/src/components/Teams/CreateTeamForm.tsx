@@ -76,7 +76,7 @@ const CreateTeamForm = ({ closeModal }: ICreateTeamFormProps) => {
   };
 
   return (
-    <div>
+    <div data-testid="create-team-form">
       <div className="flex flex-col items-center">
         <h3 className="text-xl my-1">Create Team</h3>
         <p className="text-sm">Here you can create a team and invite other users to be apart of your team.</p>
