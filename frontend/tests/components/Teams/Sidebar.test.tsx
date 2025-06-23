@@ -12,10 +12,9 @@ describe('Sidebar', () => {
     };
   };
 
-    it('should render the heading', () => {
+  it('should render the heading', () => {
+    const { getHeading } = renderComponent();
 
-        const {getHeading} = renderComponent()
-
-        expect(getHeading()).toBeInTheDocument()
-    });
+    expect(getHeading()).toBeInTheDocument();
+  });
 });

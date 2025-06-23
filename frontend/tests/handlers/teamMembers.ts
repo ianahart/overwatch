@@ -104,7 +104,7 @@ export const teamMembersHandlers = [
           direction,
           totalElements,
         },
-        totalTeamMemberTeams: 5,
+        totalTeamMemberTeams: 4,
       },
       { status: 200 }
     );

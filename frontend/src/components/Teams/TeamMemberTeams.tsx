@@ -112,14 +112,22 @@ const TeamMemberTeams = () => {
       <div className="h-20 overflow-y-auto">
         {teamMemberTeams.map((teamMembersTeam, index) => {
           return (
-            <div key={teamMembersTeam.id} className="flex items-center justify-between">
+            <div
+              data-testid="team-member-team-item"
+              key={teamMembersTeam.id}
+              className="flex items-center justify-between"
+            >
               <div onClick={() => changeCurrentTeam(teamMembersTeam.teamId)} className="my-1 cursor-pointer">
                 <p className="hover:text-gray-500 flex items-center">
                   <AiOutlineTeam className="mr-1 text-blue-400" />
                   {teamMembersTeam.teamName}
                 </p>
               </div>
-              <div onClick={() => handleDeleteTeamMember(teamMembersTeam.id)} className="mr-10 cursor-pointer">
+              <div
+                data-testid="delete-team-member-container"
+                onClick={() => handleDeleteTeamMember(teamMembersTeam.id)}
+                className="mr-10 cursor-pointer"
+              >
                 {teamMemberTeams.length - 1 !== index ? (
                   <ToolTip message="Leave">
                     <BsTrash />
