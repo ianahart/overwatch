@@ -35,11 +35,11 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 export const mockNavigate = vi.fn();
-export const mockLocation = vi.fn();
 export const mockDispatch = vi.fn();
 
 let params: Record<string, string> = {};
 let searchParams: Record<string, string> = {};
+let location: Record<string, string> = {};
 
 vi.mock('react-redux', async () => {
   const actual = await vi.importActual<typeof import('react-redux')>('react-redux');
@@ -55,10 +55,14 @@ vi.mock('react-router-dom', async () => {
     ...actual,
     useParams: () => params,
     useNavigate: () => mockNavigate,
-    useLocation: () => mockLocation(),
+    useLocation: () => location,
     useSearchParams: () => [new URLSearchParams(Object.entries(searchParams)), vi.fn()],
   };
 });
+
+export function mockUserLocation(newLocation: Record<string, string>) {
+  location = newLocation;
+}
 
 export function mockUserSearchParams(newParams: Record<string, string>) {
   searchParams = newParams;

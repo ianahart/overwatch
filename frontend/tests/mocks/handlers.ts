@@ -19,8 +19,10 @@ import { teamMessagesHandlers } from '../handlers/teamMessages';
 import { teamCommentsHandlers } from '../handlers/teamComments';
 import { teamPostsHandlers } from '../handlers/teamPosts';
 import { teamPinnedMessagesHandlers } from '../handlers/teamPinnedMessages';
+import { settingsHandlers } from '../handlers/settings';
 
 export const handlers = [
+  ...settingsHandlers,
   ...teamPinnedMessagesHandlers,
   ...teamCommentsHandlers,
   ...teamPostsHandlers,
