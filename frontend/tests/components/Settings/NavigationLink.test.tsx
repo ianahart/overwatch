@@ -8,7 +8,7 @@ import NavigationLink from '../../../src/components/Settings/NavigationLink';
 import { getLoggedInUser } from '../../utils';
 import { IConnection } from '../../../src/interfaces';
 import { db } from '../../mocks/db';
-import { mockUserLocation } from '../../setup';
+import { mockLocation } from '../../setup';
 import { clearChat } from '../../../src/state/store';
 
 vi.mock('react-redux', async () => {
@@ -66,7 +66,9 @@ describe('NavigationLink', () => {
   });
 
   it('should apply active styles when location matches path', () => {
-    mockUserLocation({ pathname: '/test-path' });
+    mockLocation.mockReturnValue({
+      pathname: '/test-path',
+    });
 
     const { props } = renderComponent();
 
@@ -77,7 +79,10 @@ describe('NavigationLink', () => {
   });
 
   it('should apply non-active styles when link is not active', () => {
-    mockUserLocation({ pathname: '/' });
+    mockLocation.mockReturnValue({
+      pathname: '/',
+    });
+
     const { props } = renderComponent();
 
     const listItem = screen.getByRole('link', { name: props.data.name }).closest('li');
