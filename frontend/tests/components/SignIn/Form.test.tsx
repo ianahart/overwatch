@@ -55,7 +55,7 @@ describe('Form', () => {
     expect(await screen.findByText(/invalid credentials/i)).toBeInTheDocument();
   });
 
-  test('should navigate to the correct page when login is successful', async () => {
+  it('should navigate to the correct page when login is successful', async () => {
     const userEntity = db.user.create();
     server.use(
       http.post(`${baseURL}/auth/login`, async () => {
@@ -75,7 +75,7 @@ describe('Form', () => {
     });
   });
 
-  test('should show a spinner when form is submitting', async () => {
+  it('should show a spinner when form is submitting', async () => {
     const userEntity = db.user.create();
     server.use(
       http.post(`${baseURL}/auth/login`, async () => {

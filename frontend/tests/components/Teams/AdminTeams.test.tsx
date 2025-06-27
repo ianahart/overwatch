@@ -4,8 +4,9 @@ import userEvent from '@testing-library/user-event';
 import AdminTeams from '../../../src/components/Teams/AdminTeams';
 import { getLoggedInUser } from '../../utils';
 import { setCurrentTeam } from '../../../src/state/store';
-import { mockDispatch } from '../../setup'; // import your global mockDispatch
 import { createTeams } from '../../mocks/dbActions';
+import { useDispatch } from 'react-redux';
+import { Mock } from 'vitest';
 
 vi.mock('../../../src/state/store', async () => {
   const actual = await vi.importActual('../../../src/state/store');
@@ -15,10 +16,20 @@ vi.mock('../../../src/state/store', async () => {
   };
 });
 
+vi.mock('react-redux', async () => {
+  const actual = await vi.importActual('react-redux');
+  return {
+    ...actual,
+    useDispatch: vi.fn(),
+  };
+});
+
 describe('AdminTeams', () => {
+  const mockDispatch = vi.fn();
+
   beforeEach(() => {
     vi.clearAllMocks();
-    mockDispatch.mockClear();
+    (useDispatch as Mock).mockReturnValue(mockDispatch);
   });
 
   const renderComponent = () => {
@@ -61,17 +72,13 @@ describe('AdminTeams', () => {
   });
 
   it('should allow clicking on a team triggering dispatch', async () => {
-    const fakeAction: ReturnType<typeof setCurrentTeam> = setCurrentTeam(1);
-
-    vi.mocked(setCurrentTeam).mockReturnValue(fakeAction);
-
     const { user, getAdminTeams } = renderComponent();
 
     const adminTeams = await getAdminTeams();
 
     await user.click(adminTeams[0]);
 
-    expect(mockDispatch).toHaveBeenCalledWith(fakeAction);
+    expect(mockDispatch).toHaveBeenCalledWith(setCurrentTeam(1));
   });
 
   it('should load more teams when clicking on "Load more..."', async () => {
