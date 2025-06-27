@@ -32,10 +32,25 @@ let teamMemberIdCounter = 1;
 let teamCommentIdCounter = 1;
 let teamPostIdCounter = 1;
 let teamPinnedMessageIdCounter = 1;
+let connectionIdCounter = 1;
 
 const fullName = getFullName();
 
 export const db = factory({
+  connection: {
+    senderId: oneOf('user'),
+    receiverId: oneOf('user'),
+    phoneNumber: () => faker.phone.number(),
+    lastName: () => faker.person.lastName(),
+    id: primaryKey(() => connectionIdCounter++),
+    firstName: () => faker.person.firstName(),
+    email: () => faker.internet.email(),
+    country: () => faker.location.country(),
+    city: () => faker.location.city(),
+    bio: () => faker.lorem.paragraph(3),
+    avatarUrl: () => faker.image.avatar(),
+    lastMessage: () => faker.lorem.sentence(10),
+  },
   teamPost: {
     id: primaryKey(() => teamPostIdCounter++),
     teamId: oneOf('team'),
