@@ -82,7 +82,11 @@ const Testimonials = () => {
       <div className="flex justify-center">{isLoading && <Spinner message="Loading testimonials..." />}</div>
       {testimonials.map((testimonial) => {
         return (
-          <div key={testimonial.id} className="my-4 border border-gray-800 p-4 rounded">
+          <div
+            data-testid="setting-testimonial-item"
+            key={testimonial.id}
+            className="my-4 border border-gray-800 p-4 rounded"
+          >
             <div className="flex justify-between items-center">
               <h3 className="text-lg">{testimonial.name}</h3>
               <p className="text-sm italic">{dayjs(testimonial.createdAt).format('MM/DD/YYYY')}</p>
