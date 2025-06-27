@@ -44,14 +44,6 @@ export const mockLocation = vi.fn().mockReturnValue({
 let params: Record<string, string> = {};
 let searchParams: Record<string, string> = {};
 
-//vi.mock('react-redux', async () => {
-//  const actual = await vi.importActual<typeof import('react-redux')>('react-redux');
-//  return {
-//    ...actual,
-//    useDispatch: () => mockDispatch,
-//  };
-//});
-
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
   return {
