@@ -3,12 +3,12 @@ import { screen, render } from '@testing-library/react';
 import Navigation from '../../../src/components/Settings/Navigation';
 import { getLoggedInUser } from '../../utils';
 import { IUser } from '../../../src/interfaces';
-import { mockUserLocation } from '../../setup';
+import { mockLocation } from '../../setup';
 
 describe('Navigation', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockUserLocation({ pathname: '/' });
+    mockLocation({ pathname: '/' });
   });
 
   const renderComponent = (overrides: Partial<IUser> = {}) => {
