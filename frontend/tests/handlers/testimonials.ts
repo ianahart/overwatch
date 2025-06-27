@@ -1,6 +1,7 @@
 import { http, HttpResponse } from 'msw';
 
 import {
+  ICreateTestimonialResponse,
   IDeleteTestimonialResponse,
   IFetchTestimonialsResponse,
   IFetchTopTestimonialsResponse,
@@ -10,6 +11,15 @@ import { createTestimonials } from '../mocks/dbActions';
 import { paginate } from '../utils';
 
 export const testimonialsHandlers = [
+  http.post(`${baseURL}/testimonials`, () => {
+    return HttpResponse.json<ICreateTestimonialResponse>(
+      {
+        message: 'success',
+      },
+      { status: 201 }
+    );
+  }),
+
   http.get(`${baseURL}/testimonials`, async ({ request }) => {
     const url = new URL(request.url);
 

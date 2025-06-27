@@ -41,7 +41,7 @@ const Testimonial = () => {
     for (const key of Object.keys(form)) {
       const { error, value, max } = form[key as keyof ITestimonialForm];
       if (error.length || value.trim().length === 0) {
-        const errorMsg = `${key} must be present and be of maxium ${max} chars.`;
+        const errorMsg = `${key} must be present and be of maximum ${max} chars.`;
         handleUpdateField(key, errorMsg, 'error');
         errors = true;
       }
