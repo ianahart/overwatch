@@ -6,7 +6,7 @@ import { IGetPhoneResponse, IPhone } from '../../src/interfaces';
 
 export const phonesHandlers = [
   http.get(`${baseURL}/phones`, async () => {
-    const data: IPhone = { ...toPlainObject(db.phone.create()) };
+    const data: IPhone = { ...toPlainObject(db.phone.create()), phoneNumber: 5554445555 };
 
     return HttpResponse.json<IGetPhoneResponse>(
       {
