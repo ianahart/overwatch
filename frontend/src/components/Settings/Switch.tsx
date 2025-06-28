@@ -7,6 +7,7 @@ const Switch = ({ switchToggled = false, handleSwitchToggled }: ISwitchProps) =>
   return (
     <label className="relative flex justify-between items-center group p-2 text-xl">
       <input
+        data-testid="settings-switch"
         onChange={(e) => handleSwitchToggled(e.target.checked)}
         checked={switchToggled}
         type="checkbox"

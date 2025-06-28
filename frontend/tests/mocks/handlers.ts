@@ -20,8 +20,10 @@ import { teamCommentsHandlers } from '../handlers/teamComments';
 import { teamPostsHandlers } from '../handlers/teamPosts';
 import { teamPinnedMessagesHandlers } from '../handlers/teamPinnedMessages';
 import { settingsHandlers } from '../handlers/settings';
+import { phonesHandlers } from '../handlers/phones';
 
 export const handlers = [
+  ...phonesHandlers,
   ...settingsHandlers,
   ...teamPinnedMessagesHandlers,
   ...teamCommentsHandlers,
