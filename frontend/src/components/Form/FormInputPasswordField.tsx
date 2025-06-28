@@ -86,7 +86,7 @@ const FormInputPasswordField = ({
         )}
       </div>
       {name === 'password' && visibility && value.length > 0 && <PasswordStrengthMeter password={value} />}
-      {error.length > 0 && <p className="text-red-400 mt-1 text-sm">{error}</p>}
+      {error?.length > 0 && <p className="text-red-400 mt-1 text-sm">{error}</p>}
     </div>
   );
 };

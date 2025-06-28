@@ -79,7 +79,7 @@ const ChangePassword = () => {
         navigate('/signin');
       })
       .catch((err) => {
-        handleUpdateField('password', err.data.message, 'error');
+        handleUpdateField('password', err?.data?.message, 'error');
       });
   };
 
@@ -88,7 +88,11 @@ const ChangePassword = () => {
       <div className="flex justify-between">
         <p className="font-bold text-gray-400">Password</p>
         <p className="md:block hidden">
-          <span onClick={toggleForm} className="text-green-400 font-bold cursor-pointer">
+          <span
+            data-testid="toggle-password-trigger"
+            onClick={toggleForm}
+            className="text-green-400 font-bold cursor-pointer"
+          >
             Change password.
           </span>{' '}
           Improve your security with a strong password.
