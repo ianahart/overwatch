@@ -87,7 +87,11 @@ const DeleteAccount = () => {
       <div className="flex justify-between">
         <p className="font-bold text-gray-400">Delete Account</p>
         <p className="md:block hidden">
-          <span onClick={toggleForm} className="text-yellow-400 font-bold cursor-pointer">
+          <span
+            data-testid="delete-account-form-trigger"
+            onClick={toggleForm}
+            className="text-yellow-400 font-bold cursor-pointer"
+          >
             Warning
           </span>{' '}
           This is a danger zone, becareful actions are permanent.

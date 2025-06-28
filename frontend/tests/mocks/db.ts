@@ -33,10 +33,17 @@ let teamCommentIdCounter = 1;
 let teamPostIdCounter = 1;
 let teamPinnedMessageIdCounter = 1;
 let connectionIdCounter = 1;
+let phoneIdCounter = 1;
 
 const fullName = getFullName();
 
 export const db = factory({
+  phone: {
+    id: primaryKey(() => phoneIdCounter++),
+    isVerified: () => faker.datatype.boolean(),
+    createdAt: () => faker.date.recent().toString(),
+    phoneNumber: () => faker.phone.number().toString(),
+  },
   connection: {
     senderId: oneOf('user'),
     receiverId: oneOf('user'),

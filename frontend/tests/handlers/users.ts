@@ -1,12 +1,35 @@
 import { http, HttpResponse } from 'msw';
 import { toPlainObject } from 'lodash';
-import { IGetAllReviewersResponse, IReviewer } from '../../src/interfaces';
+import {
+  IDeleteUserResponse,
+  IGetAllReviewersResponse,
+  IReviewer,
+  IUpdateUserPasswordResponse,
+} from '../../src/interfaces';
 import { baseURL } from '../../src/util';
 import { paginate } from '../utils';
 import { createReviewers } from '../mocks/dbActions';
 import { db } from '../mocks/db';
 
 export const usersHandlers = [
+  http.post(`${baseURL}/users/:userId/delete`, () => {
+    return HttpResponse.json<IDeleteUserResponse>(
+      {
+        message: 'success',
+      },
+      { status: 200 }
+    );
+  }),
+
+  http.patch(`${baseURL}/users/:userId/password`, () => {
+    return HttpResponse.json<IUpdateUserPasswordResponse>(
+      {
+        message: 'success',
+      },
+      { status: 200 }
+    );
+  }),
+
   http.get(`${baseURL}/users/search`, ({ request }) => {
     const url = new URL(request.url);
 

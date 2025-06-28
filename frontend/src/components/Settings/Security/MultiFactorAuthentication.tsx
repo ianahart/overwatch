@@ -34,7 +34,7 @@ const MultiFactorAuthentication = () => {
         <div className="md:block hidden">
           <p>
             Add an extra layer of{' '}
-            <span onClick={toggleOption} className="font-bold text-green-400 cursor-pointer">
+            <span data-testid="mf-trigger" onClick={toggleOption} className="font-bold text-green-400 cursor-pointer">
               security
             </span>{' '}
             to block unauthorized access and protect your account.
