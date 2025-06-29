@@ -31,8 +31,8 @@ const ProfileVisibility = () => {
   };
 
   return (
-    <div className="my-8">
-      <h3 className="text-xl mb-4">Profile Visiblity</h3>
+    <div data-testid="profile-visibility-component" className="my-8">
+      <h3 className="text-xl mb-4">Profile Visibility</h3>
       <p className="text-sm">Want to take a break?</p>
       <p className="text-sm">Toggling this on and off will show and hide your profile from the explore page.</p>
       <Switch handleSwitchToggled={handleSwitchToggled} switchToggled={isToggled} />
