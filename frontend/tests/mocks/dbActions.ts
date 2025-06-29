@@ -1,5 +1,6 @@
 import { toPlainObject } from 'lodash';
 import {
+  IBlockedUser,
   IComment,
   IFetchProfileResponse,
   IFullProfile,
@@ -21,6 +22,16 @@ import {
 } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createBlockedUsers(numberOfUsers: number) {
+  const blockedUsers: IBlockedUser[] = [];
+
+  for (let i = 0; i < numberOfUsers; i++) {
+    const blockedUser: IBlockedUser = { ...toPlainObject(db.blockedUser.create()), blockedUserId: 999 };
+    blockedUsers.push(blockedUser);
+  }
+  return blockedUsers;
+}
 
 export function createTeams(numberOfTeams: number) {
   const teams: ITeam[] = [];

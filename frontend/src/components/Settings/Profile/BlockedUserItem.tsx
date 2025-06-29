@@ -33,7 +33,7 @@ const BlockedUserItem = ({ blockedUser }: IBlockedUserItemProps) => {
   };
 
   return (
-    <div className="my-4">
+    <div data-testid="blocked-user-item" className="my-4">
       <div className="flex items-center">
         <div>
           <Avatar height="h-9" width="w-9" initials="?.?" avatarUrl={blockedUser.avatarUrl} />
