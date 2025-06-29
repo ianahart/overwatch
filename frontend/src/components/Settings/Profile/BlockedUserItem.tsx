@@ -43,6 +43,7 @@ const BlockedUserItem = ({ blockedUser }: IBlockedUserItemProps) => {
             <p>{blockedUser.fullName}</p>
             <div className="relative">
               <div
+                data-testid="blocked-user-tooltip"
                 className="cursor-pointer"
                 onClick={handleOnClick}
                 onMouseEnter={handleOnMouseEnter}
