@@ -2,9 +2,37 @@ import { http, HttpResponse } from 'msw';
 import { baseURL } from '../../src/util';
 import { paginate } from '../utils';
 import { createMinProfiles, createUserAndProfile } from '../mocks/dbActions';
-import { IFetchProfileResponse } from '../../src/interfaces';
+import {
+  IFetchProfileResponse,
+  IFetchProfileVisibilityResponse,
+  IUpdateProfileVisibilityResponse,
+} from '../../src/interfaces';
 
 export const profileHandlers = [
+  http.get(`${baseURL}/profiles/:profileId/visibility`, () => {
+    const isVisible = true;
+
+    return HttpResponse.json<IFetchProfileVisibilityResponse>(
+      {
+        message: 'success',
+        data: isVisible,
+      },
+      { status: 200 }
+    );
+  }),
+
+  http.patch(`${baseURL}/profiles/:profileId/visibility`, () => {
+    const isVisible = true;
+
+    return HttpResponse.json<IUpdateProfileVisibilityResponse>(
+      {
+        message: 'success',
+        data: isVisible,
+      },
+      { status: 200 }
+    );
+  }),
+
   http.get(`${baseURL}/profiles/:profileId`, () => {
     const data = createUserAndProfile({ userId: 1 });
 

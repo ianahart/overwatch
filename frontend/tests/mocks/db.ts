@@ -34,10 +34,19 @@ let teamPostIdCounter = 1;
 let teamPinnedMessageIdCounter = 1;
 let connectionIdCounter = 1;
 let phoneIdCounter = 1;
+let blockedUserIdCounter = 1;
 
 const fullName = getFullName();
 
 export const db = factory({
+  blockedUser: {
+    createdAt: () => faker.date.recent().toString(),
+    fullName: () => faker.person.fullName(),
+    avatarUrl: () => faker.image.avatar(),
+    id: primaryKey(() => blockedUserIdCounter++),
+    blockedUserId: oneOf('user'),
+  },
+
   phone: {
     id: primaryKey(() => phoneIdCounter++),
     isVerified: () => faker.datatype.boolean(),
