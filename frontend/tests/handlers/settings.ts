@@ -2,9 +2,26 @@ import { http, HttpResponse } from 'msw';
 import { toPlainObject } from 'lodash';
 import { baseURL } from '../../src/util';
 import { db } from '../mocks/db';
-import { IFetchSettingsResponse, IUnsubscribeSettingsResponse, IUpdateSettingsMFAResponse } from '../../src/interfaces';
+import {
+  IFetchSettingsResponse,
+  IUnsubscribeSettingsResponse,
+  IUpdateSettingResponse,
+  IUpdateSettingsMFAResponse,
+} from '../../src/interfaces';
 
 export const settingsHandlers = [
+  http.put(`${baseURL}/settings/:settingId`, () => {
+    const setting = toPlainObject(db.setting.create());
+
+    return HttpResponse.json<IUpdateSettingResponse>(
+      {
+        message: 'success',
+        data: setting,
+      },
+      { status: 200 }
+    );
+  }),
+
   http.patch(`${baseURL}/settings/:settingId/mfa-enabled`, () => {
     return HttpResponse.json<IUpdateSettingsMFAResponse>(
       {

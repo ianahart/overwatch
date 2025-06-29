@@ -22,7 +22,7 @@ const Notification = () => {
       <ul className="my-6">
         {switches.map(({ key, value }) => {
           return (
-            <li key={nanoid()} className="my-4">
+            <li data-testid="notification-switch-item" key={nanoid()} className="my-4">
               <NotificationSwitch propName={key} value={value} setting={setting} />
             </li>
           );
