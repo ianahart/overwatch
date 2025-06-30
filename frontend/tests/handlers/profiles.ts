@@ -7,6 +7,7 @@ import {
   IFetchProfileResponse,
   IFetchProfileVisibilityResponse,
   IRemoveAvatarResponse,
+  IUpdateProfileResponse,
   IUpdateProfileVisibilityResponse,
 } from '../../src/interfaces';
 
@@ -56,6 +57,12 @@ export const profileHandlers = [
     );
   }),
 
+  http.get(`${baseURL}/profiles/:profileId/populate`, () => {
+    const data = createUserAndProfile({ userId: 1 });
+
+    return HttpResponse.json<IFetchProfileResponse>(data, { status: 200 });
+  }),
+
   http.get(`${baseURL}/profiles/:profileId`, () => {
     const data = createUserAndProfile({ userId: 1 });
 
@@ -85,6 +92,14 @@ export const profileHandlers = [
           direction,
           totalElements,
         },
+      },
+      { status: 200 }
+    );
+  }),
+  http.patch(`${baseURL}/profiles/:profileId`, () => {
+    return HttpResponse.json<IUpdateProfileResponse>(
+      {
+        message: 'success',
       },
       { status: 200 }
     );
