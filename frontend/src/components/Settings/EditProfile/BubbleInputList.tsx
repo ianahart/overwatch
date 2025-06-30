@@ -47,8 +47,9 @@ const BubbleInputList = ({ data, label, htmlFor, id, listName }: IBubbleInputLis
           {data.map(({ id, name }) => {
             return (
               <li className="relative m-2 rounded-xl p-2 border border-gray-800 hover:border-green-400 " key={id}>
-                <p>{name}</p>
+                <p data-testid="settings-bubble-input-list-item">{name}</p>
                 <IoIosCloseCircleOutline
+                  data-testid="settings-bubble-list-remove-item"
                   onClick={() => dispatch(removeFromList({ listName, id }))}
                   className="cursor-pointer text-gray-400 absolute right-0 top-0 text-lg"
                 />

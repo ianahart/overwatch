@@ -92,9 +92,11 @@ const Package = ({ data, name, title }: IPackageProps) => {
       </div>
       <div className="my-4 flex items-center">
         <div className="flex flex-col md:w-[50%] w-full">
-          <label>Included services</label>
+          <label htmlFor="includedservice">Included services</label>
           <div className="flex items-center">
             <input
+              id="includedservice"
+              name="includedservice"
               onChange={handleOnItemChange}
               value={item}
               className="h-9 rounded bg-transparent border border-gray-800 w-full placeholder:text-gray-500 placeholder:pl-2 pl-2 shadow"

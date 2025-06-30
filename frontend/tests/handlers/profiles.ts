@@ -3,12 +3,36 @@ import { baseURL } from '../../src/util';
 import { paginate } from '../utils';
 import { createMinProfiles, createUserAndProfile } from '../mocks/dbActions';
 import {
+  ICreateAvatarResponse,
   IFetchProfileResponse,
   IFetchProfileVisibilityResponse,
+  IRemoveAvatarResponse,
+  IUpdateProfileResponse,
   IUpdateProfileVisibilityResponse,
 } from '../../src/interfaces';
 
 export const profileHandlers = [
+  http.patch(`${baseURL}/profiles/:profileId/avatar/remove`, () => {
+    return HttpResponse.json<IRemoveAvatarResponse>(
+      {
+        message: 'success',
+      },
+      { status: 200 }
+    );
+  }),
+
+  http.patch(`${baseURL}/profiles/:profileId/avatar/update`, () => {
+    return HttpResponse.json<ICreateAvatarResponse>(
+      {
+        message: 'success',
+        data: {
+          avatarUrl: 'https://imgur.com/avatar',
+        },
+      },
+      { status: 200 }
+    );
+  }),
+
   http.get(`${baseURL}/profiles/:profileId/visibility`, () => {
     const isVisible = true;
 
@@ -31,6 +55,12 @@ export const profileHandlers = [
       },
       { status: 200 }
     );
+  }),
+
+  http.get(`${baseURL}/profiles/:profileId/populate`, () => {
+    const data = createUserAndProfile({ userId: 1 });
+
+    return HttpResponse.json<IFetchProfileResponse>(data, { status: 200 });
   }),
 
   http.get(`${baseURL}/profiles/:profileId`, () => {
@@ -62,6 +92,14 @@ export const profileHandlers = [
           direction,
           totalElements,
         },
+      },
+      { status: 200 }
+    );
+  }),
+  http.patch(`${baseURL}/profiles/:profileId`, () => {
+    return HttpResponse.json<IUpdateProfileResponse>(
+      {
+        message: 'success',
       },
       { status: 200 }
     );

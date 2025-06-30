@@ -96,6 +96,7 @@ const AvatarUpload = () => {
           <BsPencil className="" />
         </div>
         <input
+          aria-label="Avatar upload"
           onChange={handleOnChange}
           name="avatar"
           id="avatar"

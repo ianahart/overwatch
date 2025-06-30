@@ -65,7 +65,11 @@ const WorkExperience = () => {
                 <li key={id} className=" my-2">
                   <div className="flex justify-between items-center">
                     <h3 className="text-xl text-gray-400">{title}</h3>
-                    <AiOutlineClose onClick={() => dispatch(removeWorkExpFromList(id))} className="cursor-pointer" />
+                    <AiOutlineClose
+                      data-testid="ai-outline-close"
+                      onClick={() => dispatch(removeWorkExpFromList(id))}
+                      className="cursor-pointer"
+                    />
                   </div>
                   <p>{desc}</p>
                 </li>
