@@ -35,10 +35,29 @@ let teamPinnedMessageIdCounter = 1;
 let connectionIdCounter = 1;
 let phoneIdCounter = 1;
 let blockedUserIdCounter = 1;
+let repositoryIdCounter = 1;
 
 const fullName = getFullName();
 
 export const db = factory({
+  repository: {
+    id: primaryKey(() => repositoryIdCounter++),
+    avatarUrl: () => faker.image.avatar(),
+    firstName: () => faker.person.firstName(),
+    language: () => 'JavaScript',
+    lastName: () => faker.person.lastName(),
+    ownerId: oneOf('user'),
+    profileUrl: () => faker.internet.domainName(),
+    repoName: () => faker.lorem.word(10),
+    repoUrl: () => faker.internet.domainName(),
+    reviewerId: oneOf('user'),
+    status: () => faker.helpers.arrayElement(['COMPLETED', 'INCOMPLETE', 'INPROGRESS', 'PAID']),
+    reviewStartTime: () => faker.date.recent().toString(),
+    reviewEndTime: () => faker.date.recent().toString(),
+    feedback: () => faker.lorem.paragraph(3),
+    paymentPrice: () => faker.number.int({ min: 1, max: 100 }),
+  },
+
   blockedUser: {
     createdAt: () => faker.date.recent().toString(),
     fullName: () => faker.person.fullName(),
