@@ -6,6 +6,7 @@ import {
   IFullProfile,
   IReaction,
   IReplyComment,
+  IRepositoryReview,
   IReview,
   IReviewer,
   ITag,
@@ -22,6 +23,16 @@ import {
 } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createRepositories(numberOfRepos: number, overrides: Partial<IRepositoryReview> = {}) {
+  const repos: IRepositoryReview[] = [];
+
+  for (let i = 0; i < numberOfRepos; i++) {
+    const repo: IRepositoryReview = { ...toPlainObject(db.repository.create()), ...overrides };
+    repos.push(repo);
+  }
+  return repos;
+}
 
 export function createBlockedUsers(numberOfUsers: number) {
   const blockedUsers: IBlockedUser[] = [];
