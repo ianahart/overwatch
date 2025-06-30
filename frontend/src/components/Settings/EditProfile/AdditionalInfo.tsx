@@ -70,6 +70,7 @@ const AdditionalInfo = () => {
       <div className="my-4">
         <h3 className="text-xl text-gray-400">More Info</h3>
         <textarea
+          data-testid="edit-profile-more-info-textarea"
           id="moreInfo"
           name="moreInfo"
           onChange={(e) => dispatch(updateMoreInfo(e.target.value))}
@@ -95,12 +96,14 @@ const AddSlotForm: React.FC<IAddSlotFormProps> = ({ day, handleOnAddSlot }) => {
   return (
     <div className="my-2">
       <input
+        aria-label="Start time"
         className="h-9 mx-1 rounded bg-transparent border border-gray-800 md:w-[20%] placeholder:pl-2 pl-2 shadow"
         type="time"
         value={startTime}
         onChange={(e) => setStartTime(e.target.value)}
       />
       <input
+        aria-label="End time"
         className="h-9 mx-1 rounded bg-transparent border border-gray-800 md:w-[20%] placeholder:pl-2 pl-2 shadow"
         type="time"
         value={endTime}
