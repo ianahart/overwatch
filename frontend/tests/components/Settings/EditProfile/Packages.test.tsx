@@ -37,12 +37,12 @@ describe('Packages', () => {
       }
     );
 
-        render(<Packages />, {wrapper});
+    render(<Packages />, { wrapper });
   };
 
-    it('should render the heading without crashing, loading proper state', () => {
-        renderComponent();
+  it('should render the heading without crashing, loading proper state', () => {
+    renderComponent();
 
-        expect(screen.getByRole('heading', {name: /service & offerings/i})).toBeInTheDocument()
-    });
+    expect(screen.getByRole('heading', { name: /service & offerings/i })).toBeInTheDocument();
+  });
 });
