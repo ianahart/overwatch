@@ -22,8 +22,12 @@ import { teamPinnedMessagesHandlers } from '../handlers/teamPinnedMessages';
 import { settingsHandlers } from '../handlers/settings';
 import { phonesHandlers } from '../handlers/phones';
 import { blockedUsersHandlers } from '../handlers/blockedUsers';
+import { repositoriesHandlers } from '../handlers/repositories';
+import { paymentMethodsHandlers } from '../handlers/paymentMethods';
 
 export const handlers = [
+  ...paymentMethodsHandlers,
+  ...repositoriesHandlers,
   ...blockedUsersHandlers,
   ...phonesHandlers,
   ...settingsHandlers,

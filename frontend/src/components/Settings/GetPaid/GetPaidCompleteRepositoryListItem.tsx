@@ -14,7 +14,7 @@ const GetPaidCompleteRepositoryListItem = ({
   transferMoneyBetweenParties,
 }: IGetPaidCompleteRepositoryListItemProps) => {
   return (
-    <li className="my-4 border p-1 rounded border-gray-800">
+    <li data-testid="complete-repository-list-item" className="my-4 border p-1 rounded border-gray-800">
       <div className="flex items-end justify-between">
         <div className="items-end flex">
           <div>
