@@ -101,9 +101,9 @@ const Location = () => {
         <p className="font-bold text-gray-400">Location</p>
         <div className="text-gray-400 cursor-pointer">
           {isFormOpen ? (
-            <BsChevronDown onClick={() => setIsFormOpen(false)} />
+            <BsChevronDown data-testid="location-chevron-down" onClick={() => setIsFormOpen(false)} />
           ) : (
-            <BsChevronLeft onClick={() => setIsFormOpen(true)} />
+            <BsChevronLeft data-testid="location-chevron-left" onClick={() => setIsFormOpen(true)} />
           )}
         </div>
       </div>

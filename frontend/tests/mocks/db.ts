@@ -36,10 +36,21 @@ let connectionIdCounter = 1;
 let phoneIdCounter = 1;
 let blockedUserIdCounter = 1;
 let repositoryIdCounter = 1;
+let locationIdCounter = 1;
 
 const fullName = getFullName();
 
 export const db = factory({
+  location: {
+    id: primaryKey(() => locationIdCounter++),
+    address: () => faker.location.streetAddress(),
+    addressTwo: () => faker.location.streetAddress(),
+    city: () => faker.location.city(),
+    country: () => faker.location.country(),
+    state: () => faker.location.state(),
+    zipCode: () => faker.location.zipCode(),
+    phoneNumber: () => faker.phone.number(),
+  },
   repository: {
     id: primaryKey(() => repositoryIdCounter++),
     avatarUrl: () => faker.image.avatar(),

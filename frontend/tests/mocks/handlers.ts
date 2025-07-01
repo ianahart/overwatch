@@ -24,8 +24,10 @@ import { phonesHandlers } from '../handlers/phones';
 import { blockedUsersHandlers } from '../handlers/blockedUsers';
 import { repositoriesHandlers } from '../handlers/repositories';
 import { paymentMethodsHandlers } from '../handlers/paymentMethods';
+import { locationHandlers } from '../handlers/locations';
 
 export const handlers = [
+  ...locationHandlers,
   ...paymentMethodsHandlers,
   ...repositoriesHandlers,
   ...blockedUsersHandlers,
