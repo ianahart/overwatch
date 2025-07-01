@@ -1,9 +1,12 @@
 import { http, HttpResponse } from 'msw';
-import { toPlainObject } from 'lodash';
 
 import { baseURL } from '../../src/util';
-import { ICreateLocationResponse, IFetchLocationsResponse, IFetchSingleLocationResponse } from '../../src/interfaces';
-import { db } from '../mocks/db';
+import {
+  ICreateLocationResponse,
+  IFetchLocationsResponse,
+  IFetchSingleLocationResponse,
+  ILocation,
+} from '../../src/interfaces';
 
 export const locationHandlers = [
   http.get(`${baseURL}/locations/autocomplete`, () => {
@@ -30,12 +33,20 @@ export const locationHandlers = [
   }),
 
   http.get(`${baseURL}/users/:userId/locations`, () => {
-    const location = toPlainObject(db.location.create());
+    const location: ILocation = {
+      address: '123 Main St',
+      addressTwo: '',
+      phoneNumber: '1111111111',
+      city: 'Springfield',
+      country: 'United States',
+      state: 'IL',
+      zipCode: '62704',
+    };
 
     return HttpResponse.json<IFetchSingleLocationResponse>(
       {
         message: 'success',
-        ...location,
+        data: location,
       },
       { status: 200 }
     );
