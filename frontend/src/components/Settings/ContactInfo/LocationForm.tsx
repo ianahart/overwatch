@@ -85,7 +85,7 @@ const LocationForm = ({ error, form, handleUpdateField, closeForm, handleOnSubmi
   };
 
   return (
-    <form onSubmit={onSubmit}>
+    <form data-testid="location-form" onSubmit={onSubmit}>
       {error.length > 0 && (
         <div className="my-4 flex justify-center">
           <p className="text-red-400 text-sm">{error}</p>

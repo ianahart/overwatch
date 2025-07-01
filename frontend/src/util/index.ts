@@ -34,7 +34,7 @@ export const maskEmail = (email: string) => {
   const symIndex = email.split('').findIndex((v) => v === '@');
 
   email.split('').forEach((letter, index) => {
-    mask += index === 0 || index > symIndex ? letter : '*';
+    mask += index === 0 || index >= symIndex ? letter : '*';
   });
   return mask;
 };

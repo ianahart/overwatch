@@ -4,14 +4,22 @@ import {
   IDeleteUserResponse,
   IGetAllReviewersResponse,
   IReviewer,
+  ISyncUserResponse,
   IUpdateUserPasswordResponse,
+  IUpdateUserResponse,
 } from '../../src/interfaces';
 import { baseURL } from '../../src/util';
-import { paginate } from '../utils';
+import { getLoggedInUser, paginate } from '../utils';
 import { createReviewers } from '../mocks/dbActions';
 import { db } from '../mocks/db';
 
 export const usersHandlers = [
+  http.get(`${baseURL}/users/sync`, () => {
+    const { curUser } = toPlainObject(getLoggedInUser());
+
+    return HttpResponse.json<ISyncUserResponse>(...curUser, { status: 200 });
+  }),
+
   http.post(`${baseURL}/users/:userId/delete`, () => {
     return HttpResponse.json<IDeleteUserResponse>(
       {
@@ -25,6 +33,21 @@ export const usersHandlers = [
     return HttpResponse.json<IUpdateUserPasswordResponse>(
       {
         message: 'success',
+      },
+      { status: 200 }
+    );
+  }),
+
+  http.patch(`${baseURL}/users/:userId`, () => {
+    return HttpResponse.json<IUpdateUserResponse>(
+      {
+        message: 'success',
+        data: {
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'test@example.com',
+          abbreviation: 'J.D',
+        },
       },
       { status: 200 }
     );

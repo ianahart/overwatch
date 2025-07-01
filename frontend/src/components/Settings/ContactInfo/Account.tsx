@@ -90,9 +90,9 @@ const Account = () => {
           <p className="font-bold text-gray-400">Account</p>
           <div className="text-gray-400 cursor-pointer">
             {isFormOpen ? (
-              <BsChevronDown onClick={() => setIsFormOpen(false)} />
+              <BsChevronDown data-testid="account-chevron-down" onClick={() => setIsFormOpen(false)} />
             ) : (
-              <BsChevronLeft onClick={() => setIsFormOpen(true)} />
+              <BsChevronLeft data-testid="account-chevron-left" onClick={() => setIsFormOpen(true)} />
             )}
           </div>
         </div>
