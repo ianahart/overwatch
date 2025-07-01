@@ -6,6 +6,7 @@ import {
   IReviewer,
   ISyncUserResponse,
   IUpdateUserPasswordResponse,
+  IUpdateUserResponse,
 } from '../../src/interfaces';
 import { baseURL } from '../../src/util';
 import { getLoggedInUser, paginate } from '../utils';
@@ -32,6 +33,21 @@ export const usersHandlers = [
     return HttpResponse.json<IUpdateUserPasswordResponse>(
       {
         message: 'success',
+      },
+      { status: 200 }
+    );
+  }),
+
+  http.patch(`${baseURL}/users/:userId`, () => {
+    return HttpResponse.json<IUpdateUserResponse>(
+      {
+        message: 'success',
+        data: {
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'test@example.com',
+          abbreviation: 'J.D',
+        },
       },
       { status: 200 }
     );
