@@ -4,7 +4,7 @@ export interface IReviewerConnectAccountProps {
 
 const ReviewerConnectAccount = ({ handleConnectReviewerAccount }: IReviewerConnectAccountProps) => {
   return (
-    <div>
+    <div data-testid="ReviewerConnectAccount">
       <h3 className="text-xl">Connect your account</h3>
       <p className="mt-2">You need to connect your account in order to recieve payments.</p>
       <p className="mt-2">

@@ -37,7 +37,7 @@ const PaymentMethod = ({ data, handleSetStripeEnabled }: IPaymentMethodProps) =>
   };
 
   return (
-    <div>
+    <div data-testid="PaymentMethod">
       <div className="my-4">
         <h3 className="text-gray-400 text-xl">Your payment method</h3>
       </div>
@@ -52,7 +52,7 @@ const PaymentMethod = ({ data, handleSetStripeEnabled }: IPaymentMethodProps) =>
             Expiration date: {data.expMonth}/{data.expYear}
           </p>
         </div>
-        <div className="cursor-pointer" onClick={handleOnDeleteCustomer}>
+        <div data-testid="payment-method-delete-icon" className="cursor-pointer" onClick={handleOnDeleteCustomer}>
           <BsTrash />
         </div>
       </div>

@@ -160,7 +160,7 @@ const BillingForm = ({ handleSetView }: IBillingFormProps) => {
         <p>Payment card</p>
       </div>
       <div className="border border-gray-800 p-2 my-2 rounded" id="card-element" style={{ marginBottom: '20px' }}>
-        <CardElement options={{ style: cardElementStyle }} />
+        <CardElement data-testid="CardElement" options={{ style: cardElementStyle }} />
       </div>
 
       <div className="my-4 md:flex justify-between">
