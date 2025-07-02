@@ -1,8 +1,21 @@
 import { http, HttpResponse } from 'msw';
 import { baseURL } from '../../src/util';
-import { ICreatePaymentMethodResponse, ITransferCustomerMoneyToReviewerResponse } from '../../src/interfaces';
+import {
+  ICreatePaymentMethodResponse,
+  IDeletePaymentMethodResponse,
+  ITransferCustomerMoneyToReviewerResponse,
+} from '../../src/interfaces';
 
 export const paymentMethodsHandlers = [
+  http.delete(`${baseURL}/payment-methods/:id`, () => {
+    return HttpResponse.json<IDeletePaymentMethodResponse>(
+      {
+        message: 'success',
+      },
+      { status: 200 }
+    );
+  }),
+
   http.post(`${baseURL}/users/:userId/payment-methods`, () => {
     return HttpResponse.json<ICreatePaymentMethodResponse>(
       {

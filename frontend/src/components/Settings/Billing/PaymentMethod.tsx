@@ -52,7 +52,7 @@ const PaymentMethod = ({ data, handleSetStripeEnabled }: IPaymentMethodProps) =>
             Expiration date: {data.expMonth}/{data.expYear}
           </p>
         </div>
-        <div className="cursor-pointer" onClick={handleOnDeleteCustomer}>
+        <div data-testid="payment-method-delete-icon" className="cursor-pointer" onClick={handleOnDeleteCustomer}>
           <BsTrash />
         </div>
       </div>
