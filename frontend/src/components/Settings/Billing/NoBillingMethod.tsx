@@ -12,7 +12,11 @@ const NoBillingMethod = ({ handleSetView }: INoBillingMethodProps) => {
         You haven't setup any billing methods yet for OverWatch. You will not be able to pay for services until you
         provide a billing method.
       </p>
-      <div onClick={() => handleSetView('add')} className="cursor-pointer my-4 flex items-center text-green-400">
+      <div
+        data-testid="setting-billing-add-payment-method"
+        onClick={() => handleSetView('add')}
+        className="cursor-pointer my-4 flex items-center text-green-400"
+      >
         <AiOutlinePlus className="text-xl" />
         <p className="text-xl">Add a billing method</p>
       </div>
