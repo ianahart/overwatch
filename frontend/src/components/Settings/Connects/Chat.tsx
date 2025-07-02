@@ -91,6 +91,7 @@ const Chat = () => {
           <div className="my-4 p-2 flex flex-col-reverse">
             {messages.map((message) => (
               <div
+                data-testid="settings-chat-message-item"
                 key={message.id}
                 className={`flex flex-col ${message.userId === user.id ? 'items-end' : 'items-start'}`}
               >

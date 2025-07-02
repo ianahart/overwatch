@@ -63,6 +63,7 @@ const Connection = ({ connection, changeConnection, isPinned, unPin, pin, blockU
 
   return (
     <div
+      data-testid="settings-connection-item"
       className={`my-4 p-1 rounded hover:bg-stone-950 hover:text-gray-400 cursor-pointer ${
         currentConnection.id === connection.id ? 'bg-green-400 text-black' : 'bg-transparent text-gray-400'
       }`}
