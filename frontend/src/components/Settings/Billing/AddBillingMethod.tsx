@@ -13,7 +13,7 @@ const AddBillingMethod = ({ handleSetView }: IAddBillingMethodProps) => {
   }, [inputValue]);
 
   return (
-    <div>
+    <div data-testid="AddBillingMethod">
       <div className="flex justify-between items-center">
         <h3 className="text-xl text-gray-400">Add a billing method</h3>
         <button onClick={() => handleSetView('main')} className="outline-btn border border-gray-800 !text-green-400">

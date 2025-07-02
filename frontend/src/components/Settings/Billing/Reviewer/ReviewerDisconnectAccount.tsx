@@ -17,7 +17,7 @@ const ReviewerDisconnectAccount = ({ handleSetStripeEnabled, paymentMethodId }: 
   };
 
   return (
-    <div>
+    <div data-testid="ReviewerDisconnectAccount">
       <h3 className="text-xl">Disconnect your Stripe account</h3>
       <p className="mt-2">
         To disconnect your{' '}

@@ -6,7 +6,7 @@ export interface INoBillingMethodProps {
 
 const NoBillingMethod = ({ handleSetView }: INoBillingMethodProps) => {
   return (
-    <div>
+    <div data-testid="NoBillingMethod">
       <h3 className="text-gray-400">Billing methods</h3>
       <p>
         You haven't setup any billing methods yet for OverWatch. You will not be able to pay for services until you

@@ -37,7 +37,7 @@ const PaymentMethod = ({ data, handleSetStripeEnabled }: IPaymentMethodProps) =>
   };
 
   return (
-    <div>
+    <div data-testid="PaymentMethod">
       <div className="my-4">
         <h3 className="text-gray-400 text-xl">Your payment method</h3>
       </div>
