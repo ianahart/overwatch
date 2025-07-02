@@ -81,7 +81,7 @@ const Chat = () => {
   }, [user.id, currentConnection.id]);
 
   return (
-    <div className="flex flex-col justify-between min-h-[90vh] p-2">
+    <div data-testid="settings-chat-component" className="flex flex-col justify-between min-h-[90vh] p-2">
       <div>
         <h3 className="text-xl">
           {currentConnection.firstName} {currentConnection.lastName}

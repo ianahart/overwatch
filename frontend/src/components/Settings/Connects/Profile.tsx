@@ -6,7 +6,7 @@ import { AiOutlineMail, AiOutlinePhone, AiOutlineUser } from 'react-icons/ai';
 const Profile = () => {
   const { currentConnection } = useSelector((store: TRootState) => store.chat);
   return (
-    <div className="my-8 flex flex-col items-center">
+    <div data-testid="settings-profile-component" className="my-8 flex flex-col items-center">
       <Avatar width="w-26" height="h-26" initials="?.?" avatarUrl={currentConnection.avatarUrl} />
       <div className="my-4">
         <p className="text-gray-400">
