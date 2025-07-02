@@ -97,7 +97,12 @@ const ConnectionSearch = ({ changeConnection, connectionId }: IConnectionSearchP
         <div className="my-4 bg-stone-950 p-4">
           {searches.map((search) => {
             return (
-              <div className="cursor-pointer my-2" onClick={() => handleOnClick(search)} key={search.id}>
+              <div
+                data-testid="connection-search-item"
+                className="cursor-pointer my-2"
+                onClick={() => handleOnClick(search)}
+                key={search.id}
+              >
                 <div className="flex items-center">
                   <Avatar initials="?.?" avatarUrl={search.avatarUrl} width="w-6" height="h-6" />
                   <p className="text-sm text-gray-400">

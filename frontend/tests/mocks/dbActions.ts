@@ -2,6 +2,7 @@ import { toPlainObject } from 'lodash';
 import {
   IBlockedUser,
   IComment,
+  IConnection,
   IFetchProfileResponse,
   IFullProfile,
   IReaction,
@@ -23,6 +24,17 @@ import {
 } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createConnections(numberOfConnections: number) {
+  const connections: IConnection[] = [];
+
+  for (let i = 0; i < numberOfConnections; i++) {
+    const connection: IConnection = { ...toPlainObject(db.connection.create()), senderId: 1, receiverId: 2 };
+    connections.push(connection);
+  }
+
+  return connections;
+}
 
 export function createRepositories(numberOfRepos: number, overrides: Partial<IRepositoryReview> = {}) {
   const repos: IRepositoryReview[] = [];
