@@ -2,8 +2,11 @@ import { toPlainObject } from 'lodash';
 import {
   IBlockedUser,
   IComment,
+  IConnection,
   IFetchProfileResponse,
   IFullProfile,
+  IMessage,
+  IPinnedConnection,
   IReaction,
   IReplyComment,
   IRepositoryReview,
@@ -23,6 +26,46 @@ import {
 } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createMessages(numberOfMessages: number) {
+  const messages: IMessage[] = [];
+
+  for (let i = 0; i < numberOfMessages; i++) {
+    const message: IMessage = {
+      ...toPlainObject(db.message.create()),
+      connectionId: 1,
+      userId: 1,
+    };
+    messages.push(message);
+  }
+  return messages;
+}
+
+export function createPinnedConnections(numberOfConnections: number) {
+  const connections: IPinnedConnection[] = [];
+
+  for (let i = 0; i < numberOfConnections; i++) {
+    const connection: IPinnedConnection = {
+      ...toPlainObject(db.pinnedConnection.create()),
+      senderId: 1,
+      receiverId: 2,
+    };
+    connections.push(connection);
+  }
+
+  return connections;
+}
+
+export function createConnections(numberOfConnections: number) {
+  const connections: IConnection[] = [];
+
+  for (let i = 0; i < numberOfConnections; i++) {
+    const connection: IConnection = { ...toPlainObject(db.connection.create()), senderId: 1, receiverId: 2 };
+    connections.push(connection);
+  }
+
+  return connections;
+}
 
 export function createRepositories(numberOfRepos: number, overrides: Partial<IRepositoryReview> = {}) {
   const repos: IRepositoryReview[] = [];

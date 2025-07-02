@@ -63,12 +63,13 @@ const Connection = ({ connection, changeConnection, isPinned, unPin, pin, blockU
 
   return (
     <div
+      data-testid="settings-connection-item"
       className={`my-4 p-1 rounded hover:bg-stone-950 hover:text-gray-400 cursor-pointer ${
         currentConnection.id === connection.id ? 'bg-green-400 text-black' : 'bg-transparent text-gray-400'
       }`}
     >
       <div className="flex justify-between">
-        <div className="flex items-center" onClick={() => changeConnection(connection)}>
+        <div data-testid="connection-avatar" className="flex items-center" onClick={() => changeConnection(connection)}>
           <Avatar initials="?.?" width="h-9" height="h-9" avatarUrl={connection.avatarUrl} />
           <p className="ml-2">
             {connection.firstName} {connection.lastName}
@@ -77,6 +78,7 @@ const Connection = ({ connection, changeConnection, isPinned, unPin, pin, blockU
         <div className="flex items-center">
           <div className="relative mx-1">
             <MdBlock
+              data-testid="connection-block-icon"
               className="text-xl"
               onClick={() => handleOnBlock(connection)}
               onMouseEnter={() => handleOnMouseEnter('block')}
@@ -90,9 +92,10 @@ const Connection = ({ connection, changeConnection, isPinned, unPin, pin, blockU
           </div>
           <div className="relative mx-1">
             {isPinned ? (
-              <BsPinAngle onClick={handleOnUnPin} />
+              <BsPinAngle data-testid="connection-pin-icon-angle" onClick={handleOnUnPin} />
             ) : (
               <FaRegCircle
+                data-testid="connection-pin-icon-circle"
                 onClick={() => handleOnPin(connection)}
                 onMouseEnter={() => handleOnMouseEnter('pin')}
                 onMouseLeave={() => handleOnMouseLeave('pin')}

@@ -37,10 +37,23 @@ let phoneIdCounter = 1;
 let blockedUserIdCounter = 1;
 let repositoryIdCounter = 1;
 let locationIdCounter = 1;
+let pinnedConnectionIdCounter = 1;
+let messageIdCounter = 1;
 
 const fullName = getFullName();
 
 export const db = factory({
+  message: {
+    firstName: () => faker.person.firstName(),
+    lastName: () => faker.person.lastName(),
+    createdAt: () => faker.date.recent().toString(),
+    text: () => faker.lorem.paragraph(1),
+    avatarUrl: () => faker.image.avatar(),
+    id: primaryKey(() => messageIdCounter++),
+    connectionId: oneOf('connection'),
+    userId: oneOf('user'),
+  },
+
   location: {
     id: primaryKey(() => locationIdCounter++),
     address: () => faker.location.streetAddress(),
@@ -83,6 +96,23 @@ export const db = factory({
     createdAt: () => faker.date.recent().toString(),
     phoneNumber: () => faker.phone.number().toString(),
   },
+
+  pinnedConnection: {
+    senderId: oneOf('user'),
+    receiverId: oneOf('user'),
+    phoneNumber: () => faker.phone.number(),
+    lastName: () => faker.person.lastName(),
+    id: primaryKey(() => pinnedConnectionIdCounter++),
+    firstName: () => faker.person.firstName(),
+    email: () => faker.internet.email(),
+    country: () => faker.location.country(),
+    city: () => faker.location.city(),
+    bio: () => faker.lorem.paragraph(3),
+    avatarUrl: () => faker.image.avatar(),
+    lastMessage: () => faker.lorem.sentence(10),
+    connectionPinId: () => faker.number.int({ min: 1, max: 100 }),
+  },
+
   connection: {
     senderId: oneOf('user'),
     receiverId: oneOf('user'),

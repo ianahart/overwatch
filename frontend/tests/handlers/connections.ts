@@ -3,10 +3,13 @@ import {
   ICreateConnectionRequest,
   ICreateConnectionResponse,
   IDeleteConnectionResponse,
+  IFetchSearchConnectionsResposne,
   IVerifyConnectionResponse,
 } from '../../src/interfaces';
 import { baseURL } from '../../src/util';
 import { RequestStatus } from '../../src/enums';
+import { paginate } from '../utils';
+import { createConnections } from '../mocks/dbActions';
 
 export const connectionsHandlers = [
   http.delete(`${baseURL}/connections/:connectionId`, ({ params }) => {
@@ -41,6 +44,62 @@ export const connectionsHandlers = [
         message: 'success',
       },
       { status: 201 }
+    );
+  }),
+
+  http.get(`${baseURL}/connections`, async ({ request }) => {
+    const url = new URL(request.url);
+
+    let pg = Number(url.searchParams.get('page')) ?? 1;
+    const size = 2;
+    const dir = url.searchParams.get('direction') ?? 'next';
+    const totalElements = 4;
+
+    const data = createConnections(totalElements);
+
+    const { page, totalPages, pageSize, direction, items } = paginate(pg, size, dir, data);
+
+    return HttpResponse.json<IFetchSearchConnectionsResposne>(
+      {
+        message: 'success',
+        data: {
+          items,
+          page,
+          pageSize,
+          totalPages,
+          direction,
+          totalElements,
+        },
+      },
+      { status: 200 }
+    );
+  }),
+
+  http.get(`${baseURL}/connections/search`, async ({ request }) => {
+    const url = new URL(request.url);
+
+    let pg = Number(url.searchParams.get('page')) ?? 1;
+    const size = 2;
+    const dir = url.searchParams.get('direction') ?? 'next';
+    const totalElements = 4;
+
+    const data = createConnections(totalElements);
+
+    const { page, totalPages, pageSize, direction, items } = paginate(pg, size, dir, data);
+
+    return HttpResponse.json<IFetchSearchConnectionsResposne>(
+      {
+        message: 'success',
+        data: {
+          items,
+          page,
+          pageSize,
+          totalPages,
+          direction,
+          totalElements,
+        },
+      },
+      { status: 200 }
     );
   }),
 

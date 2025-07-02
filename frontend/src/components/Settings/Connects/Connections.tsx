@@ -178,7 +178,7 @@ const Connections = () => {
   };
 
   return (
-    <div className="p-2">
+    <div data-testid="settings-connections-component" className="p-2">
       <ConnectionSearch changeConnection={changeConnection} connectionId={currentConnection.id} />
       {isLoading && (
         <div className="flex justify-center my-8">
