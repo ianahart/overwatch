@@ -39,10 +39,21 @@ let repositoryIdCounter = 1;
 let locationIdCounter = 1;
 let pinnedConnectionIdCounter = 1;
 let messageIdCounter = 1;
+let paymentIntentIdCounter = 1;
 
 const fullName = getFullName();
 
 export const db = factory({
+  paymentIntent: {
+    id: primaryKey(() => paymentIntentIdCounter++),
+    amount: () => faker.number.int({ min: 1000, max: 10000 }),
+    currency: () => 'USD',
+    fullName: () => faker.person.fullName(),
+    reviewerId: oneOf('user'),
+    avatarUrl: () => faker.image.avatar(),
+    createdAt: () => faker.date.recent().toString(),
+    status: () => faker.helpers.arrayElement(['REFUNDED', 'PAID']),
+  },
   message: {
     firstName: () => faker.person.firstName(),
     lastName: () => faker.person.lastName(),

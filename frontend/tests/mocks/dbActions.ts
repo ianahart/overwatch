@@ -6,6 +6,7 @@ import {
   IFetchProfileResponse,
   IFullProfile,
   IMessage,
+  IPaymentIntent,
   IPinnedConnection,
   IReaction,
   IReplyComment,
@@ -26,6 +27,16 @@ import {
 } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createPaymentIntents(numberOfIntents: number) {
+  const paymentIntents: IPaymentIntent[] = [];
+
+  for (let i = 0; i < numberOfIntents; i++) {
+    const paymentIntent: IPaymentIntent = { ...toPlainObject(db.paymentIntent.create()), reviewerId: 2 };
+    paymentIntents.push(paymentIntent);
+  }
+  return paymentIntents;
+}
 
 export function createMessages(numberOfMessages: number) {
   const messages: IMessage[] = [];
