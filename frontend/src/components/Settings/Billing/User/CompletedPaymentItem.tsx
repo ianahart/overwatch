@@ -19,7 +19,7 @@ const CompletedPaymentItem = ({ paymentIntent, handleUpdateStatus }: ICompletedP
   };
 
   return (
-    <div className="my-4 flex justify-between">
+    <div data-testid="CompletedPaymentItem" className="my-4 flex justify-between">
       <div className="flex items-center">
         <Avatar initials={initializeName(first, last)} width="w-9" height="h-9" avatarUrl={paymentIntent.avatarUrl} />
         <div className="ml-2">

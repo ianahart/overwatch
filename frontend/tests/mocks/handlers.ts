@@ -27,8 +27,12 @@ import { paymentMethodsHandlers } from '../handlers/paymentMethods';
 import { locationHandlers } from '../handlers/locations';
 import { connectionPinsHandlers } from '../handlers/connectionPins';
 import { chatMessagesHandlers } from '../handlers/chatMessages';
+import { paymentRefundsHandlers } from '../handlers/paymentRefunds';
+import { paymentIntentsHandlers } from '../handlers/paymentIntents';
 
 export const handlers = [
+  ...paymentIntentsHandlers,
+  ...paymentRefundsHandlers,
   ...chatMessagesHandlers,
   ...connectionPinsHandlers,
   ...locationHandlers,
