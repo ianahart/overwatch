@@ -40,7 +40,7 @@ const PaymentRefundModal = ({
   const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     setErrors([]);
-    if (!canSubmit) {
+    if (!canSubmit()) {
       return;
     }
     const payload = { reason, token, userId: user.id, stripePaymentIntentId };
