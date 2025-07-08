@@ -19,7 +19,7 @@ const AdminDashboard = () => {
   }, [user.role, user.slug, navigate]);
 
   return (
-    <div className="md:max-w-[1450px] w-full mx-auto mt-8">
+    <div data-testid="AdminDashboard" className="md:max-w-[1450px] w-full mx-auto mt-8">
       <div className="md:flex bg-gray-900 p-2 rounded">
         <AdminSidebarNavigation />
         <OutletContainer />

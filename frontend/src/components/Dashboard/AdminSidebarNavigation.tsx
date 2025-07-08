@@ -31,7 +31,7 @@ const AdminSidebarNavigation = () => {
   ];
 
   return (
-    <div className="md:w-[300px] min-h-[90vh]">
+    <div data-testid="AdminSidebarNavigation" className="md:w-[300px] min-h-[90vh]">
       <div className="p-4">
         <DashboardTitle title="OverWatch" version={0.1} />
         <p className="text-gray-400 mt-2 text-sm font-bold">Admin</p>
