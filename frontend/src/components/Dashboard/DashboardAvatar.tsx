@@ -8,7 +8,7 @@ export interface IDashboardAvatarProps {
 const DashboardAvatar = ({ url = '', abbreviation, width, height }: IDashboardAvatarProps) => {
   if (url !== null) {
     return (
-      <div>
+      <div data-testid="DashboardAvatar">
         <img className={`${height} ${width} rounded-lg`} src={url} alt={`A profile picture of ${abbreviation}`} />
       </div>
     );
