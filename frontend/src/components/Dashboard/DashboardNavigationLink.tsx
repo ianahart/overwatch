@@ -19,7 +19,9 @@ const DashboardNavigationLink = ({ path, label, icon }: IDashboardNavigationLink
   return (
     <li onClick={handleOnClick} className="flex items-center my-4">
       <div className="mr-2">{icon}</div>
-      <Link to={path}>{label}</Link>
+      <Link data-path={path} to={path}>
+        {label}
+      </Link>
     </li>
   );
 };
