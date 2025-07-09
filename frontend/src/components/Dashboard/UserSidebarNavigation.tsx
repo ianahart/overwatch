@@ -19,7 +19,7 @@ const UserSidebarNavigation = () => {
   ];
 
   return (
-    <div className="md:w-[300px] min-h-[90vh]">
+    <div data-testid="UserSidebarNavigation" className="md:w-[300px] min-h-[90vh]">
       <div className="p-4">
         <DashboardTitle title="OverWatch" version={0.1} />
       </div>
