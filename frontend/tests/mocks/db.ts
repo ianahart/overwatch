@@ -40,10 +40,26 @@ let locationIdCounter = 1;
 let pinnedConnectionIdCounter = 1;
 let messageIdCounter = 1;
 let paymentIntentIdCounter = 1;
+let suggestionIdCounter = 1;
 
 const fullName = getFullName();
 
 export const db = factory({
+  suggestion: {
+    id: primaryKey(() => suggestionIdCounter++),
+    createdAt: () => faker.date.recent().toString(),
+    title: () => faker.lorem.word(8),
+    description: () => faker.lorem.paragraph(2),
+    contact: () => faker.internet.email(),
+    fileUrl: () => faker.internet.domainName(),
+    feedbackType: () =>
+      faker.helpers.arrayElements(['BUG_REPORT', 'FEATURE_REQUEST', 'GENERAL_FEEDBACK', 'SUGGESTION']),
+    priorityLevel: () => faker.helpers.arrayElements(['LOW', 'MEDIUM', 'HIGH']),
+    feedbackStatus: () => faker.helpers.arrayElements(['ACCEPTED', 'PENDING', 'REJECTED']),
+    fullName: () => faker.person.fullName(),
+    avatarUrl: () => faker.image.avatar(),
+  },
+
   paymentIntent: {
     id: primaryKey(() => paymentIntentIdCounter++),
     amount: () => faker.number.int({ min: 1000, max: 10000 }),

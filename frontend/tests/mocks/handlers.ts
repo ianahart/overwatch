@@ -29,8 +29,10 @@ import { connectionPinsHandlers } from '../handlers/connectionPins';
 import { chatMessagesHandlers } from '../handlers/chatMessages';
 import { paymentRefundsHandlers } from '../handlers/paymentRefunds';
 import { paymentIntentsHandlers } from '../handlers/paymentIntents';
+import { suggestionsHandlers } from '../handlers/suggestions';
 
 export const handlers = [
+  ...suggestionsHandlers,
   ...paymentIntentsHandlers,
   ...paymentRefundsHandlers,
   ...chatMessagesHandlers,
