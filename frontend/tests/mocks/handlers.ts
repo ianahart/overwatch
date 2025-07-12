@@ -30,8 +30,10 @@ import { chatMessagesHandlers } from '../handlers/chatMessages';
 import { paymentRefundsHandlers } from '../handlers/paymentRefunds';
 import { paymentIntentsHandlers } from '../handlers/paymentIntents';
 import { suggestionsHandlers } from '../handlers/suggestions';
+import { githubHandlers } from '../handlers/github';
 
 export const handlers = [
+  ...githubHandlers,
   ...suggestionsHandlers,
   ...paymentIntentsHandlers,
   ...paymentRefundsHandlers,

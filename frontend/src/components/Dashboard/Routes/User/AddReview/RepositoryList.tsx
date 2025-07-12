@@ -145,6 +145,7 @@ const RepositoryList = () => {
         <p className="text-sm">What type of review is this for?</p>
         <div className="my-1">
           <select
+            data-testid="select-review-type"
             value={reviewType}
             onChange={(e) => setReviewType(e.target.value)}
             className="w-full bg-transparent border border-gray-800 p-1"
@@ -178,6 +179,7 @@ const RepositoryList = () => {
         <p className="text-sm">What plan do you want?</p>
         <p className="text-xs mb-2">(Refer to their profile for details)</p>
         <select
+          data-testid="select-package-plan"
           onChange={(e) => setSelectedPackagePrice(e.target.value)}
           value={selectedPackagePrice}
           className="w-full bg-transparent border border-gray-800 p-1"

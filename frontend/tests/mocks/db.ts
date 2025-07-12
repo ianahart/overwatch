@@ -41,10 +41,19 @@ let pinnedConnectionIdCounter = 1;
 let messageIdCounter = 1;
 let paymentIntentIdCounter = 1;
 let suggestionIdCounter = 1;
+let gitHubRepositoryPreviewIdCounter = 1;
 
 const fullName = getFullName();
 
 export const db = factory({
+  gitHubRepositoryPreview: {
+    id: primaryKey(() => gitHubRepositoryPreviewIdCounter++),
+    fullName: () => faker.person.fullName(),
+    avatarUrl: () => faker.image.avatar(),
+    htmlUrl: () => faker.internet.domainName(),
+    language: () => faker.helpers.arrayElements(['Java', 'JavaScript', 'Python', 'Ruby'], 1),
+    stargazersCount: () => faker.number.int({ min: 1, max: 1000 }),
+  },
   suggestion: {
     id: primaryKey(() => suggestionIdCounter++),
     createdAt: () => faker.date.recent().toString(),

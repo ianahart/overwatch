@@ -14,7 +14,7 @@ const Repository = ({ data, selectRepository }: IRepositoryProps) => {
   };
 
   return (
-    <div className="my-2 p-2 cursor-pointer" onClick={handleOnClick}>
+    <div data-testid="Repository" className="my-2 p-2 cursor-pointer" onClick={handleOnClick}>
       <div className="flex items-center">
         <img className="w-6 h-6 rounded-lg mr-2" src={data.avatarUrl} alt={data.fullName} />
         <div>
