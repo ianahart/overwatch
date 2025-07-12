@@ -1,10 +1,34 @@
 import { http, HttpResponse } from 'msw';
 import { baseURL } from '../../src/util';
-import { ICreateUserRepositoryResponse, IFetchRepositoriesResponse } from '../../src/interfaces';
+import {
+  ICreateUserRepositoryResponse,
+  IFetchRepositoriesResponse,
+  IFetchUserCommentRepositoryResponse,
+  IUpdateRepositoryCommentResponse,
+} from '../../src/interfaces';
 import { paginate } from '../utils';
 import { createRepositories } from '../mocks/dbActions';
 
 export const repositoriesHandlers = [
+  http.get(`${baseURL}/repositories/:repositoryId/comment`, () => {
+    return HttpResponse.json<IFetchUserCommentRepositoryResponse>(
+      {
+        message: 'success',
+        data: 'existing repository comment',
+      },
+      { status: 200 }
+    );
+  }),
+
+  http.patch(`${baseURL}/repositories/:repositoryId/comment`, () => {
+    return HttpResponse.json<IUpdateRepositoryCommentResponse>(
+      {
+        message: 'success',
+      },
+      { status: 200 }
+    );
+  }),
+
   http.post(`${baseURL}/repositories/user`, () => {
     return HttpResponse.json<ICreateUserRepositoryResponse>(
       {
