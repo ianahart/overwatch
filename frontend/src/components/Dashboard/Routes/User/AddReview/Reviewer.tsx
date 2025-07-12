@@ -43,7 +43,7 @@ const Reviewer = ({ data }: IReviewerProps) => {
 
       <div className="my-1 flex justify-end">
         <button onClick={handleOnSelectReviewer} className="text-gray-400 flex items-center">
-          <BsFillLightningFill className={`${highlightLightning}`} />
+          <BsFillLightningFill data-testid="lightning-icon" className={`${highlightLightning}`} />
           {selectedReviewer.id === data.id ? 'Unselect' : 'Select'}
         </button>
       </div>
