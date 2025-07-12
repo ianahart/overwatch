@@ -1,12 +1,12 @@
 import { screen, render, waitFor } from '@testing-library/react';
-
-import { mockNavigate } from '../../../../setup';
-import SuggestionForm from '../../../../../src/components/Dashboard/Routes/Shared/Suggestion/SuggestionForm';
-import { getLoggedInUser } from '../../../../utils';
 import userEvent, { UserEvent } from '@testing-library/user-event';
-import { server } from '../../../../mocks/server';
 import { HttpResponse, http } from 'msw';
-import { baseURL } from '../../../../../src/util';
+
+import { mockNavigate } from '../../../../../setup';
+import SuggestionForm from '../../../../../../src/components/Dashboard/Routes/Shared/Suggestion/SuggestionForm';
+import { getLoggedInUser } from '../../../../../utils';
+import { server } from '../../../../../mocks/server';
+import { baseURL } from '../../../../../../src/util';
 
 export interface IForm {
   getSubmitBtn: () => HTMLElement;
