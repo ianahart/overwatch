@@ -1,7 +1,7 @@
 import { screen, render } from '@testing-library/react';
 
-import Suggestion from '../../../../../src/components/Dashboard/Routes/Shared/Suggestion';
-import { AllProviders } from '../../../../AllProviders';
+import Suggestion from '../../../../../../src/components/Dashboard/Routes/Shared/Suggestion';
+import { AllProviders } from '../../../../../AllProviders';
 
 describe('Suggestion', () => {
   const renderComponent = () => {
