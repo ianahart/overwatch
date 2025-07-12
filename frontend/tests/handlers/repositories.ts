@@ -1,10 +1,19 @@
 import { http, HttpResponse } from 'msw';
 import { baseURL } from '../../src/util';
-import { IFetchRepositoriesResponse } from '../../src/interfaces';
+import { ICreateUserRepositoryResponse, IFetchRepositoriesResponse } from '../../src/interfaces';
 import { paginate } from '../utils';
 import { createRepositories } from '../mocks/dbActions';
 
 export const repositoriesHandlers = [
+  http.post(`${baseURL}/repositories/user`, () => {
+    return HttpResponse.json<ICreateUserRepositoryResponse>(
+      {
+        message: 'success',
+      },
+      { status: 201 }
+    );
+  }),
+
   http.get(`${baseURL}/repositories`, async ({ request }) => {
     const url = new URL(request.url);
 

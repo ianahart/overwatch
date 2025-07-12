@@ -1,17 +1,39 @@
 import { http, HttpResponse } from 'msw';
 import { baseURL } from '../../src/util';
 import { paginate } from '../utils';
+import { toPlainObject } from 'lodash';
 import { createMinProfiles, createUserAndProfile } from '../mocks/dbActions';
 import {
   ICreateAvatarResponse,
+  IFetchProfilePackageResponse,
   IFetchProfileResponse,
   IFetchProfileVisibilityResponse,
+  IPckgResponse,
   IRemoveAvatarResponse,
   IUpdateProfileResponse,
   IUpdateProfileVisibilityResponse,
 } from '../../src/interfaces';
+import { db } from '../mocks/db';
 
 export const profileHandlers = [
+  http.get(`${baseURL}/profiles/packages`, () => {
+    const fullProfile = db.fullProfile.create();
+
+    const data: IPckgResponse = {
+      basic: { ...toPlainObject(fullProfile.pckg.basic) },
+      standard: { ...toPlainObject(fullProfile.pckg.standard) },
+      pro: { ...toPlainObject(fullProfile.pckg.pro) },
+    };
+
+    return HttpResponse.json<IFetchProfilePackageResponse>(
+      {
+        message: 'success',
+        data,
+      },
+      { status: 200 }
+    );
+  }),
+
   http.patch(`${baseURL}/profiles/:profileId/avatar/remove`, () => {
     return HttpResponse.json<IRemoveAvatarResponse>(
       {

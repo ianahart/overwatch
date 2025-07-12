@@ -5,6 +5,7 @@ import {
   IConnection,
   IFetchProfileResponse,
   IFullProfile,
+  IGitHubRepositoryPreview,
   IMessage,
   IPaymentIntent,
   IPinnedConnection,
@@ -27,6 +28,16 @@ import {
 } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createGitHubRepositoryPreviews(numberOfRepos: number) {
+  const repos: IGitHubRepositoryPreview[] = [];
+
+  for (let i = 0; i < numberOfRepos; i++) {
+    const repo: IGitHubRepositoryPreview = { ...toPlainObject(db.gitHubRepositoryPreview.create()) };
+    repos.push(repo);
+  }
+  return repos;
+}
 
 export function createPaymentIntents(numberOfIntents: number) {
   const paymentIntents: IPaymentIntent[] = [];
