@@ -42,10 +42,28 @@ let messageIdCounter = 1;
 let paymentIntentIdCounter = 1;
 let suggestionIdCounter = 1;
 let gitHubRepositoryPreviewIdCounter = 1;
+let appTestimonialIdCounter = 1;
+let minAppTestimonialIdCounter = 1;
 
 const fullName = getFullName();
 
 export const db = factory({
+  minAppTestimonial: {
+    id: primaryKey(() => minAppTestimonialIdCounter++),
+    developerType: () =>
+      faker.helpers.arrayElements(['backend developer', 'frontend developer', 'software engineer', 'devops'], 1)[0],
+    content: () => faker.lorem.paragraph(2),
+  },
+
+  appTestimonial: {
+    id: primaryKey(() => appTestimonialIdCounter++),
+    firstName: () => faker.person.firstName(),
+    developerType: () =>
+      faker.helpers.arrayElements(['backend developer', 'frontend developer', 'software engineer', 'devops'], 1),
+    content: () => faker.lorem.paragraph(2),
+    avatarUrl: () => faker.image.avatar(),
+  },
+
   gitHubRepositoryPreview: {
     id: primaryKey(() => gitHubRepositoryPreviewIdCounter++),
     fullName: () => faker.person.fullName(),
