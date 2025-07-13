@@ -2,6 +2,7 @@ import { http, HttpResponse } from 'msw';
 import { baseURL } from '../../src/util';
 import {
   ICreateUserRepositoryResponse,
+  IDeleteUserRepositoryResponse,
   IFetchDistinctRepositoryLanguagesResponse,
   IFetchRepositoriesResponse,
   IFetchUserCommentRepositoryResponse,
@@ -74,6 +75,15 @@ export const repositoriesHandlers = [
           direction,
           totalElements,
         },
+      },
+      { status: 200 }
+    );
+  }),
+
+  http.delete(`${baseURL}/repositories/:repositoryId`, () => {
+    return HttpResponse.json<IDeleteUserRepositoryResponse>(
+      {
+        message: 'success',
       },
       { status: 200 }
     );
