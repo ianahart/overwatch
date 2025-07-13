@@ -54,7 +54,7 @@ const ReviewFeedback = ({ feedback }: IReviewFeedbackProps) => {
 
   return (
     <Slate editor={editor} initialValue={initialValue}>
-      <Editable className="custom-editor" readOnly={true} />
+      <Editable data-testid="review-feedback-editor" className="custom-editor" readOnly={true} />
     </Slate>
   );
 };
