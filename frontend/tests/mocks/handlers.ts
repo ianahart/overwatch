@@ -32,8 +32,10 @@ import { paymentIntentsHandlers } from '../handlers/paymentIntents';
 import { suggestionsHandlers } from '../handlers/suggestions';
 import { githubHandlers } from '../handlers/github';
 import { appTestimonialsHandlers } from '../handlers/appTestimonials';
+import { reviewFeedbacksHandlers } from '../handlers/reviewFeedbacks';
 
 export const handlers = [
+  ...reviewFeedbacksHandlers,
   ...appTestimonialsHandlers,
   ...githubHandlers,
   ...suggestionsHandlers,
