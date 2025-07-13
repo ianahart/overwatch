@@ -47,7 +47,7 @@ const RepositoryReviewListItem = ({ data }: IRepositoryReviewListItemProps) => {
   };
 
   return (
-    <li className="my-4 border p-1 rounded border-gray-800">
+    <li data-testid="RepositoryReviewListItem" className="my-4 border p-1 rounded border-gray-800">
       <div className="flex items-end justify-between">
         <div className="items-end flex">
           <div>
