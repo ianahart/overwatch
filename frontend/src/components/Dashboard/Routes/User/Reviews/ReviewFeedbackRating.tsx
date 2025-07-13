@@ -32,14 +32,15 @@ const ReviewFeedbackRating = ({ field, addRating, isAlreadyReviewed }: IReviewFe
             index += 1;
             return (
               <div
+                data-testid="feedback-star"
                 className="cursor-pointer mx-1 text-lg"
                 onMouseEnter={() => handleOnMouseEnter(index)}
                 key={nanoid()}
               >
                 {field.value >= index ? (
-                  <AiFillStar className="text-yellow-400" />
+                  <AiFillStar data-testid="filled-star" className="text-yellow-400" />
                 ) : (
-                  <AiOutlineStar className="text-gray-400" />
+                  <AiOutlineStar data-testid="outlined-star" className="text-gray-400" />
                 )}
               </div>
             );
