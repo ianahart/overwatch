@@ -47,7 +47,7 @@ const RepositoryReviewListItem = ({ data }: IRepositoryReviewListItemProps) => {
   };
 
   return (
-    <li className="my-4 border p-1 rounded border-gray-800">
+    <li data-testid="RepositoryReviewListItem" className="my-4 border p-1 rounded border-gray-800">
       <div className="flex items-end justify-between">
         <div className="items-end flex">
           <div>
@@ -87,9 +87,13 @@ const RepositoryReviewListItem = ({ data }: IRepositoryReviewListItemProps) => {
               </div>
               <div className="flex items-center">
                 <Link to={`/dashboard/${user.slug}/user/reviews/${data.id}/edit`}>
-                  <AiOutlineEdit className="mx-2 text-lg cursor-pointer" />
+                  <AiOutlineEdit data-testid="edit-repository-review-icon" className="mx-2 text-lg cursor-pointer" />
                 </Link>
-                <BsTrash onClick={handleOnDeleteRepository} className="max-2 text-lg cursor-pointer" />
+                <BsTrash
+                  data-testid="delete-repository-review-icon"
+                  onClick={handleOnDeleteRepository}
+                  className="max-2 text-lg cursor-pointer"
+                />
               </div>
             </div>
             {data.status === 'COMPLETED' && (

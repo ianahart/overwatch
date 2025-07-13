@@ -44,10 +44,22 @@ let suggestionIdCounter = 1;
 let gitHubRepositoryPreviewIdCounter = 1;
 let appTestimonialIdCounter = 1;
 let minAppTestimonialIdCounter = 1;
+let reviewFeedbackIdCounter = 1;
 
 const fullName = getFullName();
 
 export const db = factory({
+  reviewFeedback: {
+    id: primaryKey(() => reviewFeedbackIdCounter++),
+    clarity: () => faker.number.int({ min: 1, max: 5 }),
+    helpfulness: () => faker.number.int({ min: 1, max: 5 }),
+    thoroughness: () => faker.number.int({ min: 1, max: 5 }),
+    responseTime: () => faker.number.int({ min: 1, max: 5 }),
+    repositoryId: oneOf('repository'),
+    reviewerId: oneOf('user'),
+    createdAt: () => faker.date.recent().toString(),
+  },
+
   minAppTestimonial: {
     id: primaryKey(() => minAppTestimonialIdCounter++),
     developerType: () =>

@@ -2,6 +2,8 @@ import { http, HttpResponse } from 'msw';
 import { baseURL } from '../../src/util';
 import {
   ICreateUserRepositoryResponse,
+  IDeleteUserRepositoryResponse,
+  IFetchDistinctRepositoryLanguagesResponse,
   IFetchRepositoriesResponse,
   IFetchUserCommentRepositoryResponse,
   IUpdateRepositoryCommentResponse,
@@ -10,6 +12,18 @@ import { paginate } from '../utils';
 import { createRepositories } from '../mocks/dbActions';
 
 export const repositoriesHandlers = [
+  http.get(`${baseURL}/repositories/languages`, () => {
+    const languages = ['JavaScript', 'CSS', 'HTML'];
+
+    return HttpResponse.json<IFetchDistinctRepositoryLanguagesResponse>(
+      {
+        message: 'success',
+        data: languages,
+      },
+      { status: 200 }
+    );
+  }),
+
   http.get(`${baseURL}/repositories/:repositoryId/comment`, () => {
     return HttpResponse.json<IFetchUserCommentRepositoryResponse>(
       {
@@ -61,6 +75,15 @@ export const repositoriesHandlers = [
           direction,
           totalElements,
         },
+      },
+      { status: 200 }
+    );
+  }),
+
+  http.delete(`${baseURL}/repositories/:repositoryId`, () => {
+    return HttpResponse.json<IDeleteUserRepositoryResponse>(
+      {
+        message: 'success',
       },
       { status: 200 }
     );
