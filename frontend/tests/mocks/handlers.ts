@@ -33,8 +33,10 @@ import { suggestionsHandlers } from '../handlers/suggestions';
 import { githubHandlers } from '../handlers/github';
 import { appTestimonialsHandlers } from '../handlers/appTestimonials';
 import { reviewFeedbacksHandlers } from '../handlers/reviewFeedbacks';
+import { badgesHandlers } from '../handlers/badges';
 
 export const handlers = [
+  ...badgesHandlers,
   ...reviewFeedbacksHandlers,
   ...appTestimonialsHandlers,
   ...githubHandlers,

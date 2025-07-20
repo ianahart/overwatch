@@ -1,5 +1,6 @@
 import { toPlainObject } from 'lodash';
 import {
+  IBadge,
   IBlockedUser,
   IComment,
   IConnection,
@@ -28,6 +29,16 @@ import {
 } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createBadges(numberOfBadges: number) {
+  const badges: IBadge[] = [];
+
+  for (let i = 0; i < numberOfBadges; i++) {
+    const badge: IBadge = { ...toPlainObject(db.badge.create()), reviewerId: 1 };
+    badges.push(badge);
+  }
+  return badges;
+}
 
 export function createGitHubRepositoryPreviews(numberOfRepos: number) {
   const repos: IGitHubRepositoryPreview[] = [];
