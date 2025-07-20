@@ -57,7 +57,7 @@ const BadgeList = () => {
 
   return (
     <>
-      <ul className="flex-col flex md:flex-row flex-wrap">
+      <ul data-testid="BadgeList" className="flex-col flex md:flex-row flex-wrap">
         {badges.map((badge) => {
           return <BadgeListItem key={badge.id} data={badge} />;
         })}
