@@ -2,10 +2,12 @@ import { http, HttpResponse } from 'msw';
 import { toPlainObject } from 'lodash';
 import { baseURL } from '../../src/util';
 import {
+  ICreateRepositoryFileResponse,
   ICreateUserRepositoryResponse,
   IDeleteUserRepositoryResponse,
   IFetchDistinctRepositoryLanguagesResponse,
   IFetchRepositoriesResponse,
+  IFetchRepositoryResponse,
   IFetchSearchRepositoryResponse,
   IFetchUserCommentRepositoryResponse,
   IGitHubRepository,
@@ -17,26 +19,32 @@ import { paginate } from '../utils';
 import { createRepositories } from '../mocks/dbActions';
 import { db } from '../mocks/db';
 
+const getRepoTreeData = () => {
+  const languages = ['JavaScript', 'Python', 'Java'];
+  const tree: IGitHubTree[] = [
+    {
+      path: 'README.md',
+      sha: '3b18e8a9c0b0a6f6d3fa738d3f4ea7bd829d4e9d',
+      size: 1200,
+      type: 'blob',
+      url: 'https://api.github.com/repos/example/repo/git/blobs/3b18e8a9c0b0a6f6d3fa738d3f4ea7bd829d4e9d',
+    },
+    {
+      path: 'src/index.ts',
+      sha: '5e6a2a0f9a7c62228dbab5b8e9b4fc0a4d1be30c',
+      size: 580,
+      type: 'blob',
+      url: 'https://api.github.com/repos/example/repo/git/blobs/5e6a2a0f9a7c62228dbab5b8e9b4fc0a4d1be30c',
+    },
+  ];
+  const repository: IGitHubRepository = { ...toPlainObject(db.gitHubRepository.create()), reviewerId: 1, ownerId: 1 };
+
+  return { languages, tree, repository };
+};
+
 export const repositoriesHandlers = [
   http.get(`${baseURL}/repositories/search`, () => {
-    const languages = ['JavaScript', 'Python', 'Java'];
-    const tree: IGitHubTree[] = [
-      {
-        path: 'README.md',
-        sha: '3b18e8a9c0b0a6f6d3fa738d3f4ea7bd829d4e9d',
-        size: 1200,
-        type: 'blob',
-        url: 'https://api.github.com/repos/example/repo/git/blobs/3b18e8a9c0b0a6f6d3fa738d3f4ea7bd829d4e9d',
-      },
-      {
-        path: 'src/index.ts',
-        sha: '5e6a2a0f9a7c62228dbab5b8e9b4fc0a4d1be30c',
-        size: 580,
-        type: 'blob',
-        url: 'https://api.github.com/repos/example/repo/git/blobs/5e6a2a0f9a7c62228dbab5b8e9b4fc0a4d1be30c',
-      },
-    ];
-    const repository: IGitHubRepository = { ...toPlainObject(db.gitHubRepository.create()), reviewerId: 1, ownerId: 1 };
+    const { languages, tree, repository } = getRepoTreeData();
 
     return HttpResponse.json<IFetchSearchRepositoryResponse>(
       {
@@ -131,12 +139,39 @@ export const repositoriesHandlers = [
     );
   }),
 
+  http.get(`${baseURL}/repositories/:repositoryId`, () => {
+    const { languages, tree, repository } = getRepoTreeData();
+
+    return HttpResponse.json<IFetchRepositoryResponse>(
+      {
+        message: 'sucess',
+        data: {
+          contents: {
+            languages,
+            tree,
+          },
+          repository,
+        },
+      },
+      { status: 200 }
+    );
+  }),
+
   http.delete(`${baseURL}/repositories/:repositoryId`, () => {
     return HttpResponse.json<IDeleteUserRepositoryResponse>(
       {
         message: 'success',
       },
       { status: 200 }
+    );
+  }),
+  http.post(`${baseURL}/repositories/file`, () => {
+    return HttpResponse.json<ICreateRepositoryFileResponse>(
+      {
+        message: 'success',
+        data: 'data',
+      },
+      { status: 201 }
     );
   }),
 ];
