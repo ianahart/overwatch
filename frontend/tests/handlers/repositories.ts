@@ -1,18 +1,58 @@
 import { http, HttpResponse } from 'msw';
+import { toPlainObject } from 'lodash';
 import { baseURL } from '../../src/util';
 import {
   ICreateUserRepositoryResponse,
   IDeleteUserRepositoryResponse,
   IFetchDistinctRepositoryLanguagesResponse,
   IFetchRepositoriesResponse,
+  IFetchSearchRepositoryResponse,
   IFetchUserCommentRepositoryResponse,
+  IGitHubRepository,
+  IGitHubTree,
   IUpdateRepositoryCommentResponse,
   IUpdateRepositoryResponse,
 } from '../../src/interfaces';
 import { paginate } from '../utils';
 import { createRepositories } from '../mocks/dbActions';
+import { db } from '../mocks/db';
 
 export const repositoriesHandlers = [
+  http.get(`${baseURL}/repositories/search`, () => {
+    const languages = ['JavaScript', 'Python', 'Java'];
+    const tree: IGitHubTree[] = [
+      {
+        path: 'README.md',
+        sha: '3b18e8a9c0b0a6f6d3fa738d3f4ea7bd829d4e9d',
+        size: 1200,
+        type: 'blob',
+        url: 'https://api.github.com/repos/example/repo/git/blobs/3b18e8a9c0b0a6f6d3fa738d3f4ea7bd829d4e9d',
+      },
+      {
+        path: 'src/index.ts',
+        sha: '5e6a2a0f9a7c62228dbab5b8e9b4fc0a4d1be30c',
+        size: 580,
+        type: 'blob',
+        url: 'https://api.github.com/repos/example/repo/git/blobs/5e6a2a0f9a7c62228dbab5b8e9b4fc0a4d1be30c',
+      },
+    ];
+    const repository: IGitHubRepository = { ...toPlainObject(db.gitHubRepository.create()), reviewerId: 1, ownerId: 1 };
+
+    return HttpResponse.json<IFetchSearchRepositoryResponse>(
+      {
+        mesasge: 'success',
+        data: {
+          contents: {
+            languages,
+            tree,
+          },
+          repository,
+        },
+      },
+      { status: 200 }
+    );
+  }),
+
   http.get(`${baseURL}/repositories/languages`, () => {
     const languages = ['JavaScript', 'CSS', 'HTML'];
 
