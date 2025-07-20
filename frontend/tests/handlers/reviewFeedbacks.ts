@@ -7,7 +7,6 @@ import { db } from '../mocks/db';
 
 export const reviewFeedbacksHandlers = [
   http.post(`${baseURL}/review-feedbacks`, () => {
-    console.log('fO FOFOFOFOFOFOFO');
     return HttpResponse.json<ICreateReviewFeedbackResponse>(
       {
         message: 'success',
