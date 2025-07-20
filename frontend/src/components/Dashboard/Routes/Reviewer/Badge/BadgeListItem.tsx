@@ -1,13 +1,13 @@
 import dayjs from 'dayjs';
 import { IBadge } from '../../../../../interfaces';
 
-export interface IReviewerdataListItemProps {
+export interface IReviewerBadgeListItemProps {
   data: IBadge;
 }
 
-const dataListItem = ({ data }: IReviewerdataListItemProps) => {
+const BadgeListItem = ({ data }: IReviewerBadgeListItemProps) => {
   return (
-    <li className="mx-4 my-6 w-full max-w-[250px] ">
+    <li data-testid="reviewer-badge-list-item" className="mx-4 my-6 w-full max-w-[250px] ">
       <img className="h-36 w-36 mx-auto" src={data.imageUrl} alt={data.title} />
       <p className="text-blue-400 mx-auto text-center text-xs my-1">
         <span>Earned on: </span>
@@ -19,4 +19,4 @@ const dataListItem = ({ data }: IReviewerdataListItemProps) => {
   );
 };
 
-export default dataListItem;
+export default BadgeListItem;

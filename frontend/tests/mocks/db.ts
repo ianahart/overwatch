@@ -45,10 +45,21 @@ let gitHubRepositoryPreviewIdCounter = 1;
 let appTestimonialIdCounter = 1;
 let minAppTestimonialIdCounter = 1;
 let reviewFeedbackIdCounter = 1;
+let badgeIdCounter = 1;
 
 const fullName = getFullName();
 
 export const db = factory({
+  badge: {
+    id: primaryKey(() => badgeIdCounter++),
+    badgeId: () => faker.number.int({ min: 1, max: 20 }),
+    reviewerId: oneOf('user'),
+    createdAt: () => faker.date.recent().toString(),
+    title: () => faker.lorem.word(8),
+    description: () => faker.lorem.paragraph(1),
+    imageUrl: () => faker.image.url(),
+  },
+
   reviewFeedback: {
     id: primaryKey(() => reviewFeedbackIdCounter++),
     clarity: () => faker.number.int({ min: 1, max: 5 }),
