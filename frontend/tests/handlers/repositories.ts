@@ -7,6 +7,7 @@ import {
   IFetchRepositoriesResponse,
   IFetchUserCommentRepositoryResponse,
   IUpdateRepositoryCommentResponse,
+  IUpdateRepositoryResponse,
 } from '../../src/interfaces';
 import { paginate } from '../utils';
 import { createRepositories } from '../mocks/dbActions';
@@ -38,6 +39,16 @@ export const repositoriesHandlers = [
     return HttpResponse.json<IUpdateRepositoryCommentResponse>(
       {
         message: 'success',
+      },
+      { status: 200 }
+    );
+  }),
+
+  http.patch(`${baseURL}/repositories/:repositoryId`, () => {
+    return HttpResponse.json<IUpdateRepositoryResponse>(
+      {
+        message: 'success',
+        data: { status: 'COMPLETED', feedback: 'feedback' },
       },
       { status: 200 }
     );

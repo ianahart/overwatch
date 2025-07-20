@@ -34,8 +34,10 @@ import { githubHandlers } from '../handlers/github';
 import { appTestimonialsHandlers } from '../handlers/appTestimonials';
 import { reviewFeedbacksHandlers } from '../handlers/reviewFeedbacks';
 import { badgesHandlers } from '../handlers/badges';
+import { feedbackTemplatesHandlers } from '../handlers/feedbackTemplates';
 
 export const handlers = [
+  ...feedbackTemplatesHandlers,
   ...badgesHandlers,
   ...reviewFeedbacksHandlers,
   ...appTestimonialsHandlers,

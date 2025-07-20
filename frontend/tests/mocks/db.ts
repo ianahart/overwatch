@@ -46,10 +46,29 @@ let appTestimonialIdCounter = 1;
 let minAppTestimonialIdCounter = 1;
 let reviewFeedbackIdCounter = 1;
 let badgeIdCounter = 1;
+let gitHubRepositoryIdCounter = 1;
 
 const fullName = getFullName();
 
 export const db = factory({
+  gitHubRepository: {
+    id: primaryKey(() => gitHubRepositoryIdCounter++),
+    comment: () => faker.lorem.sentence(10),
+    createdAt: () => faker.date.recent().toString(),
+    updatedAt: () => faker.date.recent().toString(),
+    feedback: () => faker.lorem.paragraph(3),
+    language: () => 'JavaScript',
+    ownerId: oneOf('user'),
+    repoName: () => faker.lorem.word(10),
+    repoUrl: () => faker.internet.domainName(),
+    reviewerId: oneOf('user'),
+    status: () => faker.helpers.arrayElement(['COMPLETED', 'INCOMPLETE', 'INPROGRESS', 'PAID']),
+    reviewStartTime: () => faker.date.recent().toString(),
+    reviewEndTime: () => faker.date.recent().toString(),
+    reviewDuration: () => faker.date.future().toString(),
+    reviewType: () => 'Pro',
+  },
+
   badge: {
     id: primaryKey(() => badgeIdCounter++),
     badgeId: () => faker.number.int({ min: 1, max: 20 }),
