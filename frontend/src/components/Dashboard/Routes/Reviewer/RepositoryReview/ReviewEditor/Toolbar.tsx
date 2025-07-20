@@ -60,6 +60,7 @@ const Toolbar = ({
   return (
     <div className="flex flex-wrap mb-0 bg-gray-800 p-2 rounded-t max-w-full">
       <MdFormatUnderlined
+        data-testid="underline-button"
         className={`editor-btn ${styleActiveButton('underline')}`}
         onMouseDown={(event) => {
           event.preventDefault();
@@ -67,6 +68,7 @@ const Toolbar = ({
         }}
       />
       <MdFormatItalic
+        data-testid="italic-button"
         className={`editor-btn ${styleActiveButton('italic')}`}
         onMouseDown={(event) => {
           event.preventDefault();
@@ -74,6 +76,7 @@ const Toolbar = ({
         }}
       />
       <MdFormatBold
+        data-testid="bold-button"
         className={`editor-btn ${styleActiveButton('bold')}`}
         onMouseDown={(event) => {
           event.preventDefault();
@@ -81,6 +84,7 @@ const Toolbar = ({
         }}
       />
       <MdCode
+        data-testid="code-button"
         className={`editor-btn ${styleActiveButton('code')}`}
         onMouseDown={(event) => {
           event.preventDefault();
@@ -88,6 +92,7 @@ const Toolbar = ({
         }}
       />
       <MdFormatListBulleted
+        data-testid="unordered-list-button"
         className={`editor-btn ${styleActiveButton('unordered')}`}
         onMouseDown={(event) => {
           event.preventDefault();
@@ -95,6 +100,7 @@ const Toolbar = ({
         }}
       />
       <MdFormatListNumbered
+        data-testid="ordered-list-button"
         className={`editor-btn ${styleActiveButton('ordered')}`}
         onMouseDown={(event) => {
           event.preventDefault();
@@ -102,6 +108,7 @@ const Toolbar = ({
         }}
       />
       <MdFormatAlignLeft
+        data-testid="align-left-button"
         className={`editor-btn ${styleActiveButton('left')}`}
         onMouseDown={(event) => {
           event.preventDefault();
@@ -109,6 +116,7 @@ const Toolbar = ({
         }}
       />
       <MdFormatAlignCenter
+        data-testid="align-center-button"
         className={`editor-btn ${styleActiveButton('center')}`}
         onMouseDown={(event) => {
           event.preventDefault();
@@ -116,6 +124,7 @@ const Toolbar = ({
         }}
       />
       <MdFormatAlignRight
+        data-testid="align-right-button"
         className={`editor-btn ${styleActiveButton('right')}`}
         onMouseDown={(event) => {
           event.preventDefault();
@@ -123,6 +132,7 @@ const Toolbar = ({
         }}
       />
       <LuHeading1
+        data-testid="heading1-button"
         className={`editor-btn ${styleActiveButton('h1')}`}
         onMouseDown={(event) => {
           event.preventDefault();
@@ -130,6 +140,7 @@ const Toolbar = ({
         }}
       />
       <LuHeading2
+        data-testid="heading2-button"
         className={`editor-btn ${styleActiveButton('h2')}`}
         onMouseDown={(event) => {
           event.preventDefault();
@@ -137,6 +148,7 @@ const Toolbar = ({
         }}
       />
       <LuHeading3
+        data-testid="heading3-button"
         className={`editor-btn ${styleActiveButton('h3')}`}
         onMouseDown={(event) => {
           event.preventDefault();
@@ -144,6 +156,7 @@ const Toolbar = ({
         }}
       />
       <LuHeading4
+        data-testid="heading4-button"
         className={`editor-btn ${styleActiveButton('h4')}`}
         onMouseDown={(event) => {
           event.preventDefault();
@@ -151,6 +164,7 @@ const Toolbar = ({
         }}
       />
       <FaParagraph
+        data-testid="paragraph-button"
         className={`editor-btn ${styleActiveButton('paragraph')}`}
         onMouseDown={(event) => {
           event.preventDefault();
@@ -160,11 +174,19 @@ const Toolbar = ({
       {user.role === 'REVIEWER' && (
         <>
           <ToolTip message="Save as template">
-            <CiSaveUp2 onClick={handleOnSaveTemplate} className="mr-2 editor-btn bg-gray-900" />
+            <CiSaveUp2
+              data-testid="save-template-button"
+              onClick={handleOnSaveTemplate}
+              className="mr-2 editor-btn bg-gray-900"
+            />
           </ToolTip>
           <div className="relative w-[120px]">
             <ToolTip message="Your templates">
-              <CiViewList onClick={() => setClickAwayOpen(true)} className="mr-2 editor-btn bg-gray-900" />
+              <CiViewList
+                data-testid="view-templates-button"
+                onClick={() => setClickAwayOpen(true)}
+                className="mr-2 editor-btn bg-gray-900"
+              />
             </ToolTip>
             {clickAwayOpen && (
               <ClickAway onClickAway={handleCloseClickAway}>
@@ -173,10 +195,18 @@ const Toolbar = ({
                   {templates.map((template) => {
                     return (
                       <div key={template.id} className="flex justify-between my-2 rounded">
-                        <p onClick={() => utilizeTemplate(template.id)} className="text-xs cursor-pointer">
+                        <p
+                          onClick={() => utilizeTemplate(template.id)}
+                          className="text-xs cursor-pointer"
+                          data-testid={`utilize-template-${template.id}`}
+                        >
                           Template{template.id}
                         </p>
-                        <BsTrash onClick={() => deleteTemplate(template.id)} className="cursor-pointer" />
+                        <BsTrash
+                          data-testid={`delete-template-${template.id}`}
+                          onClick={() => deleteTemplate(template.id)}
+                          className="cursor-pointer"
+                        />
                       </div>
                     );
                   })}
