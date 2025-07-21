@@ -10,7 +10,7 @@ interface IRepositoryFile {
   language: string;
 }
 
-interface IRepositoryReviewsState {
+export interface IRepositoryReviewsState {
   repositoryNavView: ERepositoryView;
   repositoryTree: IGitHubTree[];
   repositoryLanguages: string[];

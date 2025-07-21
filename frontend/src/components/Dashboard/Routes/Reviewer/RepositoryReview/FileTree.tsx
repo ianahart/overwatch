@@ -27,7 +27,6 @@ const FileTree = () => {
   const dispatch = useDispatch();
   const repositoryId = Number.parseInt(params.id as string);
   let githubId = Session.getItem('github_access_token') ?? '';
-  console.log(githubId);
   const { token } = useSelector((store: TRootState) => store.user);
   const { repositoryTree, searchingCodeQuery, repositoryNavView, repositoryPage, repository } = useSelector(
     (store: TRootState) => store.repositoryTree
@@ -89,13 +88,11 @@ const FileTree = () => {
         .unwrap()
         .then((res) => {
           if (reset) {
-            console.log('RUN');
             dispatch(setInitialRepositoryTree(res.data.contents.tree));
           } else {
             dispatch(setRepositoryTree(res.data.contents.tree));
           }
           dispatch(setRepositoryPage(repositoryPage + 1));
-          console.log(res);
         })
         .catch((err) => {
           console.log(err);

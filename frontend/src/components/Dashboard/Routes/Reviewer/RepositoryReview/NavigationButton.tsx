@@ -32,6 +32,7 @@ const NavigationButton = ({ text, keyword, icon }: INavigationButtonProps) => {
 
   return (
     <div
+      data-testid="NavigationButton"
       onMouseOver={handleOnMouseOver}
       onMouseLeave={handleOnMouseLeave}
       onClick={handleOnClick}
