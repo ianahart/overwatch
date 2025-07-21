@@ -66,7 +66,8 @@ export const db = factory({
     reviewStartTime: () => faker.date.recent().toString(),
     reviewEndTime: () => faker.date.recent().toString(),
     reviewDuration: () => faker.date.future().toString(),
-    reviewType: () => 'Pro',
+    reviewType: () => faker.helpers.arrayElement(['BUG', 'FEATURE', 'OPTIMIZATION']),
+    avatarUrl: () => faker.image.avatar(),
   },
 
   badge: {

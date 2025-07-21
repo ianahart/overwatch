@@ -14,10 +14,13 @@ import {
   IGitHubTree,
   IUpdateRepositoryCommentResponse,
   IUpdateRepositoryResponse,
+  IUpdateRepositoryReviewStartTimeResponse,
 } from '../../src/interfaces';
 import { paginate } from '../utils';
 import { createRepositories } from '../mocks/dbActions';
 import { db } from '../mocks/db';
+
+export const updateReviewStartTimeSpy = vi.fn();
 
 const getRepoTreeData = () => {
   const languages = ['JavaScript', 'Python', 'Java'];
@@ -78,6 +81,16 @@ export const repositoriesHandlers = [
       {
         message: 'success',
         data: 'existing repository comment',
+      },
+      { status: 200 }
+    );
+  }),
+
+  http.patch(`${baseURL}/repositories/:repositoryId/starttime`, () => {
+    updateReviewStartTimeSpy();
+    return HttpResponse.json<IUpdateRepositoryReviewStartTimeResponse>(
+      {
+        message: 'success',
       },
       { status: 200 }
     );
