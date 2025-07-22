@@ -54,7 +54,7 @@ const ReviewsFilters = () => {
   }, [languageData]);
 
   return (
-    <div className="reviews-filter-container">
+    <div data-testid="ReviewsFilters" className="reviews-filter-container">
       <ReviewsFilter value={sortFilter} id="sort" data={reviewsFilterSortingOptions} />
       <ReviewsFilter value={statusFilter} id="status" data={reviewsFilterStatusOptions} />
       <ReviewsFilter value={languageFilter} id="language" data={languageOptions} />

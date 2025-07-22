@@ -39,7 +39,7 @@ const RepositoryReviewList = () => {
   };
 
   return (
-    <div className="mt-12 mb-12">
+    <div data-testid="RepositoryReviewList" className="mt-12 mb-12">
       <ul>
         {repositoryReviews.map((repositoryReview) => {
           repositoryReview;
