@@ -47,10 +47,61 @@ let minAppTestimonialIdCounter = 1;
 let reviewFeedbackIdCounter = 1;
 let badgeIdCounter = 1;
 let gitHubRepositoryIdCounter = 1;
+let statisticTopRequestersIdCounter = 1;
+let statisticAvgRatingIdCounter = 1;
+let statisticStatusTypeIdCounter = 1;
+let statisticMainLanguageIdCounter = 1;
+let statisticReviewTypesCompletedIdCounter = 1;
+let statisticReviewsCompletedIdCounter = 1;
+let statisticAvgReviewTimeIdCounter = 1;
 
 const fullName = getFullName();
 
 export const db = factory({
+  statisticTopRequesters: {
+    id: primaryKey(() => statisticTopRequestersIdCounter++),
+    fullName: () => faker.person.fullName(),
+    count: () => faker.number.int({ min: 1, max: 10 }),
+  },
+
+  statisticStatusType: {
+    id: primaryKey(() => statisticStatusTypeIdCounter++),
+    status: () => faker.helpers.arrayElement(['incomplete', 'complete', 'paid']),
+    count: () => faker.number.int({ min: 1, max: 10 }),
+  },
+
+  statisticReviewsCompleted: {
+    id: primaryKey(() => statisticReviewsCompletedIdCounter++),
+
+    day: () => faker.helpers.arrayElement(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']),
+    reviewsCompleted: () => faker.number.int({ min: 1, max: 10 }),
+  },
+
+  statisticReviewTypesCompleted: {
+    id: primaryKey(() => statisticReviewTypesCompletedIdCounter++),
+    reviewType: () => faker.helpers.arrayElement(['Bug-Fix', 'Optimization', 'Performance']),
+    count: () => faker.number.int({ min: 1, max: 10 }),
+  },
+
+  statisticMainLanguage: {
+    id: primaryKey(() => statisticMainLanguageIdCounter++),
+    lanugage: () => faker.helpers.arrayElement(['JavaScript', 'RUBY', 'PYTHON', 'PHP']),
+    count: () => faker.number.int({ min: 1, max: 10 }),
+  },
+
+  statisticAvgReviewTime: {
+    id: primaryKey(() => statisticAvgReviewTimeIdCounter++),
+    month: () =>
+      faker.helpers.arrayElement(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']),
+    avgReviewTime: () => faker.date.past().toString(),
+  },
+
+  statisticAvgRating: {
+    id: primaryKey(() => statisticAvgRatingIdCounter++),
+    name: () => faker.helpers.arrayElement(['one', 'two', 'three', 'four', 'five']),
+    average: () => faker.number.int({ min: 1, max: 5 }),
+  },
+
   gitHubRepository: {
     id: primaryKey(() => gitHubRepositoryIdCounter++),
     comment: () => faker.lorem.sentence(10),
