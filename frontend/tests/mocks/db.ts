@@ -85,7 +85,7 @@ export const db = factory({
 
   statisticMainLanguage: {
     id: primaryKey(() => statisticMainLanguageIdCounter++),
-    language: () => faker.helpers.arrayElement(['JavaScript', 'RUBY', 'PYTHON', 'PHP']),
+    lanugage: () => faker.helpers.arrayElement(['JavaScript', 'RUBY', 'PYTHON', 'PHP']),
     count: () => faker.number.int({ min: 1, max: 10 }),
   },
 
