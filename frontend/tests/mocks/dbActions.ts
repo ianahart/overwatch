@@ -25,10 +25,21 @@ import {
   ITeamPinnedMessage,
   ITeamPost,
   ITestimonial,
+  ITodoCard,
   IUser,
 } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createTodoCards(numberOfCards: number) {
+  const todoCards: ITodoCard[] = [];
+
+  for (let i = 0; i < numberOfCards; i++) {
+    const todoCard: ITodoCard = { ...toPlainObject(db.todoCard.create()), todoListId: 1, userId: 1 };
+    todoCards.push(todoCard);
+  }
+  return todoCards;
+}
 
 export function createBadges(numberOfBadges: number) {
   const badges: IBadge[] = [];

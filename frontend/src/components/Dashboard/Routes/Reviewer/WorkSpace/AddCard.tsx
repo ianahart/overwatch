@@ -67,13 +67,17 @@ const AddCard = ({ todoList }: IAddCardProps) => {
   return (
     <div className="my-2 flex items-center p-1 rounded cursor-pointer">
       {!isFormShowing && (
-        <button onClick={handleOnClickShowForm} className="flex items-center hover:opacity-70">
+        <button
+          data-testid="add-card-modal-btn"
+          onClick={handleOnClickShowForm}
+          className="flex items-center hover:opacity-70"
+        >
           <AiOutlinePlus className="mr-2" />
           <p>Add card</p>
         </button>
       )}
       {isFormShowing && (
-        <form onSubmit={handleOnSubmit} className="w-full">
+        <form data-testid="add-card-form" onSubmit={handleOnSubmit} className="w-full">
           <div>
             <input
               onKeyDown={handleOnKeyDown}
@@ -90,7 +94,7 @@ const AddCard = ({ todoList }: IAddCardProps) => {
             <button type="submit" className="btn">
               Add card
             </button>
-            <AiOutlineClose onClick={handleOnClickHideForm} className="text-xl" />
+            <AiOutlineClose data-testid="add-card-close-btn" onClick={handleOnClickHideForm} className="text-xl" />
           </div>
         </form>
       )}
