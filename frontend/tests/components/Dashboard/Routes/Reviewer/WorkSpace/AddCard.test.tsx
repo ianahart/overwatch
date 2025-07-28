@@ -152,7 +152,7 @@ describe('AddCard', () => {
     user.click(formElements.getAddBtn());
 
     await waitFor(() => {
-            expect(mockDispatch).not.toHaveBeenCalled()
+      expect(mockDispatch).not.toHaveBeenCalled();
     });
   });
 });
