@@ -62,7 +62,11 @@ const AddTodoList = () => {
     <>
       <div className="bg-slate-900 mb-auto min-w-[225px] mx-2 w-full max-w-[225px] rounded p-2 text-gray-400">
         {!isDropDownOpen && (
-          <div onClick={openDropDown} className="flex items-center cursor-pointer">
+          <div
+            data-testid="add-todolist-open-dropdown-btn"
+            onClick={openDropDown}
+            className="flex items-center cursor-pointer"
+          >
             <div className="text-xl mr-2">
               <AiOutlinePlus />
             </div>
@@ -73,7 +77,7 @@ const AddTodoList = () => {
         )}
         {isDropDownOpen && (
           <div>
-            <form onSubmit={handleOnSubmit}>
+            <form data-testid="add-todolist-form" onSubmit={handleOnSubmit}>
               <input
                 onChange={handleOnChange}
                 placeholder="Enter list name..."
@@ -88,7 +92,11 @@ const AddTodoList = () => {
                 <button type="submit" className="btn">
                   Add list
                 </button>
-                <div onClick={closeDropDown} className="text-xl cursor-pointer">
+                <div
+                  data-testid="add-todolist-close-dropdown-btn"
+                  onClick={closeDropDown}
+                  className="text-xl cursor-pointer"
+                >
                   <AiOutlineClose />
                 </div>
               </div>
