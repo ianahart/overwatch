@@ -61,10 +61,20 @@ let checkListIdCounter = 1;
 let checkListItemIdCounter = 1;
 let activeLabelIdCounter = 1;
 let labelIdCounter = 1;
+let activityIdCounter = 1;
 
 const fullName = getFullName();
 
 export const db = factory({
+  activity: {
+    id: primaryKey(() => activityIdCounter++),
+    userId: oneOf('user'),
+    todoCardId: oneOf('todoCard'),
+    text: () => faker.lorem.sentence(20),
+    createdAt: () => faker.date.recent().toString(),
+    avatarUrl: () => faker.image.avatar(),
+  },
+
   label: {
     id: primaryKey(() => labelIdCounter++),
     userId: oneOf('user'),
