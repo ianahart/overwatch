@@ -59,10 +59,30 @@ let workSpaceIdCounter = 1;
 let todoCardIdCounter = 1;
 let checkListIdCounter = 1;
 let checkListItemIdCounter = 1;
+let activeLabelIdCounter = 1;
+let labelIdCounter = 1;
 
 const fullName = getFullName();
 
 export const db = factory({
+  label: {
+    id: primaryKey(() => labelIdCounter++),
+    userId: oneOf('user'),
+    workSpaceId: oneOf('workSpace'),
+    createdAt: () => faker.date.recent().toString(),
+    isChecked: () => faker.datatype.boolean(),
+    title: () => faker.lorem.word(8),
+    color: () => faker.color.human(),
+  },
+
+  activeLabel: {
+    id: primaryKey(() => activeLabelIdCounter++),
+    todoCardId: oneOf('todoCard'),
+    labelId: oneOf('label'),
+    color: () => faker.color.human(),
+    title: () => faker.lorem.word(8),
+  },
+
   checkListItem: {
     id: primaryKey(() => checkListItemIdCounter++),
     userId: oneOf('user'),

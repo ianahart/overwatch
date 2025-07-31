@@ -37,8 +37,10 @@ import { badgesHandlers } from '../handlers/badges';
 import { feedbackTemplatesHandlers } from '../handlers/feedbackTemplates';
 import { todoCardsHandlers } from '../handlers/todoCards';
 import { todoListsHandlers } from '../handlers/todoLists';
+import { activeLabelsHandlers } from '../handlers/activeLabels';
 
 export const handlers = [
+  ...activeLabelsHandlers,
   ...todoCardsHandlers,
   ...todoListsHandlers,
   ...feedbackTemplatesHandlers,

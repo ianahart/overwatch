@@ -1,5 +1,6 @@
 import { toPlainObject } from 'lodash';
 import {
+  IActiveLabel,
   IBadge,
   IBlockedUser,
   IComment,
@@ -30,6 +31,21 @@ import {
 } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createActiveLabels(numberOfLabels: number, overrides: Partial<IActiveLabel> = {}) {
+  const activeLabels: IActiveLabel[] = [];
+
+  for (let i = 0; i < numberOfLabels; i++) {
+    const activeLabel: IActiveLabel = {
+      ...toPlainObject(db.activeLabel.create()),
+      labelId: 1,
+      todoCardId: 1,
+      ...overrides,
+    };
+    activeLabels.push(activeLabel);
+  }
+  return activeLabels;
+}
 
 export function createTodoCards(numberOfCards: number) {
   const todoCards: ITodoCard[] = [];

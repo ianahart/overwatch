@@ -63,6 +63,7 @@ const Card = ({ data }: ICardProps) => {
 
   return (
     <li
+      data-testid="Card"
       ref={setNodeRef}
       style={!isModalOpen ? style : {}}
       {...attributes}
@@ -103,7 +104,7 @@ const Card = ({ data }: ICardProps) => {
         <p>{data.title}</p>
         {isCardHovered && (
           <div>
-            <AiOutlineEdit />
+            <AiOutlineEdit data-testid="card-edit-icon" />
           </div>
         )}
       </div>
