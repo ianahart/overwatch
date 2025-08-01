@@ -1,6 +1,7 @@
 import { http, HttpResponse } from 'msw';
+import { toPlainObject } from 'lodash';
 
-import { IFetchActivityResponse } from '../../src/interfaces';
+import { IActivity, ICreateActivityResponse, IFetchActivityResponse } from '../../src/interfaces';
 import { baseURL } from '../../src/util';
 import { paginate } from '../utils';
 import { createActivities } from '../mocks/dbActions';
@@ -40,7 +41,6 @@ export const activitiesHandlers = [
 
   http.get(`${baseURL}/todo-cards/:todoCardId/activities`, async ({ request }) => {
     const url = new URL(request.url);
-    console.log('GET activities data:', data);
 
     let pg = Number(url.searchParams.get('page')) ?? 1;
     const size = 2;
@@ -62,6 +62,18 @@ export const activitiesHandlers = [
         },
       },
       { status: 200 }
+    );
+  }),
+
+  http.post(`${baseURL}/activities`, () => {
+    const data: IActivity = { ...toPlainObject(db.activity.create()), todoCardId: 1, userId: 1 };
+
+    return HttpResponse.json<ICreateActivityResponse>(
+      {
+        message: 'success',
+        data,
+      },
+      { status: 201 }
     );
   }),
 ];
