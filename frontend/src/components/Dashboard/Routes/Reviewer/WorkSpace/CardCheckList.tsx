@@ -89,7 +89,7 @@ const CardCheckList = ({
       </div>
       {checkList.checkListItems.map((checkListItem) => {
         return (
-          <div key={checkListItem.id}>
+          <div data-testid="hidden-card-checklist-item" key={checkListItem.id}>
             {hideCheckedItems && checkListItem.isCompleted ? (
               <></>
             ) : (

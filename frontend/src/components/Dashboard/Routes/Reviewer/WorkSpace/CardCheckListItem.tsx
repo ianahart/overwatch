@@ -29,7 +29,7 @@ const CardCheckListItem = ({ checkListItem, updateCheckListItem, deleteCheckList
   };
 
   return (
-    <div className="flex justify-between my-2">
+    <div data-testid="card-checklist-item" className="flex justify-between my-2">
       <div className="flex items-center">
         {isEditOpen ? (
           <input
