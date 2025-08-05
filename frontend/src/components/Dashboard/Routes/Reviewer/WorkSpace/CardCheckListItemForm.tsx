@@ -53,7 +53,7 @@ const CardCheckListItemForm = ({ addCheckListItem, closeForm, checkListId }: ICa
 
   return (
     <ClickAway onClickAway={closeForm}>
-      <form onSubmit={handleOnSubmit}>
+      <form data-testid="CardCheckListItemForm" onSubmit={handleOnSubmit}>
         <div className="flex flex-col my-1">
           <label htmlFor={`checklistitem-${checkListId}`}>New Item</label>
           {error.length > 0 && <p className="text-xs text-red-300 my-1">sdfdsfdsfds</p>}

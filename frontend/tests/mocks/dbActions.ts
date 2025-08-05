@@ -1,5 +1,7 @@
 import { toPlainObject } from 'lodash';
 import {
+  IActiveLabel,
+  IActivity,
   IBadge,
   IBlockedUser,
   IComment,
@@ -25,10 +27,47 @@ import {
   ITeamPinnedMessage,
   ITeamPost,
   ITestimonial,
+  ITodoCard,
   IUser,
 } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createActivities(numberOfActivities: number, overrides: Partial<IActivity> = {}) {
+  const activities: IActivity[] = [];
+
+  for (let i = 0; i < numberOfActivities; i++) {
+    const activity: IActivity = { ...toPlainObject(db.activity.create()), userId: 1, todoCardId: 1, ...overrides };
+
+    activities.push(activity);
+  }
+  return activities;
+}
+
+export function createActiveLabels(numberOfLabels: number, overrides: Partial<IActiveLabel> = {}) {
+  const activeLabels: IActiveLabel[] = [];
+
+  for (let i = 0; i < numberOfLabels; i++) {
+    const activeLabel: IActiveLabel = {
+      ...toPlainObject(db.activeLabel.create()),
+      labelId: 1,
+      todoCardId: 1,
+      ...overrides,
+    };
+    activeLabels.push(activeLabel);
+  }
+  return activeLabels;
+}
+
+export function createTodoCards(numberOfCards: number) {
+  const todoCards: ITodoCard[] = [];
+
+  for (let i = 0; i < numberOfCards; i++) {
+    const todoCard: ITodoCard = { ...toPlainObject(db.todoCard.create()), todoListId: 1, userId: 1 };
+    todoCards.push(todoCard);
+  }
+  return todoCards;
+}
 
 export function createBadges(numberOfBadges: number) {
   const badges: IBadge[] = [];

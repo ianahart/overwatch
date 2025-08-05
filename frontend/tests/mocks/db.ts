@@ -54,10 +54,98 @@ let statisticMainLanguageIdCounter = 1;
 let statisticReviewTypesCompletedIdCounter = 1;
 let statisticReviewsCompletedIdCounter = 1;
 let statisticAvgReviewTimeIdCounter = 1;
+let todoListIdCounter = 1;
+let workSpaceIdCounter = 1;
+let todoCardIdCounter = 1;
+let checkListIdCounter = 1;
+let checkListItemIdCounter = 1;
+let activeLabelIdCounter = 1;
+let labelIdCounter = 1;
+let activityIdCounter = 1;
 
 const fullName = getFullName();
 
 export const db = factory({
+  activity: {
+    id: primaryKey(() => activityIdCounter++),
+    userId: oneOf('user'),
+    todoCardId: oneOf('todoCard'),
+    text: () => faker.lorem.sentence(20),
+    createdAt: () => faker.date.recent().toString(),
+    avatarUrl: () => faker.image.avatar(),
+  },
+
+  label: {
+    id: primaryKey(() => labelIdCounter++),
+    userId: oneOf('user'),
+    workSpaceId: oneOf('workSpace'),
+    createdAt: () => faker.date.recent().toString(),
+    isChecked: () => faker.datatype.boolean(),
+    title: () => faker.lorem.word(8),
+    color: () => faker.color.human(),
+  },
+
+  activeLabel: {
+    id: primaryKey(() => activeLabelIdCounter++),
+    todoCardId: oneOf('todoCard'),
+    labelId: oneOf('label'),
+    color: () => faker.color.human(),
+    title: () => faker.lorem.word(8),
+  },
+
+  checkListItem: {
+    id: primaryKey(() => checkListItemIdCounter++),
+    userId: oneOf('user'),
+    checkListId: oneOf('checkList'),
+    title: () => faker.lorem.word(8),
+    isCompleted: () => faker.datatype.boolean(),
+  },
+
+  checkList: {
+    id: primaryKey(() => checkListIdCounter++),
+    userId: oneOf('user'),
+    todoCardId: oneOf('todoCard'),
+    createdAt: () => faker.date.recent().toString(),
+    isCompleted: () => faker.datatype.boolean(),
+    title: () => faker.lorem.word(8),
+    checkListItems: manyOf('checkListItem'),
+  },
+
+  todoCard: {
+    todoListId: oneOf('todoList'),
+    userId: oneOf('user'),
+    id: primaryKey(() => todoCardIdCounter++),
+    createdAt: () => faker.date.recent().toString(),
+    label: () => faker.lorem.word(8),
+    title: () => faker.lorem.word(8),
+    color: () => faker.color.human(),
+    index: () => faker.number.int({ min: 0, max: 5 }),
+    details: () => faker.lorem.paragraph(2),
+    startDate: () => faker.date.recent().toString(),
+    endDate: () => faker.date.future(),
+    photo: () => faker.image.url(),
+    todoListTitle: () => faker.lorem.word(8),
+    uploadPhotoUrl: () => faker.image.url(),
+  },
+
+  workSpace: {
+    id: primaryKey(() => workSpaceIdCounter++),
+    createdAt: () => faker.date.recent().toString(),
+    userId: oneOf('user'),
+    title: () => faker.lorem.word(8),
+    backgroundColor: () => faker.color.human(),
+  },
+
+  todoList: {
+    id: primaryKey(() => todoListIdCounter++),
+    userId: oneOf('user'),
+    workSpaceId: oneOf('workSpace'),
+    title: () => faker.lorem.word(8),
+    index: () => faker.number.int({ min: 0, max: 5 }),
+    createdAt: () => faker.date.recent().toString(),
+    cards: manyOf('todoCard'),
+  },
+
   statisticTopRequesters: {
     id: primaryKey(() => statisticTopRequestersIdCounter++),
     fullName: () => faker.person.fullName(),

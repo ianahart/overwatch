@@ -64,8 +64,8 @@ const activitiesApi = createApi({
           },
         }),
         //@ts-ignore
-        invalidatesTags: (_, error, { id }) => [
-          { type: 'Activity', id: id },
+        invalidatesTags: (_, error, { activityId }) => [
+          { type: 'Activity', id: activityId },
           { type: 'Activity', id: 'LIST' },
         ],
       }),

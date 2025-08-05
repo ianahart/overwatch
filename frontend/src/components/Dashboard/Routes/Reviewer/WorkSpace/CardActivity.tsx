@@ -110,7 +110,7 @@ const CardActivity = ({ card }: ICardActivityProps) => {
         <div className="my-4 w-full md:w-[75%]">
           {activities.map((activity) => {
             return (
-              <div className="flex justify-between my-2" key={activity.id}>
+              <div data-testid="card-activity-item" className="flex justify-between my-2" key={activity.id}>
                 <div>
                   <div className="mr-2 flex items-center">
                     <Avatar initials={'?.?'} avatarUrl={activity.avatarUrl} width="w-9" height="h-9" />
@@ -120,7 +120,11 @@ const CardActivity = ({ card }: ICardActivityProps) => {
                     <p className="text-xs">{dayjs(activity.createdAt).format('MM/DD/YYYY h:m A')}</p>
                   </div>
                 </div>
-                <div className="cursor-pointer" onClick={() => handleDeleteActivity(activity.id)}>
+                <div
+                  data-testid="activity-trash-icon"
+                  className="cursor-pointer"
+                  onClick={() => handleDeleteActivity(activity.id)}
+                >
                   <BsTrash />
                 </div>
               </div>

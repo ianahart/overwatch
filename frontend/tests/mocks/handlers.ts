@@ -35,8 +35,18 @@ import { appTestimonialsHandlers } from '../handlers/appTestimonials';
 import { reviewFeedbacksHandlers } from '../handlers/reviewFeedbacks';
 import { badgesHandlers } from '../handlers/badges';
 import { feedbackTemplatesHandlers } from '../handlers/feedbackTemplates';
+import { todoCardsHandlers } from '../handlers/todoCards';
+import { todoListsHandlers } from '../handlers/todoLists';
+import { activeLabelsHandlers } from '../handlers/activeLabels';
+import { activitiesHandlers } from '../handlers/activities';
+import { checkListsHandlers } from '../handlers/checkLists';
 
 export const handlers = [
+  ...checkListsHandlers,
+  ...activeLabelsHandlers,
+  ...activitiesHandlers,
+  ...todoCardsHandlers,
+  ...todoListsHandlers,
   ...feedbackTemplatesHandlers,
   ...badgesHandlers,
   ...reviewFeedbacksHandlers,

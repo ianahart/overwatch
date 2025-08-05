@@ -29,10 +29,11 @@ const CardCheckListItem = ({ checkListItem, updateCheckListItem, deleteCheckList
   };
 
   return (
-    <div className="flex justify-between my-2">
+    <div data-testid="card-checklist-item" className="flex justify-between my-2">
       <div className="flex items-center">
         {isEditOpen ? (
           <input
+            data-testid="card-checklist-item-edit-input"
             className="border border-gray-800 rounded bg-transparent"
             onBlur={handleOnBlur}
             onChange={(e) => setInputValue(e.target.value)}
@@ -47,10 +48,18 @@ const CardCheckListItem = ({ checkListItem, updateCheckListItem, deleteCheckList
         )}
       </div>
       <div className="flex items-center">
-        <div onClick={() => setIsEditOpen((prevState) => !prevState)} className="mx-1 cursor-pointer">
+        <div
+          data-testid="card-checklist-item-edit-icon"
+          onClick={() => setIsEditOpen((prevState) => !prevState)}
+          className="mx-1 cursor-pointer"
+        >
           <BiSolidEdit />
         </div>
-        <div className="mx-1 cursor-pointer" onClick={() => deleteCheckListItem(checkListItem)}>
+        <div
+          data-testid="card-checklist-item-delete-icon"
+          className="mx-1 cursor-pointer"
+          onClick={() => deleteCheckListItem(checkListItem)}
+        >
           <BiTrash />
         </div>
       </div>
