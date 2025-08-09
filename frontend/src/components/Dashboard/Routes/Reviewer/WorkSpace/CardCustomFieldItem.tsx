@@ -10,7 +10,7 @@ export interface ICardCustomFieldItemProps {
 const CardCustomFieldItem = ({ customField }: ICardCustomFieldItemProps) => {
   const [isValueOpen, setIsValueOpen] = useState(false);
   return (
-    <div className="my-4 w-full md:w-[50%]">
+    <div data-testid="CardCustomFieldItem" className="my-4 w-full md:w-[50%]">
       <div className="my-2 flex items-center justify-between">
         <p>{customField.fieldName}</p>
         <div

@@ -41,8 +41,10 @@ import { activeLabelsHandlers } from '../handlers/activeLabels';
 import { activitiesHandlers } from '../handlers/activities';
 import { checkListsHandlers } from '../handlers/checkLists';
 import { checkListsItemsHandlers } from '../handlers/checkListItems';
+import { customFieldsHandlers } from '../handlers/customFields';
 
 export const handlers = [
+  ...customFieldsHandlers,
   ...checkListsItemsHandlers,
   ...checkListsHandlers,
   ...activeLabelsHandlers,
