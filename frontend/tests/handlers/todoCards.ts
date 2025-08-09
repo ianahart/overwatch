@@ -1,11 +1,23 @@
 import { http, HttpResponse } from 'msw';
 import { toPlainObject } from 'lodash';
 
-import { ICreateTodoCardResponse, ITodoCard } from '../../src/interfaces';
+import { ICreateTodoCardResponse, ITodoCard, IUpdateTodoCardResponse } from '../../src/interfaces';
 import { baseURL } from '../../src/util';
 import { db } from '../mocks/db';
 
 export const todoCardsHandlers = [
+  http.put(`${baseURL}/todo-cards/:id`, () => {
+    const data: ITodoCard = { ...toPlainObject(db.todoCard.create()), title: 'updated title' };
+
+    return HttpResponse.json<IUpdateTodoCardResponse>(
+      {
+        message: 'success',
+        data,
+      },
+      { status: 200 }
+    );
+  }),
+
   http.post(`${baseURL}/todo-lists/:todoListId/todo-cards`, async () => {
     const todoCardEntity = db.todoCard.create();
 
