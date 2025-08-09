@@ -13,21 +13,28 @@ const CardCustomFieldItem = ({ customField }: ICardCustomFieldItemProps) => {
     <div className="my-4 w-full md:w-[50%]">
       <div className="my-2 flex items-center justify-between">
         <p>{customField.fieldName}</p>
-        <div className="cursor-pointer" onClick={() => setIsValueOpen((prevState) => !prevState)}>
-          {isValueOpen ? <BsChevronUp /> : <BsChevronDown />}
+        <div
+          data-testid="card-custom-field-item-button"
+          className="cursor-pointer"
+          onClick={() => setIsValueOpen((prevState) => !prevState)}
+        >
+          {isValueOpen ? (
+            <BsChevronUp data-testid="card-custom-field-item-chevron-up" />
+          ) : (
+            <BsChevronDown data-testid="card-custom-field-item-chevron-down" />
+          )}
         </div>
       </div>
       {isValueOpen && (
-        <div
-          className="my-2 ml-2 bg-gray-800 p-2 rounded
-                    "
-        >
-          <p>{customField.selectedValue}</p>
+        <div className="my-2 ml-2 bg-gray-800 p-2 rounded">
+          <p>-{customField.selectedValue}</p>
           {customField.dropDownOptions?.map((dropDownOption) => {
             return (
               <div key={dropDownOption.id} className="flex items-center">
                 {customField.fieldType === 'CHECKBOX' && <input className="mx-2" type="checkbox" />}
-                <p>{dropDownOption.optionValue}</p>
+                <p data-testid={`card-custom-field-item-dropdown-option-${dropDownOption.optionValue}`}>
+                  {dropDownOption.optionValue}
+                </p>
               </div>
             );
           })}

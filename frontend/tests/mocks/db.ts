@@ -62,10 +62,28 @@ let checkListItemIdCounter = 1;
 let activeLabelIdCounter = 1;
 let labelIdCounter = 1;
 let activityIdCounter = 1;
-
+let customFieldIdCounter = 1;
+let dropDownOptionIdCounter = 1;
 const fullName = getFullName();
 
 export const db = factory({
+  dropDownOption: {
+    id: primaryKey(() => dropDownOptionIdCounter++),
+    customFieldId: oneOf('customField'),
+    optionValue: () => faker.helpers.arrayElement(['low', 'medium', 'high']),
+  },
+
+  customField: {
+    id: primaryKey(() => customFieldIdCounter++),
+    userId: oneOf('user'),
+    todoCardId: oneOf('todoCard'),
+    fieldType: () => 'CHECKBOX',
+    fieldName: () => 'checkbox',
+    selectedValue: () => 'low',
+    isActive: () => faker.datatype.boolean(),
+    dropDownOptions: manyOf('dropDownOption'),
+  },
+
   activity: {
     id: primaryKey(() => activityIdCounter++),
     userId: oneOf('user'),
