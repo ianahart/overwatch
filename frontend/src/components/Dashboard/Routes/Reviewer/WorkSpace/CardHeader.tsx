@@ -103,7 +103,11 @@ const CardHeader = ({ card, handleOnModalClose }: ICardHeaderProps) => {
             />
           )}
         </div>
-        <div onClick={handleOnClick} className="rounded h-9 border border-gray-800 cursor-pointer">
+        <div
+          data-testid="card-header-close-icon"
+          onClick={handleOnClick}
+          className="rounded h-9 border border-gray-800 cursor-pointer"
+        >
           <AiOutlineClose className="text-2xl m-1" />
         </div>
       </div>
@@ -128,7 +132,12 @@ const CardHeader = ({ card, handleOnModalClose }: ICardHeaderProps) => {
           <div className="flex flex-wrap items-center">
             {activeLabels.map((activeLabel) => {
               return (
-                <div className="p-1 rounded m-1" style={{ background: activeLabel.color }} key={activeLabel.id}>
+                <div
+                  data-testid="ActiveLabel"
+                  className="p-1 rounded m-1"
+                  style={{ background: activeLabel.color }}
+                  key={activeLabel.id}
+                >
                   <p className="text-xs font-bold text-white">{activeLabel.title}</p>
                 </div>
               );
