@@ -51,6 +51,7 @@ const CardUploadPhoto = ({ card }: ICardUploadPhotoProps) => {
                 </div>
               )}
               <div
+                data-testid="card-upload-photo-close-icon"
                 onClick={handleOnClick}
                 onMouseEnter={() => setIsToolTipHovered(true)}
                 onMouseLeave={() => setIsToolTipHovered(false)}
