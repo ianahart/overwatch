@@ -74,7 +74,12 @@ export function createTodoCards(numberOfCards: number) {
   const todoCards: ITodoCard[] = [];
 
   for (let i = 0; i < numberOfCards; i++) {
-    const todoCard: ITodoCard = { ...toPlainObject(db.todoCard.create()), todoListId: 1, userId: 1 };
+    const todoCard: ITodoCard = {
+      ...toPlainObject(db.todoCard.create()),
+      todoListId: 1,
+      userId: 1,
+      title: `title-${i}`,
+    };
     todoCards.push(todoCard);
   }
   return todoCards;

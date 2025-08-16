@@ -67,7 +67,10 @@ const TodoListOptions = ({ todoListId, onClickClose }: ITodoListOptionsProps) =>
   };
 
   return (
-    <div className=" absolute top-4 right-0 bg-gray-950 rounded w-full max-w-[125px] min-h-[90px] min-w-[125px]">
+    <div
+      data-testid="TodoListOptions"
+      className=" absolute top-4 right-0 bg-gray-950 rounded w-full max-w-[125px] min-h-[90px] min-w-[125px]"
+    >
       <ul>
         <li onClick={handleOnDelete} className="flex items-center p-2 border-b border-b-gray-800 pointer-events-auto">
           <BsTrash className="mr-1" />
