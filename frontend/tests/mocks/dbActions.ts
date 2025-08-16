@@ -29,9 +29,20 @@ import {
   ITestimonial,
   ITodoCard,
   IUser,
+  IWorkSpaceEntity,
 } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createWorkSpaces(numberOfWorkSpaces: number) {
+  const workSpaces: IWorkSpaceEntity[] = [];
+
+  for (let i = 0; i < numberOfWorkSpaces; i++) {
+    const workSpace: IWorkSpaceEntity = { ...toPlainObject(db.workSpace.create()), userId: 1 };
+    workSpaces.push(workSpace);
+  }
+  return workSpaces;
+}
 
 export function createActivities(numberOfActivities: number, overrides: Partial<IActivity> = {}) {
   const activities: IActivity[] = [];

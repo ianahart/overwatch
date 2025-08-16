@@ -42,6 +42,7 @@ import { activitiesHandlers } from '../handlers/activities';
 import { checkListsHandlers } from '../handlers/checkLists';
 import { checkListsItemsHandlers } from '../handlers/checkListItems';
 import { customFieldsHandlers } from '../handlers/customFields';
+import { workSpacesHandlers } from '../handlers/workSpaces';
 
 export const handlers = [
   ...customFieldsHandlers,
@@ -51,6 +52,7 @@ export const handlers = [
   ...activitiesHandlers,
   ...todoCardsHandlers,
   ...todoListsHandlers,
+  ...workSpacesHandlers,
   ...feedbackTemplatesHandlers,
   ...badgesHandlers,
   ...reviewFeedbacksHandlers,
