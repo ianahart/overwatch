@@ -28,11 +28,22 @@ import {
   ITeamPost,
   ITestimonial,
   ITodoCard,
+  ITodoList,
   IUser,
   IWorkSpaceEntity,
 } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createTodoLists(numberOfLists: number) {
+  const todoLists: ITodoList[] = [];
+
+  for (let i = 0; i < numberOfLists; i++) {
+    const todoList: ITodoList = { ...toPlainObject(db.todoList.create()), userId: 1, workSpaceId: 1 };
+    todoLists.push(todoList);
+  }
+  return todoLists;
+}
 
 export function createWorkSpaces(numberOfWorkSpaces: number) {
   const workSpaces: IWorkSpaceEntity[] = [];
