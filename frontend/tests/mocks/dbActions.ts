@@ -35,11 +35,11 @@ import {
 import { db } from './db';
 import { faker } from '@faker-js/faker';
 
-export function createTodoLists(numberOfLists: number) {
+export function createTodoLists(numberOfLists: number, cards: ITodoCard[] = []) {
   const todoLists: ITodoList[] = [];
 
   for (let i = 0; i < numberOfLists; i++) {
-    const todoList: ITodoList = { ...toPlainObject(db.todoList.create()), userId: 1, workSpaceId: 1 };
+    const todoList: ITodoList = { ...toPlainObject(db.todoList.create()), userId: 1, workSpaceId: 1, cards };
     todoLists.push(todoList);
   }
   return todoLists;

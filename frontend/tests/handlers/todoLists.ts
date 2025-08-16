@@ -6,12 +6,25 @@ import {
   IDeleteTodoListResponse,
   IReorderTodoListResponse,
   ITodoList,
+  IUpdateTodoListResponse,
 } from '../../src/interfaces';
 import { baseURL } from '../../src/util';
 import { db } from '../mocks/db';
 import { createTodoLists } from '../mocks/dbActions';
 
 export const todoListsHandlers = [
+  http.patch(`${baseURL}/todo-lists/:id`, () => {
+    const [todoList] = createTodoLists(1);
+
+    return HttpResponse.json<IUpdateTodoListResponse>(
+      {
+        message: 'success',
+        data: { ...todoList, title: 'updated title' },
+      },
+      { status: 200 }
+    );
+  }),
+
   http.delete(`${baseURL}/todo-lists/:id`, () => {
     return HttpResponse.json<IDeleteTodoListResponse>(
       {

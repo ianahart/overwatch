@@ -37,7 +37,6 @@ const TodoListTitle = ({ list }: ITodoListTitleProps) => {
     updateTodoList(payload)
       .unwrap()
       .then((res) => {
-        console.log(res);
         dispatch(updateSingleTodoList(res.data));
         setIsInputShowing(false);
       })
