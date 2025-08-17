@@ -4,6 +4,7 @@ import { toPlainObject } from 'lodash';
 import {
   ICreateTodoListResponse,
   IDeleteTodoListResponse,
+  IFetchTodoListsResponse,
   IReorderTodoListResponse,
   ITodoList,
   IUpdateTodoListResponse,
@@ -13,6 +14,18 @@ import { db } from '../mocks/db';
 import { createTodoLists } from '../mocks/dbActions';
 
 export const todoListsHandlers = [
+  http.get(`${baseURL}/workspaces/:workSpaceId/todo-lists`, () => {
+    const todoLists = createTodoLists(3);
+
+    return HttpResponse.json<IFetchTodoListsResponse>(
+      {
+        message: 'success',
+        data: todoLists,
+      },
+      { status: 200 }
+    );
+  }),
+
   http.patch(`${baseURL}/todo-lists/:id`, () => {
     const [todoList] = createTodoLists(1);
 

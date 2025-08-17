@@ -35,6 +35,7 @@ const TodoList = ({ list }: ITodoListProps) => {
 
   return (
     <div
+      data-testid="TodoList"
       ref={setNodeRef}
       style={style}
       {...attributes}
