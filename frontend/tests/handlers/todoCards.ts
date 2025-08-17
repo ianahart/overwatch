@@ -1,11 +1,34 @@
 import { http, HttpResponse } from 'msw';
 import { toPlainObject } from 'lodash';
 
-import { ICreateTodoCardResponse, ITodoCard, IUpdateTodoCardResponse } from '../../src/interfaces';
+import {
+  ICreateTodoCardResponse,
+  IReorderTodoCardResponse,
+  ITodoCard,
+  IUpdateTodoCardResponse,
+} from '../../src/interfaces';
 import { baseURL } from '../../src/util';
 import { db } from '../mocks/db';
 
 export const todoCardsHandlers = [
+  http.patch(`${baseURL}/todo-cards/:todoCardId/move`, () => {
+    return HttpResponse.json<IReorderTodoCardResponse>(
+      {
+        message: 'success',
+      },
+      { status: 200 }
+    );
+  }),
+
+  http.patch(`${baseURL}/todo-cards/:todoCardId/reorder`, () => {
+    return HttpResponse.json<IReorderTodoCardResponse>(
+      {
+        message: 'success',
+      },
+      { status: 200 }
+    );
+  }),
+
   http.put(`${baseURL}/todo-cards/:id`, () => {
     const data: ITodoCard = { ...toPlainObject(db.todoCard.create()), title: 'updated title' };
 

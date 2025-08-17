@@ -9,6 +9,7 @@ import {
   IFetchProfileResponse,
   IFullProfile,
   IGitHubRepositoryPreview,
+  ILabel,
   IMessage,
   IPaymentIntent,
   IPinnedConnection,
@@ -34,6 +35,16 @@ import {
 } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createLabels(numberOfLabels: number) {
+  const labels: ILabel[] = [];
+
+  for (let i = 0; i < numberOfLabels; i++) {
+    const label: ILabel = { ...toPlainObject(db.label.create()), userId: 1 };
+    labels.push(label);
+  }
+  return labels;
+}
 
 export function createTodoLists(numberOfLists: number, cards: ITodoCard[] = []) {
   const todoLists: ITodoList[] = [];

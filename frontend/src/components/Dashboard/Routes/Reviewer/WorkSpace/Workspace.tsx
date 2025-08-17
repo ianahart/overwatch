@@ -131,7 +131,7 @@ const WorkSpace = () => {
   const style = { backgroundColor: workSpace.backgroundColor ? workSpace.backgroundColor : '#030712' };
 
   return (
-    <div style={style} className="min-h-[700px] w-full rounded p-2 overflow-x-auto">
+    <div data-testid="WorkSpace" style={style} className="min-h-[700px] w-full rounded p-2 overflow-x-auto">
       {workSpace.id !== 0 && (
         <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
           <SortableContext
