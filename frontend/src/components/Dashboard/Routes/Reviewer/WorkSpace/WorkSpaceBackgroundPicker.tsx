@@ -39,7 +39,11 @@ const WorkSpaceBackgroundPicker = () => {
 
   return (
     <div className="relative">
-      <BsThreeDots onClick={() => setIsOpen(!isOpen)} className="text-gray-400 cursor-pointer" />
+      <BsThreeDots
+        data-testid="background-picker-dots"
+        onClick={() => setIsOpen(!isOpen)}
+        className="text-gray-400 cursor-pointer"
+      />
       {isOpen && (
         <ClickAway onClickAway={handleClickAway}>
           <div className="absolute z-20 top-6 right-0 bg-slate-800 p-1 rounded md:w-52 w-40 shadow-md">
@@ -48,6 +52,7 @@ const WorkSpaceBackgroundPicker = () => {
               {backgroundColors.map(({ id, value }) => {
                 return (
                   <div
+                    data-testid="background-picker-colors"
                     onClick={() => handleSelectBackgroundColor(value)}
                     style={{ backgroundColor: value }}
                     key={id}
