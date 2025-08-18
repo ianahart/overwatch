@@ -9,6 +9,7 @@ import {
   IFetchProfileResponse,
   IFullProfile,
   IGitHubRepositoryPreview,
+  ILabel,
   IMessage,
   IPaymentIntent,
   IPinnedConnection,
@@ -28,10 +29,42 @@ import {
   ITeamPost,
   ITestimonial,
   ITodoCard,
+  ITodoList,
   IUser,
+  IWorkSpaceEntity,
 } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createLabels(numberOfLabels: number) {
+  const labels: ILabel[] = [];
+
+  for (let i = 0; i < numberOfLabels; i++) {
+    const label: ILabel = { ...toPlainObject(db.label.create()), userId: 1 };
+    labels.push(label);
+  }
+  return labels;
+}
+
+export function createTodoLists(numberOfLists: number, cards: ITodoCard[] = []) {
+  const todoLists: ITodoList[] = [];
+
+  for (let i = 0; i < numberOfLists; i++) {
+    const todoList: ITodoList = { ...toPlainObject(db.todoList.create()), userId: 1, workSpaceId: 1, cards };
+    todoLists.push(todoList);
+  }
+  return todoLists;
+}
+
+export function createWorkSpaces(numberOfWorkSpaces: number) {
+  const workSpaces: IWorkSpaceEntity[] = [];
+
+  for (let i = 0; i < numberOfWorkSpaces; i++) {
+    const workSpace: IWorkSpaceEntity = { ...toPlainObject(db.workSpace.create()), userId: 1 };
+    workSpaces.push(workSpace);
+  }
+  return workSpaces;
+}
 
 export function createActivities(numberOfActivities: number, overrides: Partial<IActivity> = {}) {
   const activities: IActivity[] = [];
@@ -63,7 +96,12 @@ export function createTodoCards(numberOfCards: number) {
   const todoCards: ITodoCard[] = [];
 
   for (let i = 0; i < numberOfCards; i++) {
-    const todoCard: ITodoCard = { ...toPlainObject(db.todoCard.create()), todoListId: 1, userId: 1 };
+    const todoCard: ITodoCard = {
+      ...toPlainObject(db.todoCard.create()),
+      todoListId: 1,
+      userId: 1,
+      title: `title-${i}`,
+    };
     todoCards.push(todoCard);
   }
   return todoCards;

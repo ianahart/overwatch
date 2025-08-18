@@ -87,6 +87,7 @@ const CurrentWorkSpaceDropdown = ({ onClickAway, handleSetOpen }: ICurrentWorkSp
         {workSpaces.map((ws) => {
           return (
             <div
+              data-testid="workspace-item"
               onClick={() => selectWorkSpace(ws)}
               key={ws.id}
               className="my-2 flex items-center cursor-pointer hover:bg-gray-900"

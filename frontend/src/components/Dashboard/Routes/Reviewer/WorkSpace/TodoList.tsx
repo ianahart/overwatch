@@ -35,6 +35,7 @@ const TodoList = ({ list }: ITodoListProps) => {
 
   return (
     <div
+      data-testid="TodoList"
       ref={setNodeRef}
       style={style}
       {...attributes}
@@ -49,7 +50,7 @@ const TodoList = ({ list }: ITodoListProps) => {
         </div>
       </div>
       <div className="flex justify-end relative">
-        <BsThreeDots onClick={onClickOpen} className="cursor-pointer" />
+        <BsThreeDots data-testid="todolist-options-trigger" onClick={onClickOpen} className="cursor-pointer" />
         {isOpen && (
           <ClickAway onClickAway={onClickAway}>
             <TodoListOptions onClickClose={onClickAway} todoListId={list.id} />

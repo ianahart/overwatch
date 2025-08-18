@@ -40,13 +40,21 @@ import { todoListsHandlers } from '../handlers/todoLists';
 import { activeLabelsHandlers } from '../handlers/activeLabels';
 import { activitiesHandlers } from '../handlers/activities';
 import { checkListsHandlers } from '../handlers/checkLists';
+import { checkListsItemsHandlers } from '../handlers/checkListItems';
+import { customFieldsHandlers } from '../handlers/customFields';
+import { workSpacesHandlers } from '../handlers/workSpaces';
+import { labelsHandlers } from '../handlers/labels';
 
 export const handlers = [
+  ...labelsHandlers,
+  ...customFieldsHandlers,
+  ...checkListsItemsHandlers,
   ...checkListsHandlers,
   ...activeLabelsHandlers,
   ...activitiesHandlers,
   ...todoCardsHandlers,
   ...todoListsHandlers,
+  ...workSpacesHandlers,
   ...feedbackTemplatesHandlers,
   ...badgesHandlers,
   ...reviewFeedbacksHandlers,
