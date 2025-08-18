@@ -1,6 +1,11 @@
 import { http, HttpResponse } from 'msw';
 
-import { ICreateWorkSpaceResponse, IFetchWorkSpacesResponse, IUpdateWorkSpaceResponse } from '../../src/interfaces';
+import {
+  ICreateWorkSpaceResponse,
+  IFetchLatestWorkSpaceResponse,
+  IFetchWorkSpacesResponse,
+  IUpdateWorkSpaceResponse,
+} from '../../src/interfaces';
 import { baseURL } from '../../src/util';
 import { createWorkSpaces } from '../mocks/dbActions';
 import { paginate } from '../utils';
@@ -61,6 +66,20 @@ export const workSpacesHandlers = [
     return HttpResponse.json(
       {
         message: 'success',
+      },
+      { status: 200 }
+    );
+  }),
+
+  http.get(`${baseURL}/workspaces/latest`, () => {
+    let [workSpace] = createWorkSpaces(1);
+
+    workSpace = { ...workSpace, title: 'test' };
+
+    return HttpResponse.json<IFetchLatestWorkSpaceResponse>(
+      {
+        message: 'success',
+        data: workSpace,
       },
       { status: 200 }
     );
