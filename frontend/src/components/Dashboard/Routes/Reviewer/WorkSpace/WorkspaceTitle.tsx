@@ -100,10 +100,14 @@ const WorkSpaceTitle = () => {
         )}
         {workSpace.title.length > 0 && (
           <div className="flex items-center">
-            <div className="mx-2 cursor-pointer" onClick={emptyWorkSpace}>
+            <div data-testid="workspace-title-plus-icon" className="mx-2 cursor-pointer" onClick={emptyWorkSpace}>
               <BsPlus className="text-xl" />
             </div>
-            <div className="mx-2 cursor-pointer" onClick={handleDeleteWorkSpace}>
+            <div
+              data-testid="workspace-title-trash-icon"
+              className="mx-2 cursor-pointer"
+              onClick={handleDeleteWorkSpace}
+            >
               <BsTrash className="text-gray-400" />
             </div>
             <div className="mx-2">

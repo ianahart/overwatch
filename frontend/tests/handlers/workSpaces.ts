@@ -1,13 +1,14 @@
 import { http, HttpResponse } from 'msw';
 
-import { IFetchWorkSpacesResponse, IUpdateWorkSpaceResponse } from '../../src/interfaces';
+import { ICreateWorkSpaceResponse, IFetchWorkSpacesResponse, IUpdateWorkSpaceResponse } from '../../src/interfaces';
 import { baseURL } from '../../src/util';
 import { createWorkSpaces } from '../mocks/dbActions';
 import { paginate } from '../utils';
 
 export const workSpacesHandlers = [
   http.patch(`${baseURL}/workspaces/:id`, () => {
-    const [data] = createWorkSpaces(1);
+    let [data] = createWorkSpaces(1);
+    data = { ...data, title: 'updated title' };
     return HttpResponse.json<IUpdateWorkSpaceResponse>(
       {
         message: 'success',
@@ -40,6 +41,26 @@ export const workSpacesHandlers = [
           direction,
           totalElements,
         },
+      },
+      { status: 200 }
+    );
+  }),
+  http.post(`${baseURL}/workspaces`, () => {
+    return HttpResponse.json<ICreateWorkSpaceResponse>(
+      {
+        message: 'success',
+        data: {
+          title: 'workspace test',
+          backgroundColor: '#123456',
+        },
+      },
+      { status: 201 }
+    );
+  }),
+  http.delete(`${baseURL}/workspaces/:id`, () => {
+    return HttpResponse.json(
+      {
+        message: 'success',
       },
       { status: 200 }
     );
