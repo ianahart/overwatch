@@ -127,7 +127,11 @@ const DropDownInputField = ({
                   <div className="flex items-center">
                     <p>{option.value}</p>
                   </div>
-                  <div className="cursor-pointer" onClick={() => deleteOption(option.id)}>
+                  <div
+                    data-testid="dropdown-input-field-trash-icon"
+                    className="cursor-pointer"
+                    onClick={() => deleteOption(option.id)}
+                  >
                     <BsTrash />
                   </div>
                 </div>
