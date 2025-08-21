@@ -31,7 +31,7 @@ const CustomFieldItem = ({
       case 'TEXT':
         return <RiText />;
       case 'DROPDOWN':
-        return <RxDropdownMenu />;
+        return <RxDropdownMenu data-testid="custom-field-item-rendered-icon" />;
       default:
         return <MdOutlineQuestionMark />;
     }
@@ -72,6 +72,7 @@ const CustomFieldItem = ({
                       >
                         <p>{dropDownOption.optionValue}</p>
                         <div
+                          data-testid="custom-field-item-option-trash-icon"
                           onClick={() => handleOnDeleteDropDownOption(dropDownOption.id)}
                           className="cursor-pointer ml-4"
                         >
@@ -91,11 +92,19 @@ const CustomFieldItem = ({
               <input onChange={handleOnUpdateCustomFieldActive} checked={customField.isActive} type="checkbox" />
             </div>
           )}
-          <div onClick={() => setIsValueOpen((prevState) => !prevState)} className="mr-2 cursor-pointer">
+          <div
+            data-testid="custom-field-item-dropdown"
+            onClick={() => setIsValueOpen((prevState) => !prevState)}
+            className="mr-2 cursor-pointer"
+          >
             {isValueOpen ? <BsChevronUp /> : <BsChevronDown />}
           </div>
           {!isValueOpen && (
-            <div onClick={handleOnDeleteCustomField} className="cursor-pointer">
+            <div
+              data-testid="custom-field-item-trash-icon"
+              onClick={handleOnDeleteCustomField}
+              className="cursor-pointer"
+            >
               <BsTrash />
             </div>
           )}
