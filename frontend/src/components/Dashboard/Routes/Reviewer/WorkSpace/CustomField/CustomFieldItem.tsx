@@ -51,7 +51,7 @@ const CustomFieldItem = ({
   };
 
   return (
-    <div key={customField.id} className="my-4 border border-gray-600 rounded p-1">
+    <div data-testid="CustomFieldItem" key={customField.id} className="my-4 border border-gray-600 rounded p-1">
       <div className={`flex ${!isValueOpen ? 'justify-between' : 'justify-normal'}`}>
         <div className="flex-[3]">
           <div className="flex items-center">

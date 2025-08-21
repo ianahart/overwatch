@@ -6,6 +6,7 @@ import {
   IBlockedUser,
   IComment,
   IConnection,
+  ICustomField,
   IFetchProfileResponse,
   IFullProfile,
   IGitHubRepositoryPreview,
@@ -35,6 +36,16 @@ import {
 } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createCustomFields(numberOfFields: number) {
+  const customFields: ICustomField[] = [];
+
+  for (let i = 0; i < numberOfFields; i++) {
+    const customField: ICustomField = { ...toPlainObject(db.customField.create()), todoCardId: 1, userId: 1 };
+    customFields.push(customField);
+  }
+  return customFields;
+}
 
 export function createLabels(numberOfLabels: number) {
   const labels: ILabel[] = [];
