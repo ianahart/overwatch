@@ -12,7 +12,7 @@ const CardHeaderCustomField = ({ page, handleCloseClickAway, navigatePrevPage }:
     <div className="flex justify-between">
       <div>
         {page > 1 && (
-          <div className="cursor-pointer" onClick={navigatePrevPage}>
+          <div data-testid="back-arrow" className="cursor-pointer" onClick={navigatePrevPage}>
             <BsChevronLeft />
           </div>
         )}
@@ -20,7 +20,7 @@ const CardHeaderCustomField = ({ page, handleCloseClickAway, navigatePrevPage }:
       <div>
         <h3 className="font-bold">Custom Field</h3>
       </div>
-      <div onClick={handleCloseClickAway} className="cursor-pointer">
+      <div data-testid="close-button" onClick={handleCloseClickAway} className="cursor-pointer">
         <AiOutlineClose className="hover:text-gray-500" />
       </div>
     </div>
