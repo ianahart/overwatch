@@ -44,8 +44,10 @@ import { checkListsItemsHandlers } from '../handlers/checkListItems';
 import { customFieldsHandlers } from '../handlers/customFields';
 import { workSpacesHandlers } from '../handlers/workSpaces';
 import { labelsHandlers } from '../handlers/labels';
+import { dropDownOptionsHandlers } from '../handlers/dropDownOptions';
 
 export const handlers = [
+  ...dropDownOptionsHandlers,
   ...labelsHandlers,
   ...customFieldsHandlers,
   ...checkListsItemsHandlers,

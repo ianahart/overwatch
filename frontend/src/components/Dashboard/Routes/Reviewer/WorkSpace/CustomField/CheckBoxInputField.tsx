@@ -115,7 +115,11 @@ const CheckBoxInputField = ({
                     <input className="mr-2" type="checkbox" disabled checked />
                     <p>{option.value}</p>
                   </div>
-                  <div className="cursor-pointer" onClick={() => deleteOption(option.id)}>
+                  <div
+                    data-testid="checkbox-input-field-option-trash-icon"
+                    className="cursor-pointer"
+                    onClick={() => deleteOption(option.id)}
+                  >
                     <BsTrash />
                   </div>
                 </div>
