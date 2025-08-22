@@ -1,6 +1,12 @@
 import { http, HttpResponse } from 'msw';
 import { toPlainObject } from 'lodash';
-import { ICreateCustomFieldResponse, ICustomField, IFetchCustomFieldsResponse } from '../../src/interfaces';
+import {
+  ICreateCustomFieldResponse,
+  ICustomField,
+  IDeleteCustomFieldResponse,
+  IFetchCustomFieldsResponse,
+  IUpdateCustomFieldResponse,
+} from '../../src/interfaces';
 import { baseURL } from '../../src/util';
 import { db } from '../mocks/db';
 
@@ -28,6 +34,23 @@ export const customFieldsHandlers = [
       {
         message: 'success',
         data,
+      },
+      { status: 200 }
+    );
+  }),
+
+  http.patch(`${baseURL}/custom-fields/:id`, () => {
+    return HttpResponse.json<IUpdateCustomFieldResponse>(
+      {
+        message: 'success',
+      },
+      { status: 200 }
+    );
+  }),
+  http.delete(`${baseURL}/custom-fields/:id`, () => {
+    return HttpResponse.json<IDeleteCustomFieldResponse>(
+      {
+        message: 'success',
       },
       { status: 200 }
     );

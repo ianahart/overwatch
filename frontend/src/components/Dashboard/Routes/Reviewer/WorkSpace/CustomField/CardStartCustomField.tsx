@@ -113,6 +113,7 @@ const CardStartCustomField = ({
       </div>
       <div className="mt-auto">
         <button
+          data-testid="new-field-btn"
           onClick={navigateNextPage}
           className="flex items-center justify-center hover:bg-gray-950 py-1 px-2 w-full rounded bg-gray-900"
         >

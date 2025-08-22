@@ -8,6 +8,10 @@ import { server } from '../../../../../../mocks/server';
 import { baseURL } from '../../../../../../../src/util';
 
 describe('CheckBoxInputField', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   const getElements = () => {
     return {
       getHeading: () => screen.getByRole('heading', { level: 3 }),
