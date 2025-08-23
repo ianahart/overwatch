@@ -45,8 +45,10 @@ import { customFieldsHandlers } from '../handlers/customFields';
 import { workSpacesHandlers } from '../handlers/workSpaces';
 import { labelsHandlers } from '../handlers/labels';
 import { dropDownOptionsHandlers } from '../handlers/dropDownOptions';
+import { pexelsHandlers } from '../handlers/pexels';
 
 export const handlers = [
+  ...pexelsHandlers,
   ...dropDownOptionsHandlers,
   ...labelsHandlers,
   ...customFieldsHandlers,
