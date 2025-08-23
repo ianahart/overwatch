@@ -3,6 +3,7 @@ import { toPlainObject } from 'lodash';
 
 import {
   ICreateTodoCardResponse,
+  IDeleteTodoCardResponse,
   IReorderTodoCardResponse,
   ITodoCard,
   IUpdateTodoCardResponse,
@@ -12,6 +13,15 @@ import { baseURL } from '../../src/util';
 import { db } from '../mocks/db';
 
 export const todoCardsHandlers = [
+  http.delete(`${baseURL}/todo-cards/:todoCardId`, () => {
+    return HttpResponse.json<IDeleteTodoCardResponse>(
+      {
+        message: 'success',
+      },
+      { status: 200 }
+    );
+  }),
+
   http.patch(`${baseURL}/todo-cards/:todoCardId/upload`, () => {
     const data: ITodoCard = {
       ...toPlainObject(db.todoCard.create()),
