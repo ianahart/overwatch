@@ -39,9 +39,10 @@ export const todoCardsHandlers = [
   }),
 
   http.patch(`${baseURL}/todo-cards/:todoCardId/move`, () => {
-    return HttpResponse.json<IReorderTodoCardResponse>(
+    return HttpResponse.json(
       {
         message: 'success',
+        data: {},
       },
       { status: 200 }
     );

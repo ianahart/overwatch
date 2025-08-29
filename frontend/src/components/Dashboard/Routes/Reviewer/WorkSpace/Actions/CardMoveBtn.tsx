@@ -90,7 +90,11 @@ const CardMoveBtn = ({ card }: ICardMoveBtnProps) => {
               <div className="flex justify-between">
                 <div>&nbsp;</div>
                 <h3 className="text-center">Move card</h3>
-                <AiOutlineClose onClick={handleOnClickAwayClose} className="cursor-pointer hover:opacity-70" />
+                <AiOutlineClose
+                  data-testid="move-card-close-btn"
+                  onClick={handleOnClickAwayClose}
+                  className="cursor-pointer hover:opacity-70"
+                />
               </div>
               <div className="text-xs font-bold mb-1 mt-2">
                 <p>Select a destination</p>
@@ -104,6 +108,7 @@ const CardMoveBtn = ({ card }: ICardMoveBtnProps) => {
                     Move To
                   </label>
                   <select
+                    data-testid="move-card-select"
                     onChange={(e) => setDestinationListId(Number.parseInt(e.target.value))}
                     value={destinationListId}
                     className="h-9 rounded bg-transparent border border-gray-600"
