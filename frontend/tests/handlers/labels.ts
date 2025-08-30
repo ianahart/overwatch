@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 
-import { IDeleteLabelResponse, IFetchLabelResponse } from '../../src/interfaces';
+import { ICreateLabelResponse, IDeleteLabelResponse, IFetchLabelResponse } from '../../src/interfaces';
 import { baseURL } from '../../src/util';
 import { createLabels } from '../mocks/dbActions';
 
@@ -23,6 +23,14 @@ export const labelsHandlers = [
         data,
       },
       { status: 200 }
+    );
+  }),
+  http.post(`${baseURL}/labels`, () => {
+    return HttpResponse.json<ICreateLabelResponse>(
+      {
+        message: 'success',
+      },
+      { status: 201 }
     );
   }),
 ];
