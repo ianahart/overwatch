@@ -68,7 +68,7 @@ const CardLabel = ({ card, label, handleOnDeleteLabel, activeLabelIds }: ICardLa
   };
 
   return (
-    <div key={label.id} className="flex items-center justify-between my-1">
+    <div data-testid="CardLabel" key={label.id} className="flex items-center justify-between my-1">
       <input onChange={handleOnChange} checked={label.isChecked && activeLabelIds.includes(label.id)} type="checkbox" />
       <div style={{ background: label.color }} className="rounded p-1 w-[80%]">
         <p className="text-sm font-bold text-white">{label.title}</p>
@@ -76,7 +76,11 @@ const CardLabel = ({ card, label, handleOnDeleteLabel, activeLabelIds }: ICardLa
       {label.isChecked ? (
         <div></div>
       ) : (
-        <div onClick={() => handleOnDeleteLabel(label.id)} className="cursor-pointer">
+        <div
+          data-testid="delete-active-label-btn"
+          onClick={() => handleOnDeleteLabel(label.id)}
+          className="cursor-pointer"
+        >
           <BsTrash />
         </div>
       )}
