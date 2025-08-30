@@ -61,8 +61,12 @@ const CardLabelForm = ({ handleOnCloseLabelForm }: ICardLabelFormProps) => {
   };
 
   return (
-    <div>
-      <BsChevronLeft className="cursor-pointer" onClick={handleOnCloseLabelForm} />
+    <div data-testid="CardLabelForm">
+      <BsChevronLeft
+        data-testid="card-label-form-close-icon"
+        className="cursor-pointer"
+        onClick={handleOnCloseLabelForm}
+      />
       <div className="p-2">
         <div
           style={{ background: color ? color : '#333' }}
