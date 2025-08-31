@@ -3,18 +3,46 @@ import { toPlainObject } from 'lodash';
 
 import {
   ICreateTodoCardResponse,
+  IDeleteTodoCardResponse,
   IReorderTodoCardResponse,
   ITodoCard,
   IUpdateTodoCardResponse,
+  IUploadTodoCardResponse,
 } from '../../src/interfaces';
 import { baseURL } from '../../src/util';
 import { db } from '../mocks/db';
 
 export const todoCardsHandlers = [
-  http.patch(`${baseURL}/todo-cards/:todoCardId/move`, () => {
-    return HttpResponse.json<IReorderTodoCardResponse>(
+  http.delete(`${baseURL}/todo-cards/:todoCardId`, () => {
+    return HttpResponse.json<IDeleteTodoCardResponse>(
       {
         message: 'success',
+      },
+      { status: 200 }
+    );
+  }),
+
+  http.patch(`${baseURL}/todo-cards/:todoCardId/upload`, () => {
+    const data: ITodoCard = {
+      ...toPlainObject(db.todoCard.create()),
+      title: 'updated title',
+      photo: 'https://upload.com/photo',
+    };
+
+    return HttpResponse.json<IUploadTodoCardResponse>(
+      {
+        message: 'success',
+        data,
+      },
+      { status: 200 }
+    );
+  }),
+
+  http.patch(`${baseURL}/todo-cards/:todoCardId/move`, () => {
+    return HttpResponse.json(
+      {
+        message: 'success',
+        data: {},
       },
       { status: 200 }
     );

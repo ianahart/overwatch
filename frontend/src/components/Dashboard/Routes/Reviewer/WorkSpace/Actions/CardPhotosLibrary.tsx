@@ -66,7 +66,12 @@ const CardPhotosLibrary = ({ updateCardPhoto }: ICardPhotosLibraryProps) => {
       <div className="my-2 flex flex-wrap w-[180px]">
         {photos.map((photo) => {
           return (
-            <div onClick={() => handleOnClick(photo)} className="h-9 w-9 rounded m-1 cursor-pointer" key={photo}>
+            <div
+              data-testid="PexelPhoto"
+              onClick={() => handleOnClick(photo)}
+              className="h-9 w-9 rounded m-1 cursor-pointer"
+              key={photo}
+            >
               <img className="rounded h-full w-full" src={photo} alt={`pexel photo of ${query}`} />
             </div>
           );

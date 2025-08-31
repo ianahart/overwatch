@@ -36,7 +36,11 @@ const CardLabelsBtn = ({ card }: ICardLabelsBtnProps) => {
               <div className="flex justify-between">
                 <div>&nbsp;</div>
                 <h3 className="text-center">Labels</h3>
-                <AiOutlineClose onClick={handleOnClickAwayClose} className="cursor-pointer hover:opacity-70" />
+                <AiOutlineClose
+                  data-testid="card-labels-close-btn"
+                  onClick={handleOnClickAwayClose}
+                  className="cursor-pointer hover:opacity-70"
+                />
               </div>
               {labelFormShowing ? (
                 <CardLabelForm handleOnCloseLabelForm={handleOnCloseLabelForm} />

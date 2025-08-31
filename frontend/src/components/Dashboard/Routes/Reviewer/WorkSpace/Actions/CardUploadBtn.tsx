@@ -76,7 +76,11 @@ const CardUploadBtn = ({ card }: ICardUploadBtnProps) => {
               <div className="flex justify-between">
                 <div>&nbsp;</div>
                 <h3 className="text-center text-sm">Upload Image</h3>
-                <div onClick={handleOnClickAwayClose} className="cursor-pointer hover:opacity-70">
+                <div
+                  data-testid="card-upload-close-btn"
+                  onClick={handleOnClickAwayClose}
+                  className="cursor-pointer hover:opacity-70"
+                >
                   <AiOutlineClose />
                 </div>
               </div>
@@ -104,6 +108,7 @@ const CardUploadBtn = ({ card }: ICardUploadBtnProps) => {
                   </div>
                   <input
                     onChange={handleOnChange}
+                    data-testid="card-upload-input"
                     className="absolute h-full w-full z-10 -top-0 opacity-0 cursor-pointer"
                     id="upload"
                     name="upload"
