@@ -130,7 +130,10 @@ function CardCustomFieldBtn({ card }: ICardCustomFieldBtnProps) {
         </button>
         {isClickAwayOpen && (
           <ClickAway onClickAway={handleCloseClickAway}>
-            <div className="p-2 md:min-h-[400px] rounded bg-gray-700 absolute z-20 right-0 md:w-[325px] min-w-[290px] w-full top-0">
+            <div
+              data-testid="click-away"
+              className="p-2 md:min-h-[400px] rounded bg-gray-700 absolute z-20 right-0 md:w-[325px] min-w-[290px] w-full top-0"
+            >
               {renderCurrentPage()}
             </div>
           </ClickAway>
