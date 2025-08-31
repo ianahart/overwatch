@@ -1,10 +1,28 @@
 import { http, HttpResponse } from 'msw';
 
-import { ICreateLabelResponse, IDeleteLabelResponse, IFetchLabelResponse } from '../../src/interfaces';
+import {
+  ICreateLabelResponse,
+  IDeleteLabelResponse,
+  IFetchLabelResponse,
+  IUpdateLabelResponse,
+} from '../../src/interfaces';
 import { baseURL } from '../../src/util';
 import { createLabels } from '../mocks/dbActions';
 
 export const labelsHandlers = [
+  http.patch(`${baseURL}/labels/:id`, () => {
+    let [data] = createLabels(1);
+    data = { ...data, title: 'updated title', color: 'blue' };
+
+    return HttpResponse.json<IUpdateLabelResponse>(
+      {
+        message: 'success',
+        data,
+      },
+      { status: 200 }
+    );
+  }),
+
   http.delete(`${baseURL}/labels/:id`, () => {
     return HttpResponse.json<IDeleteLabelResponse>(
       {
