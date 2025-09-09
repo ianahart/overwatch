@@ -32,10 +32,21 @@ import {
   ITodoCard,
   ITodoList,
   IUser,
+  IViewUser,
   IWorkSpaceEntity,
 } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createViewUsers(numberOfUsers: number) {
+  const users: IViewUser[] = [];
+
+  for (let i = 0; i < numberOfUsers; i++) {
+    const user: IViewUser = { ...toPlainObject(db.viewUser.create()) };
+    users.push(user);
+  }
+  return users;
+}
 
 export function createCustomFields(numberOfFields: number) {
   const customFields: ICustomField[] = [];

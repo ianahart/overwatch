@@ -64,9 +64,19 @@ let labelIdCounter = 1;
 let activityIdCounter = 1;
 let customFieldIdCounter = 1;
 let dropDownOptionIdCounter = 1;
+let viewUserIdCounter = 1;
 const fullName = getFullName();
 
 export const db = factory({
+  viewUser: {
+    id: primaryKey(() => viewUserIdCounter++),
+    firstName: () => faker.person.firstName(),
+    lastName: () => faker.person.lastName(),
+    avatarUrl: () => faker.image.avatar(),
+    role: () => faker.helpers.arrayElement(['ADMIN', 'USER', 'REVIEWER']),
+    email: () => faker.internet.email(),
+    createdAt: () => faker.date.recent().toString(),
+  },
   dropDownOption: {
     id: primaryKey(() => dropDownOptionIdCounter++),
     customFieldId: oneOf('customField'),

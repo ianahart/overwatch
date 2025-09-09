@@ -12,7 +12,10 @@ export interface IUserListItemProps {
 const UserListItem = ({ user }: IUserListItemProps) => {
   const { user: currentUser } = useSelector((store: TRootState) => store.user);
   return (
-    <div className="my-4 border-gray-800 text-gray-400 rounded border p-2 flex items-center justify-between">
+    <div
+      data-testid="UserListItem"
+      className="my-4 border-gray-800 text-gray-400 rounded border p-2 flex items-center justify-between"
+    >
       <div className="flex items-center">
         <div>
           <Avatar
