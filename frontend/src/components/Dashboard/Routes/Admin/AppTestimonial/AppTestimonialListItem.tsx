@@ -16,11 +16,12 @@ const AppTestimonialListItem = ({ adminAppTestimonial, selectAdminAppTestimonial
   };
 
   return (
-    <li className="my-6">
+    <li data-testid="AppTestimonialListItem" className="my-6">
       <div className="flex items-center justify-around">
         <div className="flex-grow-[1] mr-4 flex justify-center">
           <ToolTip message={adminAppTestimonial.isSelected ? 'Unselect' : 'Select'}>
             <div
+              data-testid="app-testimonial-select-btn"
               onClick={handleOnClick}
               className={`w-6 h-6 rounded-full border border-gray-800 flex cursor-pointer flex-col justify-center items-center ${
                 adminAppTestimonial.isSelected ? 'bg-green-400' : 'bg-transparent'
