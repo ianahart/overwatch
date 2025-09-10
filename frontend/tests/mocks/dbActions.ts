@@ -2,6 +2,7 @@ import { toPlainObject } from 'lodash';
 import {
   IActiveLabel,
   IActivity,
+  IAdminAppTestimonial,
   IBadge,
   IBlockedUser,
   IComment,
@@ -37,6 +38,16 @@ import {
 } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createAppTestimonials(numberOfTestimonials: number) {
+  const appTestimonials: IAdminAppTestimonial[] = [];
+
+  for (let i = 0; i < numberOfTestimonials; i++) {
+    const appTestimonial: IAdminAppTestimonial = { ...toPlainObject(db.adminAppTestimonial.create()) };
+    appTestimonials.push(appTestimonial);
+  }
+  return appTestimonials;
+}
 
 export function createViewUsers(numberOfUsers: number) {
   const users: IViewUser[] = [];

@@ -65,9 +65,19 @@ let activityIdCounter = 1;
 let customFieldIdCounter = 1;
 let dropDownOptionIdCounter = 1;
 let viewUserIdCounter = 1;
+let adminAppTestimonialIdCounter = 1;
 const fullName = getFullName();
 
 export const db = factory({
+  adminAppTestimonial: {
+    id: primaryKey(() => adminAppTestimonialIdCounter++),
+    isSelected: () => faker.datatype.boolean(),
+    firstName: () => faker.person.firstName(),
+    developerType: () => faker.helpers.arrayElement(['backend', 'frontend', 'software developer']),
+    createdAt: () => faker.date.recent().toString(),
+    content: () => faker.lorem.paragraph(3),
+    avatarUrl: () => faker.image.avatar(),
+  },
   viewUser: {
     id: primaryKey(() => viewUserIdCounter++),
     firstName: () => faker.person.firstName(),
