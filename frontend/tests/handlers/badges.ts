@@ -3,6 +3,7 @@ import { http, HttpResponse } from 'msw';
 import {
   ICreateBadgeResponse,
   IDeleteBadgeResponse,
+  IGetAllBadgesResponse,
   IGetAllReviewerBadgesResponse,
   IGetBadgeResponse,
   IMinAdminBadge,
@@ -51,6 +52,34 @@ export const badgesHandlers = [
     return HttpResponse.json<IUpdateBadgeResponse>(
       {
         message: 'success',
+      },
+      { status: 200 }
+    );
+  }),
+
+  http.get(`${baseURL}/admin/badges`, async ({ request }) => {
+    const url = new URL(request.url);
+
+    let pg = Number(url.searchParams.get('page')) ?? 1;
+    const size = 2;
+    const dir = url.searchParams.get('direction') ?? 'next';
+    const totalElements = 6;
+
+    const data = createBadges(size);
+
+    const { page, totalPages, pageSize, direction, items } = paginate(pg, size, dir, data);
+
+    return HttpResponse.json<IGetAllBadgesResponse>(
+      {
+        message: 'success',
+        data: {
+          items,
+          page,
+          pageSize,
+          totalPages,
+          direction,
+          totalElements,
+        },
       },
       { status: 200 }
     );
