@@ -28,7 +28,7 @@ const BadgeListItem = ({ badge }: IBadgeListItemProps) => {
   };
 
   return (
-    <li className="mx-4 my-6 w-full max-w-[250px] ">
+    <li data-testid="BadgeListItem" className="mx-4 my-6 w-full max-w-[250px] ">
       <img className="h-36 w-36 mx-auto" src={badge.imageUrl} alt={badge.title} />
       <h3 className="text-center text-gray-400 font-bold">{badge.title}</h3>
       <p className="italic text-sm text-center">{badge.description}</p>
