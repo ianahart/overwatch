@@ -66,9 +66,17 @@ let customFieldIdCounter = 1;
 let dropDownOptionIdCounter = 1;
 let viewUserIdCounter = 1;
 let adminAppTestimonialIdCounter = 1;
+let adminBadgeIdCounter = 1;
 const fullName = getFullName();
 
 export const db = factory({
+  adminBadge: {
+    id: primaryKey(() => adminBadgeIdCounter++),
+    createdAt: () => faker.date.recent().toString(),
+    title: () => faker.lorem.word(8),
+    description: () => faker.lorem.paragraph(3),
+    imageUrl: () => faker.image.avatar(),
+  },
   adminAppTestimonial: {
     id: primaryKey(() => adminAppTestimonialIdCounter++),
     isSelected: () => faker.datatype.boolean(),

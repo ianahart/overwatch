@@ -136,7 +136,7 @@ const BadgeForm = ({ formType, badgeId = 0, handleCloseModal = () => {} }: IBadg
   };
 
   return (
-    <div>
+    <div data-testid="BadgeForm">
       <form onSubmit={handleOnSubmit}>
         <div className="my-6">
           <FormInputField

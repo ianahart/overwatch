@@ -2,6 +2,7 @@ import { http, HttpResponse } from 'msw';
 
 import {
   ICreateBadgeResponse,
+  IDeleteBadgeResponse,
   IGetAllReviewerBadgesResponse,
   IGetBadgeResponse,
   IMinAdminBadge,
@@ -13,6 +14,15 @@ import { paginate } from '../utils';
 import { faker } from '@faker-js/faker';
 
 export const badgesHandlers = [
+  http.delete(`${baseURL}/admin/badges/:badgeId`, () => {
+    return HttpResponse.json<IDeleteBadgeResponse>(
+      {
+        message: 'success',
+      },
+      { status: 200 }
+    );
+  }),
+
   http.get(`${baseURL}/admin/badges/:badgeId`, () => {
     const data: IMinAdminBadge = {
       title: 'badge title',
