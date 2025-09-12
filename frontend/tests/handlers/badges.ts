@@ -1,11 +1,51 @@
 import { http, HttpResponse } from 'msw';
 
-import { IGetAllReviewerBadgesResponse } from '../../src/interfaces';
+import {
+  ICreateBadgeResponse,
+  IGetAllReviewerBadgesResponse,
+  IGetBadgeResponse,
+  IMinAdminBadge,
+  IUpdateBadgeResponse,
+} from '../../src/interfaces';
 import { baseURL } from '../../src/util';
 import { createBadges } from '../mocks/dbActions';
 import { paginate } from '../utils';
+import { faker } from '@faker-js/faker';
 
 export const badgesHandlers = [
+  http.get(`${baseURL}/admin/badges/:badgeId`, () => {
+    const data: IMinAdminBadge = {
+      title: 'badge title',
+      imageUrl: faker.image.avatar(),
+      description: 'badge description',
+    };
+    return HttpResponse.json<IGetBadgeResponse>(
+      {
+        message: 'success',
+        data,
+      },
+      { status: 200 }
+    );
+  }),
+
+  http.post(`${baseURL}/admin/badges`, () => {
+    return HttpResponse.json<ICreateBadgeResponse>(
+      {
+        message: 'success',
+      },
+      { status: 201 }
+    );
+  }),
+
+  http.patch(`${baseURL}/admin/badges/:badgeId`, () => {
+    return HttpResponse.json<IUpdateBadgeResponse>(
+      {
+        message: 'success',
+      },
+      { status: 200 }
+    );
+  }),
+
   http.get(`${baseURL}/reviewer-badges`, async ({ request }) => {
     const url = new URL(request.url);
 

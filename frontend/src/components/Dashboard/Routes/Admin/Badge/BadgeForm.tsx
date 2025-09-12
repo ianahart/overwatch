@@ -180,7 +180,7 @@ const BadgeForm = ({ formType, badgeId = 0, handleCloseModal = () => {} }: IBadg
           />
         </div>
         <div className="mt-12 mb-4">
-          <button type="submit" className="btn w-full">
+          <button data-testid="badge-form-btn" type="submit" className="btn w-full">
             {formType === 'create' ? 'Submit' : 'Update'}
           </button>
         </div>
