@@ -46,8 +46,10 @@ import { workSpacesHandlers } from '../handlers/workSpaces';
 import { labelsHandlers } from '../handlers/labels';
 import { dropDownOptionsHandlers } from '../handlers/dropDownOptions';
 import { pexelsHandlers } from '../handlers/pexels';
+import { bannedUsersHandlers } from '../handlers/bannedUsers';
 
 export const handlers = [
+  ...bannedUsersHandlers,
   ...pexelsHandlers,
   ...dropDownOptionsHandlers,
   ...labelsHandlers,

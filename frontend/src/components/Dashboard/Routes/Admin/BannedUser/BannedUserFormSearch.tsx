@@ -95,6 +95,7 @@ const BannedUserFormSearch = ({ handleSetSelectedUser }: IBannedUserFormSearchPr
             {users.map(({ id, fullName, avatarUrl }) => {
               return (
                 <div
+                  data-testid="banned-user-search-item"
                   onClick={() => handleSetSelectedUser({ id, fullName, avatarUrl })}
                   key={id}
                   className="my-2 p-1 flex items-center justify-between cursor-pointer"

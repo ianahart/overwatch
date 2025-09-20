@@ -4,6 +4,7 @@ import {
   IActivity,
   IAdminAppTestimonial,
   IBadge,
+  IBan,
   IBlockedUser,
   IComment,
   IConnection,
@@ -38,6 +39,16 @@ import {
 } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createBannedUsers(numberOfBannedUsers: number) {
+  const bannedUsers: IBan[] = [];
+
+  for (let i = 0; i < numberOfBannedUsers; i++) {
+    const bannedUser: IBan = { ...toPlainObject(db.ban.create()), userId: faker.number.int({ min: 1, max: 9999 }) };
+    bannedUsers.push(bannedUser);
+  }
+  return bannedUsers;
+}
 
 export function createAppTestimonials(numberOfTestimonials: number) {
   const appTestimonials: IAdminAppTestimonial[] = [];

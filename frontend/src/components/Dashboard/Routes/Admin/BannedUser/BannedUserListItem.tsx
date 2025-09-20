@@ -48,7 +48,10 @@ const BannedUserListItem = ({
   };
 
   return (
-    <div className="flex justify-evenly my-4 p-2 border border-gray-800 rounded text-gray-400">
+    <div
+      data-testid="BannedUserListItem"
+      className="flex justify-evenly my-4 p-2 border border-gray-800 rounded text-gray-400"
+    >
       <div className="mx-1">
         <p>{user.fullName}</p>
         <p className="text-sm font-bold">{user.email}</p>
