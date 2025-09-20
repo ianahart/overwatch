@@ -67,9 +67,20 @@ let dropDownOptionIdCounter = 1;
 let viewUserIdCounter = 1;
 let adminAppTestimonialIdCounter = 1;
 let adminBadgeIdCounter = 1;
+let banIdCounter = 1;
 const fullName = getFullName();
 
 export const db = factory({
+  ban: {
+    id: primaryKey(() => banIdCounter++),
+    fullName: () => faker.person.fullName(),
+    email: () => faker.internet.email(),
+    userId: oneOf('user'),
+    time: () => faker.helpers.arrayElement(['86400']),
+    adminNotes: () => faker.lorem.paragraph(4),
+    createdAt: () => faker.date.recent().toString(),
+    banDate: () => faker.date.past().toString(),
+  },
   adminBadge: {
     id: primaryKey(() => adminBadgeIdCounter++),
     createdAt: () => faker.date.recent().toString(),

@@ -4,6 +4,7 @@ import {
   IDeleteUserResponse,
   IGetAllAdminUsersResponse,
   IGetAllReviewersResponse,
+  IGetAllUserAndReviewerResponse,
   IReviewer,
   ISyncUserResponse,
   IUpdateUserPasswordResponse,
@@ -48,6 +49,36 @@ export const usersHandlers = [
           lastName: 'Doe',
           email: 'test@example.com',
           abbreviation: 'J.D',
+        },
+      },
+      { status: 200 }
+    );
+  }),
+
+  http.get(`${baseURL}/users/search-all`, ({ request }) => {
+    const url = new URL(request.url);
+
+    let pg = Number(url.searchParams.get('page')) ?? 1;
+    const size = 2;
+    const dir = url.searchParams.get('direction') ?? 'next';
+    const totalElements = 6;
+
+    // static reviewer for detailed testing purposes
+    const staticReviewer: IReviewer = { ...toPlainObject(db.reviewer.create()), fullName: 'john doe' };
+    const data = [staticReviewer, ...createReviewers(totalElements)];
+
+    const { page, totalPages, pageSize, direction, items } = paginate(pg, size, dir, data);
+
+    return HttpResponse.json<IGetAllUserAndReviewerResponse>(
+      {
+        message: 'success',
+        data: {
+          items,
+          page,
+          pageSize,
+          totalPages,
+          direction,
+          totalElements,
         },
       },
       { status: 200 }

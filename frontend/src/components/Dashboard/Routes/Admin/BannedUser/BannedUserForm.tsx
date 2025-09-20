@@ -139,6 +139,7 @@ const BannedUserForm = ({
         <div className="flex flex-col my-4">
           <label htmlFor="notes">Admin Notes</label>
           <textarea
+            data-testid="admin-notes-textarea"
             onChange={(e) => handleOnChange(e, 'textarea')}
             value={adminNotes}
             className="h-20 bg-transparent border p-2 rounded border-gray-800 resize-none"
