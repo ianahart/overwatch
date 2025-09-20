@@ -124,7 +124,7 @@ const BannedUserForm = ({
   };
 
   return (
-    <div className="p-2 border border-gray-800 rounded max-w-[650px] w-full mx-auto">
+    <div data-testid="BannedUserForm" className="p-2 border border-gray-800 rounded max-w-[650px] w-full mx-auto">
       <form onSubmit={handleOnSubmit}>
         <div className="flex justify-center my-4">
           <h3 className="text-xl font-bold">Ban A User</h3>
