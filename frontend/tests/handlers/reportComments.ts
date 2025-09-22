@@ -1,9 +1,22 @@
 import { http, HttpResponse } from 'msw';
 
-import { ICreateReportCommentRequest, ICreateReportCommentResponse } from '../../src/interfaces';
+import {
+  ICreateReportCommentRequest,
+  ICreateReportCommentResponse,
+  IDeleteReportCommentResponse,
+} from '../../src/interfaces';
 import { baseURL } from '../../src/util';
 
 export const reportCommentHandlers = [
+  http.delete(`${baseURL}/admin/report-comments/:id`, () => {
+    return HttpResponse.json<IDeleteReportCommentResponse>(
+      {
+        message: 'success',
+      },
+      { status: 200 }
+    );
+  }),
+
   http.post(`${baseURL}/report-comments`, async ({ request }) => {
     const body = (await request.json()) as ICreateReportCommentRequest;
 

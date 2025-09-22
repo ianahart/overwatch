@@ -68,9 +68,21 @@ let viewUserIdCounter = 1;
 let adminAppTestimonialIdCounter = 1;
 let adminBadgeIdCounter = 1;
 let banIdCounter = 1;
+let reportCommentIdCounter = 1;
 const fullName = getFullName();
 
 export const db = factory({
+  reportComment: {
+    id: primaryKey(() => reportCommentIdCounter++),
+    details: () => faker.lorem.paragraph(3),
+    reason: () => faker.lorem.word(8),
+    status: () => faker.lorem.word(8),
+    reportedBy: () => faker.lorem.word(8),
+    createdAt: () => faker.date.recent().toString(),
+    content: () => faker.lorem.paragraph(2),
+    commentAvatarUrl: () => faker.image.avatar(),
+    topicTitle: () => faker.lorem.word(8),
+  },
   ban: {
     id: primaryKey(() => banIdCounter++),
     fullName: () => faker.person.fullName(),
