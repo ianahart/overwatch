@@ -18,6 +18,7 @@ import {
   IPinnedConnection,
   IReaction,
   IReplyComment,
+  IReportComment,
   IRepositoryReview,
   IReview,
   IReviewer,
@@ -39,6 +40,15 @@ import {
 } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createReportComments(numberOfComments: number) {
+  const comments: IReportComment[] = [];
+  for (let i = 0; i < numberOfComments; i++) {
+    const comment: IReportComment = { ...toPlainObject(db.reportComment.create()) };
+    comments.push(comment);
+  }
+  return comments;
+}
 
 export function createBannedUsers(numberOfBannedUsers: number) {
   const bannedUsers: IBan[] = [];

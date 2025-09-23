@@ -17,7 +17,10 @@ const FlaggedCommentListItem = ({ reportComment, updateStatus }: IFlaggedComment
   };
 
   return (
-    <div className="p-2 rounded border border-gray-800 text-gray-400 relative my-2">
+    <div
+      data-testid="FlaggedCommentListItem"
+      className="p-2 rounded border border-gray-800 text-gray-400 relative my-2"
+    >
       <div className="flex-wrap flex items-center justify-between">
         <div className="text-xs">
           <p>reported by</p>
