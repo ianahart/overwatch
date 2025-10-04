@@ -17,7 +17,7 @@ const RefundListItem = ({ refund }: IRefundListItemProps) => {
   };
 
   return (
-    <div className="p-2 rounded border border-gray-800 text-gray-400 relative">
+    <div data-testid="RefundListItem" className="p-2 rounded border border-gray-800 text-gray-400 relative">
       <div className="flex-wrap flex items-center justify-between">
         <div>
           <p>{refund.fullName}</p>

@@ -33,7 +33,7 @@ export const paymentRefundsHandlers = [
     let pg = Number(url.searchParams.get('page')) ?? 1;
     const size = 2;
     const dir = url.searchParams.get('direction') ?? 'next';
-    const totalElements = 2;
+    const totalElements = 6;
 
     const data = createRefunds(totalElements);
 
