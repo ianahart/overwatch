@@ -69,9 +69,24 @@ let adminAppTestimonialIdCounter = 1;
 let adminBadgeIdCounter = 1;
 let banIdCounter = 1;
 let reportCommentIdCounter = 1;
+let refundIdCounter = 1;
+
 const fullName = getFullName();
 
 export const db = factory({
+  refund: {
+    id: primaryKey(() => refundIdCounter++),
+    adminNotes: () => faker.lorem.paragraph(3),
+    amount: () => faker.number.int({ min: 1000, max: 100000 }),
+    currency: () => 'USD',
+    reason: () => faker.lorem.sentence(10),
+    status: () => faker.helpers.arrayElement(['PENDING', 'APPROVED', 'REJECTED']),
+    stripePaymentIntentId: () => faker.number.int({ min: 1, max: 999 }),
+    createdAt: () => faker.date.recent().toString(),
+    userId: oneOf('user'),
+    fullName: () => faker.person.fullName(),
+  },
+
   reportComment: {
     id: primaryKey(() => reportCommentIdCounter++),
     details: () => faker.lorem.paragraph(3),

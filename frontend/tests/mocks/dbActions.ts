@@ -17,6 +17,7 @@ import {
   IPaymentIntent,
   IPinnedConnection,
   IReaction,
+  IRefund,
   IReplyComment,
   IReportComment,
   IRepositoryReview,
@@ -40,6 +41,16 @@ import {
 } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createRefunds(numberOfRefunds: number) {
+  const refunds: IRefund[] = [];
+
+  for (let i = 0; i < numberOfRefunds; i++) {
+    const refund: IRefund = { ...toPlainObject(db.refund.create()) };
+    refunds.push(refund);
+  }
+  return refunds;
+}
 
 export function createReportComments(numberOfComments: number) {
   const comments: IReportComment[] = [];
