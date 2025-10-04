@@ -70,10 +70,27 @@ let adminBadgeIdCounter = 1;
 let banIdCounter = 1;
 let reportCommentIdCounter = 1;
 let refundIdCounter = 1;
+let paymentIntentTransactionIdCounter = 1;
 
 const fullName = getFullName();
 
 export const db = factory({
+  paymentIntentTransaction: {
+    id: primaryKey(() => paymentIntentTransactionIdCounter++),
+    amount: () => faker.number.int({ min: 1, max: 99999 }),
+    applicationFee: () => 25000,
+    createdAt: () => faker.date.recent().toString(),
+    currency: () => 'USD',
+    description: () => faker.lorem.paragraph(3),
+    status: () => faker.helpers.arrayElement([['PENDING', 'REFUNDED', 'REJECTED', 'PAID']]),
+    userFullName: () => faker.person.fullName(),
+    userEmail: () => faker.internet.email(),
+    reviewerFullName: () => faker.person.fullName(),
+    reviewerEmail: () => faker.internet.email(),
+    userId: oneOf('user'),
+    reviewerId: oneOf('user'),
+  },
+
   refund: {
     id: primaryKey(() => refundIdCounter++),
     adminNotes: () => faker.lorem.paragraph(3),

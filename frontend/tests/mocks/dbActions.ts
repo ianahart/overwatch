@@ -15,6 +15,7 @@ import {
   ILabel,
   IMessage,
   IPaymentIntent,
+  IPaymentIntentTransaction,
   IPinnedConnection,
   IReaction,
   IRefund,
@@ -41,6 +42,17 @@ import {
 } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createPaymentIntentTransactions(numberOfIntents: number) {
+  const intents: IPaymentIntentTransaction[] = [];
+
+  for (let i = 0; i < numberOfIntents; i++) {
+    const intent: IPaymentIntentTransaction = { ...toPlainObject(db.paymentIntentTransaction.create()) };
+    intents.push(intent);
+  }
+
+  return intents;
+}
 
 export function createRefunds(numberOfRefunds: number) {
   const refunds: IRefund[] = [];

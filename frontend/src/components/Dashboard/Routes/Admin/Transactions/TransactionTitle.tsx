@@ -1,6 +1,6 @@
 const TransactionTitle = () => {
   return (
-    <div className="flex flex-col items-center my-6">
+    <div data-testid="TransactionTitle" className="flex flex-col items-center my-6">
       <h2 className="text-gray-400 text-xl">Transactions</h2>
       <p>Here is where users and reviewers have made transactions.</p>
       <p>
