@@ -44,7 +44,7 @@ const RefundList = () => {
   };
 
   return (
-    <div className="my-8 p-2">
+    <div data-testid="RefundList" className="my-8 p-2">
       <div className="my-6">
         {refunds.map((refund) => {
           return <RefundListItem key={refund.id} refund={refund} />;
