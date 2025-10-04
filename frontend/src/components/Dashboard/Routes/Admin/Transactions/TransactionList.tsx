@@ -169,7 +169,7 @@ const TransactionList = () => {
   };
 
   return (
-    <div className="my-8 p-2">
+    <div data-testid="TransactionList" className="my-8 p-2">
       <div className="flex justify-start">
         <div className="my-2 mr-1">
           <button
@@ -231,6 +231,7 @@ const TransactionList = () => {
                   {Object.keys(headerMapping).map((column) => {
                     return (
                       <td
+                        data-testid="transaction-cell"
                         className={`${column === 'applicationFee' ? 'text-green-400' : 'text-gray-400'}`}
                         key={nanoid()}
                       >
