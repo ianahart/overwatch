@@ -1,22 +1,28 @@
 import { http, HttpResponse } from 'msw';
 
-import { ICreateSuggestionResponse, IGetAllSuggestionsResponse } from '../../src/interfaces';
+import {
+  ICreateSuggestionResponse,
+  IDeleteSuggestionResponse,
+  IGetAllSuggestionsResponse,
+  IUpdateSuggestionResponse,
+} from '../../src/interfaces';
 import { baseURL } from '../../src/util';
 import { createSuggestions } from '../mocks/dbActions';
 import { paginate } from '../utils';
 
 export const suggestionsHandlers = [
   http.patch(`${baseURL}/admin/suggestions/:id`, () => {
-    return HttpResponse.json(
+    return HttpResponse.json<IUpdateSuggestionResponse>(
       {
         message: 'success',
+        data: 'IMPLEMENTED',
       },
       { status: 200 }
     );
   }),
 
   http.delete(`${baseURL}/admin/suggestions/:id`, () => {
-    return HttpResponse.json(
+    return HttpResponse.json<IDeleteSuggestionResponse>(
       {
         message: 'success',
       },
