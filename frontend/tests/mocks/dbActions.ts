@@ -24,6 +24,7 @@ import {
   IRepositoryReview,
   IReview,
   IReviewer,
+  ISuggestion,
   ITag,
   ITeam,
   ITeamComment,
@@ -42,6 +43,16 @@ import {
 } from '../../src/interfaces';
 import { db } from './db';
 import { faker } from '@faker-js/faker';
+
+export function createSuggestions(numberOfSuggestions: number) {
+  const suggestions: ISuggestion[] = [];
+
+  for (let i = 0; i < numberOfSuggestions; i++) {
+    const suggestion: ISuggestion = { ...toPlainObject(db.suggestion.create()) };
+    suggestions.push(suggestion);
+  }
+  return suggestions;
+}
 
 export function createPaymentIntentTransactions(numberOfIntents: number) {
   const intents: IPaymentIntentTransaction[] = [];
