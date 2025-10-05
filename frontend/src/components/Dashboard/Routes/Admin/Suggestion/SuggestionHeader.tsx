@@ -1,6 +1,6 @@
 const SuggestionHeader = () => {
   return (
-    <div>
+    <div data-testid="SuggestionHeader">
       <div className="flex flex-col items-center my-6">
         <h2 className="text-gray-400 text-xl">Suggestions</h2>
         <p>Here is where users and reviewers have given you feedback and suggestions.</p>

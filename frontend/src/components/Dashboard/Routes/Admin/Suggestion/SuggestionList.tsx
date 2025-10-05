@@ -154,7 +154,7 @@ const SuggestionList = () => {
   };
 
   return (
-    <div className="my-8 p-2">
+    <div data-testid="SuggestionList" className="my-8 p-2">
       <form>
         <select
           className="bg-transparent border border-gray-800 h-9"
