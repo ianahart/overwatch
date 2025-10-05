@@ -21,10 +21,10 @@ const SuggestionTable = ({ suggestions, headerMapping, formatColumnData }: ISugg
       <tbody>
         {suggestions.map((row) => {
           return (
-            <tr key={row.id}>
+            <tr key={row.id} data-testid={`suggestion-row-${row.id}`}>
               {Object.keys(headerMapping).map((column) => {
                 return (
-                  <td className="text-sm" key={nanoid()}>
+                  <td data-testid={`suggestion-cell-${row.id}-${column}`} className="text-sm" key={nanoid()}>
                     {formatColumnData(column, row[column], row.id)}
                   </td>
                 );
